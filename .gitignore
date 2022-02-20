@@ -1,0 +1,7 @@
+.vscode/
+build/
+release/
+tasks
+.tasks.bak
+.tasks.done
+..tasks.done.bak

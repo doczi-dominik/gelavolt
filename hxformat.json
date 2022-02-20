@@ -1,0 +1,10 @@
+{
+    "whitespace": {
+        "typeHintColonPolicy": "after"
+    },
+    "wrapping": {
+        "callParameter": {
+            "defaultWrap": "fillLine"
+        }
+    }
+}

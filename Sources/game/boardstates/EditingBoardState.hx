@@ -1,0 +1,214 @@
+package game.boardstates;
+
+import utils.Utils;
+import game.fields.IFieldMarker;
+import save_data.PrefsSave;
+import game.fields.ColorConflictFieldMarker;
+import game.fields.DependencyFieldMarker;
+import game.fields.AllClearFieldMarker;
+import game.fields.ChainFieldMarker;
+import game.simulation.ChainSimulator;
+import game.ChainCounter;
+import game.fields.Field;
+import game.fields.Field;
+import game.actions.TrainingActions;
+import game.actions.MenuActions;
+import game.geometries.BoardGeometries;
+import game.gelos.GeloColor;
+import game.gelos.Gelo;
+import input.IInputDeviceManager;
+import kha.Assets;
+import game.garbage.NullGarbageManager;
+import kha.graphics2.Graphics;
+import kha.graphics4.Graphics as Graphics4;
+import game.garbage.IGarbageManager;
+import game.fields.FieldMarkerType;
+import utils.Utils.intClamp;
+
+class EditingBoardState implements IBoardState {
+	static final COLORS = [COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, GARBAGE];
+
+	final geometries: BoardGeometries;
+	final inputManager: IInputDeviceManager;
+	final chainSim: ChainSimulator;
+	final chainCounter: ChainCounter;
+	final prefsSave: PrefsSave;
+
+	final markers: Array<IFieldMarker>;
+
+	var cursorX: Int;
+	var cursorY: Int;
+
+	var cursorDisplayX: Float;
+	var cursorDisplayY: Float;
+
+	var selectedIndex: Int;
+
+	var mode: EditingBoardStateMode;
+
+	public final field: Field;
+
+	public function new(opts: EditingBoardStateOptions) {
+		geometries = opts.geometries;
+		inputManager = opts.inputManager;
+		chainSim = opts.chainSim;
+		chainCounter = opts.chainCounter;
+		prefsSave = opts.prefsSave;
+
+		markers = [
+			new ChainFieldMarker(), AllClearFieldMarker.create(prefsSave, COLOR1), AllClearFieldMarker.create(prefsSave, COLOR2),
+			AllClearFieldMarker.create(prefsSave, COLOR3), AllClearFieldMarker.create(prefsSave, COLOR4), AllClearFieldMarker.create(prefsSave, COLOR5),
+			DependencyFieldMarker.create(prefsSave, COLOR1), DependencyFieldMarker.create(prefsSave, COLOR2), DependencyFieldMarker.create(prefsSave, COLOR3),
+			DependencyFieldMarker.create(prefsSave, COLOR4), DependencyFieldMarker.create(prefsSave, COLOR5),
+			ColorConflictFieldMarker.create(prefsSave, COLOR1), ColorConflictFieldMarker.create(prefsSave, COLOR2),
+			ColorConflictFieldMarker.create(prefsSave, COLOR3), ColorConflictFieldMarker.create(prefsSave, COLOR4),
+			ColorConflictFieldMarker.create(prefsSave, COLOR5),
+		];
+
+		field = opts.field;
+
+		cursorX = Std.int(field.columns / 2) - 1;
+		cursorY = field.totalRows - 1;
+
+		// Set cursorDisplayX / cursorDisplayY
+		moveCursor(0, 0);
+
+		selectedIndex = 0;
+
+		mode = Gelos;
+	}
+
+	function moveCursor(deltaX: Int, deltaY: Int) {
+		cursorX = intClamp(0, cursorX + deltaX, field.columns - 1);
+		cursorY = intClamp(field.garbageRows, cursorY + deltaY, field.totalRows - 1);
+
+		final screenCoords = field.cellToScreen(cursorX, cursorY);
+
+		cursorDisplayX = screenCoords.x - Gelo.HALFSIZE;
+		cursorDisplayY = screenCoords.y - Gelo.HALFSIZE;
+	}
+
+	function changeIndex(delta: Int) {
+		final modulo = (mode == Gelos) ? COLORS.length : markers.length;
+
+		selectedIndex = Std.int(Utils.negativeMod(selectedIndex + delta, modulo));
+	}
+
+	function modifyChain() {
+		chainSim.modify(field.copy());
+	}
+
+	function set() {
+		if (mode == Gelos) {
+			field.newGelo(cursorX, cursorY, COLORS[selectedIndex], false);
+			field.setSpriteVariations();
+
+			modifyChain();
+
+			return;
+		}
+
+		// field.setMarker(cursorX, cursorY, markers[selectedIndex]);
+	}
+
+	function clear() {
+		field.clear(cursorX, cursorY);
+		field.setSpriteVariations();
+
+		modifyChain();
+	}
+
+	function switchMode() {
+		mode = (mode + 1) % 2;
+
+		selectedIndex = 0;
+	}
+
+	function renderCurrentSelection(g: Graphics) {
+		final geloDisplay = geometries.editGeloDisplay;
+		final displayX = geloDisplay.x;
+		final displayY = geloDisplay.y;
+
+		if (mode == Gelos) {
+			Gelo.renderStatic(g, displayX, displayY, COLORS[selectedIndex], NONE);
+
+			return;
+		}
+
+		markers[selectedIndex].render(g, displayX, displayY);
+	}
+
+	public function clearField() {
+		field.clearAll();
+		modifyChain();
+	}
+
+	public function loadStep() {
+		final step = chainSim.getViewedStep();
+
+		field.copyFrom(step.fieldSnapshot);
+	}
+
+	public function viewPrevious() {
+		chainSim.viewPrevious();
+		chainSim.editViewed();
+		loadStep();
+	}
+
+	public function viewNext() {
+		chainSim.viewNext();
+		chainSim.editViewed();
+		loadStep();
+	}
+
+	public function update() {
+		if (inputManager.getAction(LEFT)) {
+			moveCursor(-1, 0);
+		} else if (inputManager.getAction(RIGHT)) {
+			moveCursor(1, 0);
+		}
+
+		if (inputManager.getAction(UP)) {
+			moveCursor(0, -1);
+		} else if (inputManager.getAction(DOWN)) {
+			moveCursor(0, 1);
+		}
+
+		if (inputManager.getAction(PREVIOUS_COLOR)) {
+			changeIndex(-1);
+		} else if (inputManager.getAction(NEXT_COLOR)) {
+			changeIndex(1);
+		}
+
+		if (inputManager.getAction(TOGGLE_MARKERS)) {
+			switchMode();
+		}
+
+		if (inputManager.getAction(CONFIRM)) {
+			set();
+		} else if (inputManager.getAction(BACK)) {
+			clear();
+		}
+
+		field.update();
+		chainCounter.update();
+	}
+
+	public function renderScissored(g: Graphics, g4: Graphics4, alpha: Float) {
+		g.color = Color.fromBytes(64, 32, 32);
+		g.fillRect(0, 0, BoardGeometries.WIDTH, BoardGeometries.HEIGHT);
+		g.color = White;
+	}
+
+	public function renderFloating(g: Graphics, g4: Graphics4, alpha: Float) {
+		g.drawImage(Assets.images.Border, -12, -12);
+
+		renderCurrentSelection(g);
+
+		field.render(g, g4, alpha);
+
+		g.drawRect(cursorDisplayX, cursorDisplayY, Gelo.SIZE, Gelo.SIZE, 8);
+
+		chainCounter.render(g, alpha);
+	}
+}

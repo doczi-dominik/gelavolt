@@ -1,0 +1,35 @@
+name: Build Web Version
+
+on:
+  push:
+    branches:
+      - prod
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kha Setup
+        uses: actions/checkout@v2
+        with:
+          repository: Kode/Kha
+          path: kha
+          submodules: recursive
+      - name: Checkout GelaVolt
+        uses: actions/checkout@v2
+        with:
+          path: gv
+      - name: Compile
+        working-directory: gv
+        run: node ../kha/make -t html5
+      - name: Push to GelaVolt Web Repo
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: gv/build/html5
+          destination-github-username: doczi-dominik
+          destination-repository-name: gelavolt-web
+          user-email: doczi.dominik0@gmail.com
+          target-branch: main

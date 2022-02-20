@@ -1,0 +1,18 @@
+ka1.ttf: Karmatic Arcade by Vic Fieger
+---------------------------------------
+DigitalDisco.ttf: Digital Disco by jeti
+
+Author's note:
+Digital Disco by jeti: A groovy, round typeface with chunky '70s charm and an optional thin style.
+
+You are free to use this font for personal or commercial projects, all I ask is that you include credit.
+
+Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+More info: https://fontenddev.com/fonts/digital-disco/
+---------------------------------------------------
+Pixellari.ttf: Pixellari by Zacchary Dempsey-Plante
+Author's note:
+Providing this for absolutely free, since I myself found it difficult to find a font I liked that was completely usable in commercial projects. All I ask is that I get credit for the making of the original font.
+---------------------------------------------------
+superstar_memesbruh03.ttf: Superstar by memesbruh03
+More info in superstar_info.txt
