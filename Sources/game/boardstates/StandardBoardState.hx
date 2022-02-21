@@ -355,11 +355,9 @@ class StandardBoardState implements IBoardState {
 	function initEndStepHandling() {
 		beforeEnd();
 
-		final chainInfo = currentEndStep.chainInfo;
+		garbageManager.confirmGarbage(currentEndStep.totalGarbage);
 
-		garbageManager.confirmGarbage(chainInfo.totalGarbage);
-
-		if (chainInfo.endsInAllClear) {
+		if (currentEndStep.endsInAllClear) {
 			allClearManager.startAnimation();
 		}
 

@@ -3,12 +3,29 @@ package game.simulation;
 import kha.graphics2.Graphics;
 
 class EndSimStep extends SimulationStep {
-	public final chainInfo: ChainInfo;
+	public final links: Array<LinkInfo>;
+	public final totalGarbage: Int;
+	public final endsInAllClear: Bool;
+	public final isLastLinkPowerful: Bool;
 
 	public function new(opts: EndSimStepOptions) {
 		super(END, opts);
 
-		chainInfo = opts.chainInfo;
+		links = opts.links;
+
+		if (links.length == 0) {
+			totalGarbage = 0;
+			endsInAllClear = false;
+			isLastLinkPowerful = false;
+
+			return;
+		}
+
+		final lastLink = links[links.length - 1];
+
+		totalGarbage = lastLink.accumulatedGarbage;
+		endsInAllClear = opts.endsInAllClear;
+		isLastLinkPowerful = lastLink.isPowerful;
 	}
 
 	override function renderLabel(g: Graphics, y: Float, alpha: Float) {
@@ -22,7 +39,7 @@ class EndSimStep extends SimulationStep {
 
 		g.fontSize = SimulationStep.CARD_FONT_SIZE;
 		g.drawString('Chain: $chain', 12, y + cardRow(1));
-		g.drawString('Total Garbage: ${chainInfo.totalGarbage}', 12, y + cardRow(2));
-		g.drawString('All Clear: ${chainInfo.endsInAllClear}', 12, y + cardRow(3));
+		g.drawString('Total Garbage: ${totalGarbage}', 12, y + cardRow(2));
+		g.drawString('All Clear: ${endsInAllClear}', 12, y + cardRow(3));
 	}
 }
