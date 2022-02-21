@@ -10,7 +10,6 @@ import game.fields.ChainFieldMarker;
 import game.simulation.ChainSimulator;
 import game.ChainCounter;
 import game.fields.Field;
-import game.fields.Field;
 import game.actions.TrainingActions;
 import game.actions.MenuActions;
 import game.geometries.BoardGeometries;
@@ -18,12 +17,17 @@ import game.gelos.GeloColor;
 import game.gelos.Gelo;
 import input.IInputDeviceManager;
 import kha.Assets;
-import game.garbage.NullGarbageManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
-import game.garbage.IGarbageManager;
-import game.fields.FieldMarkerType;
 import utils.Utils.intClamp;
+
+// Making an enum abstract with casting rules allows toggling between the
+// modes using `(mode + 1) % modecount`, where modecount is the number of
+// values in the enum
+private enum abstract Mode(Int) from Int to Int {
+	final GELOS = 0;
+	final MARKERS;
+}
 
 class EditingBoardState implements IBoardState {
 	static final COLORS = [COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, GARBAGE];
@@ -44,7 +48,7 @@ class EditingBoardState implements IBoardState {
 
 	var selectedIndex: Int;
 
-	var mode: EditingBoardStateMode;
+	var mode: Mode;
 
 	public final field: Field;
 

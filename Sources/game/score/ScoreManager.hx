@@ -1,5 +1,6 @@
 package game.score;
 
+import kha.Color;
 import game.rules.Rule;
 import game.geometries.BoardGeometries;
 import game.geometries.BoardOrientation;
@@ -29,7 +30,7 @@ class ScoreManager {
 	var actionFont: Font;
 	var actionFontSize: Int;
 	var actionTextHeight: Float;
-	var actionTextY: Float;
+	var actionTextColor: Color;
 
 	var scoreScaleY: Float;
 
@@ -64,7 +65,6 @@ class ScoreManager {
 		actionFont = Assets.fonts.ka1;
 		actionFontSize = 44;
 		actionTextHeight = actionFont.height(actionFontSize);
-		actionTextY = formulaTextY;
 
 		scoreScaleY = 1;
 
@@ -109,23 +109,25 @@ class ScoreManager {
 		} else if (15 < actionTextT && actionTextT <= 45) {
 			// Slowly spell out the action text
 			actionTextCharacters = Std.int(lerp(0, actionText.length, (actionTextT - 15) / 20));
-		} else if (55 < actionTextT && actionTextT <= 60) {
+		} else if (55 < actionTextT && actionTextT <= 61) {
 			// Restore the score display
 			scoreScaleY += 1 / 6;
-		} else {
+		} else if (61 < actionTextT) {
 			showActionText = false;
 		}
 
 		actionTextT++;
 	}
 
-	function renderActionText(g: Graphics) {
+	function renderActionText(g: Graphics, x: Float) {
 		g.font = actionFont;
 		g.fontSize = actionFontSize;
 
 		g.pushOpacity(1 - scoreScaleY);
-		shadowDrawString(g, 6, Black, Color.fromValue(0xFFFF1744), actionText.substr(0, actionTextCharacters), 0, actionTextY);
+		shadowDrawString(g, 6, Black, actionTextColor, actionText.substr(0, actionTextCharacters), x, -scoreTextHeight / 2 + 6);
 		g.popOpacity();
+
+		g.color = White;
 	}
 
 	public function addScoreFromLink(info: LinkInfo) {
@@ -146,11 +148,12 @@ class ScoreManager {
 		dropBonus = 0;
 	}
 
-	public function displayActionText(text: String) {
+	public function displayActionText(text: String, color: Color) {
 		actionText = text;
 		actionTextT = 0;
 		scoreScaleY = 1;
 		actionTextCharacters = 0;
+		actionTextColor = color;
 		showActionText = true;
 	}
 
@@ -169,22 +172,27 @@ class ScoreManager {
 			case RIGHT: 0;
 		}
 
-		final transform = FastMatrix3.translation(scoreX, y).multmat(FastMatrix3.scale(1, scoreScaleY));
-		g.pushTransformation(g.transformation.multmat(transform));
+		final transl = FastMatrix3.translation(scoreX, y);
+		final scale = FastMatrix3.scale(1, scoreScaleY);
+
+		g.pushTransformation(g.transformation.multmat(transl));
+		g.pushTransformation(g.transformation.multmat(scale));
 
 		renderScore(g);
 
-		if (showChainFormula) {
-			final formulaX = switch (orientation) {
-				case LEFT: -scoreX;
-				case RIGHT: BoardGeometries.WIDTH - formulaTextWidth;
-			}
+		final formulaX = switch (orientation) {
+			case LEFT: -scoreX;
+			case RIGHT: BoardGeometries.WIDTH - formulaTextWidth;
+		}
 
+		if (showChainFormula) {
 			renderChainFormula(g, formulaX, alpha);
 		}
 
+		g.popTransformation();
+
 		if (showActionText) {
-			renderActionText(g);
+			renderActionText(g, formulaX);
 		}
 
 		g.popTransformation();

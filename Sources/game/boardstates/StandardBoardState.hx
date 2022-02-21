@@ -355,12 +355,26 @@ class StandardBoardState implements IBoardState {
 	function initEndStepHandling() {
 		beforeEnd();
 
-		final chainInfo = currentEndStep.chainInfo;
+		garbageManager.confirmGarbage(currentEndStep.totalGarbage);
 
-		garbageManager.confirmGarbage(chainInfo.totalGarbage);
-
-		if (chainInfo.endsInAllClear) {
+		if (currentEndStep.endsInAllClear) {
 			allClearManager.startAnimation();
+		}
+
+		if (currentEndStep.isLastLinkPowerful) {
+			final chain = currentEndStep.chain;
+
+			if (chain == 1) {
+				scoreManager.displayActionText("THORN", Magenta);
+			}
+
+			if (chain == 2) {
+				scoreManager.displayActionText("HELLFIRE", Color.fromValue(0xFFFF1744));
+			}
+
+			if (chain == 3) {
+				scoreManager.displayActionText("KILLER ICE", Cyan);
+			}
 		}
 
 		copyFromSnapshot();

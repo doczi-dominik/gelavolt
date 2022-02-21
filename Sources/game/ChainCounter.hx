@@ -51,10 +51,6 @@ class ChainCounter {
 		state = IDLE;
 	}
 
-	final function updateNothing() {}
-
-	final function renderNothing(g: Graphics, alpha: Float) {}
-
 	function updateAnimation() {
 		if (t == 60) {
 			state = IDLE;

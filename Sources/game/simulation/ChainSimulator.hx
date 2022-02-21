@@ -168,7 +168,8 @@ class ChainSimulator {
 		pushStep(new EndSimStep({
 			chain: latestChainCounter,
 			fieldSnapshot: field.copy(),
-			chainInfo: new ChainInfo(links, allClear)
+			links: links,
+			endsInAllClear: allClear
 		}));
 	}
 
