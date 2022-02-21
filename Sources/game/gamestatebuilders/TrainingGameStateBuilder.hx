@@ -132,6 +132,7 @@ class TrainingGameStateBuilder {
 	inline function buildPlayerGarbageManager() {
 		playerGarbageManager = new GarbageManager({
 			rule: rule,
+			rng: rng,
 			prefsSave: primaryProfile.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.LEFT,
@@ -217,6 +218,7 @@ class TrainingGameStateBuilder {
 	inline function buildInfoGarbageManager() {
 		infoGarbageManager = new GarbageManager({
 			rule: rule,
+			rng: rng,
 			prefsSave: primaryProfile.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.RIGHT,

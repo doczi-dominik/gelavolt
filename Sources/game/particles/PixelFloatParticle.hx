@@ -28,6 +28,7 @@ class PixelFloatParticle implements IParticle {
 	final dy: Float;
 	final maxT: Int;
 	final color: Color;
+	final size: Float;
 
 	var lastX: Float;
 	var lastY: Float;
@@ -45,6 +46,7 @@ class PixelFloatParticle implements IParticle {
 		dy = opts.dy;
 		maxT = opts.maxT;
 		color = opts.color;
+		size = opts.size;
 	}
 
 	public function update() {
@@ -72,7 +74,7 @@ class PixelFloatParticle implements IParticle {
 
 		g.color = color;
 		g.pushOpacity(opacity);
-		g.fillCircle(lerpedX, lerpedY, 12, 4);
+		g.fillCircle(lerpedX, lerpedY, size, 16);
 		g.popOpacity();
 		g.color = White;
 	}
