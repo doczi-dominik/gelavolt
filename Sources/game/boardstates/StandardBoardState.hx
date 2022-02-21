@@ -264,6 +264,8 @@ class StandardBoardState implements IBoardState {
 			}
 		} catch (_) {
 			initPopPauseState();
+
+			return;
 		}
 
 		state = SIM_STEP(POP);
