@@ -137,7 +137,8 @@ class AllClearManager {
 			dx: 0,
 			dy: rng.GetFloatIn(-12, -5),
 			maxT: rng.GetIn(20, 35),
-			color: Orange
+			color: Orange,
+			size: 12
 		}));
 	}
 

@@ -10,4 +10,5 @@ class PixelFloatParticleOptions {
 	public final dy: Float;
 	public final maxT: Int;
 	public final color: Color;
+	public final size: Float;
 }

@@ -1,5 +1,8 @@
 package game.garbage;
 
+import kha.Color;
+import kha.math.Random;
+import game.particles.PixelFloatParticle;
 import utils.Utils;
 import game.mediators.GarbageTargetMediator;
 import save_data.PrefsSave;
@@ -16,6 +19,7 @@ import game.rules.Rule;
 
 class GarbageManager implements IGarbageManager {
 	final rule: Rule;
+	final rng: Random;
 	final prefsSave: PrefsSave;
 	final particleManager: IParticleManager;
 	final geometries: BoardGeometries;
@@ -31,6 +35,7 @@ class GarbageManager implements IGarbageManager {
 
 	public function new(opts: GarbageManagerOptions) {
 		rule = opts.rule;
+		rng = opts.rng;
 		prefsSave = opts.prefsSave;
 		particleManager = opts.particleManager;
 		geometries = opts.geometries;
@@ -60,6 +65,20 @@ class GarbageManager implements IGarbageManager {
 		confirmedGarbage = Utils.intClamp(0, confirmedGarbage, currentGarbage);
 	}
 
+	function addCollisionParticle(absTrayCenter: Point, color: Color) {
+		for (i in 0...64) {
+			particleManager.add(FRONT, PixelFloatParticle.create({
+				x: absTrayCenter.x,
+				y: absTrayCenter.y,
+				maxT: rng.GetIn(20, 30),
+				color: color,
+				dx: Math.cos(i / 4) * rng.GetIn(8, 12),
+				dy: Math.sin(i / 4) * rng.GetIn(8, 12),
+				size: Gelo.HALFSIZE * rng.GetFloatIn(0.25, 1.75)
+			}));
+		}
+	}
+
 	// Note: GeloPoint are screen coordinates not field
 	// TODO: Make FieldGeloPoint and ScreenGeloPoint that extend IntPoint/Point
 	function sendAttackBullet(beginners: Array<GeloPoint>) {
@@ -73,6 +92,9 @@ class GarbageManager implements IGarbageManager {
 		for (b in beginners) {
 			final targetGeometries = target.geometries;
 			final trayCenter = targetGeometries.garbageTray.add({x: BoardGeometries.CENTER.x, y: Gelo.HALFSIZE});
+			final absTrayCenter = targetGeometries.absolutePosition.add(trayCenter);
+
+			final primaryColor = prefsSave.primaryColors[b.color];
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
 				particleManager: particleManager,
@@ -80,11 +102,14 @@ class GarbageManager implements IGarbageManager {
 				begin: absPos.add({x: b.x, y: b.y}),
 				beginScale: 1, // TODO
 				control: absPos.add(control),
-				target: targetGeometries.absolutePosition.add(trayCenter),
+				target: absTrayCenter,
 				targetScale: 1,
 				duration: 30,
-				color: prefsSave.primaryColors[b.color],
-				onFinish: target.startAnimation
+				color: primaryColor,
+				onFinish: () -> {
+					target.startAnimation();
+					addCollisionParticle(absTrayCenter, primaryColor);
+				}
 			}));
 		}
 	}
@@ -95,10 +120,12 @@ class GarbageManager implements IGarbageManager {
 
 		final absCenter = absPos.add(BoardGeometries.CENTER);
 		final trayCenter = geometries.garbageTray.add({x: BoardGeometries.CENTER.x, y: Gelo.HALFSIZE});
-		final absTarget = absPos.add(trayCenter);
+		final absTrayCenter = absPos.add(trayCenter);
 
 		for (b in beginners) {
 			final absBegin = absPos.add({x: b.x, y: b.y});
+
+			final primaryColor = prefsSave.primaryColors[b.color];
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
 				particleManager: particleManager,
@@ -106,11 +133,14 @@ class GarbageManager implements IGarbageManager {
 				begin: absBegin,
 				beginScale: scale,
 				control: absCenter,
-				target: absTarget,
+				target: absTrayCenter,
 				targetScale: scale,
 				duration: 30,
-				color: prefsSave.primaryColors[b.color],
-				onFinish: startAnimation
+				color: primaryColor,
+				onFinish: () -> {
+					startAnimation();
+					addCollisionParticle(absTrayCenter, primaryColor);
+				}
 			}));
 		}
 	}
@@ -133,7 +163,7 @@ class GarbageManager implements IGarbageManager {
 		final absTargetTrayCenter = targetGeometries.absolutePosition.add(targetTrayCenter);
 
 		for (b in beginners) {
-			final color = prefsSave.primaryColors[b.color];
+			final primaryColor = prefsSave.primaryColors[b.color];
 			final absBegin = absPos.add({x: b.x, y: b.y});
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
@@ -145,9 +175,11 @@ class GarbageManager implements IGarbageManager {
 				target: absTrayCenter,
 				targetScale: scale,
 				duration: 30,
-				color: prefsSave.primaryColors[b.color],
+				color: primaryColor,
 				onFinish: () -> {
 					startAnimation();
+
+					addCollisionParticle(absTrayCenter, primaryColor);
 
 					particleManager.add(FRONT, GarbageBulletParticle.create({
 						particleManager: particleManager,
@@ -158,8 +190,11 @@ class GarbageManager implements IGarbageManager {
 						target: absTargetTrayCenter,
 						targetScale: targetGeometries.scale,
 						duration: 20,
-						color: color,
-						onFinish: target.startAnimation
+						color: primaryColor,
+						onFinish: () -> {
+							target.startAnimation();
+							addCollisionParticle(absTargetTrayCenter, primaryColor);
+						}
 					}));
 				}
 			}));
