@@ -157,10 +157,18 @@ class ChainSimulator {
 
 		field.setSpriteVariations();
 
+		// Check for All Clear
+		final bottomRow = field.totalRows - 1;
+		var allClear = true;
+
+		field.customForEach(bottomRow, bottomRow - 1, (_, _, _) -> {
+			allClear = false;
+		});
+
 		pushStep(new EndSimStep({
 			chain: latestChainCounter,
 			fieldSnapshot: field.copy(),
-			chainInfo: new ChainInfo(links)
+			chainInfo: new ChainInfo(links, allClear)
 		}));
 	}
 

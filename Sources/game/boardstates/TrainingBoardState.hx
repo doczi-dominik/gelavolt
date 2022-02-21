@@ -41,8 +41,6 @@ class TrainingBoardState extends StandardBoardState {
 		infoState.saveSplitCategory();
 
 		if (!field.isEmpty(field.centerColumnIndex, field.outerRows)) {
-			canTriggerAllClear = false;
-
 			eraseField();
 			garbageManager.clear();
 			infoState.resetCurrentSplitStatistics();
@@ -106,14 +104,12 @@ class TrainingBoardState extends StandardBoardState {
 		copyFromSnapshot();
 
 		geloGroup.isVisible = false;
-		canTriggerAllClear = false;
 
 		initSimStepState();
 	}
 
 	public function nextGroup() {
 		geloGroup.isVisible = false;
-		canTriggerAllClear = false;
 
 		lockGroup();
 	}

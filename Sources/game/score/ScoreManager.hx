@@ -163,7 +163,6 @@ class ScoreManager {
 			updateChainFormula();
 	}
 
-	// TODO: Suppy orientation in constr.
 	public function render(g: Graphics, y: Float, alpha: Float) {
 		var scoreX = switch (orientation) {
 			case LEFT: BoardGeometries.WIDTH - scoreTextWidth;

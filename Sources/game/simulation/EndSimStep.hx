@@ -22,6 +22,7 @@ class EndSimStep extends SimulationStep {
 
 		g.fontSize = SimulationStep.CARD_FONT_SIZE;
 		g.drawString('Chain: $chain', 12, y + cardRow(1));
-		// TODO: Display values from ChainInfo
+		g.drawString('Total Garbage: ${chainInfo.totalGarbage}', 12, y + cardRow(2));
+		g.drawString('All Clear: ${chainInfo.endsInAllClear}', 12, y + cardRow(3));
 	}
 }

@@ -7,13 +7,13 @@ class ChainInfo {
 	public final chainLength: Int;
 	public final endsInAllClear: Bool;
 
-	public function new(links: Array<LinkInfo>) {
+	public function new(links: Array<LinkInfo>, endsInAllClear: Bool) {
 		this.links = links;
 
 		if (links.length == 0) {
 			totalGarbage = 0;
 			chainLength = 0;
-			endsInAllClear = false;
+			this.endsInAllClear = false;
 
 			return;
 		}
@@ -23,6 +23,6 @@ class ChainInfo {
 		totalGarbage = lastLink.accumulatedGarbage;
 		chainLength = lastLink.chain;
 
-		endsInAllClear = false; // TODO
+		this.endsInAllClear = endsInAllClear;
 	}
 }
