@@ -387,7 +387,7 @@ class GeloGroup {
 
 		var collisionOccured = false;
 
-		while (y <= nextY) {
+		while (y < nextY) {
 			final cellCoords = field.screenToCell(x, y + Gelo.HALFSIZE - 1);
 
 			if (!checkPlacement(cellCoords.x, cellCoords.y, rotationID)) {
