@@ -15,8 +15,13 @@ import kha.graphics2.Graphics;
 #if sys
 import kha.Window;
 #end
+#if js
+import js.Browser;
+#end
 
 class PauseMenu extends Menu {
+	static inline final DISCORD_INVITE = "https://discord.gg/wsWArpAFJK";
+
 	final prefsSave: PrefsSave;
 	final pauseMediator: PauseMediator;
 
@@ -136,6 +141,16 @@ class PauseMenu extends Menu {
 				description: ["Leave GelaVolt"],
 				callback: () -> {
 					Sys.exit(0);
+				}
+			}),
+			#end
+
+			#if js
+			new ButtonWidget({
+				title: "Official Discord",
+				description: ["Join The Official", "Development Server", "For GelaVolt!", "", DISCORD_INVITE],
+				callback: () -> {
+					Browser.window.open(DISCORD_INVITE);
 				}
 			})
 			#end
