@@ -361,6 +361,22 @@ class StandardBoardState implements IBoardState {
 			allClearManager.startAnimation();
 		}
 
+		if (currentEndStep.isLastLinkPowerful) {
+			final chain = currentEndStep.chain;
+
+			if (chain == 1) {
+				scoreManager.displayActionText("THORN", Magenta);
+			}
+
+			if (chain == 2) {
+				scoreManager.displayActionText("HELLFIRE", Color.fromValue(0xFFFF1744));
+			}
+
+			if (chain == 3) {
+				scoreManager.displayActionText("KILLER ICE", Cyan);
+			}
+		}
+
 		copyFromSnapshot();
 
 		state = SIM_STEP(END);
