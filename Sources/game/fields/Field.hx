@@ -52,6 +52,12 @@ class Field {
 				} else {
 					dest.rawSet(x, y, src.get(x, y).copy());
 				}
+
+				if (src.isMarkerEmpty(x, y)) {
+					dest.clearMarker(x, y);
+				} else {
+					dest.rawSetMarker(x, y, src.getMarker(x, y).copy());
+				}
 			}
 		}
 	}
@@ -59,6 +65,7 @@ class Field {
 	final prefsSave: PrefsSave;
 
 	var data: Vector<Vector<FieldGelo>>;
+	var markers: Vector<Vector<IFieldMarker>>;
 
 	public var columns(default, null): Int;
 	public var playAreaRows(default, null): Int;
@@ -93,6 +100,10 @@ class Field {
 		data[y][x] = gelo;
 	}
 
+	inline function rawSetMarker(x: Int, y: Int, marker: IFieldMarker) {
+		markers[y][x] = marker;
+	}
+
 	public function createData() {
 		outerRows = hiddenRows + garbageRows;
 		totalRows = playAreaRows + outerRows;
@@ -100,9 +111,15 @@ class Field {
 		centerColumnIndex = Std.int(columns / 2) - 1;
 
 		data = new Vector(totalRows);
+		markers = new Vector(totalRows);
 
 		for (y in 0...totalRows) {
 			data[y] = new Vector(columns);
+			markers[y] = new Vector(columns);
+
+			for (x in 0...columns) {
+				rawSetMarker(x, y, NullFieldMarker.getInstance());
+			}
 		}
 
 		final garbageVels = [];
@@ -135,6 +152,10 @@ class Field {
 		return data[y][x];
 	}
 
+	public function getMarker(x: Int, y: Int): Null<IFieldMarker> {
+		return markers[y][x];
+	}
+
 	public inline function getAtPoint(p: IntPoint) {
 		return get(p.x, p.y);
 	}
@@ -146,6 +167,10 @@ class Field {
 		gelo.y = screenCoords.y;
 
 		rawSet(x, y, gelo);
+	}
+
+	public function setMarker(x: Int, y: Int, marker: IFieldMarker) {
+		rawSetMarker(x, y, getMarker(x, y).onSet(marker.copy()));
 	}
 
 	public function newGelo(x: Int, y: Int, color: GeloColor, lockInGarbage: Bool) {
@@ -192,6 +217,10 @@ class Field {
 		data[y][x] = null;
 	}
 
+	public function clearMarker(x: Int, y: Int) {
+		rawSetMarker(x, y, NullFieldMarker.getInstance());
+	}
+
 	public function clearAll() {
 		forEach((_, x, y) -> {
 			clear(x, y);
@@ -200,6 +229,10 @@ class Field {
 
 	inline public function isEmpty(x: Int, y: Int) {
 		return get(x, y) == null;
+	}
+
+	inline public function isMarkerEmpty(x: Int, y: Int) {
+		return getMarker(x, y) == NullFieldMarker.getInstance();
 	}
 
 	inline public function isEmptyAtPoint(p: IntPoint) {
@@ -414,6 +447,19 @@ class Field {
 	}
 
 	public function render(g: Graphics, g4: Graphics4, alpha: Float) {
+		for (y in 0...totalRows) {
+			for (x in 0...columns) {
+				if (isMarkerEmpty(x, y))
+					continue;
+
+				final screenCoords = cellToScreen(x, y);
+				final screenX = screenCoords.x - Gelo.HALFSIZE;
+				final screenY = screenCoords.y - Gelo.HALFSIZE;
+
+				getMarker(x, y).render(g, screenX, screenY);
+			}
+		}
+
 		forEach((gelo, x, y) -> {
 			gelo.renderAtOwnPosition(g, g4, alpha);
 		});

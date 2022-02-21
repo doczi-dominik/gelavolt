@@ -75,7 +75,7 @@ class EditingBoardState implements IBoardState {
 
 		selectedIndex = 0;
 
-		mode = Gelos;
+		mode = GELOS;
 	}
 
 	function moveCursor(deltaX: Int, deltaY: Int) {
@@ -89,7 +89,7 @@ class EditingBoardState implements IBoardState {
 	}
 
 	function changeIndex(delta: Int) {
-		final modulo = (mode == Gelos) ? COLORS.length : markers.length;
+		final modulo = (mode == GELOS) ? COLORS.length : markers.length;
 
 		selectedIndex = Std.int(Utils.negativeMod(selectedIndex + delta, modulo));
 	}
@@ -99,21 +99,25 @@ class EditingBoardState implements IBoardState {
 	}
 
 	function set() {
-		if (mode == Gelos) {
-			field.newGelo(cursorX, cursorY, COLORS[selectedIndex], false);
-			field.setSpriteVariations();
-
-			modifyChain();
-
-			return;
+		switch (mode) {
+			case GELOS:
+				field.newGelo(cursorX, cursorY, COLORS[selectedIndex], false);
+				field.setSpriteVariations();
+			case MARKERS:
+				field.setMarker(cursorX, cursorY, markers[selectedIndex]);
 		}
 
-		// field.setMarker(cursorX, cursorY, markers[selectedIndex]);
+		modifyChain();
 	}
 
 	function clear() {
-		field.clear(cursorX, cursorY);
-		field.setSpriteVariations();
+		switch (mode) {
+			case GELOS:
+				field.clear(cursorX, cursorY);
+				field.setSpriteVariations();
+			case MARKERS:
+				field.clearMarker(cursorX, cursorY);
+		}
 
 		modifyChain();
 	}
@@ -129,13 +133,12 @@ class EditingBoardState implements IBoardState {
 		final displayX = geloDisplay.x;
 		final displayY = geloDisplay.y;
 
-		if (mode == Gelos) {
-			Gelo.renderStatic(g, displayX, displayY, COLORS[selectedIndex], NONE);
-
-			return;
+		switch (mode) {
+			case GELOS:
+				Gelo.renderStatic(g, displayX, displayY, COLORS[selectedIndex], NONE);
+			case MARKERS:
+				markers[selectedIndex].render(g, displayX, displayY);
 		}
-
-		markers[selectedIndex].render(g, displayX, displayY);
 	}
 
 	public function clearField() {
