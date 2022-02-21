@@ -79,7 +79,6 @@ class StandardBoardState implements IBoardState {
 	var currentPopStep: Null<PopSimStep>;
 	var currentEndStep: Null<EndSimStep>;
 
-	var canTriggerAllClear: Bool;
 	var canDropGarbage: Bool;
 
 	var state: InnerState;
@@ -112,7 +111,6 @@ class StandardBoardState implements IBoardState {
 		targetBorderColor = White;
 		borderColorT = 15;
 
-		canTriggerAllClear = false;
 		canDropGarbage = true;
 
 		beginChainSimulation();
@@ -355,21 +353,13 @@ class StandardBoardState implements IBoardState {
 	function initEndStepHandling() {
 		beforeEnd();
 
-		garbageManager.confirmGarbage(currentEndStep.chainInfo.totalGarbage);
+		final chainInfo = currentEndStep.chainInfo;
 
-		// Check for All Clear
-		final bottomRow = field.totalRows - 1;
-		var noGelos = true;
+		garbageManager.confirmGarbage(chainInfo.totalGarbage);
 
-		field.customForEach(bottomRow, bottomRow - 1, (_, _, _) -> {
-			noGelos = false;
-		});
-
-		if (noGelos && canTriggerAllClear) {
+		if (chainInfo.endsInAllClear) {
 			allClearManager.startAnimation();
 		}
-
-		canTriggerAllClear = true;
 
 		copyFromSnapshot();
 
