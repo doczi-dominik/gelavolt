@@ -99,21 +99,25 @@ class EditingBoardState implements IBoardState {
 	}
 
 	function set() {
-		if (mode == Gelos) {
-			field.newGelo(cursorX, cursorY, COLORS[selectedIndex], false);
-			field.setSpriteVariations();
-
-			modifyChain();
-
-			return;
+		switch (mode) {
+			case Gelos:
+				field.newGelo(cursorX, cursorY, COLORS[selectedIndex], false);
+				field.setSpriteVariations();
+			case Markers:
+				field.setMarker(cursorX, cursorY, markers[selectedIndex]);
 		}
 
-		// field.setMarker(cursorX, cursorY, markers[selectedIndex]);
+		modifyChain();
 	}
 
 	function clear() {
-		field.clear(cursorX, cursorY);
-		field.setSpriteVariations();
+		switch (mode) {
+			case Gelos:
+				field.clear(cursorX, cursorY);
+				field.setSpriteVariations();
+			case Markers:
+				field.clearMarker(cursorX, cursorY);
+		}
 
 		modifyChain();
 	}
