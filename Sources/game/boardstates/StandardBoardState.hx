@@ -126,7 +126,13 @@ class StandardBoardState implements IBoardState {
 	}
 
 	function beginChainSimulation() {
-		chainSim.simulate(field.copy(), allClearManager.sendAllClearBonus, scoreManager.dropBonus, queue.currentIndex);
+		chainSim.simulate({
+			groupData: queue.getCurrent(),
+			field: field.copy(),
+			sendAllClearBonus: allClearManager.sendAllClearBonus,
+			dropBonus: scoreManager.dropBonus,
+			groupIndex: queue.currentIndex
+		});
 
 		copyFromSnapshot();
 

@@ -1,10 +1,20 @@
 package game.simulation;
 
+import game.gelogroups.GeloGroupData;
 import game.rules.Rule;
 import game.garbage.trays.GarbageTray;
 import game.fields.Field;
 import game.fields.FieldPopInfo;
 import utils.Utils.intClamp;
+
+@:structInit
+private class SimOptions {
+	public final field: Field;
+	public final sendAllClearBonus: Bool;
+	public final dropBonus: Float;
+	public final groupIndex: Int;
+	public final groupData: GeloGroupData;
+}
 
 class ChainSimulator {
 	final rule: Rule;
@@ -80,19 +90,23 @@ class ChainSimulator {
 		return popInfo;
 	}
 
-	function sim(field: Field, sendsAllClearBonus: Bool, dropBonus: Float, groupIndex: Int) {
+	function sim(opts: SimOptions) {
+		final field = opts.field;
+		final sendsAllClearBonus = opts.sendAllClearBonus;
+
 		final links: Array<LinkInfo> = [];
 
 		var lastRemainder = 0.0;
 		var currentACBonus = sendsAllClearBonus;
-		var currentDropBonus = dropBonus;
+		var currentDropBonus = opts.dropBonus;
 
 		pushStep(new BeginSimStep({
+			groupData: opts.groupData,
 			chain: latestChainCounter,
 			fieldSnapshot: field.copy(),
 			sendsAllClearBonus: sendsAllClearBonus,
-			dropBonus: dropBonus,
-			groupIndex: groupIndex
+			dropBonus: opts.dropBonus,
+			groupIndex: opts.groupIndex
 		}));
 
 		while (true) {
@@ -177,11 +191,11 @@ class ChainSimulator {
 		viewIndex = intClamp(0, viewIndex + delta, steps.length - 1);
 	}
 
-	public function simulate(field: Field, sendsAllClearBonus: Bool, dropBonus: Float, groupIndex: Int) {
+	public function simulate(opts: SimOptions) {
 		latestChainCounter = 0;
 		latestGarbageCounter = 0;
 		viewIndex = stepIndex;
-		sim(field, sendsAllClearBonus, dropBonus, groupIndex);
+		sim(opts);
 	}
 
 	public function clear() {
@@ -247,7 +261,13 @@ class ChainSimulator {
 			groupIndex = -1;
 		}
 
-		sim(field, sendsAllClearBonus, dropBonus, groupIndex);
+		sim({
+			groupData: null,
+			groupIndex: groupIndex,
+			field: field,
+			sendAllClearBonus: sendsAllClearBonus,
+			dropBonus: dropBonus,
+		});
 	}
 
 	inline public function getViewedStep() {
