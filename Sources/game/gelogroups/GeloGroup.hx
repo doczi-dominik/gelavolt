@@ -201,7 +201,7 @@ class GeloGroup {
 			field: workField,
 			sendAllClearBonus: false,
 			dropBonus: 0,
-			groupIndex: -1
+			groupIndex: null
 		});
 
 		field.forEach((gelo, _, _) -> {

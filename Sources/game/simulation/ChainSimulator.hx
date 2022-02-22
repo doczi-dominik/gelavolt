@@ -242,7 +242,7 @@ class ChainSimulator {
 	public function modify(field: Field) {
 		var sendsAllClearBonus: Bool;
 		var dropBonus: Float;
-		var groupIndex: Int;
+		var groupIndex: Null<Int>;
 
 		editViewed();
 
@@ -258,7 +258,7 @@ class ChainSimulator {
 		} else {
 			sendsAllClearBonus = false;
 			dropBonus = 0;
-			groupIndex = -1;
+			groupIndex = null;
 		}
 
 		sim({

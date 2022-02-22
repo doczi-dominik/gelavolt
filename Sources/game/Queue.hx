@@ -22,8 +22,8 @@ class Queue {
 		return groups[Std.int(Utils.negativeMod(index, groups.length))];
 	}
 
-	public function setIndex(index: Int) {
-		if (index == -1)
+	public function setIndex(index: Null<Int>) {
+		if (index == null)
 			return;
 
 		currentIndex = index;

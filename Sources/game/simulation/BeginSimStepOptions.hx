@@ -8,5 +8,5 @@ class BeginSimStepOptions extends SimulationStepOptions {
 
 	public final sendsAllClearBonus: Bool;
 	public final dropBonus: Float;
-	public final groupIndex: Int;
+	public final groupIndex: Null<Int>;
 }
