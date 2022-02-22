@@ -418,6 +418,8 @@ class GeloGroup {
 			}
 
 			graceT++;
+		} else if (softDrop) {
+			scoreManager.addDropBonus();
 		}
 
 		return false;
