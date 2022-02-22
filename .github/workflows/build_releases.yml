@@ -31,7 +31,7 @@ jobs:
     - name: Kha Setup
       uses: actions/checkout@v2
       with:
-        reposityory: Kode/Kha
+        repository: Kode/Kha
         path: kha
         submodules: recursive
     - name: Checkout GelaVolt
