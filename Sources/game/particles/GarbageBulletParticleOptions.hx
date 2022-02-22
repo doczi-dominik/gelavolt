@@ -5,7 +5,7 @@ import utils.Point;
 
 @:structInit
 class GarbageBulletParticleOptions {
-	public final particleManager: IParticleManager;
+	public final particleManager: ParticleManager;
 	public final layer: ParticleLayer;
 
 	public final begin: Point;

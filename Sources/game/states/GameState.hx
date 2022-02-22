@@ -4,13 +4,13 @@ import game.rules.MarginTimeManager;
 import game.ui.PauseMenu;
 import input.IInputDeviceManager;
 import kha.graphics4.ConstantLocation;
-import game.particles.IParticleManager;
+import game.particles.ParticleManager;
 import game.boardmanagers.IBoardManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 
 final class GameState {
-	final particleManager: IParticleManager;
+	final particleManager: ParticleManager;
 	final boardManager: IBoardManager;
 	final marginManager: MarginTimeManager;
 	final pauseMenu: PauseMenu;

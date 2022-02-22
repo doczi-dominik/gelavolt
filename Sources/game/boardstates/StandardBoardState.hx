@@ -11,7 +11,7 @@ import game.gelos.Gelo;
 import game.screens.GameScreen;
 import kha.Color;
 import game.particles.GeloPopParticle;
-import game.particles.IParticleManager;
+import game.particles.ParticleManager;
 import game.ChainCounter;
 import game.gelos.GeloColor;
 import game.rules.AnimationsType;
@@ -48,7 +48,7 @@ class StandardBoardState implements IBoardState {
 	final gameScreen: GameScreen;
 	final rng: Random;
 	final geometries: BoardGeometries;
-	final particleManager: IParticleManager;
+	final particleManager: ParticleManager;
 
 	final geloGroup: GeloGroup;
 	final queue: Queue;

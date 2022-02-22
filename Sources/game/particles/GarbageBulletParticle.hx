@@ -26,7 +26,7 @@ class GarbageBulletParticle implements IParticle {
 		return p;
 	}
 
-	final particleManager: IParticleManager;
+	final particleManager: ParticleManager;
 	final layer: ParticleLayer;
 
 	final begin: Point;

@@ -12,7 +12,7 @@ import game.gelos.Gelo;
 import game.geometries.BoardGeometries;
 import utils.Point;
 import game.particles.GarbageBulletParticle;
-import game.particles.IParticleManager;
+import game.particles.ParticleManager;
 import kha.graphics2.Graphics;
 import game.gelos.GeloPoint;
 import game.rules.Rule;
@@ -21,7 +21,7 @@ class GarbageManager implements IGarbageManager {
 	final rule: Rule;
 	final rng: Random;
 	final prefsSave: PrefsSave;
-	final particleManager: IParticleManager;
+	final particleManager: ParticleManager;
 	final geometries: BoardGeometries;
 	final tray: GarbageTray;
 	final target: GarbageTargetMediator;

@@ -2,7 +2,7 @@ package game.particles;
 
 import kha.graphics2.Graphics;
 
-class ParticleManager implements IParticleManager {
+class ParticleManager {
 	final backParticles: Array<IParticle> = [];
 	final frontParticles: Array<IParticle> = [];
 
