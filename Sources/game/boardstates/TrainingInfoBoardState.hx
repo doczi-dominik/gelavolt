@@ -21,6 +21,7 @@ import kha.Assets;
 import kha.Font;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
+import utils.Utils.shadowDrawString;
 
 using StringTools;
 
@@ -201,14 +202,13 @@ class TrainingInfoBoardState implements IBoardState {
 	}
 
 	function renderSplitPercentage(g: Graphics, x: Float, y: Float, color: Color, value: Int) {
-		g.color = color;
-		g.drawString('$value% '.lpad(" ", 5), x, y);
+		shadowDrawString(g, 3, Black, color, '$value% '.lpad(" ", 5), x, y);
 	}
 
 	function renderSplitStatistics(g: Graphics, title: String, y: Float, splitCounter: Int, great: Int, okay: Int, slow: Int) {
 		final titleWidth = font.width(TITLE_FONT_SIZE, title);
 
-		g.drawString(title, 0, y);
+		shadowDrawString(g, 3, Black, White, title, 0, y);
 
 		if (splitCounter == 0) {
 			renderSplitPercentage(g, titleWidth, y, Green, 0);
@@ -228,17 +228,18 @@ class TrainingInfoBoardState implements IBoardState {
 	function renderGameInfo(g: Graphics, alpha: Float) {
 		g.fontSize = TITLE_FONT_SIZE;
 
-		g.drawString('Chain: $chain / $chainLength', 0, gameRow(-3));
-		g.drawString('Remainder: $linkRemainder', 0, gameRow(0));
+		shadowDrawString(g, 3, Black, White, 'Chain: $chain / $chainLength', 0, gameRow(-3));
 
-		g.drawString('Damage: $chainDamage / $totalDamage', 0, gameRow(1));
+		shadowDrawString(g, 3, Black, White, 'Remainder: $linkRemainder', 0, gameRow(0));
+
+		shadowDrawString(g, 3, Black, White, 'Damage: $chainDamage / $totalDamage', 0, gameRow(1));
 
 		// Font is not monospace ;(
 		renderSplitStatistics(g, "Splits (ALL):  ", gameRow(3), overallSplitCounter, overallGreatSplits, overallOkaySplits, overallSlowSplits);
 
 		renderSplitStatistics(g, "Splits (NOW): ", gameRow(4), currentSplitCounter, currentGreatSplits, currentOkaySplits, currentSlowSplits);
 
-		switch (getSplitCategory()) {
+		final splitColor = switch (getSplitCategory()) {
 			case GREAT:
 				g.color = Green;
 			case OKAY:
@@ -247,27 +248,27 @@ class TrainingInfoBoardState implements IBoardState {
 				g.color = Red;
 		}
 
-		g.drawString('$splitT'.lpad(" ", 3), 0, gameRow(5));
+		shadowDrawString(g, 3, Black, splitColor, '$splitT'.lpad(" ", 3), 0, gameRow(5));
 		g.fillRect(64, gameRow(5), splitT * 4, 32);
 
 		g.color = White;
 
-		g.drawString('Chain Standard Advantage: $chainAdvantage', 0, gameRow(8));
+		shadowDrawString(g, 3, Black, White, 'Chain Standard Advantage: $chainAdvantage', 0, gameRow(8));
 
 		chainAdvantageDisplay.render(g, 0, gameRow(9), alpha);
 
-		g.drawString('To Counter: $toCounterChain ($counterDifference remains)', 0, gameRow(11));
+		shadowDrawString(g, 3, Black, White, 'To Counter: $toCounterChain ($counterDifference remains)', 0, gameRow(11));
 
 		afterCounterDisplay.render(g, 0, gameRow(12), alpha);
 
 		final targetPoints = marginManager.targetPoints;
 
-		g.drawString('Target Points: $targetPoints', 0, gameRow(14));
-		g.drawString('Margin Time: ${Std.int(marginManager.marginTime / 60)}', 0, gameRow(15));
+		shadowDrawString(g, 3, Black, White, 'Target Points: $targetPoints', 0, gameRow(14));
+		shadowDrawString(g, 3, Black, White, 'Margin Time: ${Std.int(marginManager.marginTime / 60)}', 0, gameRow(15));
 
 		final dropBonus = Std.int(playerScoreManager.dropBonus);
 
-		g.drawString('Drop bonus: $dropBonus (${Std.int(dropBonus / targetPoints)} garbo)', 0, gameRow(16));
+		shadowDrawString(g, 3, Black, White, 'Drop bonus: $dropBonus (${Std.int(dropBonus / targetPoints)} garbo)', 0, gameRow(16));
 
 		if (trainingSave.autoAttack) {
 			final autoAttackString = switch (autoAttackState) {
@@ -275,9 +276,9 @@ class TrainingInfoBoardState implements IBoardState {
 				case SENDING: 'Auto-Attack SENDING: $autoAttackMaxChain-CHAIN!';
 			}
 
-			g.drawString(autoAttackString, 0, gameRow(17));
+			shadowDrawString(g, 3, Black, White, autoAttackString, 0, gameRow(17));
 		} else {
-			g.drawString("Auto-Attack DISABLED", 0, gameRow(17));
+			shadowDrawString(g, 3, Black, White, "Auto-Attack DISABLED", 0, gameRow(17));
 		}
 	}
 
@@ -305,7 +306,7 @@ class TrainingInfoBoardState implements IBoardState {
 		}
 
 		g.fontSize = CARD_FONT_SIZE;
-		g.drawString('${viewIndex + 1} / ${steps.length}', 0, BoardGeometries.HEIGHT);
+		shadowDrawString(g, 3, Black, White, '${viewIndex + 1} / ${steps.length}', 0, BoardGeometries.HEIGHT);
 	}
 
 	public function resetAutoAttackWaitingState() {
