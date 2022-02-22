@@ -196,7 +196,13 @@ class GeloGroup {
 		}
 
 		chainSim.clear();
-		chainSim.simulate(workField, false, 0, -1);
+		chainSim.simulate({
+			groupData: null,
+			field: workField,
+			sendAllClearBonus: false,
+			dropBonus: 0,
+			groupIndex: null
+		});
 
 		field.forEach((gelo, _, _) -> {
 			gelo.willTriggerChain = false;

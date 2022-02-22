@@ -1,7 +1,7 @@
 package ui;
 
+import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import game.actions.ActionCategory;
-import game.actions.MenuActions;
 import input.InputDeviceManager;
 import kha.Assets;
 import kha.Font;
@@ -75,7 +75,7 @@ class Menu {
 			var str = "";
 
 			for (key in d.actions) {
-				str += '${InputDeviceManager.keyCodeToString[mappings[key].keyboardInput]}/';
+				str += '${KEY_CODE_TO_STRING[mappings[key].keyboardInput]}/';
 			}
 
 			str = str.substring(0, str.length - 1);
