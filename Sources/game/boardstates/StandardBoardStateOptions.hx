@@ -14,7 +14,7 @@ import game.garbage.IGarbageManager;
 import game.previews.IPreview;
 import game.all_clear.AllClearManager;
 import game.score.ScoreManager;
-import game.particles.IParticleManager;
+import game.particles.ParticleManager;
 import kha.math.Random;
 
 @:structInit
@@ -25,7 +25,7 @@ class StandardBoardStateOptions {
 	public final gameScreen: GameScreen;
 	public final rng: Random;
 	public final geometries: BoardGeometries;
-	public final particleManager: IParticleManager;
+	public final particleManager: ParticleManager;
 
 	public final geloGroup: GeloGroup;
 	public final queue: Queue;

@@ -14,6 +14,7 @@ class FieldPopInfo {
 
 	public function addClear(color: GeloColor, x: Int, y: Int) {
 		clears.push({color: color, x: x, y: y});
-		clearsByColor[color]++;
+		if (color.isColored())
+			clearsByColor[color]++;
 	}
 }

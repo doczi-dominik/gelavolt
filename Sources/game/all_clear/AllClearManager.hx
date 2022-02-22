@@ -1,6 +1,5 @@
 package game.all_clear;
 
-import game.mediators.BorderColorMediator;
 import game.particles.PixelFloatParticle;
 import game.particles.SmallStarParticle;
 import game.geometries.BoardGeometries;
@@ -18,7 +17,6 @@ class AllClearManager {
 	final rng: Random;
 	final geometries: BoardGeometries;
 	final particleManager: ParticleManager;
-	final borderColorMediator: BorderColorMediator;
 
 	var targetY: Float;
 	var boardCenterX: Float;
@@ -43,7 +41,6 @@ class AllClearManager {
 		rng = opts.rng;
 		geometries = opts.geometries;
 		particleManager = opts.particleManager;
-		borderColorMediator = opts.borderColorMediator;
 
 		targetY = BoardGeometries.HEIGHT / 5;
 		boardCenterX = BoardGeometries.CENTER.x;
@@ -70,7 +67,6 @@ class AllClearManager {
 		scaleX = 1;
 		showAnimation = true;
 		sendAllClearBonus = true;
-		borderColorMediator.changeColor(Orange);
 
 		if (rng.GetUpTo(Std.int(Math.max(20 / acCounter, 1))) == 1) {
 			setACText("RINTO", "MOMENT");
@@ -85,7 +81,6 @@ class AllClearManager {
 		scaleX = 0;
 		showAnimation = false;
 		sendAllClearBonus = false;
-		borderColorMediator.changeColor(White);
 	}
 
 	function updateRisingPhase() {

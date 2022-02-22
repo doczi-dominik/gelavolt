@@ -1,5 +1,8 @@
 package game.screens;
 
+import kha.System;
+import kha.math.Random;
+import game.backgrounds.NestBackground;
 import game.states.GameState;
 import game.gamestatebuilders.TrainingGameStateBuilder;
 import kha.math.FastMatrix3;
@@ -22,6 +25,8 @@ class GameScreen implements IScreen {
 		return v;
 	}
 
+	final background: NestBackground;
+
 	var translationX: Float;
 	var translationY: Float;
 	var scale: Float;
@@ -30,7 +35,10 @@ class GameScreen implements IScreen {
 
 	public var currentFrame(get, never): Int;
 
-	function new() {}
+	function new() {
+		final seed = Std.int(System.time * 1000000);
+		background = new NestBackground(new Random(seed));
+	}
 
 	function get_currentFrame() {
 		return gameState.currentFrame;
@@ -52,10 +60,13 @@ class GameScreen implements IScreen {
 	}
 
 	public function update() {
+		background.update();
 		gameState.update();
 	}
 
 	public function render(g: Graphics, g4: kha.graphics4.Graphics, alpha: Float) {
+		background.render(g);
+
 		final transform = FastMatrix3.translation(translationX, translationY).multmat(FastMatrix3.scale(scale, scale));
 		g.pushTransformation(transform);
 
