@@ -52,7 +52,8 @@ class TrainingBoardState extends StandardBoardState {
 					initSimStepState();
 				case NEW:
 					regenerateQueue();
-					initSimStepState();
+					chainSim.clear();
+					beginChainSimulation();
 			}
 		}
 	}

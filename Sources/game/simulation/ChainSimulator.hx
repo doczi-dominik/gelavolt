@@ -293,4 +293,8 @@ class ChainSimulator {
 	public function viewLast() {
 		viewIndex = steps.length - 1;
 	}
+
+	public function reset() {
+		steps.resize(0);
+	}
 }
