@@ -23,7 +23,6 @@ class PixelFloatParticle implements IParticle {
 		return p;
 	}
 
-	final opts: PixelFloatParticleOptions;
 	final dx: Float;
 	final dy: Float;
 	final maxT: Int;
@@ -41,7 +40,6 @@ class PixelFloatParticle implements IParticle {
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: PixelFloatParticleOptions) {
-		this.opts = opts;
 		dx = opts.dx;
 		dy = opts.dy;
 		maxT = opts.maxT;

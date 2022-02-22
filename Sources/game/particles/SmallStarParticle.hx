@@ -16,7 +16,6 @@ class SmallStarParticle implements IParticle {
 		return p;
 	}
 
-	final opts: SmallStarParticleOptions;
 	final x: Float;
 	final y: Float;
 	final color: Color;
@@ -26,7 +25,6 @@ class SmallStarParticle implements IParticle {
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: SmallStarParticleOptions) {
-		this.opts = opts;
 		x = opts.x;
 		y = opts.y;
 		color = opts.color;

@@ -24,7 +24,6 @@ class GeloPopParticle implements IParticle {
 		return p;
 	}
 
-	final opts: GeloPopParticleOptions;
 	final dx: Float;
 	final dyIncrement: Float;
 	final color: Color;
@@ -41,8 +40,6 @@ class GeloPopParticle implements IParticle {
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GeloPopParticleOptions) {
-		this.opts = opts;
-
 		dx = opts.dx;
 		dy = opts.dy;
 		dyIncrement = opts.dyIncrement;
