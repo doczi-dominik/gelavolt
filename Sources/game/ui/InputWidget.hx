@@ -1,10 +1,10 @@
 package game.ui;
 
+import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import game.actions.ActionCategory;
 import game.actions.MenuActions;
 import ui.ControlDisplay;
 import game.actions.Action;
-import input.InputDeviceManager;
 import kha.graphics2.Graphics;
 import ui.Menu;
 import ui.IListWidget;
@@ -59,7 +59,7 @@ class InputWidget implements IListWidget {
 
 		inputManager.renderGamepadIcon(g, offsetX, y, gpInput, gpIconSize);
 
-		final kbString = InputDeviceManager.keyCodeToString[kbInput];
+		final kbString = KEY_CODE_TO_STRING[kbInput];
 
 		g.drawString(' / $kbString', offsetX + gpIconSize, y);
 	}
