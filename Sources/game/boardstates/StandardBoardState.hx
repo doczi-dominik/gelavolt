@@ -331,7 +331,6 @@ class StandardBoardState implements IBoardState {
 		}
 
 		allClearManager.stopAnimation();
-		changeBorderColor(White);
 
 		final linkInfo = currentPopStep.linkInfo;
 
@@ -360,7 +359,6 @@ class StandardBoardState implements IBoardState {
 
 		if (currentEndStep.endsInAllClear) {
 			allClearManager.startAnimation();
-			changeBorderColor(Orange);
 		}
 
 		if (currentEndStep.isLastLinkPowerful) {

@@ -5,6 +5,7 @@ import game.rules.MarginTimeManager;
 import game.rules.Rule;
 import game.states.GameState;
 import game.mediators.GarbageTargetMediator;
+import game.mediators.BorderColorMediator;
 import game.mediators.PauseMediator;
 import save_data.Profile;
 import game.simulation.ChainSimulator;
@@ -54,6 +55,7 @@ class TrainingGameStateBuilder {
 	var marginManager: MarginTimeManager;
 
 	var pauseMediator: PauseMediator;
+	var playerBorderColorMediator: BorderColorMediator;
 	var playerTargetMediator: GarbageTargetMediator;
 	var infoTargetMediator: GarbageTargetMediator;
 
@@ -109,6 +111,10 @@ class TrainingGameStateBuilder {
 
 	inline function buildPauseMediator() {
 		pauseMediator = new PauseMediator();
+	}
+
+	inline function buildPlayerBorderColorMediator() {
+		playerBorderColorMediator = new BorderColorMediator();
 	}
 
 	inline function buildPlayerTargetMediator() {
@@ -205,6 +211,7 @@ class TrainingGameStateBuilder {
 			rng: rng,
 			particleManager: particleManager,
 			geometries: BoardGeometries.LEFT,
+			borderColorMediator: playerBorderColorMediator
 		});
 	}
 
@@ -344,6 +351,7 @@ class TrainingGameStateBuilder {
 
 	inline function wireMediators() {
 		pauseMediator.gameState = gameState;
+		playerBorderColorMediator.boardState = playState;
 		playerTargetMediator.garbageManager = infoGarbageManager;
 		infoTargetMediator.garbageManager = playerGarbageManager;
 	}
@@ -374,6 +382,7 @@ class TrainingGameStateBuilder {
 		buildMarginManager();
 
 		buildPauseMediator();
+		buildPlayerBorderColorMediator();
 		buildPlayerTargetMediator();
 		buildInfoTargetMediator();
 
