@@ -12,8 +12,8 @@ private class SimOptions {
 	public final field: Field;
 	public final sendAllClearBonus: Bool;
 	public final dropBonus: Float;
-	public final groupIndex: Int;
-	public final groupData: GeloGroupData;
+	public final groupIndex: Null<Int>;
+	public final groupData: Null<GeloGroupData>;
 }
 
 class ChainSimulator {
