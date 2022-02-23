@@ -93,7 +93,7 @@ jobs:
       working-directory: gv
       run: node ../kha/make -t osx -g metal --compile
     - name: Zip Release
-      run: 7z a -t zip macos_x64.zip gv/build/osx
+      run: 7z a -tzip macos_x64.zip gv/build/osx
     - name: Upload Artifacts
       uses: svenstaro/upload-release-action@2.2.1
       with:
