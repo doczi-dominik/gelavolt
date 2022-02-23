@@ -21,6 +21,7 @@ import js.Browser;
 
 class PauseMenu extends Menu {
 	static inline final DISCORD_INVITE = "https://discord.gg/wsWArpAFJK";
+	static inline final RELEASES_URL = "https://github.com/doczi-dominik/gelavolt/releases";
 
 	final prefsSave: PrefsSave;
 	final pauseMediator: PauseMediator;
@@ -147,6 +148,17 @@ class PauseMenu extends Menu {
 
 			#if js
 			new ButtonWidget({
+				title: "Download Desktop Version",
+				description: [
+					"Download GelaVolt's",
+					"Desktop Version For",
+					"Better Performance",
+					"And Offline Play"
+				],
+				callback: () -> {
+					Browser.window.open(RELEASES_URL);
+				}
+			}), new ButtonWidget({
 				title: "Official Discord",
 				description: ["Join The Official", "Development Server", "For GelaVolt!", "", DISCORD_INVITE],
 				callback: () -> {
