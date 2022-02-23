@@ -50,4 +50,29 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: linux_x64.zip
         tag: latest
+  build-windows:
+    needs: create-release
+    runs-on: windows-latest
+    steps:
+    - name: Kha Setup
+      uses: actions/checkout@v2
+      with:
+        repository: Kode/Kha
+        path: kha
+        submodules: recursive
+    - name: Checkout GelaVolt
+      uses: actions/checkout@v2
+      with:
+        path: gv
+    - name: Compile
+      working-directory: gv
+      run: node ../kha/make -v vs2022 -g direct3d11 --compile
+    - name: Zip Release
+      run: Compress-Archive -Path gv/build/windows windows_x64.zip
+    - name: Upload Artifacts
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: windows_x64.zip
+        tag: latest
         
