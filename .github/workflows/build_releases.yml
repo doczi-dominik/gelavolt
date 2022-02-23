@@ -18,7 +18,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         allowUpdates: true
         prerelease: true
-        tag: latest
+        tag: ${{ steps.datetime.outputs.datetime }}
         commit: prod
         name: Build v${{ steps.datetime.outputs.datetime }}
   build-linux:
@@ -49,7 +49,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: linux_x64.zip
-        tag: latest
+        tag: ${{ steps.datetime.outputs.datetime }}
   build-windows:
     needs: create-release
     runs-on: windows-latest
@@ -74,7 +74,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: windows_x64.zip
-        tag: latest
+        tag: ${{ steps.datetime.outputs.datetime }}
   build-macos:
     needs: create-release
     runs-on: ubuntu-latest
@@ -99,5 +99,5 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: macos_x64.zip
-        tag: latest
+        tag: ${{ steps.datetime.outputs.datetime }}
         
