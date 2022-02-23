@@ -75,4 +75,29 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: windows_x64.zip
         tag: latest
+  build-macos:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Kha Setup
+      uses: actions/checkout@v2
+      with:
+        repository: Kode/Kha
+        path: kha
+        submodules: recursive
+    - name: Checkout GelaVolt
+      uses: actions/checkout@v2
+      with:
+        path: gv
+    - name: Compile
+      working-directory: gv
+      run: node ../kha/make -t osx -g metal --compile
+    - name: Zip Release
+      run: 7z a -t zip macos_x64.zip gv/build/osx
+    - name: Upload Artifacts
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: macos_x64.zip
+        tag: latest
         
