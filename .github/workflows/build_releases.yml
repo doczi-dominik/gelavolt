@@ -50,6 +50,7 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: linux_x64.zip
         tag: latest
+        overwrite: true
   build-windows:
     needs: create-release
     runs-on: windows-latest
@@ -75,4 +76,5 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: windows_x64.zip
         tag: latest
+        overwrite: true
         
