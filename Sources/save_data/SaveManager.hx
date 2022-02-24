@@ -1,8 +1,12 @@
 package save_data;
 
+import input.InputMapping;
 import haxe.Unserializer;
 import kha.Storage;
 import haxe.Serializer;
+import game.actions.ActionCategory;
+import game.actions.GameActions;
+import game.actions.MenuActions;
 
 class SaveManager {
 	static final PROFILES_FILENAME = "profiles";
@@ -34,11 +38,13 @@ class SaveManager {
 		final unser = new Unserializer(serialized);
 
 		try {
-			final p: Profile = unser.unserialize();
+			while (true) {
+				final p: Profile = unser.unserialize();
 
-			p.setDefaults();
+				p.setDefaults();
 
-			profiles.push(p);
+				profiles.push(p);
+			}
 		} catch (_) {}
 
 		if (profiles.length == 0) {
@@ -51,6 +57,21 @@ class SaveManager {
 
 	public static function saveDefaultProfiles() {
 		profiles.push(new Profile());
+
+		final p2 = new Profile();
+		final m = p2.input.mappings;
+
+		m[MENU][PAUSE] = ({keyboardInput: Delete, gamepadInput: OPTIONS} : InputMapping);
+
+		m[GAME][SHIFT_LEFT] = ({keyboardInput: J, gamepadInput: DPAD_LEFT} : InputMapping);
+		m[GAME][SHIFT_RIGHT] = ({keyboardInput: L, gamepadInput: DPAD_RIGHT} : InputMapping);
+		m[GAME][SOFT_DROP] = ({keyboardInput: K, gamepadInput: DPAD_DOWN} : InputMapping);
+		m[GAME][HARD_DROP] = ({keyboardInput: I, gamepadInput: DPAD_UP} : InputMapping);
+		m[GAME][ROTATE_LEFT] = ({keyboardInput: O, gamepadInput: CROSS} : InputMapping);
+		m[GAME][ROTATE_RIGHT] = ({keyboardInput: P, gamepadInput: CIRCLE} : InputMapping);
+
+		profiles.push(p2);
+
 		saveProfiles();
 	}
 
