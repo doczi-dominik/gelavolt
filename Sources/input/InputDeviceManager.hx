@@ -28,9 +28,8 @@ class InputDeviceManager implements IInputDeviceManager {
 	}
 
 	final counters: Map<Action, Int> = [];
-
-	var keyboard: Keyboard;
-	var gamepad: Gamepad;
+	final keyboard: Null<Keyboard>;
+	final gamepad: Null<Gamepad>;
 
 	var actions: Map<Action, Int->Bool>;
 	var keysToActions: Map<KeyCode, Null<Array<Action>>>;
@@ -43,11 +42,16 @@ class InputDeviceManager implements IInputDeviceManager {
 
 	public var isRebinding(default, null): Bool;
 
-	public function new(inputOptions: InputSave, keyboardIndex: Int = 0, gamepadIndex: Int = 0) {
+	public function new(inputOptions: InputSave, gamepadIndex: Null<Int>) {
 		this.inputOptions = inputOptions;
 
-		keyboard = Keyboard.get(keyboardIndex);
-		gamepad = Gamepad.get(gamepadIndex);
+		if (gamepadIndex == null) {
+			keyboard = Keyboard.get();
+			gamepad = null;
+		} else {
+			keyboard = null;
+			gamepad = Gamepad.get(gamepadIndex);
+		}
 
 		isRebinding = false;
 
@@ -181,31 +185,41 @@ class InputDeviceManager implements IInputDeviceManager {
 
 	function addListeners() {
 		try {
-			keyboard.notify(keyDownListener, keyUpListener);
-			keyboard.notify(keyboardLastDeviceListener);
+			if (keyboard != null)
+				keyboard.notify(keyDownListener, keyUpListener);
+			if (keyboard != null)
+				keyboard.notify(keyboardLastDeviceListener);
 		} catch (e) {}
 
 		try {
-			gamepad.notify(null, buttonListener);
-			gamepad.notify(null, gamepadLastDeviceListener);
+			if (gamepad != null)
+				gamepad.notify(null, buttonListener);
+			if (gamepad != null)
+				gamepad.notify(null, gamepadLastDeviceListener);
 		} catch (e) {}
 	}
 
 	function removeListeners() {
 		try {
-			keyboard.remove(keyDownListener, keyUpListener);
-			keyboard.remove(keyboardLastDeviceListener);
+			if (keyboard != null)
+				keyboard.remove(keyDownListener, keyUpListener);
+			if (keyboard != null)
+				keyboard.remove(keyboardLastDeviceListener);
 		} catch (e) {}
 
 		try {
-			gamepad.remove(null, buttonListener);
-			gamepad.remove(null, gamepadLastDeviceListener);
+			if (gamepad != null)
+				gamepad.remove(null, buttonListener);
+			if (gamepad != null)
+				gamepad.remove(null, gamepadLastDeviceListener);
 		} catch (e) {}
 	}
 
 	function removeRebindListeners() {
-		keyboard.remove(keyRebindListener);
-		gamepad.remove(null, buttonRebindListener);
+		if (keyboard != null)
+			keyboard.remove(keyRebindListener);
+		if (gamepad != null)
+			gamepad.remove(null, buttonRebindListener);
 	}
 
 	function holdActionHandler(value: Int) {
@@ -239,11 +253,15 @@ class InputDeviceManager implements IInputDeviceManager {
 
 		removeListeners();
 
-		keyRebindListener = rebindKeyListener.bind(action, category);
-		buttonRebindListener = rebindButtonListener.bind(action, category);
+		if (keyboard != null) {
+			keyRebindListener = rebindKeyListener.bind(action, category);
+			keyboard.notify(keyRebindListener);
+		}
 
-		keyboard.notify(keyRebindListener);
-		gamepad.notify(null, buttonRebindListener);
+		if (gamepad != null) {
+			buttonRebindListener = rebindButtonListener.bind(action, category);
+			gamepad.notify(null, buttonRebindListener);
+		}
 	}
 
 	public function renderGamepadIcon(g: Graphics, x: Float, y: Float, sprite: Geometry, scale: Float) {

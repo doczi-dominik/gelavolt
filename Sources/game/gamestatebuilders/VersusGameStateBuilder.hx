@@ -184,7 +184,7 @@ class VersusGameStateBuilder {
 	}
 
 	inline function buildLeftInputManager() {
-		leftInputManager = new InputDeviceManager(leftProfile.input);
+		leftInputManager = new InputDeviceManager(leftProfile.input, null);
 	}
 
 	inline function buildLeftActionBuffer() {
@@ -270,7 +270,7 @@ class VersusGameStateBuilder {
 	}
 
 	inline function buildRightInputManager() {
-		rightInputManager = new InputDeviceManager(rightProfile.input);
+		rightInputManager = new InputDeviceManager(rightProfile.input, null);
 	}
 
 	inline function buildRightActionBuffer() {
