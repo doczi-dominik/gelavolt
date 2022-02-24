@@ -130,7 +130,7 @@ class ListMenuPage implements IMenuPage {
 			if (widget == null)
 				break;
 
-			final widgetY = y + widgetFontSize * i + widgetBottomPadding;
+			final widgetY = y + (widgetFontHeight + widgetBottomPadding) * i;
 
 			widget.render(g, x, widgetY, index == widgetIndex);
 		}
