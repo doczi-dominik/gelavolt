@@ -1,10 +1,11 @@
 package game.screens;
 
+import save_data.SaveManager;
+import game.gamestatebuilders.VersusGameStateBuilder;
 import kha.System;
 import kha.math.Random;
 import game.backgrounds.NestBackground;
 import game.states.GameState;
-import game.gamestatebuilders.TrainingGameStateBuilder;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import Screen.IScreen;
@@ -18,9 +19,12 @@ class GameScreen implements IScreen {
 
 		ScaleManager.addOnResizeCallback(v.updateScaling);
 
-		final gameStateBuiler = new TrainingGameStateBuilder(v).setPrimaryProfile(opts.primaryProfile).setRNGSeed(opts.rngSeed).setRule(opts.rule);
-
-		v.gameState = gameStateBuiler.build();
+		v.gameState = new VersusGameStateBuilder(v).setPrimaryProfile(opts.primaryProfile)
+			.setRNGSeed(opts.rngSeed)
+			.setRule(opts.rule)
+			.setLeftProfile(SaveManager.getProfile(0))
+			.setRightProfile(SaveManager.getProfile(1))
+			.build();
 
 		return v;
 	}
