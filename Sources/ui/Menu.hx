@@ -1,5 +1,6 @@
 package ui;
 
+import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import game.actions.ActionCategory;
 import input.InputDeviceManager;
@@ -11,7 +12,7 @@ import kha.graphics2.Graphics;
 
 class Menu {
 	static inline final HEADER_FONT_SIZE = 128;
-	static inline final CONTROLS_FONT_SIZE = 56;
+	static inline final CONTROLS_FONT_SIZE = 64;
 	static inline final WARNING_FONT_SIZE = 24;
 	static inline final PADDING = 64;
 	static final WARNING = [
@@ -47,11 +48,13 @@ class Menu {
 	}
 
 	function resize() {
-		headerFontSize = Std.int(HEADER_FONT_SIZE * ScaleManager.smallerScale);
+		final ssc = ScaleManager.smallerScale;
+
+		headerFontSize = Std.int(HEADER_FONT_SIZE * ssc);
 		headerFontHeight = headerFont.height(headerFontSize);
-		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ScaleManager.smallerScale);
+		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ssc);
 		controlsFontHeight = controlsFont.height(controlsFontSize);
-		warningFontSize = Std.int(WARNING_FONT_SIZE * ScaleManager.smallerScale);
+		warningFontSize = Std.int(WARNING_FONT_SIZE * ssc);
 		warningFontHeight = controlsFont.height(warningFontSize);
 		warningFontWidths = [];
 
@@ -59,7 +62,7 @@ class Menu {
 			warningFontWidths.push(controlsFont.width(warningFontSize, line));
 		}
 
-		padding = PADDING * ScaleManager.smallerScale;
+		padding = PADDING * ssc;
 
 		for (p in pages) {
 			p.onResize();
@@ -83,7 +86,7 @@ class Menu {
 			// Hackerman but it beats having to calculate with scaling
 			str += ' : ${d.description}    ';
 
-			final strWidth = g.font.width(controlsFontSize, str);
+			final strWidth = controlsFont.width(controlsFontSize, str);
 
 			g.drawString(str, x, ScaleManager.height - headerFontHeight);
 
@@ -92,9 +95,9 @@ class Menu {
 	}
 
 	function renderGamepadControls(g: Graphics) {
+		final ssc = ScaleManager.smallerScale;
 		final mappings = inputManager.inputOptions.mappings[MENU];
 
-		final gamepadIconSize = 64 * ScaleManager.smallerScale;
 		final y = ScaleManager.height - headerFontHeight;
 
 		var x = padding;
@@ -103,12 +106,15 @@ class Menu {
 			var str = "";
 
 			for (key in d.actions) {
-				inputManager.renderGamepadIcon(g, x, y - 4, mappings[key].gamepadInput, gamepadIconSize);
-				x += gamepadIconSize;
+				final spr = GAMEPAD_SPRITE_COORDINATES[mappings[key].gamepadInput];
+
+				inputManager.renderGamepadIcon(g, x, y, spr, controlsFontHeight / spr.height);
+
+				x += spr.width * ssc;
 			}
 
 			// Hackerman but it beats having to calculate with scaling
-			str += ' : ${d.description}    ';
+			str += ': ${d.description}    ';
 
 			final strWidth = g.font.width(controlsFontSize, str);
 

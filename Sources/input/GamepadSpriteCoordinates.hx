@@ -1,9 +1,90 @@
 package input;
 
-import utils.Point;
+import utils.Geometry;
 
-final GAMEPAD_SPRITE_COORDINATES: Map<GamepadButton, Point> = [
-	CROSS => {x: 368, y: 4}, CIRCLE => {x: 296, y: 4}, SQUARE => {x: 512, y: 4}, TRIANGLE => {x: 440, y: 4}, L1 => {x: 724, y: 4}, R1 => {x: 796, y: 4},
-	L2 => {x: 580, y: 4}, R2 => {x: 652, y: 4}, SHARE => {x: 868, y: 4}, OPTIONS => {x: 940, y: 4}, DPAD_UP => {x: 4, y: 4}, DPAD_DOWN => {x: 148, y: 4},
-	DPAD_LEFT => {x: 220, y: 4}, DPAD_RIGHT => {x: 76, y: 4}
+final GAMEPAD_SPRITE_COORDINATES: Map<GamepadButton, Geometry> = [
+	CROSS => {
+		x: 0,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	CIRCLE => {
+		x: 64,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	SQUARE => {
+		x: 128,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	TRIANGLE => {
+		x: 192,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	L1 => {
+		x: 256,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	R1 => {
+		x: 320,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	L2 => {
+		x: 384,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	R2 => {
+		x: 448,
+		y: 0,
+		width: 64,
+		height: 64
+	},
+	SHARE => {
+		x: 384,
+		y: 64,
+		width: 128,
+		height: 64
+	},
+	OPTIONS => {
+		x: 256,
+		y: 64,
+		width: 128,
+		height: 64
+	},
+	DPAD_UP => {
+		x: 192,
+		y: 128,
+		width: 64,
+		height: 64
+	},
+	DPAD_DOWN => {
+		x: 256,
+		y: 128,
+		width: 64,
+		height: 64
+	},
+	DPAD_LEFT => {
+		x: 64,
+		y: 128,
+		width: 64,
+		height: 64
+	},
+	DPAD_RIGHT => {
+		x: 128,
+		y: 128,
+		width: 64,
+		height: 64
+	}
 ];

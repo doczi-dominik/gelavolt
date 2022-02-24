@@ -1,10 +1,10 @@
 package input;
 
+import utils.Geometry;
 import game.actions.ActionInputTypes;
 import game.actions.ActionCategory;
 import save_data.InputSave;
 import kha.Assets;
-import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import kha.graphics2.Graphics;
 import game.actions.Action;
 import kha.input.Keyboard;
@@ -246,9 +246,10 @@ class InputDeviceManager implements IInputDeviceManager {
 		gamepad.notify(null, buttonRebindListener);
 	}
 
-	public function renderGamepadIcon(g: Graphics, x: Float, y: Float, button: GamepadButton, size: Float) {
-		final subImageCoords = GAMEPAD_SPRITE_COORDINATES[button];
+	public function renderGamepadIcon(g: Graphics, x: Float, y: Float, sprite: Geometry, scale: Float) {
+		final w = sprite.width;
+		final h = sprite.height;
 
-		g.drawScaledSubImage(Assets.images.Buttons, subImageCoords.x, subImageCoords.y, 64, 64, x, y, size, size);
+		g.drawScaledSubImage(Assets.images.Buttons, sprite.x, sprite.y, w, h, x, y, w * scale, h * scale);
 	}
 }
