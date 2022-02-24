@@ -96,11 +96,11 @@ jobs:
       run: node ../kha/make -t osx -g metal --compile
     - name: Zip Release
       working-directory: gv/build
-      run: 7z a -tzip macos_x64.zip osx
+      run: 7z a -tzip osx_x64.zip osx
     - name: Upload Artifacts
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: macos_x64.zip
+        file: gv/build/osx_x64.zip
         tag: ${{ needs.create-release.outputs.datetime }}
         
