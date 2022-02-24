@@ -1,5 +1,6 @@
 package;
 
+import versus_setup.VersusSetupScreen;
 import save_data.SaveManager;
 import input.InputDeviceManager;
 import Screen.GlobalScreenSwitcher;
@@ -85,11 +86,7 @@ class Main {
 
 				ScaleManager.resize(System.windowWidth(), System.windowHeight());
 
-				GlobalScreenSwitcher.switchScreen(GameScreen.create({
-					rngSeed: Std.int(System.time * 1000000),
-					rule: {},
-					primaryProfile: primaryProfile,
-				}));
+				GlobalScreenSwitcher.switchScreen(new VersusSetupScreen());
 
 				lastT = Scheduler.realTime();
 
