@@ -94,9 +94,9 @@ jobs:
     - name: Compile
       working-directory: gv
       run: node ../kha/make -t osx -g metal --compile
-    - name: Zip Release
-      working-directory: gv/build
-      run: 7z a -tzip osx_x64.zip osx
+    - name: Move Binary and Zip Release
+      working-directory: gv
+      run: mv build/osx-build/build/Release/Project\ GelaVolt.app build/osx && cd build && 7z a -tzip osx_x64.zip osx
     - name: Upload Artifacts
       uses: svenstaro/upload-release-action@2.2.1
       with:
