@@ -79,7 +79,7 @@ jobs:
         tag: ${{ needs.create-release.outputs.datetime }}
   build-macos:
     needs: create-release
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
     - name: Kha Setup
       uses: actions/checkout@v2
@@ -95,7 +95,8 @@ jobs:
       working-directory: gv
       run: node ../kha/make -t osx -g metal --compile
     - name: Zip Release
-      run: 7z a -tzip macos_x64.zip gv/build/osx
+      working-directory: gv/build
+      run: 7z a -tzip macos_x64.zip osx
     - name: Upload Artifacts
       uses: svenstaro/upload-release-action@2.2.1
       with:
