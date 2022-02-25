@@ -1,5 +1,6 @@
 package versus_setup;
 
+import kha.Font;
 import kha.Assets;
 import input.InputMapping;
 import save_data.InputSave;
@@ -11,15 +12,32 @@ import game.actions.MenuActions;
 import game.actions.ActionCategory;
 
 class VersusSetupScreen implements IScreen {
-	final leftInputSave = new InputSave();
-	final rightInputSave = new InputSave();
+	static inline final HEADER_FONT_SIZE = 80;
+
+	final headerFont: Font;
+
+	final leftBoardString: String;
+	final rightBoardString: String;
+
+	final leftInputSave: InputSave;
+	final rightInputSave: InputSave;
+
 	final controllers: Array<InputManagerIcon>;
 
-	final unassigned: InputSlot;
-	final leftSlot: InputSlot;
-	final rightSlot: InputSlot;
+	var headerFontSize: Int;
+
+	var leftBoardTextCenter: Float;
+	var rightBoardTextCenter: Float;
+
+	var leftSlot: Null<InputManagerIcon>;
+	var rightSlot: Null<InputManagerIcon>;
 
 	public function new() {
+		headerFont = Assets.fonts.DigitalDisco;
+
+		leftBoardString = "LEFT BOARD";
+		rightBoardString = "RIGHT BOARD";
+
 		leftInputSave = new InputSave();
 		leftInputSave.setDefaults();
 
@@ -31,54 +49,78 @@ class VersusSetupScreen implements IScreen {
 		rightInputSave = new InputSave();
 		rightInputSave.setDefaults();
 
-		unassigned = new InputSlot(10);
-		leftSlot = new InputSlot(1);
-		rightSlot = new InputSlot(1);
-
 		controllers = [
 			new InputManagerIcon({
 				name: "Keyboard (WASD)",
 				device: KEYBOARD,
 				inputManager: new InputDeviceManager(leftInputSave, null),
-				defaultSlot: unassigned
 			}),
 			new InputManagerIcon({
 				name: "Keyboard (Arrow)",
 				device: KEYBOARD,
 				inputManager: new InputDeviceManager(rightInputSave, null),
-				defaultSlot: unassigned
 			}),
 		];
 
+		ScaleManager.addOnResizeCallback(resize);
+
+		leftSlot = null;
+		rightSlot = null;
+	}
+
+	function resize() {
+		headerFontSize = Std.int(HEADER_FONT_SIZE * ScaleManager.smallerScale);
+
+		leftBoardTextCenter = headerFont.width(headerFontSize, leftBoardString) / 2;
+		rightBoardTextCenter = headerFont.width(headerFontSize, rightBoardString) / 2;
+
 		for (c in controllers) {
-			unassigned.assign(c);
+			c.resize();
 		}
 	}
 
 	public function update() {
 		for (c in controllers) {
 			if (c.getLeftAction()) {
-				if (c.slot == rightSlot) {
-					unassigned.assign(c);
-				} else if (leftSlot.canAssign()) {
-					leftSlot.assign(c);
+				if (c.slot == UNASSIGNED && leftSlot == null) {
+					c.slot = LEFT;
+					leftSlot = c;
+				} else if (c.slot == RIGHT) {
+					c.slot = UNASSIGNED;
+					rightSlot = null;
 				}
 			} else if (c.getRightAction()) {
-				if (c.slot == leftSlot) {
-					unassigned.assign(c);
-				} else if (rightSlot.canAssign()) {
-					rightSlot.assign(c);
+				if (c.slot == UNASSIGNED && rightSlot == null) {
+					c.slot = RIGHT;
+					rightSlot = c;
+				} else if (c.slot == LEFT) {
+					c.slot = UNASSIGNED;
+					leftSlot = null;
 				}
 			}
 		}
 	}
 
 	public function render(g: Graphics, g4: Graphics4, alpha: Float) {
-		g.font = Assets.fonts.Pixellari;
-		g.fontSize = 64;
+		g.font = headerFont;
+		g.fontSize = headerFontSize;
 
-		leftSlot.render(g, 0);
-		unassigned.render(g, 640);
-		rightSlot.render(g, 1280);
+		final quarterW = ScaleManager.width / 4;
+		final eightH = ScaleManager.height / 8;
+
+		g.drawString(leftBoardString, quarterW - leftBoardTextCenter, eightH);
+		g.drawString(rightBoardString, quarterW * 3 - rightBoardTextCenter, eightH);
+
+		for (i in 0...controllers.length) {
+			final c = controllers[i];
+
+			if (c.slot == UNASSIGNED)
+				c.render(g, eightH + (i + 2) * c.height);
+		}
+
+		if (leftSlot != null)
+			leftSlot.render(g, eightH + leftSlot.height * 2);
+		if (rightSlot != null)
+			rightSlot.render(g, eightH + rightSlot.height * 2);
 	}
 }

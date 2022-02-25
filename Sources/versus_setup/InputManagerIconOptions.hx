@@ -8,5 +8,4 @@ class InputManagerIconOptions {
 	public final name: String;
 	public final device: InputDevice;
 	public final inputManager: InputDeviceManager;
-	public final defaultSlot: InputSlot;
 }
