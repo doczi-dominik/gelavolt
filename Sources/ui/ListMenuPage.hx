@@ -38,6 +38,7 @@ class ListMenuPage implements IMenuPage {
 
 		font = Assets.fonts.Pixellari;
 
+		widgets = [];
 		widgetIndex = 0;
 		minIndex = 0;
 	}
@@ -96,6 +97,7 @@ class ListMenuPage implements IMenuPage {
 
 		for (w in widgets) {
 			w.onShow(menu);
+			w.onResize();
 		}
 
 		onSelect();
