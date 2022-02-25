@@ -39,6 +39,7 @@ class InputDeviceManager implements IInputDeviceManager {
 	var buttonRebindListener: (Int, Float) -> Void;
 
 	public final inputOptions: InputSave;
+	public final isGamepad: Bool;
 
 	public var isRebinding(default, null): Bool;
 
@@ -48,9 +49,11 @@ class InputDeviceManager implements IInputDeviceManager {
 		if (gamepadIndex == null) {
 			keyboard = Keyboard.get();
 			gamepad = null;
+			isGamepad = false;
 		} else {
 			keyboard = null;
 			gamepad = Gamepad.get(gamepadIndex);
+			isGamepad = true;
 		}
 
 		isRebinding = false;

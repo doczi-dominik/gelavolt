@@ -1,16 +1,14 @@
 package game.ui;
 
-import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
-import game.actions.ActionCategory;
-import game.actions.MenuActions;
+import kha.graphics2.Graphics;
 import ui.ControlDisplay;
 import game.actions.Action;
-import kha.graphics2.Graphics;
+import game.actions.ActionCategory;
 import ui.Menu;
-import ui.IListWidget;
+import game.actions.MenuActions;
 
-class InputWidget implements IListWidget {
+class KeyboardInputWidget implements IInputWidget {
 	final menu: Menu;
 	final category: ActionCategory;
 
@@ -37,25 +35,13 @@ class InputWidget implements IListWidget {
 		g.color = (isSelected) ? Orange : White;
 
 		if (isRebinding) {
-			g.drawString('Press any key / button for [ $action ]', x, y);
-			g.color = White;
+			g.drawString('Press any key for [ $action ]', x, y);
+		} else {
+			final mapping = menu.inputManager.inputOptions.mappings[category][action];
 
-			return;
+			g.drawString('$action : ${KEY_CODE_TO_STRING[mapping.keyboardInput]}', x, y);
 		}
 
-		final inputManager = menu.inputManager;
-		final mapping = inputManager.inputOptions.mappings[category][action];
-
-		final str = '$action : ${KEY_CODE_TO_STRING[mapping.keyboardInput]} / ';
-		final w = g.font.width(g.fontSize, str);
-		final h = g.font.height(g.fontSize);
-
-		g.drawString(str, x, y);
-
 		g.color = White;
-
-		final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadInput];
-
-		inputManager.renderGamepadIcon(g, x + w, y, spr, h / spr.height);
 	}
 }

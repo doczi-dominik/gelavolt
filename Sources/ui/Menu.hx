@@ -35,7 +35,7 @@ class Menu {
 	var warningFontWidths: Array<Float>;
 
 	public var padding(default, null): Float;
-	public var inputManager(default, null): IInputDeviceManager;
+	public var inputManager(default, null): InputDeviceManager;
 
 	public function new(initialPage: IMenuPage) {
 		pages = new GenericStack();
@@ -124,7 +124,7 @@ class Menu {
 		}
 	}
 
-	public function onShow(inputManager: IInputDeviceManager) {
+	public function onShow(inputManager: InputDeviceManager) {
 		this.inputManager = inputManager;
 
 		pages.first().onShow(this);

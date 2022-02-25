@@ -1,8 +1,8 @@
 package game.states;
 
+import input.InputDeviceManager;
 import game.rules.MarginTimeManager;
 import game.ui.PauseMenu;
-import input.IInputDeviceManager;
 import kha.graphics4.ConstantLocation;
 import game.particles.ParticleManager;
 import game.boardmanagers.IBoardManager;
@@ -18,7 +18,7 @@ final class GameState {
 	final FADE_TO_WHITELocation: ConstantLocation;
 
 	var isPaused: Bool;
-	var pausingInputs: Null<IInputDeviceManager>;
+	var pausingInputs: Null<InputDeviceManager>;
 
 	public var currentFrame(default, null): Int;
 
@@ -33,7 +33,7 @@ final class GameState {
 		currentFrame = 0;
 	}
 
-	public function pause(inputManager: IInputDeviceManager) {
+	public function pause(inputManager: InputDeviceManager) {
 		pauseMenu.onShow(inputManager);
 		isPaused = true;
 	}

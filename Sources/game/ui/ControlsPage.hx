@@ -3,10 +3,8 @@ package game.ui;
 import ui.IListWidget;
 import game.actions.OrderedCategoryKeys;
 import game.actions.ActionCategory;
-import save_data.InputSave;
 import save_data.SaveManager;
 import game.actions.MenuActions;
-import ui.Menu;
 import ui.ListMenuPage;
 
 class ControlsPage extends ListMenuPage {
@@ -19,7 +17,9 @@ class ControlsPage extends ListMenuPage {
 				final widgets: Array<IListWidget> = [];
 
 				for (k in OrderedCategoryKeys[category]) {
-					widgets.push(new InputWidget(menu, category, k));
+					final w = (menu.inputManager.isGamepad) ? new GamepadInputWidget(menu, category, k) : new KeyboardInputWidget(menu, category, k);
+
+					widgets.push(w);
 				}
 
 				return widgets;
@@ -40,7 +40,7 @@ class ControlsPage extends ListMenuPage {
 
 		final inputManager = menu.inputManager;
 
-		final currentWidget = cast(widgets[widgetIndex], InputWidget);
+		final currentWidget = cast(widgets[widgetIndex], IInputWidget);
 
 		if (inputManager.getAction(CONFIRM)) {
 			inputManager.rebind(currentWidget.action, category);

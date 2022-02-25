@@ -1,5 +1,6 @@
 package game.boards;
 
+import input.InputDeviceManager;
 import game.mediators.PauseMediator;
 import game.actions.MenuActions;
 import game.boardstates.IBoardState;
@@ -22,7 +23,7 @@ class SingleStateBoard implements IBoard {
 
 	public function update() {
 		if (inputManager.getAction(PAUSE)) {
-			pauseMediator.pause(inputManager);
+			pauseMediator.pause(cast(inputManager, InputDeviceManager));
 		}
 
 		actionBuffer.update();
