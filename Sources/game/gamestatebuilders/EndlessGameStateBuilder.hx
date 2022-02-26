@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.boardstates.EndlessBoardState;
 import game.boardmanagers.SingleBoardManager;
 import game.boardmanagers.DualBoardManager;
 import game.previews.VerticalPreview;
@@ -55,7 +56,7 @@ class EndlessGameStateBuilder {
 	var geloGroup: GeloGroup;
 	var allClearManager: AllClearManager;
 
-	var boardState: StandardBoardState;
+	var boardState: EndlessBoardState;
 
 	var board: SingleStateBoard;
 
@@ -172,7 +173,7 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildBoardState() {
-		boardState = new StandardBoardState({
+		boardState = new EndlessBoardState({
 			rule: rule,
 			prefsSave: primaryProfile.prefs,
 			gameScreen: gameScreen,
@@ -189,6 +190,8 @@ class EndlessGameStateBuilder {
 			actionBuffer: actionBuffer,
 			chainCounter: chainCounter,
 			chainSim: chainSim,
+			trainingSave: primaryProfile.training,
+			randomizer: randomizer
 		});
 	}
 

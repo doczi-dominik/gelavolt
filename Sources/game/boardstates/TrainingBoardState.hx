@@ -2,7 +2,6 @@ package game.boardstates;
 
 import game.randomizers.Randomizer;
 import save_data.TrainingSave;
-import game.fields.Field;
 
 class TrainingBoardState extends StandardBoardState {
 	final infoState: TrainingInfoBoardState;

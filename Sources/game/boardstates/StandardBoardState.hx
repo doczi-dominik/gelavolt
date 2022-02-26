@@ -385,7 +385,11 @@ class StandardBoardState implements IBoardState {
 
 		copyFromSnapshot();
 
-		state = SIM_STEP(END);
+		if (!field.isEmpty(field.centerColumnIndex, field.outerRows)) {
+			onLose();
+		} else {
+			state = SIM_STEP(END);
+		}
 
 		afterEnd();
 	}
@@ -442,6 +446,8 @@ class StandardBoardState implements IBoardState {
 		borderColor = Utils.rgbLerp(beginBorderColor, targetBorderColor, borderColorT / 15);
 		borderColorT++;
 	}
+
+	function onLose() {}
 
 	public function changeBorderColor(target: Color) {
 		beginBorderColor = borderColor;
