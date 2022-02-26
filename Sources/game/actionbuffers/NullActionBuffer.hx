@@ -13,8 +13,12 @@ class NullActionBuffer implements IActionBuffer {
 	public var latestAction(default, null): ActionSnapshot;
 
 	function new() {
-		latestAction = new ActionSnapshot();
+		latestAction = ActionSnapshot.fromBitField(0);
 	}
 
 	public function update() {}
+
+	public function exportReplayData() {
+		return new Map<Int, Int>();
+	}
 }
