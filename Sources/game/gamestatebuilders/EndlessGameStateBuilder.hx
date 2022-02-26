@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import game.actionbuffers.IActionBuffer;
+import input.IInputDeviceManager;
 import game.ui.EndlessPauseMenu;
 import game.boardstates.EndlessBoardState;
 import game.boardmanagers.SingleBoardManager;
@@ -37,6 +39,8 @@ class EndlessGameStateBuilder {
 	var primaryProfile: Profile;
 	var rngSeed: Int;
 	var rule: Rule;
+	var inputManager: IInputDeviceManager;
+	var actionBuffer: IActionBuffer;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -52,8 +56,6 @@ class EndlessGameStateBuilder {
 	var chainCounter: ChainCounter;
 	var field: Field;
 	var queue: Queue;
-	var inputManager: InputDeviceManager;
-	var actionBuffer: LocalActionBuffer;
 	var geloGroup: GeloGroup;
 	var allClearManager: AllClearManager;
 
@@ -134,17 +136,6 @@ class EndlessGameStateBuilder {
 
 	inline function buildQueue() {
 		queue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
-	}
-
-	inline function buildInputManager() {
-		inputManager = new InputDeviceManager(primaryProfile.input);
-	}
-
-	inline function buildActionBuffer() {
-		actionBuffer = new LocalActionBuffer({
-			gameScreen: gameScreen,
-			inputManager: inputManager
-		});
 	}
 
 	inline function buildGeloGroup() {
@@ -250,6 +241,18 @@ class EndlessGameStateBuilder {
 		return this;
 	}
 
+	public function setInputManager(value: InputDeviceManager) {
+		inputManager = value;
+
+		return this;
+	}
+
+	public function setActionBuffer(value: IActionBuffer) {
+		actionBuffer = value;
+
+		return this;
+	}
+
 	public function build() {
 		buildRNG();
 		buildRandomizer();
@@ -265,8 +268,6 @@ class EndlessGameStateBuilder {
 		buildChainCounter();
 		buildField();
 		buildQueue();
-		buildInputManager();
-		buildActionBuffer();
 		buildGeloGroup();
 		buildAllClearManager();
 

@@ -11,6 +11,15 @@ class ReplayActionBuffer implements IActionBuffer {
 	public function new(opts: ReplayActionBufferOptions) {
 		gameScreen = opts.gameScreen;
 		actions = opts.actions;
+
+		latestAction = {
+			shiftLeft: false,
+			shiftRight: false,
+			rotateLeft: false,
+			rotateRight: false,
+			softDrop: false,
+			hardDrop: false
+		};
 	}
 
 	public function update() {

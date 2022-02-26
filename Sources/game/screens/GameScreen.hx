@@ -1,5 +1,9 @@
 package game.screens;
 
+import game.actionbuffers.ReplayActionBuffer;
+import haxe.Unserializer;
+import game.actionbuffers.LocalActionBuffer;
+import input.InputDeviceManager;
 import game.gamestatebuilders.EndlessGameStateBuilder;
 import kha.System;
 import kha.math.Random;
@@ -9,6 +13,11 @@ import game.gamestatebuilders.TrainingGameStateBuilder;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import Screen.IScreen;
+#if js
+import js.html.DragEvent;
+import js.Browser;
+import js.html.FileReader;
+#end
 
 class GameScreen implements IScreen {
 	public static final PLAY_AREA_DESIGN_WIDTH = 1440;
@@ -19,10 +28,33 @@ class GameScreen implements IScreen {
 
 		ScaleManager.addOnResizeCallback(v.updateScaling);
 
-		v.gameState = new EndlessGameStateBuilder(v).setPrimaryProfile(opts.primaryProfile)
+		final primaryProfile = opts.primaryProfile;
+		final inputManager = new InputDeviceManager(primaryProfile.input);
+
+		final gsb = new EndlessGameStateBuilder(v).setPrimaryProfile(primaryProfile)
 			.setRNGSeed(opts.rngSeed)
 			.setRule(opts.rule)
-			.build();
+			.setInputManager(inputManager);
+
+		v.gameState = gsb.setActionBuffer(new LocalActionBuffer({
+			gameScreen: v,
+			inputManager: inputManager
+		})).build();
+
+		#if kha_html5
+		Browser.window.ondrop = (ev: DragEvent) -> {
+			final fr = new FileReader();
+
+			fr.readAsText(ev.dataTransfer.files.item(0));
+
+			fr.onload = () -> {
+				v.gameState = gsb.setActionBuffer(new ReplayActionBuffer({
+					gameScreen: v,
+					actions: Unserializer.run(fr.result)
+				})).build();
+			}
+		}
+		#end
 
 		return v;
 	}
