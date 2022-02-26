@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.ui.EndlessPauseMenu;
 import game.boardstates.EndlessBoardState;
 import game.boardmanagers.SingleBoardManager;
 import game.boardmanagers.DualBoardManager;
@@ -60,7 +61,7 @@ class EndlessGameStateBuilder {
 
 	var board: SingleStateBoard;
 
-	var pauseMenu: PauseMenu;
+	var pauseMenu: EndlessPauseMenu;
 
 	var gameState: GameState;
 
@@ -205,9 +206,10 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildPauseMenu() {
-		pauseMenu = new PauseMenu({
+		pauseMenu = new EndlessPauseMenu({
 			pauseMediator: pauseMediator,
-			prefsSave: primaryProfile.prefs
+			prefsSave: primaryProfile.prefs,
+			trainingSave: primaryProfile.training
 		});
 	}
 
