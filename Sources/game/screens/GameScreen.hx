@@ -1,5 +1,6 @@
 package game.screens;
 
+import game.gamestatebuilders.EndlessGameStateBuilder;
 import kha.System;
 import kha.math.Random;
 import game.backgrounds.NestBackground;
@@ -18,9 +19,10 @@ class GameScreen implements IScreen {
 
 		ScaleManager.addOnResizeCallback(v.updateScaling);
 
-		final gameStateBuiler = new TrainingGameStateBuilder(v).setPrimaryProfile(opts.primaryProfile).setRNGSeed(opts.rngSeed).setRule(opts.rule);
-
-		v.gameState = gameStateBuiler.build();
+		v.gameState = new EndlessGameStateBuilder(v).setPrimaryProfile(opts.primaryProfile)
+			.setRNGSeed(opts.rngSeed)
+			.setRule(opts.rule)
+			.build();
 
 		return v;
 	}
