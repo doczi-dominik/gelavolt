@@ -1,5 +1,11 @@
 package game.ui;
 
+import haxe.Serializer;
+import js.html.URL;
+import js.html.File;
+import js.Browser;
+import game.actionbuffers.IActionBuffer;
+import ui.ButtonWidget;
 import save_data.SaveManager;
 import save_data.ClearOnXMode;
 import ui.OptionListWidget;
@@ -9,9 +15,11 @@ import save_data.TrainingSave;
 
 class EndlessPauseMenu extends PauseMenu {
 	final trainingSave: TrainingSave;
+	final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
 		trainingSave = opts.trainingSave;
+		actionBuffer = opts.actionBuffer;
 
 		super(opts);
 	}
@@ -43,6 +51,22 @@ class EndlessPauseMenu extends PauseMenu {
 						SaveManager.saveProfiles();
 					}
 				}),
+				new ButtonWidget({
+					title: "Save Replay",
+					description: [],
+					callback: () -> {
+						final data = actionBuffer.exportReplayData();
+
+						final file = new File([Serializer.run(data)], "replay.gvr");
+						final uri = URL.createObjectURL(file);
+
+						final el = Browser.document.createAnchorElement();
+
+						el.href = uri;
+						el.setAttribute("download", "replay.gvr");
+						el.click();
+					}
+				})
 			]
 		});
 

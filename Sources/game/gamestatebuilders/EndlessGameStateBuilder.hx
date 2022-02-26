@@ -209,7 +209,8 @@ class EndlessGameStateBuilder {
 		pauseMenu = new EndlessPauseMenu({
 			pauseMediator: pauseMediator,
 			prefsSave: primaryProfile.prefs,
-			trainingSave: primaryProfile.training
+			trainingSave: primaryProfile.training,
+			actionBuffer: actionBuffer
 		});
 	}
 
