@@ -19,6 +19,6 @@ class NullActionBuffer implements IActionBuffer {
 	public function update() {}
 
 	public function exportReplayData() {
-		return new Map<Int, Int>();
+		return new ReplayData();
 	}
 }

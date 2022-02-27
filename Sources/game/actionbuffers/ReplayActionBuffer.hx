@@ -4,7 +4,7 @@ import game.screens.GameScreen;
 
 class ReplayActionBuffer implements IActionBuffer {
 	final gameScreen: GameScreen;
-	final actions: Map<Int, Int>;
+	final actions: ReplayData;
 
 	public var latestAction(default, null): ActionSnapshot;
 
@@ -32,6 +32,6 @@ class ReplayActionBuffer implements IActionBuffer {
 	}
 
 	public function exportReplayData() {
-		return new Map<Int, Int>();
+		return new ReplayData();
 	}
 }

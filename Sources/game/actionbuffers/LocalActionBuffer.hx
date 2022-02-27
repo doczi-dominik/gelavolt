@@ -44,7 +44,7 @@ class LocalActionBuffer implements IActionBuffer {
 	}
 
 	public function exportReplayData() {
-		final data: Map<Int, Int> = [];
+		final data: ReplayData = [];
 
 		for (k => v in actions.keyValueIterator()) {
 			data[k] = v.toBitField();

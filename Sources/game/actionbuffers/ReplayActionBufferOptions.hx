@@ -5,5 +5,5 @@ import game.screens.GameScreen;
 @:structInit
 class ReplayActionBufferOptions {
 	public final gameScreen: GameScreen;
-	public final actions: Map<Int, Int>;
+	public final actions: ReplayData;
 }
