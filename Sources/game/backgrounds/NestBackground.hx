@@ -18,7 +18,7 @@ private class BackgroundParticle {
 
 		randomizeData();
 
-		y += ScaleManager.height / 2;
+		y += ScaleManager.height / 8;
 	}
 
 	function randomizeData() {
