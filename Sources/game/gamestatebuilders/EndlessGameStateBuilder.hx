@@ -217,7 +217,8 @@ class EndlessGameStateBuilder {
 			pauseMediator: pauseMediator,
 			prefsSave: gameMode.profile.prefs,
 			trainingSave: gameMode.profile.training,
-			actionBuffer: actionBuffer
+			actionBuffer: actionBuffer,
+			gameMode: gameMode
 		});
 	}
 

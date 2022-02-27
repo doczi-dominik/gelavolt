@@ -16,11 +16,6 @@ import game.gamestatebuilders.TrainingGameStateBuilder;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import Screen.IScreen;
-#if js
-import js.html.DragEvent;
-import js.Browser;
-import js.html.FileReader;
-#end
 
 class GameScreen implements IScreen {
 	public static final PLAY_AREA_DESIGN_WIDTH = 1440;
@@ -44,23 +39,6 @@ class GameScreen implements IScreen {
 
 				v.gameState = new EndlessGameStateBuilder(v, opts).build();
 		}
-
-		/*
-			#if kha_html5
-			Browser.window.ondrop = (ev: DragEvent) -> {
-				final fr = new FileReader();
-
-				fr.readAsText(ev.dataTransfer.files.item(0));
-
-				fr.onload = () -> {
-					v.gameState = gsb.setActionBuffer(new ReplayActionBuffer({
-						gameScreen: v,
-						actions: Unserializer.run(fr.result)
-					})).build();
-				}
-			}
-			#end
-		 */
 
 		return v;
 	}

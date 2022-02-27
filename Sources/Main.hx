@@ -1,5 +1,9 @@
 package;
 
+import haxe.Unserializer;
+import js.html.FileReader;
+import js.html.DragEvent;
+import js.Browser;
 import game.gamemodes.EndlessGameMode;
 import game.gamemodes.TrainingGameMode;
 import save_data.SaveManager;
@@ -92,6 +96,18 @@ class Main {
 					rule: {},
 					profile: primaryProfile,
 				} : EndlessGameMode)));
+
+				#if kha_html5
+				Browser.window.ondrop = (ev: DragEvent) -> {
+					final fr = new FileReader();
+
+					fr.readAsText(ev.dataTransfer.files.item(0));
+
+					fr.onload = () -> {
+						GlobalScreenSwitcher.switchScreen(GameScreen.create(Unserializer.run(fr.result)));
+					}
+				}
+				#end
 
 				lastT = Scheduler.realTime();
 

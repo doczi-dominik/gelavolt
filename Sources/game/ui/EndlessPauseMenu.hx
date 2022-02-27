@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.gamemodes.EndlessGameMode;
 import haxe.Serializer;
 import js.html.URL;
 import js.html.File;
@@ -14,10 +15,12 @@ import ui.IListWidget;
 import save_data.TrainingSave;
 
 class EndlessPauseMenu extends PauseMenu {
+	final gameMode: EndlessGameMode;
 	final trainingSave: TrainingSave;
 	final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
+		gameMode = opts.gameMode;
 		trainingSave = opts.trainingSave;
 		actionBuffer = opts.actionBuffer;
 
@@ -55,7 +58,7 @@ class EndlessPauseMenu extends PauseMenu {
 					title: "Save Replay",
 					description: [],
 					callback: () -> {
-						final data = actionBuffer.exportReplayData();
+						final data = gameMode.copyWithReplay(actionBuffer.exportReplayData());
 
 						final file = new File([Serializer.run(data)], "replay.gvr");
 						final uri = URL.createObjectURL(file);
