@@ -164,7 +164,7 @@ class EndlessGameStateBuilder {
 			scoreManager: scoreManager,
 			chainSim: new ChainSimulator({
 				rule: gameMode.rule,
-				linkBuilder: NullLinkInfoBuilder.getInstance(),
+				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: GarbageTray.create(prefsSave),
 				accumulatedDisplay: GarbageTray.create(prefsSave)
 			})
@@ -190,7 +190,7 @@ class EndlessGameStateBuilder {
 			particleManager: particleManager,
 			geloGroup: geloGroup,
 			field: field,
-			garbageManager: NullGarbageManager.getInstance(),
+			garbageManager: NullGarbageManager.instance,
 			queue: queue,
 			preview: new VerticalPreview(queue),
 			allClearManager: allClearManager,

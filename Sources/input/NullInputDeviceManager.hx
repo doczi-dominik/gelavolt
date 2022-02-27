@@ -7,9 +7,9 @@ import kha.graphics2.Graphics;
 import game.actions.Action;
 
 class NullInputDeviceManager implements IInputDeviceManager {
-	static var instance: NullInputDeviceManager;
+	public static var instance(get, null): NullInputDeviceManager;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullInputDeviceManager();
 

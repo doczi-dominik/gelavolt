@@ -118,7 +118,7 @@ class Field {
 			markers[y] = new Vector(columns);
 
 			for (x in 0...columns) {
-				rawSetMarker(x, y, NullFieldMarker.getInstance());
+				rawSetMarker(x, y, NullFieldMarker.instance);
 			}
 		}
 
@@ -218,7 +218,7 @@ class Field {
 	}
 
 	public function clearMarker(x: Int, y: Int) {
-		rawSetMarker(x, y, NullFieldMarker.getInstance());
+		rawSetMarker(x, y, NullFieldMarker.instance);
 	}
 
 	public function clearAll() {
@@ -232,7 +232,7 @@ class Field {
 	}
 
 	inline public function isMarkerEmpty(x: Int, y: Int) {
-		return getMarker(x, y) == NullFieldMarker.getInstance();
+		return getMarker(x, y) == NullFieldMarker.instance;
 	}
 
 	inline public function isEmptyAtPoint(p: IntPoint) {

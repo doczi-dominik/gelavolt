@@ -11,7 +11,7 @@ interface IScreen {
  * Handles switching, updating and rendering the current `Screen` object.
  */
 final class GlobalScreenSwitcher {
-	static var currentScreen: IScreen = NullScreen.getInstance();
+	static var currentScreen: IScreen = NullScreen.instance;
 
 	public static function updateCurrent(): Void {
 		currentScreen.update();

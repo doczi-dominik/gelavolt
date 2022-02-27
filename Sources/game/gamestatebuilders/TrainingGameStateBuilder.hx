@@ -199,7 +199,7 @@ class TrainingGameStateBuilder {
 			scoreManager: playerScoreManager,
 			chainSim: new ChainSimulator({
 				rule: rule,
-				linkBuilder: NullLinkInfoBuilder.getInstance(),
+				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: GarbageTray.create(prefsSave),
 				accumulatedDisplay: GarbageTray.create(prefsSave)
 			})
@@ -305,7 +305,7 @@ class TrainingGameStateBuilder {
 		infoBoard = new SingleStateBoard({
 			pauseMediator: pauseMediator,
 			inputManager: playerInputManager,
-			actionBuffer: NullActionBuffer.getInstance(),
+			actionBuffer: NullActionBuffer.instance,
 			state: infoState
 		});
 	}

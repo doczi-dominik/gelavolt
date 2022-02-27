@@ -3,9 +3,9 @@ package game.fields;
 import kha.graphics2.Graphics;
 
 class NullFieldMarker implements IFieldMarker {
-	static var instance: NullFieldMarker;
+	public static var instance(get, null): NullFieldMarker;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullFieldMarker();
 

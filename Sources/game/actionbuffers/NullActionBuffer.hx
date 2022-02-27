@@ -1,9 +1,9 @@
 package game.actionbuffers;
 
 class NullActionBuffer implements IActionBuffer {
-	static var instance: NullActionBuffer;
+	public static var instance(get, null): NullActionBuffer;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullActionBuffer();
 
