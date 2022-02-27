@@ -74,7 +74,7 @@ class EndlessGameStateBuilder {
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSave: gameMode.profile.prefs
+			prefsSave: GameScreen.primaryProfile.prefs
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -111,8 +111,8 @@ class EndlessGameStateBuilder {
 				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(gameMode.profile.prefs),
-			accumulatedDisplay: GarbageTray.create(gameMode.profile.prefs)
+			garbageDisplay: GarbageTray.create(GameScreen.primaryProfile.prefs),
+			accumulatedDisplay: GarbageTray.create(GameScreen.primaryProfile.prefs)
 		});
 	}
 
@@ -122,7 +122,7 @@ class EndlessGameStateBuilder {
 
 	inline function buildField() {
 		field = Field.create({
-			prefsSave: gameMode.profile.prefs,
+			prefsSave: GameScreen.primaryProfile.prefs,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -135,7 +135,7 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildInputManager() {
-		inputManager = new InputDeviceManager(gameMode.profile.input);
+		inputManager = new InputDeviceManager(GameScreen.primaryProfile.input);
 	}
 
 	inline function buildActionBuffer() {
@@ -155,7 +155,7 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildGeloGroup() {
-		final prefsSave = gameMode.profile.prefs;
+		final prefsSave = GameScreen.primaryProfile.prefs;
 
 		geloGroup = new GeloGroup({
 			field: field,
@@ -183,7 +183,7 @@ class EndlessGameStateBuilder {
 	inline function buildBoardState() {
 		boardState = new EndlessBoardState({
 			rule: gameMode.rule,
-			prefsSave: gameMode.profile.prefs,
+			prefsSave: GameScreen.primaryProfile.prefs,
 			gameScreen: gameScreen,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,
@@ -198,7 +198,7 @@ class EndlessGameStateBuilder {
 			actionBuffer: actionBuffer,
 			chainCounter: chainCounter,
 			chainSim: chainSim,
-			trainingSave: gameMode.profile.training,
+			trainingSave: GameScreen.primaryProfile.training,
 			randomizer: randomizer
 		});
 	}
@@ -215,8 +215,8 @@ class EndlessGameStateBuilder {
 	inline function buildPauseMenu() {
 		pauseMenu = new EndlessPauseMenu({
 			pauseMediator: pauseMediator,
-			prefsSave: gameMode.profile.prefs,
-			trainingSave: gameMode.profile.training,
+			prefsSave: GameScreen.primaryProfile.prefs,
+			trainingSave: GameScreen.primaryProfile.training,
 			actionBuffer: actionBuffer,
 			gameMode: gameMode
 		});

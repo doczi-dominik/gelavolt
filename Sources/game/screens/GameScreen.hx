@@ -1,5 +1,6 @@
 package game.screens;
 
+import save_data.Profile;
 import game.gamemodes.IGameMode;
 import game.gamemodes.EndlessGameMode;
 import game.gamemodes.TrainingGameMode;
@@ -21,6 +22,23 @@ class GameScreen implements IScreen {
 	public static final PLAY_AREA_DESIGN_WIDTH = 1440;
 	public static final PLAY_AREA_DESIGN_HEIGHT = 1080;
 
+	/**
+	 * The `primaryProfile` is used for storing session-universal information.
+	 * These can (or will) include: background type, music, personalization
+	 * options and even the input bindings in singleplayer gamemodes. The
+	 * `primaryProfile` field must be set before calling `create()`.
+	 * 
+	 * Previously, `primaryProfile` fields were supplied with every components
+	 * that needed them. During experimenting with replays, I found coupling
+	 * primaryProfile difficult when sharing between hosts since the exact
+	 * same Profile object would have to be constructed on the remote side,
+	 * which is unnecessary.
+	 * 
+	 * Also, decoupling primaryProfile allows for more freedom, e.g.: changing
+	 * the BGM or skin of a recorded replay!
+	 */
+	public static var primaryProfile: Profile;
+
 	public static function create(gameMode: IGameMode) {
 		final v = new GameScreen();
 
@@ -30,10 +48,7 @@ class GameScreen implements IScreen {
 			case TRAINING:
 				final opts = cast(gameMode, TrainingGameMode);
 
-				v.gameState = new TrainingGameStateBuilder(v).setPrimaryProfile(opts.profile)
-					.setRNGSeed(opts.rngSeed)
-					.setRule(opts.rule)
-					.build();
+				v.gameState = new TrainingGameStateBuilder(v).setRNGSeed(opts.rngSeed).setRule(opts.rule).build();
 			case ENDLESS:
 				final opts = cast(gameMode, EndlessGameMode);
 

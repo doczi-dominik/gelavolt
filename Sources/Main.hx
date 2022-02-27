@@ -83,7 +83,7 @@ class Main {
 				Pipelines.init();
 				SaveManager.loadEverything();
 
-				final primaryProfile = SaveManager.getProfile(0);
+				GameScreen.primaryProfile = SaveManager.getProfile(0);
 
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;
@@ -94,7 +94,6 @@ class Main {
 				GlobalScreenSwitcher.switchScreen(GameScreen.create(({
 					rngSeed: Std.int(System.time * 1000000),
 					rule: {},
-					profile: primaryProfile,
 				} : TrainingGameMode)));
 
 				#if kha_html5
