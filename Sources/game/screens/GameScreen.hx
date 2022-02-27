@@ -1,5 +1,8 @@
 package game.screens;
 
+import game.gamemodes.IGameMode;
+import game.gamemodes.EndlessGameMode;
+import game.gamemodes.TrainingGameMode;
 import game.actionbuffers.ReplayActionBuffer;
 import haxe.Unserializer;
 import game.actionbuffers.LocalActionBuffer;
@@ -23,38 +26,52 @@ class GameScreen implements IScreen {
 	public static final PLAY_AREA_DESIGN_WIDTH = 1440;
 	public static final PLAY_AREA_DESIGN_HEIGHT = 1080;
 
-	public static function create(opts: GameScreenOptions) {
+	public static function create(gameMode: IGameMode) {
 		final v = new GameScreen();
 
 		ScaleManager.addOnResizeCallback(v.updateScaling);
 
-		final primaryProfile = opts.primaryProfile;
-		final inputManager = new InputDeviceManager(primaryProfile.input);
+		switch (gameMode.gameMode) {
+			case TRAINING:
+				final opts = cast(gameMode, TrainingGameMode);
 
-		final gsb = new EndlessGameStateBuilder(v).setPrimaryProfile(primaryProfile)
-			.setRNGSeed(opts.rngSeed)
-			.setRule(opts.rule)
-			.setInputManager(inputManager);
+				v.gameState = new TrainingGameStateBuilder(v).setPrimaryProfile(opts.profile)
+					.setRNGSeed(opts.rngSeed)
+					.setRule(opts.rule)
+					.build();
+			case ENDLESS:
+				final opts = cast(gameMode, EndlessGameMode);
 
-		v.gameState = gsb.setActionBuffer(new LocalActionBuffer({
-			gameScreen: v,
-			inputManager: inputManager
-		})).build();
+				final profile = opts.profile;
+				final inputManager = new InputDeviceManager(profile.input);
 
-		#if kha_html5
-		Browser.window.ondrop = (ev: DragEvent) -> {
-			final fr = new FileReader();
-
-			fr.readAsText(ev.dataTransfer.files.item(0));
-
-			fr.onload = () -> {
-				v.gameState = gsb.setActionBuffer(new ReplayActionBuffer({
-					gameScreen: v,
-					actions: Unserializer.run(fr.result)
-				})).build();
-			}
+				v.gameState = new EndlessGameStateBuilder(v).setPrimaryProfile(opts.profile)
+					.setRNGSeed(opts.rngSeed)
+					.setRule(opts.rule)
+					.setInputManager(inputManager)
+					.setActionBuffer(new LocalActionBuffer({
+						gameScreen: v,
+						inputManager: inputManager
+					}))
+					.build();
 		}
-		#end
+
+		/*
+			#if kha_html5
+			Browser.window.ondrop = (ev: DragEvent) -> {
+				final fr = new FileReader();
+
+				fr.readAsText(ev.dataTransfer.files.item(0));
+
+				fr.onload = () -> {
+					v.gameState = gsb.setActionBuffer(new ReplayActionBuffer({
+						gameScreen: v,
+						actions: Unserializer.run(fr.result)
+					})).build();
+				}
+			}
+			#end
+		 */
 
 		return v;
 	}
