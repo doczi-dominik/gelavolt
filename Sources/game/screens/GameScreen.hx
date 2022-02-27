@@ -42,18 +42,7 @@ class GameScreen implements IScreen {
 			case ENDLESS:
 				final opts = cast(gameMode, EndlessGameMode);
 
-				final profile = opts.profile;
-				final inputManager = new InputDeviceManager(profile.input);
-
-				v.gameState = new EndlessGameStateBuilder(v).setPrimaryProfile(opts.profile)
-					.setRNGSeed(opts.rngSeed)
-					.setRule(opts.rule)
-					.setInputManager(inputManager)
-					.setActionBuffer(new LocalActionBuffer({
-						gameScreen: v,
-						inputManager: inputManager
-					}))
-					.build();
+				v.gameState = new EndlessGameStateBuilder(v, opts).build();
 		}
 
 		/*

@@ -1,5 +1,6 @@
 package;
 
+import game.gamemodes.EndlessGameMode;
 import game.gamemodes.TrainingGameMode;
 import save_data.SaveManager;
 import input.InputDeviceManager;
@@ -90,7 +91,7 @@ class Main {
 					rngSeed: Std.int(System.time * 1000000),
 					rule: {},
 					profile: primaryProfile,
-				} : TrainingGameMode)));
+				} : EndlessGameMode)));
 
 				lastT = Scheduler.realTime();
 

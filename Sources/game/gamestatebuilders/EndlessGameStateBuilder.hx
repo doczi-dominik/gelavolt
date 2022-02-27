@@ -1,11 +1,14 @@
 package game.gamestatebuilders;
 
+import game.actionbuffers.ReplayActionBuffer;
+import game.actionbuffers.LocalActionBuffer;
+import input.InputDeviceManager;
+import game.gamemodes.EndlessGameMode;
 import game.actionbuffers.IActionBuffer;
 import input.IInputDeviceManager;
 import game.ui.EndlessPauseMenu;
 import game.boardstates.EndlessBoardState;
 import game.boardmanagers.SingleBoardManager;
-import game.boardmanagers.DualBoardManager;
 import game.previews.VerticalPreview;
 import game.garbage.NullGarbageManager;
 import game.simulation.LinkInfoBuilder;
@@ -13,11 +16,8 @@ import game.garbage.trays.GarbageTray;
 import game.simulation.NullLinkInfoBuilder;
 import game.geometries.BoardGeometries;
 import game.boards.SingleStateBoard;
-import game.boardstates.StandardBoardState;
 import game.all_clear.AllClearManager;
 import game.gelogroups.GeloGroup;
-import game.actionbuffers.LocalActionBuffer;
-import input.InputDeviceManager;
 import game.fields.Field;
 import game.simulation.ChainSimulator;
 import game.score.ScoreManager;
@@ -27,20 +27,13 @@ import game.rules.MarginTimeManager;
 import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
 import kha.math.Random;
-import game.rules.Rule;
-import save_data.Profile;
 import game.states.GameState;
-import game.ui.PauseMenu;
 import game.screens.GameScreen;
 
 class EndlessGameStateBuilder {
 	final gameScreen: GameScreen;
 
-	var primaryProfile: Profile;
-	var rngSeed: Int;
-	var rule: Rule;
-	var inputManager: IInputDeviceManager;
-	var actionBuffer: IActionBuffer;
+	final gameMode: EndlessGameMode;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -56,6 +49,8 @@ class EndlessGameStateBuilder {
 	var chainCounter: ChainCounter;
 	var field: Field;
 	var queue: Queue;
+	var inputManager: InputDeviceManager;
+	var actionBuffer: IActionBuffer;
 	var geloGroup: GeloGroup;
 	var allClearManager: AllClearManager;
 
@@ -67,18 +62,19 @@ class EndlessGameStateBuilder {
 
 	var gameState: GameState;
 
-	public function new(gameScreen: GameScreen) {
+	public function new(gameScreen: GameScreen, gameMode: EndlessGameMode) {
 		this.gameScreen = gameScreen;
+		this.gameMode = gameMode;
 	}
 
 	inline function buildRNG() {
-		rng = new Random(rngSeed);
+		rng = new Random(gameMode.rngSeed);
 	}
 
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSave: primaryProfile.prefs
+			prefsSave: gameMode.profile.prefs
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -90,7 +86,7 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(rule);
+		marginManager = new MarginTimeManager(gameMode.rule);
 	}
 
 	inline function buildPauseMediator() {
@@ -103,20 +99,20 @@ class EndlessGameStateBuilder {
 
 	inline function buildScoreManager() {
 		scoreManager = new ScoreManager({
-			rule: rule,
+			rule: gameMode.rule,
 			orientation: LEFT
 		});
 	}
 
 	inline function buildChainSim() {
 		chainSim = new ChainSimulator({
-			rule: rule,
+			rule: gameMode.rule,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(primaryProfile.prefs),
-			accumulatedDisplay: GarbageTray.create(primaryProfile.prefs)
+			garbageDisplay: GarbageTray.create(gameMode.profile.prefs),
+			accumulatedDisplay: GarbageTray.create(gameMode.profile.prefs)
 		});
 	}
 
@@ -126,7 +122,7 @@ class EndlessGameStateBuilder {
 
 	inline function buildField() {
 		field = Field.create({
-			prefsSave: primaryProfile.prefs,
+			prefsSave: gameMode.profile.prefs,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -138,16 +134,36 @@ class EndlessGameStateBuilder {
 		queue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
 	}
 
+	inline function buildInputManager() {
+		inputManager = new InputDeviceManager(gameMode.profile.input);
+	}
+
+	inline function buildActionBuffer() {
+		if (gameMode.replayData == null) {
+			actionBuffer = new LocalActionBuffer({
+				gameScreen: gameScreen,
+				inputManager: inputManager
+			});
+
+			return;
+		}
+
+		actionBuffer = new ReplayActionBuffer({
+			gameScreen: gameScreen,
+			actions: gameMode.replayData
+		});
+	}
+
 	inline function buildGeloGroup() {
-		final prefsSave = primaryProfile.prefs;
+		final prefsSave = gameMode.profile.prefs;
 
 		geloGroup = new GeloGroup({
 			field: field,
-			rule: rule,
+			rule: gameMode.rule,
 			prefsSave: prefsSave,
 			scoreManager: scoreManager,
 			chainSim: new ChainSimulator({
-				rule: rule,
+				rule: gameMode.rule,
 				linkBuilder: NullLinkInfoBuilder.getInstance(),
 				garbageDisplay: GarbageTray.create(prefsSave),
 				accumulatedDisplay: GarbageTray.create(prefsSave)
@@ -166,8 +182,8 @@ class EndlessGameStateBuilder {
 
 	inline function buildBoardState() {
 		boardState = new EndlessBoardState({
-			rule: rule,
-			prefsSave: primaryProfile.prefs,
+			rule: gameMode.rule,
+			prefsSave: gameMode.profile.prefs,
 			gameScreen: gameScreen,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,
@@ -182,7 +198,7 @@ class EndlessGameStateBuilder {
 			actionBuffer: actionBuffer,
 			chainCounter: chainCounter,
 			chainSim: chainSim,
-			trainingSave: primaryProfile.training,
+			trainingSave: gameMode.profile.training,
 			randomizer: randomizer
 		});
 	}
@@ -199,8 +215,8 @@ class EndlessGameStateBuilder {
 	inline function buildPauseMenu() {
 		pauseMenu = new EndlessPauseMenu({
 			pauseMediator: pauseMediator,
-			prefsSave: primaryProfile.prefs,
-			trainingSave: primaryProfile.training,
+			prefsSave: gameMode.profile.prefs,
+			trainingSave: gameMode.profile.training,
 			actionBuffer: actionBuffer
 		});
 	}
@@ -223,36 +239,6 @@ class EndlessGameStateBuilder {
 		borderColorMediator.boardState = boardState;
 	}
 
-	public function setPrimaryProfile(value: Profile) {
-		primaryProfile = value;
-
-		return this;
-	}
-
-	public function setRNGSeed(value: Int) {
-		rngSeed = value;
-
-		return this;
-	}
-
-	public function setRule(value: Rule) {
-		rule = value;
-
-		return this;
-	}
-
-	public function setInputManager(value: InputDeviceManager) {
-		inputManager = value;
-
-		return this;
-	}
-
-	public function setActionBuffer(value: IActionBuffer) {
-		actionBuffer = value;
-
-		return this;
-	}
-
 	public function build() {
 		buildRNG();
 		buildRandomizer();
@@ -268,6 +254,8 @@ class EndlessGameStateBuilder {
 		buildChainCounter();
 		buildField();
 		buildQueue();
+		buildInputManager();
+		buildActionBuffer();
 		buildGeloGroup();
 		buildAllClearManager();
 
