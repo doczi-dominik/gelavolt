@@ -95,7 +95,7 @@ class Main {
 					rngSeed: Std.int(System.time * 1000000),
 					rule: {},
 					profile: primaryProfile,
-				} : EndlessGameMode)));
+				} : TrainingGameMode)));
 
 				#if kha_html5
 				Browser.window.ondrop = (ev: DragEvent) -> {
