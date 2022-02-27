@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.gamemodes.TrainingGameMode;
 import game.gelogroups.GeloGroup;
 import game.rules.MarginTimeManager;
 import game.rules.Rule;
@@ -43,9 +44,7 @@ import game.geometries.BoardOrientation;
 
 class TrainingGameStateBuilder {
 	final gameScreen: GameScreen;
-
-	var rngSeed: Int;
-	var rule: Rule;
+	final gameMode: TrainingGameMode;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -82,12 +81,13 @@ class TrainingGameStateBuilder {
 
 	var gameState: GameState;
 
-	public function new(gameScreen: GameScreen) {
+	public function new(gameScreen: GameScreen, gameMode: TrainingGameMode) {
 		this.gameScreen = gameScreen;
+		this.gameMode = gameMode;
 	}
 
 	inline function buildRNG() {
-		rng = new Random(rngSeed);
+		rng = new Random(gameMode.rngSeed);
 	}
 
 	inline function buildRandomizer() {
@@ -105,7 +105,7 @@ class TrainingGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(rule);
+		marginManager = new MarginTimeManager(gameMode.rule);
 	}
 
 	inline function buildPauseMediator() {
@@ -130,7 +130,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerGarbageManager() {
 		playerGarbageManager = new GarbageManager({
-			rule: rule,
+			rule: gameMode.rule,
 			rng: rng,
 			prefsSave: GameScreen.primaryProfile.prefs,
 			particleManager: particleManager,
@@ -142,16 +142,16 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerScoreManager() {
 		playerScoreManager = new ScoreManager({
-			rule: rule,
+			rule: gameMode.rule,
 			orientation: LEFT
 		});
 	}
 
 	inline function buildPlayerChainSim() {
 		playerChainSim = new ChainSimulator({
-			rule: rule,
+			rule: gameMode.rule,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
 			garbageDisplay: GarbageTray.create(GameScreen.primaryProfile.prefs),
@@ -193,11 +193,11 @@ class TrainingGameStateBuilder {
 
 		playerGeloGroup = new GeloGroup({
 			field: playerField,
-			rule: rule,
+			rule: gameMode.rule,
 			prefsSave: prefsSave,
 			scoreManager: playerScoreManager,
 			chainSim: new ChainSimulator({
-				rule: rule,
+				rule: gameMode.rule,
 				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: GarbageTray.create(prefsSave),
 				accumulatedDisplay: GarbageTray.create(prefsSave)
@@ -216,7 +216,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildInfoGarbageManager() {
 		infoGarbageManager = new GarbageManager({
-			rule: rule,
+			rule: gameMode.rule,
 			rng: rng,
 			prefsSave: GameScreen.primaryProfile.prefs,
 			particleManager: particleManager,
@@ -232,10 +232,10 @@ class TrainingGameStateBuilder {
 		infoState = new TrainingInfoBoardState({
 			geometries: BoardGeometries.RIGHT,
 			marginManager: marginManager,
-			rule: rule,
+			rule: gameMode.rule,
 			rng: rng,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
 			trainingSave: GameScreen.primaryProfile.training,
@@ -251,7 +251,7 @@ class TrainingGameStateBuilder {
 	inline function buildPlayState() {
 		playState = new TrainingBoardState({
 			infoState: infoState,
-			rule: rule,
+			rule: gameMode.rule,
 			prefsSave: GameScreen.primaryProfile.prefs,
 			gameScreen: gameScreen,
 			rng: rng,
@@ -312,7 +312,7 @@ class TrainingGameStateBuilder {
 	inline function buildPauseMenu() {
 		pauseMenu = new TrainingPauseMenu({
 			pauseMediator: pauseMediator,
-			rule: rule,
+			rule: gameMode.rule,
 			prefsSave: GameScreen.primaryProfile.prefs,
 			randomizer: randomizer,
 			queue: playerQueue,
@@ -353,18 +353,6 @@ class TrainingGameStateBuilder {
 		playerBorderColorMediator.boardState = playState;
 		playerTargetMediator.garbageManager = infoGarbageManager;
 		infoTargetMediator.garbageManager = playerGarbageManager;
-	}
-
-	public function setRNGSeed(value: Int) {
-		rngSeed = value;
-
-		return this;
-	}
-
-	public function setRule(value: Rule) {
-		rule = value;
-
-		return this;
 	}
 
 	public function build() {

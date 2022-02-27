@@ -48,7 +48,7 @@ class GameScreen implements IScreen {
 			case TRAINING:
 				final opts = cast(gameMode, TrainingGameMode);
 
-				v.gameState = new TrainingGameStateBuilder(v).setRNGSeed(opts.rngSeed).setRule(opts.rule).build();
+				v.gameState = new TrainingGameStateBuilder(v, opts).build();
 			case ENDLESS:
 				final opts = cast(gameMode, EndlessGameMode);
 
