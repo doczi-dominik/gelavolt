@@ -98,7 +98,7 @@ class GameScreen implements IScreen {
 	}
 
 	public function render(g: Graphics, g4: kha.graphics4.Graphics, alpha: Float) {
-		background.render(g);
+		background.render(g, alpha);
 
 		final transform = FastMatrix3.translation(translationX, translationY).multmat(FastMatrix3.scale(scale, scale));
 		g.pushTransformation(transform);
