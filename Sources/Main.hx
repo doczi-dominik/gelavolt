@@ -1,5 +1,6 @@
 package;
 
+import main_menu.MainMenuScreen;
 import haxe.Unserializer;
 import js.html.FileReader;
 import js.html.DragEvent;
@@ -91,10 +92,7 @@ class Main {
 
 				ScaleManager.resize(System.windowWidth(), System.windowHeight());
 
-				GlobalScreenSwitcher.switchScreen(GameScreen.create(({
-					rngSeed: Std.int(System.time * 1000000),
-					rule: {},
-				} : TrainingGameMode)));
+				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 
 				#if kha_html5
 				Browser.window.ondrop = (ev: DragEvent) -> {
