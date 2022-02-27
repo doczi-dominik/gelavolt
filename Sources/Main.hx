@@ -1,12 +1,11 @@
 package;
 
+import save_data.Profile;
 import main_menu.MainMenuScreen;
 import haxe.Unserializer;
 import js.html.FileReader;
 import js.html.DragEvent;
 import js.Browser;
-import game.gamemodes.EndlessGameMode;
-import game.gamemodes.TrainingGameMode;
 import save_data.SaveManager;
 import input.InputDeviceManager;
 import Screen.GlobalScreenSwitcher;
@@ -84,7 +83,7 @@ class Main {
 				Pipelines.init();
 				SaveManager.loadEverything();
 
-				GameScreen.primaryProfile = SaveManager.getProfile(0);
+				Profile.primary = SaveManager.getProfile(0);
 
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;
