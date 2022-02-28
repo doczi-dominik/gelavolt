@@ -2,9 +2,6 @@ package game.ui;
 
 import game.gamemodes.EndlessGameMode;
 import haxe.Serializer;
-import js.html.URL;
-import js.html.File;
-import js.Browser;
 import game.actionbuffers.IActionBuffer;
 import ui.ButtonWidget;
 import save_data.SaveManager;
@@ -13,6 +10,11 @@ import ui.OptionListWidget;
 import ui.Menu;
 import ui.IListWidget;
 import save_data.TrainingSave;
+#if js
+import js.html.URL;
+import js.html.File;
+import js.Browser;
+#end
 
 using DateTools;
 
@@ -66,6 +68,7 @@ class EndlessPauseMenu extends PauseMenu {
 					callback: () -> {
 						final data = gameMode.copyWithReplay(actionBuffer.exportReplayData());
 
+						#if js
 						final file = new File([Serializer.run(data)], "replay.gvr");
 						final uri = URL.createObjectURL(file);
 
@@ -74,6 +77,7 @@ class EndlessPauseMenu extends PauseMenu {
 						el.href = uri;
 						el.setAttribute("download", 'replay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvr');
 						el.click();
+						#end
 					}
 				})
 			]
