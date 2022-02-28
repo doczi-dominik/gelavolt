@@ -79,7 +79,7 @@ jobs:
         tag: ${{ needs.create-release.outputs.datetime }}
   build-macos:
     needs: create-release
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
     - name: Kha Setup
       uses: actions/checkout@v2
@@ -93,13 +93,14 @@ jobs:
         path: gv
     - name: Compile
       working-directory: gv
-      run: node ../kha/make -t osx -g metal --compile
-    - name: Zip Release
-      run: 7z a -tzip macos_x64.zip gv/build/osx
+      run: node ../kha/make -t osx -g opengl --compile
+    - name: Move Binary and Zip Release
+      working-directory: gv
+      run: mv build/osx-build/build/Release/Project\ GelaVolt.app build/osx && cd build && 7z a -tzip osx_x64.zip osx
     - name: Upload Artifacts
       uses: svenstaro/upload-release-action@2.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: macos_x64.zip
+        file: gv/build/osx_x64.zip
         tag: ${{ needs.create-release.outputs.datetime }}
         
