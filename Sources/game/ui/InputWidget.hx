@@ -1,5 +1,6 @@
 package game.ui;
 
+import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import game.actions.ActionCategory;
 import game.actions.MenuActions;
@@ -44,23 +45,17 @@ class InputWidget implements IListWidget {
 
 		final inputManager = menu.inputManager;
 		final mapping = inputManager.inputOptions.mappings[category][action];
-		final kbInput = mapping.keyboardInput;
-		final gpInput = mapping.gamepadInput;
 
-		final str = '$action : ';
-		final width = g.font.width(g.fontSize, str);
+		final str = '$action : ${KEY_CODE_TO_STRING[mapping.keyboardInput]} / ';
+		final w = g.font.width(g.fontSize, str);
+		final h = g.font.height(g.fontSize);
 
 		g.drawString(str, x, y);
 
 		g.color = White;
 
-		final offsetX = x + width;
-		final gpIconSize = 64 * ScaleManager.smallerScale;
+		final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadInput];
 
-		inputManager.renderGamepadIcon(g, offsetX, y, gpInput, gpIconSize);
-
-		final kbString = KEY_CODE_TO_STRING[kbInput];
-
-		g.drawString(' / $kbString', offsetX + gpIconSize, y);
+		inputManager.renderGamepadIcon(g, x + w, y, spr, h / spr.height);
 	}
 }

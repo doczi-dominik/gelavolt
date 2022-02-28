@@ -1,14 +1,15 @@
 package input;
 
+import utils.Geometry;
 import save_data.InputSave;
 import kha.input.KeyCode;
 import kha.graphics2.Graphics;
 import game.actions.Action;
 
 class NullInputDeviceManager implements IInputDeviceManager {
-	static var instance: NullInputDeviceManager;
+	public static var instance(get, null): NullInputDeviceManager;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullInputDeviceManager();
 
@@ -29,5 +30,5 @@ class NullInputDeviceManager implements IInputDeviceManager {
 
 	public function rebind(action: Action, category: String) {}
 
-	public function renderGamepadIcon(g: Graphics, x: Float, y: Float, button: GamepadButton, size: Float) {}
+	public function renderGamepadIcon(g: Graphics, x: Float, y: Float, sprite: Geometry, scale: Float) {}
 }

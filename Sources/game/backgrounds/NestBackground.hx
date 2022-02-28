@@ -1,5 +1,6 @@
 package game.backgrounds;
 
+import utils.Utils;
 import kha.math.Random;
 import kha.graphics2.Graphics;
 
@@ -7,6 +8,8 @@ using kha.graphics2.GraphicsExtension;
 
 private class BackgroundParticle {
 	final rng: Random;
+
+	var lastY: Float;
 
 	var x: Float;
 	var y: Float;
@@ -18,7 +21,7 @@ private class BackgroundParticle {
 
 		randomizeData();
 
-		y += ScaleManager.height / 2;
+		y += ScaleManager.height / 8;
 	}
 
 	function randomizeData() {
@@ -26,6 +29,8 @@ private class BackgroundParticle {
 		y = ScaleManager.height * rng.GetFloatIn(1, 1.25);
 		dy = rng.GetFloatIn(0.5, 2);
 		t = rng.GetIn(0, 12);
+
+		lastY = y;
 	}
 
 	public function update() {
@@ -33,20 +38,23 @@ private class BackgroundParticle {
 			randomizeData();
 		}
 
+		lastY = y;
+
 		y -= dy;
 
 		++t;
 	}
 
-	public function render(g: Graphics) {
+	public function render(g: Graphics, alpha: Float) {
+		final lerpY = Utils.lerp(lastY, y, alpha);
 		final c = Math.sin(t / (dy * 50));
 		final r = c * 12;
 
 		g.pushOpacity(Math.max(c, 0));
 		g.color = Red;
-		g.fillCircle(x, y, r, 8);
+		g.fillCircle(x, lerpY, r, 8);
 		g.color = Black;
-		g.fillCircle(x, y, r - 4, 8);
+		g.fillCircle(x, lerpY, r - 4, 8);
 		g.color = White;
 		g.popOpacity();
 	}
@@ -71,9 +79,9 @@ class NestBackground {
 		}
 	}
 
-	public function render(g: Graphics) {
+	public function render(g: Graphics, alpha: Float) {
 		for (p in particles) {
-			p.render(g);
+			p.render(g, alpha);
 		}
 	}
 }

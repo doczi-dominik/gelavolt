@@ -1,5 +1,11 @@
 package;
 
+import save_data.Profile;
+import main_menu.MainMenuScreen;
+import haxe.Unserializer;
+import js.html.FileReader;
+import js.html.DragEvent;
+import js.Browser;
 import save_data.SaveManager;
 import input.InputDeviceManager;
 import Screen.GlobalScreenSwitcher;
@@ -77,7 +83,7 @@ class Main {
 				Pipelines.init();
 				SaveManager.loadEverything();
 
-				final primaryProfile = SaveManager.getProfile(0);
+				Profile.primary = SaveManager.getProfile(0);
 
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;
@@ -85,11 +91,19 @@ class Main {
 
 				ScaleManager.resize(System.windowWidth(), System.windowHeight());
 
-				GlobalScreenSwitcher.switchScreen(GameScreen.create({
-					rngSeed: Std.int(System.time * 1000000),
-					rule: {},
-					primaryProfile: primaryProfile,
-				}));
+				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+
+				#if kha_html5
+				Browser.window.ondrop = (ev: DragEvent) -> {
+					final fr = new FileReader();
+
+					fr.readAsText(ev.dataTransfer.files.item(0));
+
+					fr.onload = () -> {
+						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(fr.result)));
+					}
+				}
+				#end
 
 				lastT = Scheduler.realTime();
 

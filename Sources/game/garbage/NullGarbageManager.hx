@@ -4,9 +4,9 @@ import game.gelos.GeloPoint;
 import kha.graphics2.Graphics;
 
 class NullGarbageManager implements IGarbageManager {
-	static var instance: NullGarbageManager;
+	public static var instance(get, null): NullGarbageManager;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullGarbageManager();
 

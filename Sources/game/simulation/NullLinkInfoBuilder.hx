@@ -1,9 +1,9 @@
 package game.simulation;
 
 class NullLinkInfoBuilder implements ILinkInfoBuilder {
-	static var instance: Null<NullLinkInfoBuilder>;
+	public static var instance(get, null): Null<NullLinkInfoBuilder>;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullLinkInfoBuilder();
 

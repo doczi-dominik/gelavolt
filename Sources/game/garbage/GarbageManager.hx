@@ -1,5 +1,6 @@
 package game.garbage;
 
+import game.mediators.TransformationMediator;
 import kha.Color;
 import kha.math.Random;
 import game.particles.PixelFloatParticle;
@@ -7,7 +8,6 @@ import utils.Utils;
 import game.mediators.GarbageTargetMediator;
 import save_data.PrefsSave;
 import game.garbage.trays.GarbageTray;
-import game.screens.GameScreen;
 import game.gelos.Gelo;
 import game.geometries.BoardGeometries;
 import utils.Point;
@@ -154,7 +154,7 @@ class GarbageManager implements IGarbageManager {
 		final absTrayCenter = absPos.add(trayCenter);
 
 		final attackControl: Point = {
-			x: GameScreen.PLAY_AREA_DESIGN_WIDTH / 2,
+			x: TransformationMediator.PLAY_AREA_DESIGN_WIDTH / 2,
 			y: 0
 		};
 

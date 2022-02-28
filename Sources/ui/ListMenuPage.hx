@@ -6,7 +6,6 @@ import game.actions.MenuActions;
 import kha.graphics2.Graphics;
 
 class ListMenuPage implements IMenuPage {
-	static inline final WIDGET_FONT_SIZE = 60;
 	static inline final DESC_FONT_SIZE = 48;
 	static inline final MAX_WIDGETS_PER_VIEW = 10;
 	static inline final WIDGET_BOTTOM_PADDING = 16;
@@ -14,6 +13,8 @@ class ListMenuPage implements IMenuPage {
 		{actions: [UP, DOWN], description: "Select"},
 		{actions: [BACK], description: "Back"},
 	];
+
+	public static inline final WIDGET_FONT_SIZE = 60;
 
 	final font: Font;
 	final widgetBuilder: Menu->Array<IListWidget>;
@@ -129,7 +130,7 @@ class ListMenuPage implements IMenuPage {
 			if (widget == null)
 				break;
 
-			final widgetY = y + widgetFontSize * i + widgetBottomPadding;
+			final widgetY = y + (widgetFontHeight + widgetBottomPadding) * i;
 
 			widget.render(g, x, widgetY, index == widgetIndex);
 		}

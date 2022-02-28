@@ -2,19 +2,14 @@ package game.boardstates;
 
 import game.randomizers.Randomizer;
 import save_data.TrainingSave;
-import game.fields.Field;
 
-class TrainingBoardState extends StandardBoardState {
+class TrainingBoardState extends EndlessBoardState {
 	final infoState: TrainingInfoBoardState;
-	final trainingSave: TrainingSave;
-	final randomizer: Randomizer;
 
 	public function new(opts: TrainingBoardStateOptions) {
 		super(opts);
 
 		infoState = opts.infoState;
-		trainingSave = opts.trainingSave;
-		randomizer = opts.randomizer;
 	}
 
 	override function lockGroup() {
@@ -39,34 +34,17 @@ class TrainingBoardState extends StandardBoardState {
 
 	override function afterEnd() {
 		infoState.saveSplitCategory();
-
-		if (!field.isEmpty(field.centerColumnIndex, field.outerRows)) {
-			eraseField();
-			garbageManager.clear();
-			infoState.resetCurrentSplitStatistics();
-
-			switch (trainingSave.clearOnXMode) {
-				case CLEAR:
-				case RESTART:
-					queue.setIndex(0);
-					initSimStepState();
-				case NEW:
-					regenerateQueue();
-					chainSim.clear();
-					beginChainSimulation();
-			}
-		}
 	}
 
-	function eraseField() {
-		infoState.stopSplitTimer();
+	override function onLose() {
+		super.onLose();
 
-		field.forEach((_, x, y) -> {
-			field.clear(x, y);
-		});
+		infoState.resetCurrentSplitStatistics();
+	}
 
-		chainSim.modify(field.copy());
-		chainSim.viewLast();
+	// Makes regenerateQueue public
+	override public function regenerateQueue() {
+		super.regenerateQueue();
 	}
 
 	public function getField() {
@@ -78,11 +56,6 @@ class TrainingBoardState extends StandardBoardState {
 
 		queue.previous();
 		initSpawningState();
-	}
-
-	public function regenerateQueue() {
-		randomizer.generatePools(TSU);
-		queue.load(randomizer.createQueueData(Dropsets.CLASSICAL));
 	}
 
 	public function resume() {

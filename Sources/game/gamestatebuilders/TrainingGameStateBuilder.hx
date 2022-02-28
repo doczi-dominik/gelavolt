@@ -1,5 +1,8 @@
 package game.gamestatebuilders;
 
+import game.mediators.TransformationMediator;
+import game.mediators.FrameCounter;
+import game.gamemodes.TrainingGameMode;
 import game.gelogroups.GeloGroup;
 import game.rules.MarginTimeManager;
 import game.rules.Rule;
@@ -42,17 +45,15 @@ import game.simulation.ChainSimulator;
 import game.geometries.BoardOrientation;
 
 class TrainingGameStateBuilder {
-	final gameScreen: GameScreen;
-
-	var primaryProfile: Profile;
-	var rngSeed: Int;
-	var rule: Rule;
+	final gameMode: TrainingGameMode;
+	final transformMediator: TransformationMediator;
 
 	var rng: Random;
 	var randomizer: Randomizer;
 
 	var particleManager: ParticleManager;
 	var marginManager: MarginTimeManager;
+	var frameCounter: FrameCounter;
 
 	var pauseMediator: PauseMediator;
 	var playerBorderColorMediator: BorderColorMediator;
@@ -83,18 +84,19 @@ class TrainingGameStateBuilder {
 
 	var gameState: GameState;
 
-	public function new(gameScreen: GameScreen) {
-		this.gameScreen = gameScreen;
+	public function new(opts: TrainingGameStateBuilderOptions) {
+		gameMode = opts.gameMode;
+		transformMediator = opts.transformMediator;
 	}
 
 	inline function buildRNG() {
-		rng = new Random(rngSeed);
+		rng = new Random(gameMode.rngSeed);
 	}
 
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSave: primaryProfile.prefs
+			prefsSave: Profile.primary.prefs
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -106,7 +108,11 @@ class TrainingGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(rule);
+		marginManager = new MarginTimeManager(gameMode.rule);
+	}
+
+	inline function buildFrameCounter() {
+		frameCounter = new FrameCounter();
 	}
 
 	inline function buildPauseMediator() {
@@ -131,32 +137,32 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerGarbageManager() {
 		playerGarbageManager = new GarbageManager({
-			rule: rule,
+			rule: gameMode.rule,
 			rng: rng,
-			prefsSave: primaryProfile.prefs,
+			prefsSave: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.LEFT,
-			tray: CenterGarbageTray.create(primaryProfile.prefs),
+			tray: CenterGarbageTray.create(Profile.primary.prefs),
 			target: playerTargetMediator
 		});
 	}
 
 	inline function buildPlayerScoreManager() {
 		playerScoreManager = new ScoreManager({
-			rule: rule,
+			rule: gameMode.rule,
 			orientation: LEFT
 		});
 	}
 
 	inline function buildPlayerChainSim() {
 		playerChainSim = new ChainSimulator({
-			rule: rule,
+			rule: gameMode.rule,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(primaryProfile.prefs),
-			accumulatedDisplay: GarbageTray.create(primaryProfile.prefs)
+			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
+			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
 		});
 	}
 
@@ -166,7 +172,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerField() {
 		playerField = Field.create({
-			prefsSave: primaryProfile.prefs,
+			prefsSave: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -179,27 +185,27 @@ class TrainingGameStateBuilder {
 	}
 
 	inline function buildPlayerInputManager() {
-		playerInputManager = new InputDeviceManager(primaryProfile.input);
+		playerInputManager = new InputDeviceManager(Profile.primary.input);
 	}
 
 	inline function buildPlayerActionBuffer() {
 		playerActionBuffer = new LocalActionBuffer({
-			gameScreen: gameScreen,
+			frameCounter: frameCounter,
 			inputManager: playerInputManager
 		});
 	}
 
 	inline function buildPlayerGeloGroup() {
-		final prefsSave = primaryProfile.prefs;
+		final prefsSave = Profile.primary.prefs;
 
 		playerGeloGroup = new GeloGroup({
 			field: playerField,
-			rule: rule,
+			rule: gameMode.rule,
 			prefsSave: prefsSave,
 			scoreManager: playerScoreManager,
 			chainSim: new ChainSimulator({
-				rule: rule,
-				linkBuilder: NullLinkInfoBuilder.getInstance(),
+				rule: gameMode.rule,
+				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: GarbageTray.create(prefsSave),
 				accumulatedDisplay: GarbageTray.create(prefsSave)
 			})
@@ -217,29 +223,29 @@ class TrainingGameStateBuilder {
 
 	inline function buildInfoGarbageManager() {
 		infoGarbageManager = new GarbageManager({
-			rule: rule,
+			rule: gameMode.rule,
 			rng: rng,
-			prefsSave: primaryProfile.prefs,
+			prefsSave: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.RIGHT,
-			tray: CenterGarbageTray.create(primaryProfile.prefs),
+			tray: CenterGarbageTray.create(Profile.primary.prefs),
 			target: infoTargetMediator
 		});
 	}
 
 	inline function buildInfoState() {
-		final prefsSave = primaryProfile.prefs;
+		final prefsSave = Profile.primary.prefs;
 
 		infoState = new TrainingInfoBoardState({
 			geometries: BoardGeometries.RIGHT,
 			marginManager: marginManager,
-			rule: rule,
+			rule: gameMode.rule,
 			rng: rng,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			trainingSave: primaryProfile.training,
+			trainingSave: Profile.primary.training,
 			chainAdvantageDisplay: GarbageTray.create(prefsSave),
 			afterCounterDisplay: GarbageTray.create(prefsSave),
 			autoChainCounter: new ChainCounter(),
@@ -252,9 +258,9 @@ class TrainingGameStateBuilder {
 	inline function buildPlayState() {
 		playState = new TrainingBoardState({
 			infoState: infoState,
-			rule: rule,
-			prefsSave: primaryProfile.prefs,
-			gameScreen: gameScreen,
+			rule: gameMode.rule,
+			prefsSave: Profile.primary.prefs,
+			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.LEFT,
 			particleManager: particleManager,
@@ -268,7 +274,7 @@ class TrainingGameStateBuilder {
 			actionBuffer: playerActionBuffer,
 			chainCounter: playerChainCounter,
 			chainSim: playerChainSim,
-			trainingSave: primaryProfile.training,
+			trainingSave: Profile.primary.training,
 			randomizer: randomizer
 		});
 	}
@@ -278,7 +284,7 @@ class TrainingGameStateBuilder {
 			geometries: BoardGeometries.LEFT,
 			inputManager: playerInputManager,
 			field: Field.create({
-				prefsSave: primaryProfile.prefs,
+				prefsSave: Profile.primary.prefs,
 				columns: 6,
 				playAreaRows: 12,
 				hiddenRows: 1,
@@ -286,7 +292,7 @@ class TrainingGameStateBuilder {
 			}),
 			chainSim: playerChainSim,
 			chainCounter: playerChainCounter,
-			prefsSave: primaryProfile.prefs
+			prefsSave: Profile.primary.prefs
 		});
 	}
 
@@ -305,7 +311,7 @@ class TrainingGameStateBuilder {
 		infoBoard = new SingleStateBoard({
 			pauseMediator: pauseMediator,
 			inputManager: playerInputManager,
-			actionBuffer: NullActionBuffer.getInstance(),
+			actionBuffer: NullActionBuffer.instance,
 			state: infoState
 		});
 	}
@@ -313,8 +319,8 @@ class TrainingGameStateBuilder {
 	inline function buildPauseMenu() {
 		pauseMenu = new TrainingPauseMenu({
 			pauseMediator: pauseMediator,
-			rule: rule,
-			prefsSave: primaryProfile.prefs,
+			rule: gameMode.rule,
+			prefsSave: Profile.primary.prefs,
 			randomizer: randomizer,
 			queue: playerQueue,
 			playState: playState,
@@ -323,7 +329,7 @@ class TrainingGameStateBuilder {
 			allClearManager: playerAllClearManager,
 			chainSim: playerChainSim,
 			marginManager: marginManager,
-			trainingSave: primaryProfile.training,
+			trainingSave: Profile.primary.training,
 			playerGarbageManager: playerGarbageManager,
 			infoGarbageManager: infoGarbageManager
 		});
@@ -335,17 +341,18 @@ class TrainingGameStateBuilder {
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
 				boardOne: new SingleBoardManager({
-					gameScreen: gameScreen,
+					transformMediator: transformMediator,
 					geometries: BoardGeometries.LEFT,
 					board: playerBoard
 				}),
 				boardTwo: new SingleBoardManager({
-					gameScreen: gameScreen,
+					transformMediator: transformMediator,
 					geometries: BoardGeometries.RIGHT,
 					board: infoBoard
 				})
 			}),
-			pauseMenu: pauseMenu
+			pauseMenu: pauseMenu,
+			frameCounter: frameCounter
 		});
 	}
 
@@ -356,30 +363,13 @@ class TrainingGameStateBuilder {
 		infoTargetMediator.garbageManager = playerGarbageManager;
 	}
 
-	public function setPrimaryProfile(value: Profile) {
-		primaryProfile = value;
-
-		return this;
-	}
-
-	public function setRNGSeed(value: Int) {
-		rngSeed = value;
-
-		return this;
-	}
-
-	public function setRule(value: Rule) {
-		rule = value;
-
-		return this;
-	}
-
 	public function build() {
 		buildRNG();
 		buildRandomizer();
 
 		buildParticleManager();
 		buildMarginManager();
+		buildFrameCounter();
 
 		buildPauseMediator();
 		buildPlayerBorderColorMediator();
@@ -411,8 +401,6 @@ class TrainingGameStateBuilder {
 		buildGameState();
 
 		wireMediators();
-
-		gameState.pause(playerInputManager);
 
 		return gameState;
 	}

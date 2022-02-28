@@ -1,41 +1,56 @@
 package game.actionbuffers;
 
+import game.mediators.FrameCounter;
 import game.actions.GameActions;
 import input.IInputDeviceManager;
 import game.screens.GameScreen;
 
 class LocalActionBuffer implements IActionBuffer {
-	final gameScreen: GameScreen;
+	final frameCounter: FrameCounter;
 	final inputManager: IInputDeviceManager;
-	final actions: Array<ActionSnapshot> = [];
-
-	var currentAction: ActionSnapshot;
+	final actions: Map<Int, ActionSnapshot>;
 
 	public var latestAction(default, null): ActionSnapshot;
 
 	public function new(opts: LocalActionBufferOptions) {
-		gameScreen = opts.gameScreen;
+		frameCounter = opts.frameCounter;
 		inputManager = opts.inputManager;
+		actions = [];
 
-		currentAction = new ActionSnapshot();
-
-		latestAction = new ActionSnapshot();
+		latestAction = {
+			shiftLeft: false,
+			shiftRight: false,
+			rotateLeft: false,
+			rotateRight: false,
+			softDrop: false,
+			hardDrop: false
+		};
 	}
 
 	public function update() {
-		currentAction.setFrame(gameScreen.currentFrame)
-			.setShiftLeft(inputManager.getAction(SHIFT_LEFT))
-			.setShiftRight(inputManager.getAction(SHIFT_RIGHT))
-			.setRotateLeft(inputManager.getAction(ROTATE_LEFT))
-			.setRotateRight(inputManager.getAction(ROTATE_RIGHT))
-			.setSoftDrop(inputManager.getAction(SOFT_DROP))
-			.setHardDrop(inputManager.getAction(HARD_DROP));
+		final currentAction: ActionSnapshot = {
+			shiftLeft: inputManager.getAction(SHIFT_LEFT),
+			shiftRight: inputManager.getAction(SHIFT_RIGHT),
+			rotateLeft: inputManager.getAction(ROTATE_LEFT),
+			rotateRight: inputManager.getAction(ROTATE_RIGHT),
+			softDrop: inputManager.getAction(SOFT_DROP),
+			hardDrop: inputManager.getAction(HARD_DROP)
+		};
 
 		if (latestAction.isNotEqual(currentAction)) {
-			actions.push(currentAction);
+			actions[frameCounter.value] = currentAction;
 
 			latestAction = currentAction;
-			currentAction = new ActionSnapshot();
 		}
+	}
+
+	public function exportReplayData() {
+		final data: ReplayData = [];
+
+		for (k => v in actions.keyValueIterator()) {
+			data[k] = v.toBitField();
+		}
+
+		return data;
 	}
 }

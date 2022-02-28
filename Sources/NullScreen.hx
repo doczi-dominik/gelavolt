@@ -2,9 +2,9 @@ import kha.graphics2.Graphics;
 import Screen.IScreen;
 
 final class NullScreen implements IScreen {
-	static var instance: NullScreen;
+	public static var instance(get, null): NullScreen;
 
-	public static function getInstance() {
+	static function get_instance() {
 		if (instance == null)
 			instance = new NullScreen();
 

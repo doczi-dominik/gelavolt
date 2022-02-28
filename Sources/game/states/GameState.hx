@@ -1,5 +1,6 @@
 package game.states;
 
+import game.mediators.FrameCounter;
 import game.rules.MarginTimeManager;
 import game.ui.PauseMenu;
 import input.IInputDeviceManager;
@@ -14,23 +15,21 @@ final class GameState {
 	final boardManager: IBoardManager;
 	final marginManager: MarginTimeManager;
 	final pauseMenu: PauseMenu;
+	final frameCounter: FrameCounter;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
 
 	var isPaused: Bool;
 	var pausingInputs: Null<IInputDeviceManager>;
 
-	public var currentFrame(default, null): Int;
-
 	public function new(opts: GameStateOptions) {
 		particleManager = opts.particleManager;
 		boardManager = opts.boardManager;
 		marginManager = opts.marginManager;
 		pauseMenu = opts.pauseMenu;
+		frameCounter = opts.frameCounter;
 
 		FADE_TO_WHITELocation = Pipelines.FADE_TO_WHITE.getConstantLocation("comp");
-
-		currentFrame = 0;
 	}
 
 	public function pause(inputManager: IInputDeviceManager) {
@@ -52,13 +51,13 @@ final class GameState {
 		particleManager.update();
 		marginManager.update();
 
-		currentFrame++;
+		frameCounter.update();
 	}
 
 	public function renderTransformed(g: Graphics, g4: Graphics4, alpha: Float) {
 		g.pipeline = Pipelines.FADE_TO_WHITE;
 		g4.setPipeline(g.pipeline);
-		g4.setFloat(FADE_TO_WHITELocation, 0.5 + Math.cos(currentFrame / 4) / 2);
+		g4.setFloat(FADE_TO_WHITELocation, 0.5 + Math.cos(frameCounter.value / 4) / 2);
 		g.pipeline = null;
 
 		particleManager.renderBackground(g, alpha);
