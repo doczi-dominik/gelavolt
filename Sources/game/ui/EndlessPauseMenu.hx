@@ -56,7 +56,11 @@ class EndlessPauseMenu extends PauseMenu {
 				}),
 				new ButtonWidget({
 					title: "Save Replay",
-					description: [],
+					description: [
+						"Download A Replay File Of This Session.",
+						"To View It, Just Drag & Drop The File",
+						"On The GelaVolt Window"
+					],
 					callback: () -> {
 						final data = gameMode.copyWithReplay(actionBuffer.exportReplayData());
 
