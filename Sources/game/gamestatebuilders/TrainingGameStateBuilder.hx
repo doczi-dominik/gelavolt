@@ -185,7 +185,7 @@ class TrainingGameStateBuilder {
 	}
 
 	inline function buildPlayerInputManager() {
-		playerInputManager = new InputDeviceManager(Profile.primary.input);
+		playerInputManager = new InputDeviceManager(Profile.primary.input, KEYBOARD);
 	}
 
 	inline function buildPlayerActionBuffer() {

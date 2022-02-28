@@ -40,7 +40,7 @@ class GameScreen implements IScreen {
 				new EndlessGameStateBuilder({
 					gameMode: cast(gameMode, EndlessGameMode),
 					transformMediator: transformMediator,
-					inputManager: new InputDeviceManager(Profile.primary.input)
+					inputManager: new InputDeviceManager(Profile.primary.input, KEYBOARD)
 				}).build();
 		}
 	}

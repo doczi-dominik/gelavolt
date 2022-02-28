@@ -1,5 +1,6 @@
 package game.ui;
 
+import input.InputDeviceManager;
 import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import game.actions.ActionCategory;
@@ -44,7 +45,7 @@ class InputWidget implements IListWidget {
 		}
 
 		final inputManager = menu.inputManager;
-		final mapping = inputManager.inputOptions.mappings[category][action];
+		final mapping = inputManager.inputSave.mappings[category][action];
 
 		final str = '$action : ${KEY_CODE_TO_STRING[mapping.keyboardInput]} / ';
 		final w = g.font.width(g.fontSize, str);
@@ -56,6 +57,6 @@ class InputWidget implements IListWidget {
 
 		final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadInput];
 
-		inputManager.renderGamepadIcon(g, x + w, y, spr, h / spr.height);
+		InputDeviceManager.renderGamepadIcon(g, x + w, y, spr, h / spr.height);
 	}
 }

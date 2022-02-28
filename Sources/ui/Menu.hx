@@ -70,7 +70,7 @@ class Menu {
 	}
 
 	function renderKeyboardControls(g: Graphics) {
-		final mappings = inputManager.inputOptions.mappings[MENU];
+		final mappings = inputManager.inputSave.mappings[MENU];
 
 		var x = padding;
 
@@ -96,7 +96,7 @@ class Menu {
 
 	function renderGamepadControls(g: Graphics) {
 		final ssc = ScaleManager.smallerScale;
-		final mappings = inputManager.inputOptions.mappings[MENU];
+		final mappings = inputManager.inputSave.mappings[MENU];
 
 		final y = ScaleManager.height - headerFontHeight;
 
@@ -108,7 +108,7 @@ class Menu {
 			for (key in d.actions) {
 				final spr = GAMEPAD_SPRITE_COORDINATES[mappings[key].gamepadInput];
 
-				inputManager.renderGamepadIcon(g, x, y, spr, controlsFontHeight / spr.height);
+				InputDeviceManager.renderGamepadIcon(g, x, y, spr, controlsFontHeight / spr.height);
 
 				x += spr.width * ssc;
 			}
@@ -181,11 +181,12 @@ class Menu {
 		g.fontSize = controlsFontSize;
 		g.color = White;
 
-		switch (InputDeviceManager.lastDevice) {
+		switch (inputManager.type) {
 			case KEYBOARD:
 				renderKeyboardControls(g);
-			case GAMEPAD:
+			case GAMEPAD(_):
 				renderGamepadControls(g);
+			case ANY:
 		}
 	}
 }

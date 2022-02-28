@@ -18,7 +18,8 @@ class NullInputDeviceManager implements IInputDeviceManager {
 
 	var actions: Map<String, Bool> = [];
 
-	public final inputOptions: InputSave = new InputSave();
+	public final inputSave: InputSave = new InputSave();
+	public final type: InputDevice = ANY;
 
 	public var isRebinding(default, null) = false;
 
@@ -29,6 +30,4 @@ class NullInputDeviceManager implements IInputDeviceManager {
 	}
 
 	public function rebind(action: Action, category: String) {}
-
-	public function renderGamepadIcon(g: Graphics, x: Float, y: Float, sprite: Geometry, scale: Float) {}
 }

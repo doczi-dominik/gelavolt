@@ -96,6 +96,8 @@ class Main {
 
 				ScaleManager.resize(System.windowWidth(), System.windowHeight());
 
+				InputDeviceManager.init();
+
 				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 
 				#if kha_html5

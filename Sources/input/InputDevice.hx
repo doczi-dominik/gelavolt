@@ -2,5 +2,6 @@ package input;
 
 enum InputDevice {
 	KEYBOARD;
-	GAMEPAD;
+	GAMEPAD(id: Int);
+	ANY;
 }
