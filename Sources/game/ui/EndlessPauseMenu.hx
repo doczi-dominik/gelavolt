@@ -14,6 +14,8 @@ import ui.Menu;
 import ui.IListWidget;
 import save_data.TrainingSave;
 
+using DateTools;
+
 class EndlessPauseMenu extends PauseMenu {
 	final gameMode: EndlessGameMode;
 	final trainingSave: TrainingSave;
@@ -70,7 +72,7 @@ class EndlessPauseMenu extends PauseMenu {
 						final el = Browser.document.createAnchorElement();
 
 						el.href = uri;
-						el.setAttribute("download", "replay.gvr");
+						el.setAttribute("download", 'replay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvr');
 						el.click();
 					}
 				})
