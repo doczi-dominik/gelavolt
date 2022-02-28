@@ -402,8 +402,6 @@ class TrainingGameStateBuilder {
 
 		wireMediators();
 
-		gameState.pause(playerInputManager);
-
 		return gameState;
 	}
 }
