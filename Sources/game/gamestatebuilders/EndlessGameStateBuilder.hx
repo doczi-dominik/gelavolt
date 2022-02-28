@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import game.mediators.TransformationMediator;
+import game.mediators.FrameCounter;
 import save_data.Profile;
 import game.actionbuffers.ReplayActionBuffer;
 import game.actionbuffers.LocalActionBuffer;
@@ -32,15 +34,15 @@ import game.states.GameState;
 import game.screens.GameScreen;
 
 class EndlessGameStateBuilder {
-	final gameScreen: GameScreen;
-
 	final gameMode: EndlessGameMode;
+	final transformMediator: TransformationMediator;
 
 	var rng: Random;
 	var randomizer: Randomizer;
 
 	var particleManager: ParticleManager;
 	var marginManager: MarginTimeManager;
+	var frameCounter: FrameCounter;
 
 	var pauseMediator: PauseMediator;
 	var borderColorMediator: BorderColorMediator;
@@ -63,9 +65,9 @@ class EndlessGameStateBuilder {
 
 	var gameState: GameState;
 
-	public function new(gameScreen: GameScreen, gameMode: EndlessGameMode) {
-		this.gameScreen = gameScreen;
-		this.gameMode = gameMode;
+	public function new(opts: EndlessGameStateBuilderOptions) {
+		gameMode = opts.gameMode;
+		transformMediator = opts.transformMediator;
 	}
 
 	inline function buildRNG() {
@@ -88,6 +90,10 @@ class EndlessGameStateBuilder {
 
 	inline function buildMarginManager() {
 		marginManager = new MarginTimeManager(gameMode.rule);
+	}
+
+	inline function buildFrameCounter() {
+		frameCounter = new FrameCounter();
 	}
 
 	inline function buildPauseMediator() {
@@ -142,7 +148,7 @@ class EndlessGameStateBuilder {
 	inline function buildActionBuffer() {
 		if (gameMode.replayData == null) {
 			actionBuffer = new LocalActionBuffer({
-				gameScreen: gameScreen,
+				frameCounter: frameCounter,
 				inputManager: inputManager
 			});
 
@@ -150,7 +156,7 @@ class EndlessGameStateBuilder {
 		}
 
 		actionBuffer = new ReplayActionBuffer({
-			gameScreen: gameScreen,
+			frameCounter: frameCounter,
 			actions: gameMode.replayData
 		});
 	}
@@ -185,7 +191,7 @@ class EndlessGameStateBuilder {
 		boardState = new EndlessBoardState({
 			rule: gameMode.rule,
 			prefsSave: Profile.primary.prefs,
-			gameScreen: gameScreen,
+			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,
 			particleManager: particleManager,
@@ -228,11 +234,12 @@ class EndlessGameStateBuilder {
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new SingleBoardManager({
-				gameScreen: gameScreen,
+				transformMediator: transformMediator,
 				geometries: BoardGeometries.CENTERED,
 				board: board
 			}),
-			pauseMenu: pauseMenu
+			pauseMenu: pauseMenu,
+			frameCounter: frameCounter
 		});
 	}
 
@@ -247,6 +254,7 @@ class EndlessGameStateBuilder {
 
 		buildParticleManager();
 		buildMarginManager();
+		buildFrameCounter();
 
 		buildPauseMediator();
 		buildBorderColorMediator();

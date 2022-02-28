@@ -1,5 +1,6 @@
 package game.boardstates;
 
+import game.mediators.TransformationMediator;
 import game.rules.Rule;
 import save_data.PrefsSave;
 import game.Queue;
@@ -22,7 +23,7 @@ class StandardBoardStateOptions {
 	public final rule: Rule;
 	public final prefsSave: PrefsSave;
 
-	public final gameScreen: GameScreen;
+	public final transformMediator: TransformationMediator;
 	public final rng: Random;
 	public final geometries: BoardGeometries;
 	public final particleManager: ParticleManager;

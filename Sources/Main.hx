@@ -100,7 +100,7 @@ class Main {
 					fr.readAsText(ev.dataTransfer.files.item(0));
 
 					fr.onload = () -> {
-						GlobalScreenSwitcher.switchScreen(GameScreen.create(Unserializer.run(fr.result)));
+						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(fr.result)));
 					}
 				}
 				#end

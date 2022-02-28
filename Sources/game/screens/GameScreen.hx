@@ -1,6 +1,6 @@
 package game.screens;
 
-import save_data.Profile;
+import game.mediators.TransformationMediator;
 import game.gamemodes.IGameMode;
 import game.gamemodes.EndlessGameMode;
 import game.gamemodes.TrainingGameMode;
@@ -10,65 +10,32 @@ import kha.math.Random;
 import game.backgrounds.NestBackground;
 import game.states.GameState;
 import game.gamestatebuilders.TrainingGameStateBuilder;
-import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import Screen.IScreen;
 
 class GameScreen implements IScreen {
-	public static final PLAY_AREA_DESIGN_WIDTH = 1440;
-	public static final PLAY_AREA_DESIGN_HEIGHT = 1080;
+	final background: NestBackground;
+	final transformMediator: TransformationMediator;
+	final gameState: GameState;
 
-	public static function create(gameMode: IGameMode) {
-		final v = new GameScreen();
+	public function new(gameMode: IGameMode) {
+		background = new NestBackground(new Random(Std.int(System.time * 1000000)));
+		transformMediator = new TransformationMediator();
 
-		ScaleManager.addOnResizeCallback(v.updateScaling);
-
-		switch (gameMode.gameMode) {
+		gameState = switch (gameMode.gameMode) {
 			case TRAINING:
-				final opts = cast(gameMode, TrainingGameMode);
-
-				v.gameState = new TrainingGameStateBuilder(v, opts).build();
+				new TrainingGameStateBuilder({
+					gameMode: cast(gameMode, TrainingGameMode),
+					transformMediator: transformMediator
+				}).build();
 			case ENDLESS:
-				final opts = cast(gameMode, EndlessGameMode);
-
-				v.gameState = new EndlessGameStateBuilder(v, opts).build();
+				new EndlessGameStateBuilder({
+					gameMode: cast(gameMode, EndlessGameMode),
+					transformMediator: transformMediator
+				}).build();
 		}
 
-		return v;
-	}
-
-	final background: NestBackground;
-
-	var translationX: Float;
-	var translationY: Float;
-	var scale: Float;
-
-	var gameState: GameState;
-
-	public var currentFrame(get, never): Int;
-
-	function new() {
-		final seed = Std.int(System.time * 1000000);
-		background = new NestBackground(new Random(seed));
-	}
-
-	function get_currentFrame() {
-		return gameState.currentFrame;
-	}
-
-	function updateScaling() {
-		scale = ScaleManager.smallerScale;
-		translationX = (ScaleManager.width - PLAY_AREA_DESIGN_WIDTH * scale) / 2;
-		translationY = (ScaleManager.height - PLAY_AREA_DESIGN_HEIGHT * scale) / 2;
-	}
-
-	public function setTransformedScissor(g: Graphics, x: Float, y: Float, w: Float, h: Float) {
-		final tx = Std.int(translationX + x * scale);
-		final ty = Std.int(translationY + y * scale);
-		final tw = Std.int(w * scale);
-		final th = Std.int(h * scale);
-
-		g.scissor(tx, ty, tw, th);
+		ScaleManager.addOnResizeCallback(transformMediator.onResize);
 	}
 
 	public function update() {
@@ -79,8 +46,7 @@ class GameScreen implements IScreen {
 	public function render(g: Graphics, g4: kha.graphics4.Graphics, alpha: Float) {
 		background.render(g, alpha);
 
-		final transform = FastMatrix3.translation(translationX, translationY).multmat(FastMatrix3.scale(scale, scale));
-		g.pushTransformation(transform);
+		transformMediator.pushTransformation(g);
 
 		gameState.renderTransformed(g, g4, alpha);
 

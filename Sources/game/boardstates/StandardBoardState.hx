@@ -1,7 +1,7 @@
 package game.boardstates;
 
+import game.mediators.TransformationMediator;
 import game.rules.Rule;
-import game.garbage.GarbageManager;
 import utils.Utils;
 import game.simulation.SimulationStepType;
 import save_data.PrefsSave;
@@ -13,8 +13,6 @@ import kha.Color;
 import game.particles.GeloPopParticle;
 import game.particles.ParticleManager;
 import game.ChainCounter;
-import game.gelos.GeloColor;
-import game.rules.AnimationsType;
 import game.simulation.EndSimStep;
 import game.simulation.PopSimStep;
 import game.simulation.DropSimStep;
@@ -45,7 +43,7 @@ class StandardBoardState implements IBoardState {
 	final rule: Rule;
 	final prefsSave: PrefsSave;
 
-	final gameScreen: GameScreen;
+	final transformMediator: TransformationMediator;
 	final rng: Random;
 	final geometries: BoardGeometries;
 	final particleManager: ParticleManager;
@@ -87,7 +85,7 @@ class StandardBoardState implements IBoardState {
 		rule = opts.rule;
 		prefsSave = opts.prefsSave;
 
-		gameScreen = opts.gameScreen;
+		transformMediator = opts.transformMediator;
 		rng = opts.rng;
 		geometries = opts.geometries;
 		particleManager = opts.particleManager;
@@ -509,7 +507,7 @@ class StandardBoardState implements IBoardState {
 		final previewPos = geometries.preview;
 		final absPreviewPos = geometries.absolutePosition.add(previewPos);
 
-		gameScreen.setTransformedScissor(g, absPreviewPos.x - Gelo.HALFSIZE, absPreviewPos.y - Gelo.HALFSIZE, Gelo.SIZE, Gelo.SIZE * 4.5);
+		transformMediator.setTransformedScissor(g, absPreviewPos.x - Gelo.HALFSIZE, absPreviewPos.y - Gelo.HALFSIZE, Gelo.SIZE, Gelo.SIZE * 4.5);
 
 		preview.render(g, previewPos.x, previewPos.y);
 

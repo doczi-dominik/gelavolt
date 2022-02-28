@@ -2,7 +2,6 @@ package game.gamemodes;
 
 import game.actionbuffers.ReplayData;
 import game.rules.Rule;
-import save_data.Profile;
 
 @:structInit
 class EndlessGameMode implements IReplayableGameMode {

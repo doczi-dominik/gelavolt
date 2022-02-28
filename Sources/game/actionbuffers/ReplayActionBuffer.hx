@@ -1,15 +1,16 @@
 package game.actionbuffers;
 
+import game.mediators.FrameCounter;
 import game.screens.GameScreen;
 
 class ReplayActionBuffer implements IActionBuffer {
-	final gameScreen: GameScreen;
+	final frameCounter: FrameCounter;
 	final actions: ReplayData;
 
 	public var latestAction(default, null): ActionSnapshot;
 
 	public function new(opts: ReplayActionBufferOptions) {
-		gameScreen = opts.gameScreen;
+		frameCounter = opts.frameCounter;
 		actions = opts.actions;
 
 		latestAction = {
@@ -23,7 +24,7 @@ class ReplayActionBuffer implements IActionBuffer {
 	}
 
 	public function update() {
-		final current = actions[gameScreen.currentFrame];
+		final current = actions[frameCounter.value];
 
 		if (current == null)
 			return;

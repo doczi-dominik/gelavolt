@@ -1,18 +1,19 @@
 package game.actionbuffers;
 
+import game.mediators.FrameCounter;
 import game.actions.GameActions;
 import input.IInputDeviceManager;
 import game.screens.GameScreen;
 
 class LocalActionBuffer implements IActionBuffer {
-	final gameScreen: GameScreen;
+	final frameCounter: FrameCounter;
 	final inputManager: IInputDeviceManager;
 	final actions: Map<Int, ActionSnapshot>;
 
 	public var latestAction(default, null): ActionSnapshot;
 
 	public function new(opts: LocalActionBufferOptions) {
-		gameScreen = opts.gameScreen;
+		frameCounter = opts.frameCounter;
 		inputManager = opts.inputManager;
 		actions = [];
 
@@ -37,7 +38,7 @@ class LocalActionBuffer implements IActionBuffer {
 		};
 
 		if (latestAction.isNotEqual(currentAction)) {
-			actions[gameScreen.currentFrame] = currentAction;
+			actions[frameCounter.value] = currentAction;
 
 			latestAction = currentAction;
 		}

@@ -32,7 +32,7 @@ class MainMenuPage extends ListMenuPage {
 					title: "Training Mode",
 					description: ["Practice In GelaVolt's", "Signature Training Mode!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(GameScreen.create(({
+						GlobalScreenSwitcher.switchScreen(new GameScreen(({
 							rngSeed: Std.int(System.time * 1000000),
 							rule: {},
 						} : TrainingGameMode)));
@@ -42,7 +42,7 @@ class MainMenuPage extends ListMenuPage {
 					title: "Endless Mode",
 					description: ["Play For As Long As You", "Can In Endless Mode And", "Share Your Replays!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(GameScreen.create(({
+						GlobalScreenSwitcher.switchScreen(new GameScreen(({
 							rngSeed: Std.int(System.time * 1000000),
 							rule: {},
 						} : EndlessGameMode)));

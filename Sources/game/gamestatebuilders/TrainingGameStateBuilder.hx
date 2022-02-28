@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import game.mediators.TransformationMediator;
+import game.mediators.FrameCounter;
 import game.gamemodes.TrainingGameMode;
 import game.gelogroups.GeloGroup;
 import game.rules.MarginTimeManager;
@@ -43,14 +45,15 @@ import game.simulation.ChainSimulator;
 import game.geometries.BoardOrientation;
 
 class TrainingGameStateBuilder {
-	final gameScreen: GameScreen;
 	final gameMode: TrainingGameMode;
+	final transformMediator: TransformationMediator;
 
 	var rng: Random;
 	var randomizer: Randomizer;
 
 	var particleManager: ParticleManager;
 	var marginManager: MarginTimeManager;
+	var frameCounter: FrameCounter;
 
 	var pauseMediator: PauseMediator;
 	var playerBorderColorMediator: BorderColorMediator;
@@ -81,9 +84,9 @@ class TrainingGameStateBuilder {
 
 	var gameState: GameState;
 
-	public function new(gameScreen: GameScreen, gameMode: TrainingGameMode) {
-		this.gameScreen = gameScreen;
-		this.gameMode = gameMode;
+	public function new(opts: TrainingGameStateBuilderOptions) {
+		gameMode = opts.gameMode;
+		transformMediator = opts.transformMediator;
 	}
 
 	inline function buildRNG() {
@@ -106,6 +109,10 @@ class TrainingGameStateBuilder {
 
 	inline function buildMarginManager() {
 		marginManager = new MarginTimeManager(gameMode.rule);
+	}
+
+	inline function buildFrameCounter() {
+		frameCounter = new FrameCounter();
 	}
 
 	inline function buildPauseMediator() {
@@ -183,7 +190,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerActionBuffer() {
 		playerActionBuffer = new LocalActionBuffer({
-			gameScreen: gameScreen,
+			frameCounter: frameCounter,
 			inputManager: playerInputManager
 		});
 	}
@@ -253,7 +260,7 @@ class TrainingGameStateBuilder {
 			infoState: infoState,
 			rule: gameMode.rule,
 			prefsSave: Profile.primary.prefs,
-			gameScreen: gameScreen,
+			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.LEFT,
 			particleManager: particleManager,
@@ -334,17 +341,18 @@ class TrainingGameStateBuilder {
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
 				boardOne: new SingleBoardManager({
-					gameScreen: gameScreen,
+					transformMediator: transformMediator,
 					geometries: BoardGeometries.LEFT,
 					board: playerBoard
 				}),
 				boardTwo: new SingleBoardManager({
-					gameScreen: gameScreen,
+					transformMediator: transformMediator,
 					geometries: BoardGeometries.RIGHT,
 					board: infoBoard
 				})
 			}),
-			pauseMenu: pauseMenu
+			pauseMenu: pauseMenu,
+			frameCounter: frameCounter
 		});
 	}
 
@@ -361,6 +369,7 @@ class TrainingGameStateBuilder {
 
 		buildParticleManager();
 		buildMarginManager();
+		buildFrameCounter();
 
 		buildPauseMediator();
 		buildPlayerBorderColorMediator();

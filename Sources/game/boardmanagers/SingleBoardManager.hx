@@ -1,19 +1,18 @@
 package game.boardmanagers;
 
-import game.garbage.IGarbageManager;
-import game.screens.GameScreen;
+import game.mediators.TransformationMediator;
 import game.geometries.BoardGeometries;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import game.boards.IBoard;
 
 class SingleBoardManager implements IBoardManager {
-	final gameScreen: GameScreen;
+	final transformMediator: TransformationMediator;
 	final geometries: BoardGeometries;
 	final board: IBoard;
 
 	public function new(opts: SingleBoardManagerOptions) {
-		gameScreen = opts.gameScreen;
+		transformMediator = opts.transformMediator;
 		geometries = opts.geometries;
 		board = opts.board;
 	}
@@ -33,7 +32,7 @@ class SingleBoardManager implements IBoardManager {
 
 		g.pushTransformation(g.transformation.multmat(transform));
 
-		gameScreen.setTransformedScissor(g, absX, absY, BoardGeometries.WIDTH * scale, BoardGeometries.HEIGHT * scale);
+		transformMediator.setTransformedScissor(g, absX, absY, BoardGeometries.WIDTH * scale, BoardGeometries.HEIGHT * scale);
 		board.renderScissored(g, g4, alpha);
 		g.disableScissor();
 

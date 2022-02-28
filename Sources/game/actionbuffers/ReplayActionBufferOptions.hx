@@ -1,9 +1,9 @@
 package game.actionbuffers;
 
-import game.screens.GameScreen;
+import game.mediators.FrameCounter;
 
 @:structInit
 class ReplayActionBufferOptions {
-	public final gameScreen: GameScreen;
+	public final frameCounter: FrameCounter;
 	public final actions: ReplayData;
 }
