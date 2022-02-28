@@ -1,5 +1,7 @@
 package game.screens;
 
+import save_data.Profile;
+import input.InputDeviceManager;
 import game.mediators.TransformationMediator;
 import game.gamemodes.IGameMode;
 import game.gamemodes.EndlessGameMode;
@@ -22,7 +24,13 @@ class GameScreen implements IScreen {
 		background = new NestBackground(new Random(Std.int(System.time * 1000000)));
 		transformMediator = new TransformationMediator();
 
-		gameState = switch (gameMode.gameMode) {
+		gameState = setGameState(gameMode);
+
+		ScaleManager.addOnResizeCallback(transformMediator.onResize);
+	}
+
+	function setGameState(gameMode: IGameMode) {
+		return switch (gameMode.gameMode) {
 			case TRAINING:
 				new TrainingGameStateBuilder({
 					gameMode: cast(gameMode, TrainingGameMode),
@@ -31,11 +39,10 @@ class GameScreen implements IScreen {
 			case ENDLESS:
 				new EndlessGameStateBuilder({
 					gameMode: cast(gameMode, EndlessGameMode),
-					transformMediator: transformMediator
+					transformMediator: transformMediator,
+					inputManager: new InputDeviceManager(Profile.primary.input)
 				}).build();
 		}
-
-		ScaleManager.addOnResizeCallback(transformMediator.onResize);
 	}
 
 	public function update() {

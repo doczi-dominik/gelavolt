@@ -1,5 +1,6 @@
 package;
 
+import game.screens.ReplayScreen;
 import save_data.Profile;
 import main_menu.MainMenuScreen;
 import haxe.Unserializer;
@@ -104,7 +105,7 @@ class Main {
 					fr.readAsText(ev.dataTransfer.files.item(0));
 
 					fr.onload = () -> {
-						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(fr.result)));
+						GlobalScreenSwitcher.switchScreen(new ReplayScreen(Unserializer.run(fr.result)));
 					}
 				}
 				#else
@@ -112,7 +113,7 @@ class Main {
 					try {
 						final contents = File.getContent(path.trim());
 
-						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(contents)));
+						GlobalScreenSwitcher.switchScreen(new ReplayScreen(Unserializer.run(contents)));
 					} catch (_) {}
 				});
 				#end

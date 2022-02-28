@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import input.IInputDeviceManager;
 import game.ui.PauseMenu;
 import game.ui.ReplayPauseMenu;
 import game.mediators.TransformationMediator;
@@ -36,6 +37,7 @@ import game.states.GameState;
 class EndlessGameStateBuilder {
 	final gameMode: EndlessGameMode;
 	final transformMediator: TransformationMediator;
+	final inputManager: IInputDeviceManager;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -52,7 +54,6 @@ class EndlessGameStateBuilder {
 	var chainCounter: ChainCounter;
 	var field: Field;
 	var queue: Queue;
-	var inputManager: InputDeviceManager;
 	var actionBuffer: IActionBuffer;
 	var geloGroup: GeloGroup;
 	var allClearManager: AllClearManager;
@@ -68,6 +69,7 @@ class EndlessGameStateBuilder {
 	public function new(opts: EndlessGameStateBuilderOptions) {
 		gameMode = opts.gameMode;
 		transformMediator = opts.transformMediator;
+		inputManager = opts.inputManager;
 	}
 
 	inline function buildRNG() {
@@ -139,10 +141,6 @@ class EndlessGameStateBuilder {
 
 	inline function buildQueue() {
 		queue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
-	}
-
-	inline function buildInputManager() {
-		inputManager = new InputDeviceManager(Profile.primary.input);
 	}
 
 	inline function buildActionBuffer() {
@@ -275,7 +273,6 @@ class EndlessGameStateBuilder {
 		buildChainCounter();
 		buildField();
 		buildQueue();
-		buildInputManager();
 		buildActionBuffer();
 		buildGeloGroup();
 		buildAllClearManager();
