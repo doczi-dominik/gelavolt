@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import ui.SubPageWidget;
 import save_data.PrefsSave;
 import save_data.SaveManager;
 import ui.NumberRangeWidget;

@@ -3,9 +3,6 @@ package;
 import save_data.Profile;
 import main_menu.MainMenuScreen;
 import haxe.Unserializer;
-import js.html.FileReader;
-import js.html.DragEvent;
-import js.Browser;
 import save_data.SaveManager;
 import input.InputDeviceManager;
 import Screen.GlobalScreenSwitcher;
@@ -13,14 +10,21 @@ import game.screens.GameScreen;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
-#if kha_html5
+#if js
 import js.Browser.document;
 import js.Browser.window;
 import js.html.CanvasElement;
 import kha.Macros;
+import js.html.FileReader;
+import js.html.DragEvent;
+import js.Browser;
 #else
 import kha.Window;
+import sys.FileSystem;
+import sys.io.File;
 #end
+
+using StringTools;
 
 /**
  * The entry point. Responsible for setting up Kha and making the HTML5 canvas
@@ -103,6 +107,14 @@ class Main {
 						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(fr.result)));
 					}
 				}
+				#else
+				System.notifyOnDropFiles((path) -> {
+					try {
+						final contents = File.getContent(path.trim());
+
+						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(contents)));
+					} catch (_) {}
+				});
 				#end
 
 				lastT = Scheduler.realTime();

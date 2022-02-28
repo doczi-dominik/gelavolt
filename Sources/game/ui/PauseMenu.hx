@@ -52,7 +52,7 @@ class PauseMenu extends Menu {
 				callback: () -> {
 					pushPage(new MainMenuPage(prefsSave));
 				}
-			})
+			}),
 			#if sys
 			new ButtonWidget({
 				title: "Exit To Desktop",

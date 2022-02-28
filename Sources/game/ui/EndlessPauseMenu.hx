@@ -2,9 +2,6 @@ package game.ui;
 
 import game.gamemodes.EndlessGameMode;
 import haxe.Serializer;
-import js.html.URL;
-import js.html.File;
-import js.Browser;
 import game.actionbuffers.IActionBuffer;
 import ui.ButtonWidget;
 import save_data.SaveManager;
@@ -13,6 +10,13 @@ import ui.OptionListWidget;
 import ui.Menu;
 import ui.IListWidget;
 import save_data.TrainingSave;
+#if js
+import js.html.URL;
+import js.html.File;
+import js.Browser;
+#else
+import sys.io.File;
+#end
 
 using DateTools;
 
@@ -59,21 +63,29 @@ class EndlessPauseMenu extends PauseMenu {
 				new ButtonWidget({
 					title: "Save Replay",
 					description: [
-						"Download A Replay File Of This Session.",
+						#if kha_html5 "Download A Replay File Of This Session", #else "Save A Replay File To GelaVolt's Folder",
+						#end
+						"",
 						"To View It, Just Drag & Drop The File",
-						"On The GelaVolt Window"
+						"On The GelaVolt Window",
 					],
 					callback: () -> {
 						final data = gameMode.copyWithReplay(actionBuffer.exportReplayData());
+						final serialized = Serializer.run(data);
+						final filename = 'replay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvr';
 
+						#if js
 						final file = new File([Serializer.run(data)], "replay.gvr");
 						final uri = URL.createObjectURL(file);
 
 						final el = Browser.document.createAnchorElement();
 
 						el.href = uri;
-						el.setAttribute("download", 'replay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvr');
+						el.setAttribute("download", filename);
 						el.click();
+						#else
+						File.saveContent(filename, serialized);
+						#end
 					}
 				})
 			]
