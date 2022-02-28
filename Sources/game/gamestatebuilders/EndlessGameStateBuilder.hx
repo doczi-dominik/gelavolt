@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import game.ui.PauseMenu;
+import game.ui.ReplayPauseMenu;
 import game.mediators.TransformationMediator;
 import game.mediators.FrameCounter;
 import save_data.Profile;
@@ -8,7 +10,6 @@ import game.actionbuffers.LocalActionBuffer;
 import input.InputDeviceManager;
 import game.gamemodes.EndlessGameMode;
 import game.actionbuffers.IActionBuffer;
-import input.IInputDeviceManager;
 import game.ui.EndlessPauseMenu;
 import game.boardstates.EndlessBoardState;
 import game.boardmanagers.SingleBoardManager;
@@ -31,7 +32,6 @@ import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
 import kha.math.Random;
 import game.states.GameState;
-import game.screens.GameScreen;
 
 class EndlessGameStateBuilder {
 	final gameMode: EndlessGameMode;
@@ -61,7 +61,7 @@ class EndlessGameStateBuilder {
 
 	var board: SingleStateBoard;
 
-	var pauseMenu: EndlessPauseMenu;
+	var pauseMenu: PauseMenu;
 
 	var gameState: GameState;
 
@@ -221,12 +221,22 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildPauseMenu() {
-		pauseMenu = new EndlessPauseMenu({
+		if (gameMode.replayData == null) {
+			pauseMenu = new EndlessPauseMenu({
+				pauseMediator: pauseMediator,
+				prefsSave: Profile.primary.prefs,
+				trainingSave: Profile.primary.training,
+				actionBuffer: actionBuffer,
+				gameMode: gameMode
+			});
+
+			return;
+		}
+
+		pauseMenu = new ReplayPauseMenu({
 			pauseMediator: pauseMediator,
 			prefsSave: Profile.primary.prefs,
-			trainingSave: Profile.primary.training,
-			actionBuffer: actionBuffer,
-			gameMode: gameMode
+			actionBuffer: cast(actionBuffer, ReplayActionBuffer),
 		});
 	}
 
