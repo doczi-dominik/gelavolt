@@ -157,7 +157,8 @@ class EndlessGameStateBuilder {
 
 		actionBuffer = new ReplayActionBuffer({
 			frameCounter: frameCounter,
-			actions: gameMode.replayData
+			inputManager: inputManager,
+			replayData: gameMode.replayData
 		});
 	}
 

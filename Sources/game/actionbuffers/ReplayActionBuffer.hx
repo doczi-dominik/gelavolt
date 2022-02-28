@@ -1,38 +1,37 @@
 package game.actionbuffers;
 
 import game.mediators.FrameCounter;
-import game.screens.GameScreen;
 
-class ReplayActionBuffer implements IActionBuffer {
-	final frameCounter: FrameCounter;
-	final actions: ReplayData;
+private enum abstract Mode(Int) {
+	final REPLAY;
+	final TAKE_CONTROL;
+}
 
-	public var latestAction(default, null): ActionSnapshot;
+class ReplayActionBuffer extends LocalActionBuffer {
+	final replayData: ReplayData;
+
+	public var mode: Mode;
 
 	public function new(opts: ReplayActionBufferOptions) {
-		frameCounter = opts.frameCounter;
-		actions = opts.actions;
+		super(opts);
 
-		latestAction = {
-			shiftLeft: false,
-			shiftRight: false,
-			rotateLeft: false,
-			rotateRight: false,
-			softDrop: false,
-			hardDrop: false
-		};
+		replayData = opts.replayData;
+
+		mode = REPLAY;
 	}
 
-	public function update() {
-		final current = actions[frameCounter.value];
+	override function update() {
+		if (mode == REPLAY) {
+			final current = replayData[frameCounter.value];
 
-		if (current == null)
+			if (current == null)
+				return;
+
+			latestAction = ActionSnapshot.fromBitField(current);
+
 			return;
+		}
 
-		latestAction = ActionSnapshot.fromBitField(current);
-	}
-
-	public function exportReplayData() {
-		return new ReplayData();
+		super.update();
 	}
 }
