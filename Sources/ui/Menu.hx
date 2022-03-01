@@ -2,7 +2,6 @@ package ui;
 
 import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
-import game.actions.ActionCategory;
 import input.InputDeviceManager;
 import kha.Assets;
 import kha.Font;
@@ -70,15 +69,13 @@ class Menu {
 	}
 
 	function renderKeyboardControls(g: Graphics) {
-		final mappings = inputManager.inputSave.mappings[MENU];
-
 		var x = padding;
 
 		for (d in pages.first().controlDisplays) {
 			var str = "";
 
-			for (key in d.actions) {
-				str += '${KEY_CODE_TO_STRING[mappings[key].keyboardInput]}/';
+			for (action in d.actions) {
+				str += '${KEY_CODE_TO_STRING[inputManager.inputSettings.getMapping(action).keyboardInput]}/';
 			}
 
 			str = str.substring(0, str.length - 1);
@@ -96,7 +93,6 @@ class Menu {
 
 	function renderGamepadControls(g: Graphics) {
 		final ssc = ScaleManager.smallerScale;
-		final mappings = inputManager.inputSave.mappings[MENU];
 
 		final y = ScaleManager.height - headerFontHeight;
 
@@ -105,8 +101,8 @@ class Menu {
 		for (d in pages.first().controlDisplays) {
 			var str = "";
 
-			for (key in d.actions) {
-				final spr = GAMEPAD_SPRITE_COORDINATES[mappings[key].gamepadInput];
+			for (action in d.actions) {
+				final spr = GAMEPAD_SPRITE_COORDINATES[inputManager.inputSettings.getMapping(action).gamepadInput];
 
 				InputDeviceManager.renderGamepadIcon(g, x, y, spr, controlsFontHeight / spr.height);
 

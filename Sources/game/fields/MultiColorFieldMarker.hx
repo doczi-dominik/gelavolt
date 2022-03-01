@@ -1,7 +1,7 @@
 package game.fields;
 
 import game.gelos.GeloColor;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import kha.Assets;
 import kha.graphics2.Graphics;
 import kha.Color;
@@ -20,7 +20,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 		return m;
 	}
 
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 	final spriteCoordinates: Point;
 	final defaultColor: GeloColor;
 
@@ -29,7 +29,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 	public final type: FieldMarkerType;
 
 	function new(opts: ConstructorOptions) {
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 		spriteCoordinates = opts.spriteCoordinates;
 		defaultColor = opts.defaultColor;
 
@@ -38,7 +38,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 
 	public function copy() {
 		final c = new MultiColorFieldMarker({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			spriteCoordinates: spriteCoordinates,
 			defaultColor: defaultColor,
 			type: type
@@ -72,7 +72,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 		final width = 64 / colorCount;
 
 		for (i in 0...colorCount) {
-			g.color = prefsSave.primaryColors[colors[i]];
+			g.color = prefsSettings.getPrimaryColor(colors[i]);
 
 			g.drawSubImage(Assets.images.pixel, x + i * width, y, spriteCoordinates.x + i * width, spriteCoordinates.y, width, 64);
 		}
@@ -83,7 +83,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 
 @:structInit
 class ConstructorOptions {
-	public final prefsSave: PrefsSave;
+	public final prefsSettings: PrefsSettings;
 	public final type: FieldMarkerType;
 	public final spriteCoordinates: Point;
 	public final defaultColor: GeloColor;

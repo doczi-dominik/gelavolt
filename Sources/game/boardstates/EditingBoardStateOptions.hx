@@ -1,7 +1,7 @@
 package game.boardstates;
 
 import game.fields.Field;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.simulation.ChainSimulator;
 import game.ChainCounter;
 import game.fields.Field;
@@ -15,5 +15,5 @@ class EditingBoardStateOptions {
 	public final field: Field;
 	public final chainSim: ChainSimulator;
 	public final chainCounter: ChainCounter;
-	public final prefsSave: PrefsSave;
+	public final prefsSettings: PrefsSettings;
 }

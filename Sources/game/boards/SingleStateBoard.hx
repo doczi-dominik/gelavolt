@@ -1,7 +1,6 @@
 package game.boards;
 
 import game.mediators.PauseMediator;
-import game.actions.MenuActions;
 import game.boardstates.IBoardState;
 import input.IInputDeviceManager;
 import game.actionbuffers.IActionBuffer;

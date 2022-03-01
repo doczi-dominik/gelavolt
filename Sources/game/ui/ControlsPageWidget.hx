@@ -1,14 +1,13 @@
 package game.ui;
 
-import game.actions.ActionCategory;
 import ui.SubPageWidget;
 
 class ControlsPageWidget extends SubPageWidget {
-	public function new(category: ActionCategory) {
+	public function new(opts: ControlsPageWidgetOptions) {
 		super({
-			title: category,
-			description: [""],
-			subPage: new ControlsPage(category),
+			title: opts.title,
+			description: opts.description,
+			subPage: new ControlsPage(opts.title, opts.actions),
 		});
 	}
 }

@@ -10,7 +10,7 @@ class ReplayScreen extends GameScreen {
 	final inputManager: InputDeviceManager;
 
 	public function new(gameMode: IGameMode) {
-		inputManager = new InputDeviceManager(Profile.primary.input, KEYBOARD);
+		inputManager = new InputDeviceManager(Profile.primary.inputSettings, KEYBOARD);
 
 		super(gameMode);
 	}

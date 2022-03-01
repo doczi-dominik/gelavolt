@@ -1,8 +1,6 @@
 package game.boards;
 
 import game.mediators.PauseMediator;
-import game.actions.TrainingActions;
-import game.actions.MenuActions;
 import game.boardstates.TrainingBoardState;
 import game.boardstates.TrainingInfoBoardState;
 import game.boardstates.EditingBoardState;
@@ -10,7 +8,6 @@ import game.actionbuffers.IActionBuffer;
 import input.IInputDeviceManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
-import game.garbage.IGarbageManager;
 import game.boardstates.IBoardState;
 
 class TrainingBoard implements IBoard {

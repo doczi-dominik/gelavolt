@@ -1,10 +1,9 @@
 package game.ui;
 
+import game.actions.ActionTitles.ACTION_TITLES;
 import input.InputDeviceManager;
 import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
-import game.actions.ActionCategory;
-import game.actions.MenuActions;
 import ui.ControlDisplay;
 import game.actions.Action;
 import kha.graphics2.Graphics;
@@ -13,7 +12,6 @@ import ui.IListWidget;
 
 class InputWidget implements IListWidget {
 	final menu: Menu;
-	final category: ActionCategory;
 
 	public final action: Action;
 
@@ -22,9 +20,8 @@ class InputWidget implements IListWidget {
 
 	public var isRebinding: Bool;
 
-	public function new(menu: Menu, category: ActionCategory, action: Action) {
+	public function new(menu: Menu, action: Action) {
 		this.menu = menu;
-		this.category = category;
 		this.action = action;
 
 		isRebinding = false;
@@ -45,9 +42,9 @@ class InputWidget implements IListWidget {
 		}
 
 		final inputManager = menu.inputManager;
-		final mapping = inputManager.inputSave.mappings[category][action];
+		final mapping = inputManager.inputSettings.getMapping(action);
 
-		final str = '$action : ${KEY_CODE_TO_STRING[mapping.keyboardInput]} / ';
+		final str = '${ACTION_TITLES[action]} : ${KEY_CODE_TO_STRING[mapping.keyboardInput]} / ';
 		final w = g.font.width(g.fontSize, str);
 		final h = g.font.height(g.fontSize);
 

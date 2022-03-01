@@ -1,6 +1,5 @@
 package ui;
 
-import game.actions.MenuActions;
 import kha.graphics2.Graphics;
 import utils.Utils.limitDecimals;
 

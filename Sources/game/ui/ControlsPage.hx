@@ -1,29 +1,15 @@
 package game.ui;
 
+import game.actions.Action;
 import ui.IListWidget;
-import game.actions.OrderedCategoryKeys;
-import game.actions.ActionCategory;
-import save_data.InputSave;
 import save_data.SaveManager;
-import game.actions.MenuActions;
-import ui.Menu;
 import ui.ListMenuPage;
 
 class ControlsPage extends ListMenuPage {
-	final category: ActionCategory;
-
-	public function new(category: ActionCategory) {
+	public function new(header: String, actions: Array<Action>) {
 		super({
-			header: category,
-			widgetBuilder: (menu) -> {
-				final widgets: Array<IListWidget> = [];
-
-				for (k in OrderedCategoryKeys[category]) {
-					widgets.push(new InputWidget(menu, category, k));
-				}
-
-				return widgets;
-			}
+			header: header,
+			widgetBuilder: (menu) -> actions.map((action) -> (new InputWidget(menu, action) : IListWidget))
 		});
 
 		controlDisplays = [
@@ -31,8 +17,6 @@ class ControlsPage extends ListMenuPage {
 			{actions: [BACK], description: "Back"},
 			{actions: [CONFIRM], description: "Rebind"}
 		];
-
-		this.category = category;
 	}
 
 	override function update() {
@@ -43,7 +27,7 @@ class ControlsPage extends ListMenuPage {
 		final currentWidget = cast(widgets[widgetIndex], InputWidget);
 
 		if (inputManager.getAction(CONFIRM)) {
-			inputManager.rebind(currentWidget.action, category);
+			inputManager.rebind(currentWidget.action);
 		}
 
 		if (currentWidget.isRebinding && !inputManager.isRebinding) {

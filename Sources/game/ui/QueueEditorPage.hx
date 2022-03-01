@@ -1,7 +1,6 @@
 package game.ui;
 
 import ui.ControlDisplay;
-import game.actions.MenuActions;
 import utils.Point;
 import kha.math.FastMatrix3;
 import game.gelos.Gelo;

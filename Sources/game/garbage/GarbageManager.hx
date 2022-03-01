@@ -6,7 +6,7 @@ import kha.math.Random;
 import game.particles.PixelFloatParticle;
 import utils.Utils;
 import game.mediators.GarbageTargetMediator;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.garbage.trays.GarbageTray;
 import game.gelos.Gelo;
 import game.geometries.BoardGeometries;
@@ -20,7 +20,7 @@ import game.rules.Rule;
 class GarbageManager implements IGarbageManager {
 	final rule: Rule;
 	final rng: Random;
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 	final particleManager: ParticleManager;
 	final geometries: BoardGeometries;
 	final tray: GarbageTray;
@@ -36,7 +36,7 @@ class GarbageManager implements IGarbageManager {
 	public function new(opts: GarbageManagerOptions) {
 		rule = opts.rule;
 		rng = opts.rng;
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 		particleManager = opts.particleManager;
 		geometries = opts.geometries;
 		tray = opts.tray;
@@ -94,7 +94,7 @@ class GarbageManager implements IGarbageManager {
 			final trayCenter = targetGeometries.garbageTray.add({x: BoardGeometries.CENTER.x, y: Gelo.HALFSIZE});
 			final absTrayCenter = targetGeometries.absolutePosition.add(trayCenter);
 
-			final primaryColor = prefsSave.primaryColors[b.color];
+			final primaryColor = prefsSettings.getPrimaryColor(b.color);
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
 				particleManager: particleManager,
@@ -125,7 +125,7 @@ class GarbageManager implements IGarbageManager {
 		for (b in beginners) {
 			final absBegin = absPos.add({x: b.x, y: b.y});
 
-			final primaryColor = prefsSave.primaryColors[b.color];
+			final primaryColor = prefsSettings.getPrimaryColor(b.color);
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
 				particleManager: particleManager,
@@ -163,7 +163,7 @@ class GarbageManager implements IGarbageManager {
 		final absTargetTrayCenter = targetGeometries.absolutePosition.add(targetTrayCenter);
 
 		for (b in beginners) {
-			final primaryColor = prefsSave.primaryColors[b.color];
+			final primaryColor = prefsSettings.getPrimaryColor(b.color);
 			final absBegin = absPos.add({x: b.x, y: b.y});
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({

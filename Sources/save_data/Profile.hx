@@ -1,10 +1,14 @@
 package save_data;
 
+import save_data.TrainingSettings;
+import save_data.PrefsSettings;
+import save_data.InputSettings;
 import game.geometries.BoardGeometries;
 
 /**
  * User-defined settings and preferences.
  */
+@:structInit
 class Profile {
 	/**
 	 * The `primary` profile is used for storing session-universal information.
@@ -23,39 +27,46 @@ class Profile {
 	 */
 	public static var primary: Profile;
 
-	public var input: Null<InputSave>;
-	public var prefs: Null<PrefsSave>;
-	public var training: Null<TrainingSave>;
+	@:optional public var inputSettings: InputSettings = {};
+	@:optional public var prefsSettings: PrefsSettings = {};
+	@:optional public var trainingSettings: TrainingSettings = {};
 
-	// Solo layout options
-	public var soloLayoutGeometries: Null<BoardGeometries>;
-
-	// Dual layout options
-	public var dualLayoutLeftGeometries: Null<BoardGeometries>;
-	public var dualLayoutRightGeometries: Null<BoardGeometries>;
-
-	public function new() {
-		setDefaults();
-	}
-
-	public function setDefaults() {
-		if (input == null)
-			input = new InputSave();
-		input.setDefaults();
-
-		if (prefs == null)
-			prefs = new PrefsSave();
-		prefs.setDefaults();
-
-		if (training == null)
-			training = new TrainingSave();
-		training.setDefaults();
-
-		if (soloLayoutGeometries == null)
-			soloLayoutGeometries = BoardGeometries.CENTERED;
-		if (dualLayoutLeftGeometries == null)
-			dualLayoutLeftGeometries = BoardGeometries.LEFT;
-		if (dualLayoutRightGeometries == null)
-			dualLayoutRightGeometries = BoardGeometries.RIGHT;
+	public function exportData(): ProfileData {
+		return {
+			inputSettings: {
+				menu: inputSettings.menu,
+				game: inputSettings.game,
+				training: inputSettings.training
+			},
+			prefsSettings: {
+				colorTints: prefsSettings.colorTints,
+				primaryColors: prefsSettings.primaryColors,
+				boardBackground: prefsSettings.boardBackground,
+				capAtCrowns: prefsSettings.capAtCrowns,
+				showGroupShadow: prefsSettings.showGroupShadow,
+				shadowOpacity: prefsSettings.shadowOpacity,
+				shadowHighlightOthers: prefsSettings.shadowHighlightOthers,
+				shadowWillTriggerChain: prefsSettings.shadowWillTriggerChain
+			},
+			trainingSettings: {
+				clearOnXMode: trainingSettings.clearOnXMode,
+				autoClear: trainingSettings.autoClear,
+				autoAttack: trainingSettings.autoAttack,
+				minAttackTime: trainingSettings.minAttackTime,
+				maxAttackTime: trainingSettings.maxAttackTime,
+				minAttackChain: trainingSettings.minAttackChain,
+				maxAttackChain: trainingSettings.maxAttackChain,
+				minAttackGroupDiff: trainingSettings.minAttackGroupDiff,
+				maxAttackGroupDiff: trainingSettings.maxAttackGroupDiff,
+				minAttackColors: trainingSettings.minAttackColors,
+				maxAttackColors: trainingSettings.maxAttackColors
+			}
+		};
 	}
 }
+
+typedef ProfileData = {
+	inputSettings: InputSettingsData,
+	prefsSettings: PrefsSettingsData,
+	trainingSettings: TrainingSettingsData
+};

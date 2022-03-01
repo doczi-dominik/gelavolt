@@ -8,7 +8,7 @@ import ui.ButtonWidget;
 import save_data.SaveManager;
 import save_data.ClearOnXMode;
 import game.garbage.GarbageManager;
-import save_data.TrainingSave;
+import save_data.TrainingSettings;
 import game.rules.MarginTimeManager;
 import game.simulation.ChainSimulator;
 import game.all_clear.AllClearManager;
@@ -33,7 +33,7 @@ class TrainingPauseMenu extends PauseMenu {
 	final allClearManager: AllClearManager;
 	final chainSim: ChainSimulator;
 	final marginManager: MarginTimeManager;
-	final trainingSave: TrainingSave;
+	final trainingSettings: TrainingSettings;
 	final playerGarbageManager: GarbageManager;
 	final infoGarbageManager: GarbageManager;
 
@@ -47,7 +47,7 @@ class TrainingPauseMenu extends PauseMenu {
 		allClearManager = opts.allClearManager;
 		chainSim = opts.chainSim;
 		marginManager = opts.marginManager;
-		trainingSave = opts.trainingSave;
+		trainingSettings = opts.trainingSettings;
 		playerGarbageManager = opts.playerGarbageManager;
 		infoGarbageManager = opts.infoGarbageManager;
 
@@ -55,7 +55,7 @@ class TrainingPauseMenu extends PauseMenu {
 	}
 
 	override function generateInitalPage(_: Menu): Array<IListWidget> {
-		final trainingSave = new ListSubPageWidget({
+		final trainingSettings = new ListSubPageWidget({
 			header: "Training Options",
 			description: ["Change Various Options And Settings", "To Help Elevate Your Practice!"],
 			widgetBuilder: (_) -> [
@@ -75,13 +75,13 @@ class TrainingPauseMenu extends PauseMenu {
 								"NEW: CLEAR + Regenerate Queue"
 							],
 							options: [ClearOnXMode.CLEAR, RESTART, NEW],
-							startIndex: switch (trainingSave.clearOnXMode) {
+							startIndex: switch (trainingSettings.clearOnXMode) {
 								case CLEAR: 0;
 								case RESTART: 1;
 								case NEW: 2;
 							},
 							onChange: (value) -> {
-								trainingSave.clearOnXMode = value;
+								trainingSettings.clearOnXMode = value;
 								SaveManager.saveProfiles();
 							}
 						}),
@@ -103,9 +103,9 @@ class TrainingPauseMenu extends PauseMenu {
 								"Information Display Before",
 								"Every Chain"
 							],
-							defaultValue: trainingSave.autoClear,
+							defaultValue: trainingSettings.autoClear,
 							onChange: (value) -> {
-								trainingSave.autoClear = value;
+								trainingSettings.autoClear = value;
 								SaveManager.saveProfiles();
 							}
 						}),
@@ -120,9 +120,9 @@ class TrainingPauseMenu extends PauseMenu {
 								new YesNoWidget({
 									title: "Enable",
 									description: ["Enable Or Disable", "Auto-Attacking"],
-									defaultValue: trainingSave.autoAttack,
+									defaultValue: trainingSettings.autoAttack,
 									onChange: (value) -> {
-										trainingSave.autoAttack = value;
+										trainingSettings.autoAttack = value;
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -137,9 +137,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 1,
 									maxValue: 90,
 									delta: 1,
-									startValue: trainingSave.minAttackTime,
+									startValue: trainingSettings.minAttackTime,
 									onChange: (value) -> {
-										trainingSave.minAttackTime = Std.int(value);
+										trainingSettings.minAttackTime = Std.int(value);
 										infoState.resetAutoAttackWaitingState();
 										SaveManager.saveProfiles();
 									}
@@ -150,9 +150,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 1,
 									maxValue: 90,
 									delta: 1,
-									startValue: trainingSave.maxAttackTime,
+									startValue: trainingSettings.maxAttackTime,
 									onChange: (value) -> {
-										trainingSave.maxAttackTime = Std.int(value);
+										trainingSettings.maxAttackTime = Std.int(value);
 										infoState.resetAutoAttackWaitingState();
 										SaveManager.saveProfiles();
 									}
@@ -163,9 +163,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 1,
 									maxValue: 50,
 									delta: 1,
-									startValue: trainingSave.minAttackChain,
+									startValue: trainingSettings.minAttackChain,
 									onChange: (value) -> {
-										trainingSave.minAttackChain = Std.int(value);
+										trainingSettings.minAttackChain = Std.int(value);
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -175,9 +175,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 1,
 									maxValue: 50,
 									delta: 1,
-									startValue: trainingSave.maxAttackChain,
+									startValue: trainingSettings.maxAttackChain,
 									onChange: (value) -> {
-										trainingSave.maxAttackChain = Std.int(value);
+										trainingSettings.maxAttackChain = Std.int(value);
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -187,9 +187,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 1,
 									maxValue: 5,
 									delta: 1,
-									startValue: trainingSave.minAttackColors,
+									startValue: trainingSettings.minAttackColors,
 									onChange: (value) -> {
-										trainingSave.minAttackColors = Std.int(value);
+										trainingSettings.minAttackColors = Std.int(value);
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -199,9 +199,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 1,
 									maxValue: 5,
 									delta: 1,
-									startValue: trainingSave.maxAttackColors,
+									startValue: trainingSettings.maxAttackColors,
 									onChange: (value) -> {
-										trainingSave.maxAttackColors = Std.int(value);
+										trainingSettings.maxAttackColors = Std.int(value);
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -211,9 +211,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 0,
 									maxValue: 14,
 									delta: 1,
-									startValue: trainingSave.minAttackGroupDiff,
+									startValue: trainingSettings.minAttackGroupDiff,
 									onChange: (value) -> {
-										trainingSave.minAttackGroupDiff = Std.int(value);
+										trainingSettings.minAttackGroupDiff = Std.int(value);
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -223,9 +223,9 @@ class TrainingPauseMenu extends PauseMenu {
 									minValue: 0,
 									maxValue: 14,
 									delta: 1,
-									startValue: trainingSave.maxAttackGroupDiff,
+									startValue: trainingSettings.maxAttackGroupDiff,
 									onChange: (value) -> {
-										trainingSave.maxAttackGroupDiff = Std.int(value);
+										trainingSettings.maxAttackGroupDiff = Std.int(value);
 										SaveManager.saveProfiles();
 									}
 								})
@@ -484,7 +484,7 @@ class TrainingPauseMenu extends PauseMenu {
 
 		final pauseMenuOptions = super.generateInitalPage(_);
 
-		pauseMenuOptions.unshift(trainingSave);
+		pauseMenuOptions.unshift(trainingSettings);
 
 		return pauseMenuOptions;
 	}

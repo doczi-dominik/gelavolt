@@ -23,7 +23,7 @@ class GarbageGelo extends FieldGelo {
 
 	override function copy(): FieldGelo {
 		final p = new GarbageGelo({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: color
 		});
 

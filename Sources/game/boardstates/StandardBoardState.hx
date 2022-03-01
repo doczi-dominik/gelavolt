@@ -4,7 +4,7 @@ import game.mediators.TransformationMediator;
 import game.rules.Rule;
 import utils.Utils;
 import game.simulation.SimulationStepType;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.fields.Field;
 import game.gelos.GeloPoint;
 import game.gelos.Gelo;
@@ -41,7 +41,7 @@ private enum InnerState {
 
 class StandardBoardState implements IBoardState {
 	final rule: Rule;
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
 	final transformMediator: TransformationMediator;
 	final rng: Random;
@@ -83,7 +83,7 @@ class StandardBoardState implements IBoardState {
 
 	public function new(opts: StandardBoardStateOptions) {
 		rule = opts.rule;
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 
 		transformMediator = opts.transformMediator;
 		rng = opts.rng;
@@ -329,7 +329,7 @@ class StandardBoardState implements IBoardState {
 					dy: -10 * rng.GetFloatIn(0.5, 1.5),
 					dyIncrement: 0.75 * rng.GetFloatIn(0.5, 1.5),
 					maxT: Std.int((30 + i * 6) * rng.GetFloatIn(0.5, 1.5)),
-					color: prefsSave.primaryColors[c.color]
+					color: prefsSettings.getPrimaryColor(c.color)
 				}));
 			}
 		}
@@ -484,7 +484,7 @@ class StandardBoardState implements IBoardState {
 	}
 
 	public function renderScissored(g: Graphics, g4: Graphics4, alpha: Float) {
-		g.color = Color.fromBytes(prefsSave.boardBackgroundR, prefsSave.boardBackgroundG, prefsSave.boardBackgroundB);
+		g.color = prefsSettings.boardBackground;
 		g.fillRect(0, 0, BoardGeometries.WIDTH, BoardGeometries.HEIGHT);
 		g.color = White;
 

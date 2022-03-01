@@ -5,27 +5,26 @@ import main_menu.ui.OptionsPage;
 import ui.YesNoWidget;
 import game.mediators.PauseMediator;
 import save_data.SaveManager;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import ui.NumberRangeWidget;
 import ui.IListWidget;
 import ui.SubPageWidget;
 import ui.ButtonWidget;
 import ui.ListMenuPage;
 import ui.Menu;
-import game.actions.MenuActions;
 import kha.graphics2.Graphics;
 #if sys
 import kha.Window;
 #end
 
 class PauseMenu extends Menu {
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 	final pauseMediator: PauseMediator;
 
 	public var updateGameState(default, null) = false;
 
 	public function new(opts: PauseMenuOptions) {
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 		pauseMediator = opts.pauseMediator;
 
 		super(new ListMenuPage({
@@ -44,13 +43,13 @@ class PauseMenu extends Menu {
 			new SubPageWidget({
 				title: "Options",
 				description: ["Change Various Options and Settings"],
-				subPage: new OptionsPage(prefsSave)
+				subPage: new OptionsPage(prefsSettings)
 			}),
 			new ButtonWidget({
 				title: "Show Main Menu",
 				description: ["Display The Main Menu"],
 				callback: () -> {
-					pushPage(new MainMenuPage(prefsSave));
+					pushPage(new MainMenuPage(prefsSettings));
 				}
 			}),
 			#if sys

@@ -1,9 +1,6 @@
 package input;
 
-import utils.Geometry;
-import save_data.InputSave;
-import kha.input.KeyCode;
-import kha.graphics2.Graphics;
+import save_data.InputSettings;
 import game.actions.Action;
 
 class NullInputDeviceManager implements IInputDeviceManager {
@@ -18,16 +15,16 @@ class NullInputDeviceManager implements IInputDeviceManager {
 
 	var actions: Map<String, Bool> = [];
 
-	public final inputSave: InputSave = new InputSave();
+	public final inputSettings: InputSettings = {};
 	public final type: InputDevice = ANY;
 
 	public var isRebinding(default, null) = false;
 
 	function new() {}
 
-	public function getAction(action: String) {
+	public function getAction(action: Action) {
 		return false;
 	}
 
-	public function rebind(action: Action, category: String) {}
+	public function rebind(action: Action) {}
 }

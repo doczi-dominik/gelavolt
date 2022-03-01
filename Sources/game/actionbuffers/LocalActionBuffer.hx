@@ -1,9 +1,7 @@
 package game.actionbuffers;
 
 import game.mediators.FrameCounter;
-import game.actions.GameActions;
 import input.IInputDeviceManager;
-import game.screens.GameScreen;
 
 class LocalActionBuffer implements IActionBuffer {
 	final frameCounter: FrameCounter;

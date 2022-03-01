@@ -1,9 +1,6 @@
 package game.actions;
 
 import input.InputType;
-import game.actions.MenuActions;
-import game.actions.GameActions;
-import game.actions.TrainingActions;
 
 final ActionInputTypes: Map<Action, InputType> = [
 	PAUSE => PRESS, LEFT => REPEAT, RIGHT => REPEAT, DOWN => REPEAT, UP => REPEAT, BACK => PRESS, CONFIRM => PRESS, SHIFT_LEFT => HOLD, SHIFT_RIGHT => HOLD,

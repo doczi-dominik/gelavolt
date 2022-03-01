@@ -1,6 +1,6 @@
 package game.randomizers;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.gelos.OtherGeloOptions;
 import game.gelogroups.GeloGroupData;
 import game.gelogroups.GeloGroupType;
@@ -14,7 +14,7 @@ import game.randomizers.RandomizerPool;
 
 class Randomizer {
 	final rng: Random;
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
 	var pools: Map<RandomizerPool, Vector<GeloColor>>;
 
@@ -22,7 +22,7 @@ class Randomizer {
 
 	public function new(opts: RandomizerOptions) {
 		rng = opts.rng;
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 	}
 
 	function tsu() {
@@ -98,7 +98,7 @@ class Randomizer {
 
 				for (i in 0...8) {
 					otherOptions.set(i, {
-						prefsSave: prefsSave,
+						prefsSettings: prefsSettings,
 						color: EMPTY,
 						positionID: i
 					});

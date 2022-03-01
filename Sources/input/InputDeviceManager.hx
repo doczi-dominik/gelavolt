@@ -2,8 +2,7 @@ package input;
 
 import utils.Geometry;
 import game.actions.ActionInputTypes;
-import game.actions.ActionCategory;
-import save_data.InputSave;
+import save_data.InputSettings;
 import kha.Assets;
 import kha.graphics2.Graphics;
 import game.actions.Action;
@@ -17,23 +16,23 @@ import kha.input.Gamepad;
  * Kha input handling.
  */
 class InputDeviceManager implements IInputDeviceManager {
+	static final gamepadIDs: Array<Int> = [];
 	static final instances: Array<InputDeviceManager> = [];
 
 	public static var any(default, null): InputDeviceManager;
 
 	static function gamepadConnect(id: Int) {
 		Gamepad.get(id).notify(null, any.buttonListener);
+		gamepadIDs.push(id);
 	}
 
 	static function gamepadDisconnect(id: Int) {
 		Gamepad.get(id).remove(null, any.buttonListener);
+		gamepadIDs.remove(id);
 	}
 
 	public static function init() {
-		final def = new InputSave();
-		def.setDefaults();
-
-		any = new InputDeviceManager(def, ANY);
+		any = new InputDeviceManager({}, ANY);
 
 		Keyboard.get().notify(any.keyDownListener, any.keyUpListener);
 
@@ -64,13 +63,13 @@ class InputDeviceManager implements IInputDeviceManager {
 	var keyRebindListener: KeyCode->Void;
 	var buttonRebindListener: (Int, Float) -> Void;
 
-	public final inputSave: InputSave;
+	public final inputSettings: InputSettings;
 	public final type: InputDevice;
 
 	public var isRebinding(default, null): Bool;
 
-	public function new(inputSave: InputSave, type: InputDevice) {
-		this.inputSave = inputSave;
+	public function new(inputSettings: InputSettings, type: InputDevice) {
+		this.inputSettings = inputSettings;
 
 		switch (type) {
 			case KEYBOARD:
@@ -99,29 +98,28 @@ class InputDeviceManager implements IInputDeviceManager {
 		keysToActions = [];
 		buttonsToActions = [];
 
-		for (mappings in inputSave.mappings) {
-			for (k => v in mappings.keyValueIterator()) {
-				final kbInput = v.keyboardInput;
-				final gpInput = v.gamepadInput;
+		for (action in Type.allEnums(Action)) {
+			final mapping = inputSettings.getMapping(action);
+			final kbInput = mapping.keyboardInput;
+			final gpInput = mapping.gamepadInput;
 
-				if (keysToActions[kbInput] == null) {
-					keysToActions[kbInput] = [];
-				}
-				keysToActions[kbInput].push(k);
+			if (keysToActions[kbInput] == null) {
+				keysToActions[kbInput] = [];
+			}
+			keysToActions[kbInput].push(action);
 
-				if (buttonsToActions[gpInput] == null) {
-					buttonsToActions[gpInput] = [];
-				}
-				buttonsToActions[gpInput].push(k);
+			if (buttonsToActions[gpInput] == null) {
+				buttonsToActions[gpInput] = [];
+			}
+			buttonsToActions[gpInput].push(action);
 
-				switch (ActionInputTypes[k]) {
-					case HOLD:
-						actions[k] = holdActionHandler;
-					case PRESS:
-						actions[k] = pressActionHandler;
-					case REPEAT:
-						actions[k] = repeatActionHandler;
-				}
+			switch (ActionInputTypes[action]) {
+				case HOLD:
+					actions[action] = holdActionHandler;
+				case PRESS:
+					actions[action] = pressActionHandler;
+				case REPEAT:
+					actions[action] = repeatActionHandler;
 			}
 		}
 	}
@@ -173,13 +171,13 @@ class InputDeviceManager implements IInputDeviceManager {
 		}
 	}
 
-	function rebindKeyListener(action: Action, category: ActionCategory, key: KeyCode) {
-		final original = inputSave.mappings[category][action];
+	function rebindKeyListener(action: Action, key: KeyCode) {
+		final original = inputSettings.getMapping(action);
 
-		inputSave.mappings[category][action] = ({
+		inputSettings.setMapping(action, {
 			keyboardInput: key,
 			gamepadInput: original.gamepadInput
-		} : InputMapping);
+		});
 
 		isRebinding = false;
 
@@ -189,16 +187,16 @@ class InputDeviceManager implements IInputDeviceManager {
 		buildActions();
 	}
 
-	function rebindButtonListener(action: Action, category: ActionCategory, button: Int, value: Float) {
+	function rebindButtonListener(action: Action, button: Int, value: Float) {
 		if (value == 0)
 			return;
 
-		final original = inputSave.mappings[category][action];
+		final original = inputSettings.getMapping(action);
 
-		inputSave.mappings[category][action] = ({
+		inputSettings.setMapping(action, {
 			keyboardInput: original.keyboardInput,
 			gamepadInput: button
-		} : InputMapping);
+		});
 
 		isRebinding = false;
 
@@ -263,13 +261,13 @@ class InputDeviceManager implements IInputDeviceManager {
 		return actions[action](counters[action]);
 	}
 
-	public function rebind(action: Action, category: ActionCategory) {
+	public function rebind(action: Action) {
 		isRebinding = true;
 
 		removeListeners();
 
-		keyRebindListener = rebindKeyListener.bind(action, category);
-		buttonRebindListener = rebindButtonListener.bind(action, category);
+		keyRebindListener = rebindKeyListener.bind(action);
+		buttonRebindListener = rebindButtonListener.bind(action);
 
 		if (keyboard != null)
 			keyboard.notify(keyRebindListener);

@@ -1,10 +1,10 @@
 package game.fields;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 
 @:structInit
 class FieldOptions {
-	public final prefsSave: PrefsSave;
+	public final prefsSettings: PrefsSettings;
 	public final columns: Int;
 	public final playAreaRows: Int;
 	public final hiddenRows: Int;

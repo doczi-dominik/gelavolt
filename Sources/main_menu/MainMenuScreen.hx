@@ -2,8 +2,6 @@ package main_menu;
 
 import save_data.Profile;
 import input.InputDeviceManager;
-import game.screens.GameScreen;
-import save_data.PrefsSave;
 import main_menu.ui.MainMenuPage;
 import ui.Menu;
 import kha.graphics2.Graphics;
@@ -14,7 +12,7 @@ class MainMenuScreen implements IScreen {
 	final menu: Menu;
 
 	public function new() {
-		menu = new Menu(new MainMenuPage(Profile.primary.prefs));
+		menu = new Menu(new MainMenuPage(Profile.primary.prefsSettings));
 		menu.onShow(InputDeviceManager.any);
 	}
 

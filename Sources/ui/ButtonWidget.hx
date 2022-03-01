@@ -1,7 +1,6 @@
 package ui;
 
 import kha.graphics2.Graphics;
-import game.actions.MenuActions;
 
 class ButtonWidget implements IListWidget {
 	final callback: Void->Void;

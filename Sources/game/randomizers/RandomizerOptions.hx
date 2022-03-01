@@ -1,10 +1,10 @@
 package game.randomizers;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import kha.math.Random;
 
 @:structInit
 class RandomizerOptions {
 	public final rng: Random;
-	public final prefsSave: PrefsSave;
+	public final prefsSettings: PrefsSettings;
 }

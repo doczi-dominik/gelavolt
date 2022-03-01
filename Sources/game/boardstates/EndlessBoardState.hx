@@ -1,16 +1,16 @@
 package game.boardstates;
 
 import game.randomizers.Randomizer;
-import save_data.TrainingSave;
+import save_data.TrainingSettings;
 
 class EndlessBoardState extends StandardBoardState {
-	final trainingSave: TrainingSave;
+	final trainingSettings: TrainingSettings;
 	final randomizer: Randomizer;
 
 	public function new(opts: EndlessBoardStateOptions) {
 		super(opts);
 
-		trainingSave = opts.trainingSave;
+		trainingSettings = opts.trainingSettings;
 		randomizer = opts.randomizer;
 	}
 
@@ -18,7 +18,7 @@ class EndlessBoardState extends StandardBoardState {
 		eraseField();
 		garbageManager.clear();
 
-		switch (trainingSave.clearOnXMode) {
+		switch (trainingSettings.clearOnXMode) {
 			case CLEAR:
 			case RESTART:
 				queue.setIndex(0);

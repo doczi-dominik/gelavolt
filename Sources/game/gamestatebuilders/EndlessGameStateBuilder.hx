@@ -79,7 +79,7 @@ class EndlessGameStateBuilder {
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSave: Profile.primary.prefs
+			prefsSettings: Profile.primary.prefsSettings
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -120,8 +120,8 @@ class EndlessGameStateBuilder {
 				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
+			garbageDisplay: GarbageTray.create(Profile.primary.prefsSettings),
+			accumulatedDisplay: GarbageTray.create(Profile.primary.prefsSettings)
 		});
 	}
 
@@ -131,7 +131,7 @@ class EndlessGameStateBuilder {
 
 	inline function buildField() {
 		field = Field.create({
-			prefsSave: Profile.primary.prefs,
+			prefsSettings: Profile.primary.prefsSettings,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -161,18 +161,18 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildGeloGroup() {
-		final prefsSave = Profile.primary.prefs;
+		final prefsSettings = Profile.primary.prefsSettings;
 
 		geloGroup = new GeloGroup({
 			field: field,
 			rule: gameMode.rule,
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			scoreManager: scoreManager,
 			chainSim: new ChainSimulator({
 				rule: gameMode.rule,
 				linkBuilder: NullLinkInfoBuilder.instance,
-				garbageDisplay: GarbageTray.create(prefsSave),
-				accumulatedDisplay: GarbageTray.create(prefsSave)
+				garbageDisplay: GarbageTray.create(prefsSettings),
+				accumulatedDisplay: GarbageTray.create(prefsSettings)
 			})
 		});
 	}
@@ -189,7 +189,7 @@ class EndlessGameStateBuilder {
 	inline function buildBoardState() {
 		boardState = new EndlessBoardState({
 			rule: gameMode.rule,
-			prefsSave: Profile.primary.prefs,
+			prefsSettings: Profile.primary.prefsSettings,
 			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,
@@ -204,7 +204,7 @@ class EndlessGameStateBuilder {
 			actionBuffer: actionBuffer,
 			chainCounter: chainCounter,
 			chainSim: chainSim,
-			trainingSave: Profile.primary.training,
+			trainingSettings: Profile.primary.trainingSettings,
 			randomizer: randomizer
 		});
 	}
@@ -222,8 +222,8 @@ class EndlessGameStateBuilder {
 		if (gameMode.replayData == null) {
 			pauseMenu = new EndlessPauseMenu({
 				pauseMediator: pauseMediator,
-				prefsSave: Profile.primary.prefs,
-				trainingSave: Profile.primary.training,
+				prefsSettings: Profile.primary.prefsSettings,
+				trainingSettings: Profile.primary.trainingSettings,
 				actionBuffer: actionBuffer,
 				gameMode: gameMode
 			});
@@ -233,7 +233,7 @@ class EndlessGameStateBuilder {
 
 		pauseMenu = new ReplayPauseMenu({
 			pauseMediator: pauseMediator,
-			prefsSave: Profile.primary.prefs,
+			prefsSettings: Profile.primary.prefsSettings,
 			actionBuffer: cast(actionBuffer, ReplayActionBuffer),
 		});
 	}

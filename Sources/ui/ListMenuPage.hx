@@ -2,7 +2,6 @@ package ui;
 
 import kha.Assets;
 import kha.Font;
-import game.actions.MenuActions;
 import kha.graphics2.Graphics;
 
 class ListMenuPage implements IMenuPage {

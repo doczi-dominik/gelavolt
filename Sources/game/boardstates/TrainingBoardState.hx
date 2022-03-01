@@ -1,7 +1,7 @@
 package game.boardstates;
 
 import game.randomizers.Randomizer;
-import save_data.TrainingSave;
+import save_data.TrainingSettings;
 
 class TrainingBoardState extends EndlessBoardState {
 	final infoState: TrainingInfoBoardState;
@@ -28,7 +28,7 @@ class TrainingBoardState extends EndlessBoardState {
 	}
 
 	override function beforeEnd() {
-		if (!trainingSave.autoAttack)
+		if (!trainingSettings.autoAttack)
 			garbageManager.clear();
 	}
 

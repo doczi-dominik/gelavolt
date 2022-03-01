@@ -2,7 +2,7 @@ package game.gelogroups;
 
 import game.gelos.OtherGelo;
 import game.rules.Rule;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.fields.Field;
 import kha.Color;
 import game.simulation.PopSimStep;
@@ -25,7 +25,7 @@ enum GeloGroupState {
 
 class GeloGroup {
 	final rule: Rule;
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
 	final scoreManager: ScoreManager;
 	final field: Field;
@@ -71,7 +71,7 @@ class GeloGroup {
 
 	public function new(opts: GeloGroupOptions) {
 		rule = opts.rule;
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 
 		scoreManager = opts.scoreManager;
 		field = opts.field;
@@ -312,7 +312,7 @@ class GeloGroup {
 
 	public function load(x: Float, y: Float, opts: GeloGroupData) {
 		main = Gelo.create({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: opts.mainColor,
 		});
 
@@ -430,25 +430,25 @@ class GeloGroup {
 	}
 
 	function renderShadow(g: Graphics, g4: Graphics4, alpha: Float) {
-		if (!prefsSave.showGroupShadow || !isShadowVisible)
+		if (!prefsSettings.showGroupShadow || !isShadowVisible)
 			return;
 
-		final shadowOpacity = prefsSave.shadowOpacity;
+		final shadowOpacity = prefsSettings.shadowOpacity;
 		final quarterSize = Gelo.HALFSIZE / 2;
-		final radius = prefsSave.shadowWillTriggerChain
+		final radius = prefsSettings.shadowWillTriggerChain
 			&& willTriggerChain ? quarterSize + Math.cos(willTriggerChainT / 4) * quarterSize / 2 : quarterSize;
 
 		g.pushOpacity(shadowOpacity);
 
 		for (o in otherShadows) {
-			g.color = prefsSave.primaryColors[o.color];
+			g.color = prefsSettings.getPrimaryColor(o.color);
 			g.fillCircle(o.x, o.y, radius, 16);
 		}
 
 		g.popOpacity();
 
-		if (prefsSave.shadowHighlightOthers) {
-			final background = Color.fromBytes(prefsSave.boardBackgroundR, prefsSave.boardBackgroundG, prefsSave.boardBackgroundB);
+		if (prefsSettings.shadowHighlightOthers) {
+			final background = prefsSettings.boardBackground;
 
 			for (o in otherShadows) {
 				g.color = background;
@@ -458,7 +458,7 @@ class GeloGroup {
 
 		g.pushOpacity(shadowOpacity);
 
-		g.color = prefsSave.primaryColors[mainShadow.color];
+		g.color = prefsSettings.getPrimaryColor(mainShadow.color);
 		g.fillCircle(mainShadow.x, mainShadow.y, radius, 16);
 
 		g.popOpacity();

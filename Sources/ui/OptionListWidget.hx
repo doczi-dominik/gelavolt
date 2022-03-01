@@ -1,7 +1,6 @@
 package ui;
 
 import utils.Utils;
-import game.actions.MenuActions;
 import kha.graphics2.Graphics;
 
 class OptionListWidget implements IListWidget {

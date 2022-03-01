@@ -1,7 +1,7 @@
 package main_menu.ui;
 
 import ui.SubPageWidget;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import save_data.SaveManager;
 import ui.NumberRangeWidget;
 import ui.YesNoWidget;
@@ -13,10 +13,10 @@ import kha.Window;
 #end
 
 class OptionsPage extends ListMenuPage {
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
-	public function new(prefsSave: PrefsSave) {
-		this.prefsSave = prefsSave;
+	public function new(prefsSettings: PrefsSettings) {
+		this.prefsSettings = prefsSettings;
 
 		super({
 			header: "Options",
@@ -25,9 +25,28 @@ class OptionsPage extends ListMenuPage {
 					header: "Controls",
 					description: ["Change Keybindings For Keyboard And Gamepads"],
 					widgetBuilder: (_) -> [
-						new ControlsPageWidget(MENU),
-						new ControlsPageWidget(GAME),
-						new ControlsPageWidget(TRAINING)
+						new ControlsPageWidget({
+							title: "Menu Controls",
+							description: ["Change Controls Related To", "Menu Navigation"],
+							actions: [PAUSE, LEFT, RIGHT, UP, DOWN, BACK, CONFIRM]
+						}),
+						new ControlsPageWidget({
+							title: "Game Controls",
+							description: ["Change Controls Related To", "Gameplay"],
+							actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT]
+						}),
+						new ControlsPageWidget({
+							title: "Training Controls",
+							description: ["Change Controls Specific To", "Training Mode"],
+							actions: [
+								TOGGLE_EDIT_MODE,
+								PREVIOUS_STEP,
+								NEXT_STEP,
+								PREVIOUS_COLOR,
+								NEXT_COLOR,
+								TOGGLE_MARKERS
+							]
+						})
 					]
 				}),
 				#if sys
@@ -66,9 +85,9 @@ class OptionsPage extends ListMenuPage {
 								new YesNoWidget({
 									title: "Enable",
 									description: ["Enable Or Disable The Shadow", "That Shows Where Gelo", "Groups Will Fall"],
-									defaultValue: prefsSave.showGroupShadow,
+									defaultValue: prefsSettings.showGroupShadow,
 									onChange: (value) -> {
-										prefsSave.showGroupShadow = value;
+										prefsSettings.showGroupShadow = value;
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -78,27 +97,27 @@ class OptionsPage extends ListMenuPage {
 									minValue: 0,
 									maxValue: 1,
 									delta: 0.1,
-									startValue: prefsSave.shadowOpacity,
+									startValue: prefsSettings.shadowOpacity,
 									onChange: (value) -> {
-										prefsSave.shadowOpacity = value;
+										prefsSettings.shadowOpacity = value;
 										SaveManager.saveProfiles();
 									}
 								}),
 								new YesNoWidget({
 									title: "Highlight Rotating Shadows",
 									description: ["Alter The Appearance Of Rotating", "Gelos' Shadow"],
-									defaultValue: prefsSave.shadowHighlightOthers,
+									defaultValue: prefsSettings.shadowHighlightOthers,
 									onChange: (value) -> {
-										prefsSave.shadowHighlightOthers = value;
+										prefsSettings.shadowHighlightOthers = value;
 										SaveManager.saveProfiles();
 									}
 								}),
 								new YesNoWidget({
 									title: "Show Potential Chain Triggering",
 									description: ["Animate The Gelo Group Shadow", "If A Chain Is About To Be", "Triggered"],
-									defaultValue: prefsSave.shadowWillTriggerChain,
+									defaultValue: prefsSettings.shadowWillTriggerChain,
 									onChange: (value) -> {
-										prefsSave.shadowWillTriggerChain = value;
+										prefsSettings.shadowWillTriggerChain = value;
 										SaveManager.saveProfiles();
 									}
 								})

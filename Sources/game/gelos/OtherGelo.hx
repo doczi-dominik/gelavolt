@@ -36,7 +36,7 @@ class OtherGelo extends Gelo {
 
 	override function copy(): Gelo {
 		final p = new OtherGelo({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: color,
 			positionID: positionID
 		});
