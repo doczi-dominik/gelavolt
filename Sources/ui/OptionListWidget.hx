@@ -13,7 +13,7 @@ class OptionListWidget implements IListWidget {
 	var value: String;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [LEFT, RIGHT], description: "Change Value"}];
+	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [LEFT, RIGHT], description: "Change"}];
 
 	public function new(opts: OptionListWidgetOptions) {
 		title = opts.title;

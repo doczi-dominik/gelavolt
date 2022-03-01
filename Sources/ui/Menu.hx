@@ -68,6 +68,8 @@ class Menu {
 		}
 	}
 
+	// TOOD: Refactor these 3 functions and/or standardize displaying actions
+	// and inputs
 	function renderKeyboardControls(g: Graphics) {
 		var x = padding;
 
@@ -108,6 +110,39 @@ class Menu {
 
 				x += spr.width * ssc;
 			}
+
+			// Hackerman but it beats having to calculate with scaling
+			str += ': ${d.description}    ';
+
+			final strWidth = g.font.width(controlsFontSize, str);
+
+			g.drawString(str, x, y);
+
+			x += strWidth;
+		}
+	}
+
+	function renderAnyControls(g: Graphics) {
+		final ssc = ScaleManager.smallerScale;
+
+		final y = ScaleManager.height - headerFontHeight;
+
+		var x = padding;
+
+		for (d in pages.first().controlDisplays) {
+			var str = "/";
+
+			for (action in d.actions) {
+				final mapping = inputManager.inputSettings.getMapping(action);
+				final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadInput];
+
+				InputDeviceManager.renderGamepadIcon(g, x, y, spr, controlsFontHeight / spr.height);
+
+				x += spr.width * ssc;
+				str += '${KEY_CODE_TO_STRING[mapping.keyboardInput]},';
+			}
+
+			str = str.substr(0, str.length - 1);
 
 			// Hackerman but it beats having to calculate with scaling
 			str += ': ${d.description}    ';
@@ -183,6 +218,7 @@ class Menu {
 			case GAMEPAD(_):
 				renderGamepadControls(g);
 			case ANY:
+				renderAnyControls(g);
 		}
 	}
 }

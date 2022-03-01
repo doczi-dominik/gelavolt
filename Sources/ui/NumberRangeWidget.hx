@@ -14,7 +14,7 @@ class NumberRangeWidget implements IListWidget {
 	var value(default, null): Float;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [LEFT, RIGHT], description: "Change Value"}];
+	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [LEFT, RIGHT], description: "Change"}];
 
 	public function new(opts: NumericalRangeWidgetOptions) {
 		title = opts.title;
