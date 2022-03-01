@@ -1,5 +1,6 @@
 package input;
 
+import save_data.Profile;
 import utils.Geometry;
 import game.actions.ActionInputTypes;
 import save_data.InputSettings;
@@ -32,7 +33,7 @@ class InputDeviceManager implements IInputDeviceManager {
 	}
 
 	public static function init() {
-		any = new InputDeviceManager({}, ANY);
+		any = new InputDeviceManager(Profile.primary.inputSettings, ANY);
 
 		Keyboard.get().notify(any.keyDownListener, any.keyUpListener);
 
@@ -52,9 +53,9 @@ class InputDeviceManager implements IInputDeviceManager {
 		g.drawScaledSubImage(Assets.images.Buttons, sprite.x, sprite.y, w, h, x, y, w * scale, h * scale);
 	}
 
-	final counters: Map<Action, Int> = [];
+	final counters: Map<Action, Int>;
 	final keyboard: Null<Keyboard>;
-	final gamepad: Null<Gamepad>;
+	final gamepads: Array<Int>;
 
 	var actions: Map<Action, Int->Bool>;
 	var keysToActions: Map<KeyCode, Null<Array<Action>>>;
@@ -71,18 +72,21 @@ class InputDeviceManager implements IInputDeviceManager {
 	public function new(inputSettings: InputSettings, type: InputDevice) {
 		this.inputSettings = inputSettings;
 
+		counters = [];
+
 		switch (type) {
 			case KEYBOARD:
 				keyboard = Keyboard.get();
-				gamepad = null;
+				gamepads = [];
 			case GAMEPAD(id):
 				keyboard = null;
-				gamepad = Gamepad.get(id);
+				gamepads = [id];
 			case ANY:
-				keyboard = null;
-				gamepad = null;
-		}
+				keyboard = Keyboard.get();
+				gamepads = [];
 
+				Gamepad.notifyOnConnect(gamepadConnectListener, gamepadDisconnectListener);
+		}
 		this.type = type;
 
 		isRebinding = false;
@@ -122,6 +126,23 @@ class InputDeviceManager implements IInputDeviceManager {
 					actions[action] = repeatActionHandler;
 			}
 		}
+	}
+
+	function resetListeners() {
+		removeListeners();
+		addListeners();
+	}
+
+	function gamepadConnectListener(id: Int) {
+		gamepads.push(id);
+
+		resetListeners();
+	}
+
+	function gamepadDisconnectListener(id: Int) {
+		gamepads.remove(id);
+
+		resetListeners();
 	}
 
 	function keyDownListener(key: KeyCode) {
@@ -213,8 +234,9 @@ class InputDeviceManager implements IInputDeviceManager {
 		} catch (e) {}
 
 		try {
-			if (gamepad != null)
-				gamepad.notify(null, buttonListener);
+			for (id in gamepads) {
+				Gamepad.get(id).notify(null, buttonListener);
+			}
 		} catch (e) {}
 	}
 
@@ -225,14 +247,18 @@ class InputDeviceManager implements IInputDeviceManager {
 		} catch (e) {}
 
 		try {
-			if (gamepad != null)
-				gamepad.remove(null, buttonListener);
+			for (id in gamepads) {
+				Gamepad.get(id).remove(null, buttonListener);
+			}
 		} catch (e) {}
 	}
 
 	function removeRebindListeners() {
 		keyboard.remove(keyRebindListener);
-		gamepad.remove(null, buttonRebindListener);
+
+		for (id in gamepads) {
+			Gamepad.get(id).remove(null, buttonRebindListener);
+		}
 	}
 
 	function holdActionHandler(value: Int) {
@@ -271,7 +297,9 @@ class InputDeviceManager implements IInputDeviceManager {
 
 		if (keyboard != null)
 			keyboard.notify(keyRebindListener);
-		if (gamepad != null)
-			gamepad.notify(null, buttonRebindListener);
+
+		for (id in gamepads) {
+			Gamepad.get(id).notify(null, buttonRebindListener);
+		}
 	}
 }
