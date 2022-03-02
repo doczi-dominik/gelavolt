@@ -56,7 +56,7 @@ class InputDeviceManager implements IInputDeviceManager {
 
 	final counters: Map<Action, Int>;
 	final keyboard: Null<Keyboard>;
-	final gamepads: Array<Int>;
+	final gamepad: Null<Gamepad>;
 
 	var actions: Map<Action, Int->Bool>;
 	var keysToActions: Map<KeyCode, Null<Array<Action>>>;
@@ -76,15 +76,13 @@ class InputDeviceManager implements IInputDeviceManager {
 		switch (type) {
 			case KEYBOARD:
 				keyboard = Keyboard.get();
-				gamepads = [];
+				gamepad = null;
 			case GAMEPAD(id):
 				keyboard = null;
-				gamepads = [id];
+				gamepad = Gamepad.get(id);
 			case ANY:
 				keyboard = Keyboard.get();
-				gamepads = [];
-
-				Gamepad.notifyOnConnect(gamepadConnectListener, gamepadDisconnectListener);
+				gamepad = null;
 		}
 		this.type = type;
 
@@ -136,18 +134,6 @@ class InputDeviceManager implements IInputDeviceManager {
 	function resetListeners() {
 		removeListeners();
 		addListeners();
-	}
-
-	function gamepadConnectListener(id: Int) {
-		gamepads.push(id);
-
-		resetListeners();
-	}
-
-	function gamepadDisconnectListener(id: Int) {
-		gamepads.remove(id);
-
-		resetListeners();
 	}
 
 	function keyDownListener(key: KeyCode) {
@@ -239,9 +225,7 @@ class InputDeviceManager implements IInputDeviceManager {
 		} catch (e) {}
 
 		try {
-			for (id in gamepads) {
-				Gamepad.get(id).notify(null, buttonListener);
-			}
+			gamepad.notify(null, buttonListener);
 		} catch (e) {}
 	}
 
@@ -252,18 +236,14 @@ class InputDeviceManager implements IInputDeviceManager {
 		} catch (e) {}
 
 		try {
-			for (id in gamepads) {
-				Gamepad.get(id).remove(null, buttonListener);
-			}
+			if (gamepad != null)
+				gamepad.remove(null, buttonListener);
 		} catch (e) {}
 	}
 
 	function removeRebindListeners() {
 		keyboard.remove(keyRebindListener);
-
-		for (id in gamepads) {
-			Gamepad.get(id).remove(null, buttonRebindListener);
-		}
+		gamepad.remove(null, buttonRebindListener);
 	}
 
 	function holdActionHandler(value: Int) {
@@ -303,8 +283,6 @@ class InputDeviceManager implements IInputDeviceManager {
 		if (keyboard != null)
 			keyboard.notify(keyRebindListener);
 
-		for (id in gamepads) {
-			Gamepad.get(id).notify(null, buttonRebindListener);
-		}
+		gamepad.notify(null, buttonRebindListener);
 	}
 }
