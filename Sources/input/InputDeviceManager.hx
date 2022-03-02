@@ -17,19 +17,16 @@ import kha.input.Gamepad;
  * Kha input handling.
  */
 class InputDeviceManager implements IInputDeviceManager {
-	static final gamepadIDs: Array<Int> = [];
 	static final instances: Array<InputDeviceManager> = [];
 
 	public static var any(default, null): InputDeviceManager;
 
 	static function gamepadConnect(id: Int) {
 		Gamepad.get(id).notify(null, any.buttonListener);
-		gamepadIDs.push(id);
 	}
 
 	static function gamepadDisconnect(id: Int) {
 		Gamepad.get(id).remove(null, any.buttonListener);
-		gamepadIDs.remove(id);
 	}
 
 	public static function init() {
