@@ -88,7 +88,7 @@ class Main {
 				Pipelines.init();
 				SaveManager.loadEverything();
 
-				Profile.primary = SaveManager.getProfile(0);
+				Profile.changePrimary(SaveManager.getProfile(0));
 
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;

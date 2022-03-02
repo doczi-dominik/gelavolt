@@ -9,13 +9,14 @@ class ButtonWidget implements IListWidget {
 
 	public var title: String;
 	public var description: Array<String>;
-	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [CONFIRM], description: "Confirm"}];
+	public var controlDisplays(default, null): Array<ControlDisplay>;
 
 	public function new(opts: ButtonWidgetOptions) {
-		title = opts.title;
 		callback = opts.callback;
 
+		title = opts.title;
 		description = opts.description;
+		controlDisplays = [{actions: [CONFIRM], description: "Confirm"}];
 	}
 
 	public function onShow(menu: Menu) {

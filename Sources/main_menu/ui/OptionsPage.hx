@@ -124,6 +124,11 @@ class OptionsPage extends ListMenuPage {
 							]
 						})
 					]
+				}),
+				new SubPageWidget({
+					title: "Profiles",
+					description: ["View and Edit Profiles"],
+					subPage: new ProfilePage()
 				})
 			]
 		});

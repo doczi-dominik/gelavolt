@@ -38,6 +38,10 @@ class InputDeviceManager implements IInputDeviceManager {
 		Keyboard.get().notify(any.keyDownListener, any.keyUpListener);
 
 		Gamepad.notifyOnConnect(gamepadConnect, gamepadDisconnect);
+
+		Profile.addOnChangePrimaryCallback(() -> {
+			any.changeInputSettings(Profile.primary.inputSettings);
+		});
 	}
 
 	public static function update() {
@@ -64,14 +68,12 @@ class InputDeviceManager implements IInputDeviceManager {
 	var keyRebindListener: KeyCode->Void;
 	var buttonRebindListener: (Int, Float) -> Void;
 
-	public final inputSettings: InputSettings;
 	public final type: InputDevice;
 
+	public var inputSettings(default, null): InputSettings;
 	public var isRebinding(default, null): Bool;
 
 	public function new(inputSettings: InputSettings, type: InputDevice) {
-		this.inputSettings = inputSettings;
-
 		counters = [];
 
 		switch (type) {
@@ -89,9 +91,9 @@ class InputDeviceManager implements IInputDeviceManager {
 		}
 		this.type = type;
 
+		changeInputSettings(inputSettings);
 		isRebinding = false;
 
-		buildActions();
 		addListeners();
 
 		instances.push(this);
@@ -126,6 +128,12 @@ class InputDeviceManager implements IInputDeviceManager {
 					actions[action] = repeatActionHandler;
 			}
 		}
+	}
+
+	function changeInputSettings(value: InputSettings) {
+		inputSettings = value;
+
+		buildActions();
 	}
 
 	function resetListeners() {

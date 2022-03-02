@@ -10,7 +10,8 @@ class SaveManager {
 	static final PROFILES_FILENAME = "profiles";
 	static final GRAPHICS_FIELNAME = "graphics";
 
-	static final profiles: Array<Profile> = [];
+	public static final profiles: Array<Profile> = [];
+
 	public static var graphics: GraphicsSettings;
 
 	public static function saveProfiles() {
@@ -28,7 +29,7 @@ class SaveManager {
 		// final serialized = null; // Hackerman manual save lol
 
 		if (serialized == null) {
-			saveDefaultProfiles();
+			newProfile();
 
 			return;
 		}
@@ -36,54 +37,57 @@ class SaveManager {
 		final unser = new Unserializer(serialized);
 
 		try {
-			final data: ProfileData = unser.unserialize();
+			while (true) {
+				final data: ProfileData = unser.unserialize();
 
-			final inputData = data.inputSettings;
-			final prefsData = data.prefsSettings;
-			final trainingData = data.trainingSettings;
+				final inputData = data.inputSettings;
+				final prefsData = data.prefsSettings;
+				final trainingData = data.trainingSettings;
 
-			profiles.push({
-				inputSettings: {
-					menu: inputData.menu,
-					game: inputData.game,
-					training: inputData.training
-				},
-				prefsSettings: {
-					colorTints: prefsData.colorTints,
-					primaryColors: prefsData.primaryColors,
-					boardBackground: prefsData.boardBackground,
-					capAtCrowns: prefsData.capAtCrowns,
-					showGroupShadow: prefsData.showGroupShadow,
-					shadowOpacity: prefsData.shadowOpacity,
-					shadowHighlightOthers: prefsData.shadowHighlightOthers,
-					shadowWillTriggerChain: prefsData.shadowWillTriggerChain
-				},
-				trainingSettings: {
-					clearOnXMode: trainingData.clearOnXMode,
-					autoClear: trainingData.autoClear,
-					autoAttack: trainingData.autoAttack,
-					minAttackTime: trainingData.minAttackTime,
-					maxAttackTime: trainingData.maxAttackTime,
-					minAttackChain: trainingData.minAttackChain,
-					maxAttackChain: trainingData.maxAttackChain,
-					minAttackGroupDiff: trainingData.minAttackGroupDiff,
-					maxAttackGroupDiff: trainingData.maxAttackGroupDiff,
-					minAttackColors: trainingData.minAttackColors,
-					maxAttackColors: trainingData.maxAttackColors
-				}
-			});
+				profiles.push({
+					name: data.name,
+					inputSettings: {
+						menu: inputData.menu,
+						game: inputData.game,
+						training: inputData.training
+					},
+					prefsSettings: {
+						colorTints: prefsData.colorTints,
+						primaryColors: prefsData.primaryColors,
+						boardBackground: prefsData.boardBackground,
+						capAtCrowns: prefsData.capAtCrowns,
+						showGroupShadow: prefsData.showGroupShadow,
+						shadowOpacity: prefsData.shadowOpacity,
+						shadowHighlightOthers: prefsData.shadowHighlightOthers,
+						shadowWillTriggerChain: prefsData.shadowWillTriggerChain
+					},
+					trainingSettings: {
+						clearOnXMode: trainingData.clearOnXMode,
+						autoClear: trainingData.autoClear,
+						autoAttack: trainingData.autoAttack,
+						minAttackTime: trainingData.minAttackTime,
+						maxAttackTime: trainingData.maxAttackTime,
+						minAttackChain: trainingData.minAttackChain,
+						maxAttackChain: trainingData.maxAttackChain,
+						minAttackGroupDiff: trainingData.minAttackGroupDiff,
+						maxAttackGroupDiff: trainingData.maxAttackGroupDiff,
+						minAttackColors: trainingData.minAttackColors,
+						maxAttackColors: trainingData.maxAttackColors
+					}
+				});
+			}
 		} catch (_) {}
 
 		if (profiles.length == 0) {
-			saveDefaultProfiles();
+			newProfile();
 			return;
 		}
 
 		saveProfiles();
 	}
 
-	public static function saveDefaultProfiles() {
-		profiles.push({});
+	public static function newProfile() {
+		profiles.push({name: 'P${profiles.length + 1}'});
 		saveProfiles();
 	}
 

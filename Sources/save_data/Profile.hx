@@ -10,6 +10,8 @@ import game.geometries.BoardGeometries;
  */
 @:structInit
 class Profile {
+	static final onChangePrimary: Array<Void->Void> = [];
+
 	/**
 	 * The `primary` profile is used for storing session-universal information.
 	 * These can (or will) include: background type, music, personalization
@@ -25,7 +27,21 @@ class Profile {
 	 * Also, decoupling primaryProfile allows for more freedom, e.g.: changing
 	 * the BGM or skin of a recorded replay!
 	 */
-	public static var primary: Profile;
+	public static var primary(default, null): Profile;
+
+	public static function addOnChangePrimaryCallback(callback: Void->Void) {
+		onChangePrimary.push(callback);
+	}
+
+	public static function changePrimary(p: Profile) {
+		primary = p;
+
+		for (f in onChangePrimary) {
+			f();
+		}
+	}
+
+	@:optional public var name = "P1";
 
 	@:optional public var inputSettings: InputSettings = {};
 	@:optional public var prefsSettings: PrefsSettings = {};
@@ -33,6 +49,7 @@ class Profile {
 
 	public function exportData(): ProfileData {
 		return {
+			name: name,
 			inputSettings: {
 				menu: inputSettings.menu,
 				game: inputSettings.game,
@@ -66,6 +83,7 @@ class Profile {
 }
 
 typedef ProfileData = {
+	name: String,
 	inputSettings: InputSettingsData,
 	prefsSettings: PrefsSettingsData,
 	trainingSettings: TrainingSettingsData

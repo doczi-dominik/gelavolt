@@ -15,9 +15,9 @@ class NullInputDeviceManager implements IInputDeviceManager {
 
 	var actions: Map<String, Bool> = [];
 
-	public final inputSettings: InputSettings = {};
 	public final type: InputDevice = ANY;
 
+	public var inputSettings(default, null): InputSettings = {};
 	public var isRebinding(default, null) = false;
 
 	function new() {}
