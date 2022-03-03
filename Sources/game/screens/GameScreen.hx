@@ -1,7 +1,6 @@
 package game.screens;
 
-import save_data.Profile;
-import input.InputDeviceManager;
+import input.AnyInputDevice;
 import game.mediators.TransformationMediator;
 import game.gamemodes.IGameMode;
 import game.gamemodes.EndlessGameMode;
@@ -40,7 +39,7 @@ class GameScreen implements IScreen {
 				new EndlessGameStateBuilder({
 					gameMode: cast(gameMode, EndlessGameMode),
 					transformMediator: transformMediator,
-					inputManager: new InputDeviceManager(Profile.primary.inputSettings, KEYBOARD)
+					inputDevice: AnyInputDevice.instance
 				}).build();
 		}
 	}

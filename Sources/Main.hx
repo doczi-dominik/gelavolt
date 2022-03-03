@@ -1,13 +1,13 @@
 package;
 
+import input.AnyInputDevice;
+import input.InputDevice;
 import game.screens.ReplayScreen;
 import save_data.Profile;
 import main_menu.MainMenuScreen;
 import haxe.Unserializer;
 import save_data.SaveManager;
-import input.InputDeviceManager;
 import Screen.GlobalScreenSwitcher;
-import game.screens.GameScreen;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
@@ -90,13 +90,13 @@ class Main {
 
 				Profile.changePrimary(SaveManager.getProfile(0));
 
+				AnyInputDevice.init();
+
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;
 				#end
 
 				ScaleManager.resize(System.windowWidth(), System.windowHeight());
-
-				InputDeviceManager.init();
 
 				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 
@@ -130,7 +130,7 @@ class Main {
 					accumulator += frameTime;
 
 					while (accumulator >= FIXED_UPDATE_DELTA) {
-						InputDeviceManager.update();
+						InputDevice.update();
 						GlobalScreenSwitcher.updateCurrent();
 						accumulator -= FIXED_UPDATE_DELTA;
 					}

@@ -74,7 +74,7 @@ class PauseMenu extends Menu {
 	}
 
 	override function update() {
-		if (inputManager.getAction(PAUSE)) {
+		if (inputDevice.getAction(PAUSE)) {
 			pauseMediator.resume();
 		}
 

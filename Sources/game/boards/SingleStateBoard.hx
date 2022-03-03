@@ -1,27 +1,27 @@
 package game.boards;
 
+import input.IInputDevice;
 import game.mediators.PauseMediator;
 import game.boardstates.IBoardState;
-import input.IInputDeviceManager;
 import game.actionbuffers.IActionBuffer;
 import kha.graphics2.Graphics;
 
 class SingleStateBoard implements IBoard {
 	final pauseMediator: PauseMediator;
-	final inputManager: IInputDeviceManager;
+	final inputDevice: IInputDevice;
 	final actionBuffer: IActionBuffer;
 	final state: IBoardState;
 
 	public function new(opts: SingleStateBoardOptions) {
 		pauseMediator = opts.pauseMediator;
-		inputManager = opts.inputManager;
+		inputDevice = opts.inputDevice;
 		actionBuffer = opts.actionBuffer;
 		state = opts.state;
 	}
 
 	public function update() {
-		if (inputManager.getAction(PAUSE)) {
-			pauseMediator.pause(inputManager);
+		if (inputDevice.getAction(PAUSE)) {
+			pauseMediator.pause(inputDevice);
 		}
 
 		actionBuffer.update();

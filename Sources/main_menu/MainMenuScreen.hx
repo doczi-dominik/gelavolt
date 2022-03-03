@@ -1,7 +1,7 @@
 package main_menu;
 
+import input.AnyInputDevice;
 import save_data.Profile;
-import input.InputDeviceManager;
 import main_menu.ui.MainMenuPage;
 import ui.Menu;
 import kha.graphics2.Graphics;
@@ -13,7 +13,7 @@ class MainMenuScreen implements IScreen {
 
 	public function new() {
 		menu = new Menu(new MainMenuPage(Profile.primary.prefsSettings));
-		menu.onShow(InputDeviceManager.any);
+		menu.onShow(AnyInputDevice.instance);
 	}
 
 	public function update() {

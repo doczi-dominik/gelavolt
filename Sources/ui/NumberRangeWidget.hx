@@ -38,9 +38,9 @@ class NumberRangeWidget implements IListWidget {
 	}
 
 	public function update() {
-		final inputManager = menu.inputManager;
+		final inputDevice = menu.inputDevice;
 
-		if (inputManager.getAction(LEFT)) {
+		if (inputDevice.getAction(LEFT)) {
 			final nextValue = value - delta;
 
 			if (nextValue < minValue) {
@@ -48,7 +48,7 @@ class NumberRangeWidget implements IListWidget {
 			} else {
 				setValue(nextValue);
 			}
-		} else if (inputManager.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(RIGHT)) {
 			final nextValue = value + delta;
 
 			if (nextValue > maxValue) {

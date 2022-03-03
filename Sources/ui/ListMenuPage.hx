@@ -103,15 +103,15 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	public function update() {
-		final inputManager = menu.inputManager;
+		final inputDevice = menu.inputDevice;
 
-		if (inputManager.getAction(UP)) {
+		if (inputDevice.getAction(UP)) {
 			moveUp();
-		} else if (inputManager.getAction(DOWN)) {
+		} else if (inputDevice.getAction(DOWN)) {
 			moveDown();
 		}
 
-		if (inputManager.getAction(BACK)) {
+		if (inputDevice.getAction(BACK)) {
 			menu.popPage();
 		}
 

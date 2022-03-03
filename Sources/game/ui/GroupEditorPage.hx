@@ -58,23 +58,23 @@ class GroupEditorPage implements IMenuPage {
 	}
 
 	public function update() {
-		final inputManager = menu.inputManager;
+		final inputDevice = menu.inputDevice;
 
-		if (inputManager.getAction(LEFT)) {
+		if (inputDevice.getAction(LEFT)) {
 			selectHorizontal(-1);
-		} else if (inputManager.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(RIGHT)) {
 			selectHorizontal(1);
 		}
 
-		if (inputManager.getAction(UP)) {
+		if (inputDevice.getAction(UP)) {
 			selectVertical(-1);
-		} else if (inputManager.getAction(DOWN)) {
+		} else if (inputDevice.getAction(DOWN)) {
 			selectVertical(1);
 		}
 
-		if (inputManager.getAction(BACK)) {
+		if (inputDevice.getAction(BACK)) {
 			menu.popPage();
-		} else if (inputManager.getAction(CONFIRM)) {
+		} else if (inputDevice.getAction(CONFIRM)) {
 			final group = queue.get(currentIndex);
 
 			if (selectionX == 1 && selectionY == 1) {

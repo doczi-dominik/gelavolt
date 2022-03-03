@@ -1,5 +1,6 @@
 package game.boardstates;
 
+import input.IInputDevice;
 import utils.Utils;
 import game.fields.IFieldMarker;
 import save_data.PrefsSettings;
@@ -13,7 +14,6 @@ import game.fields.Field;
 import game.geometries.BoardGeometries;
 import game.gelos.GeloColor;
 import game.gelos.Gelo;
-import input.IInputDeviceManager;
 import kha.Assets;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
@@ -31,7 +31,7 @@ class EditingBoardState implements IBoardState {
 	static final COLORS = [COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, GARBAGE];
 
 	final geometries: BoardGeometries;
-	final inputManager: IInputDeviceManager;
+	final inputDevice: IInputDevice;
 	final chainSim: ChainSimulator;
 	final chainCounter: ChainCounter;
 	final prefsSettings: PrefsSettings;
@@ -52,7 +52,7 @@ class EditingBoardState implements IBoardState {
 
 	public function new(opts: EditingBoardStateOptions) {
 		geometries = opts.geometries;
-		inputManager = opts.inputManager;
+		inputDevice = opts.inputDevice;
 		chainSim = opts.chainSim;
 		chainCounter = opts.chainCounter;
 		prefsSettings = opts.prefsSettings;
@@ -168,31 +168,31 @@ class EditingBoardState implements IBoardState {
 	}
 
 	public function update() {
-		if (inputManager.getAction(LEFT)) {
+		if (inputDevice.getAction(LEFT)) {
 			moveCursor(-1, 0);
-		} else if (inputManager.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(RIGHT)) {
 			moveCursor(1, 0);
 		}
 
-		if (inputManager.getAction(UP)) {
+		if (inputDevice.getAction(UP)) {
 			moveCursor(0, -1);
-		} else if (inputManager.getAction(DOWN)) {
+		} else if (inputDevice.getAction(DOWN)) {
 			moveCursor(0, 1);
 		}
 
-		if (inputManager.getAction(PREVIOUS_COLOR)) {
+		if (inputDevice.getAction(PREVIOUS_COLOR)) {
 			changeIndex(-1);
-		} else if (inputManager.getAction(NEXT_COLOR)) {
+		} else if (inputDevice.getAction(NEXT_COLOR)) {
 			changeIndex(1);
 		}
 
-		if (inputManager.getAction(TOGGLE_MARKERS)) {
+		if (inputDevice.getAction(TOGGLE_MARKERS)) {
 			switchMode();
 		}
 
-		if (inputManager.getAction(CONFIRM)) {
+		if (inputDevice.getAction(CONFIRM)) {
 			set();
-		} else if (inputManager.getAction(BACK)) {
+		} else if (inputDevice.getAction(BACK)) {
 			clear();
 		}
 

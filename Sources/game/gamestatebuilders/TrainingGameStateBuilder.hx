@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import input.AnyInputDevice;
+import input.IInputDevice;
 import game.mediators.TransformationMediator;
 import game.mediators.FrameCounter;
 import game.gamemodes.TrainingGameMode;
@@ -20,7 +22,6 @@ import game.previews.VerticalPreview;
 import game.simulation.NullLinkInfoBuilder;
 import game.actionbuffers.LocalActionBuffer;
 import game.boardstates.TrainingBoardState;
-import input.InputDeviceManager;
 import game.boards.TrainingBoard;
 import kha.math.Random;
 import game.randomizers.Randomizer;
@@ -60,7 +61,7 @@ class TrainingGameStateBuilder {
 	var playerChainCounter: ChainCounter;
 	var playerField: Field;
 	var playerQueue: Queue;
-	var playerInputManager: InputDeviceManager;
+	var playerInputDevice: IInputDevice;
 	var playerActionBuffer: LocalActionBuffer;
 	var playerGeloGroup: GeloGroup;
 	var playerAllClearManager: AllClearManager;
@@ -178,14 +179,14 @@ class TrainingGameStateBuilder {
 		playerQueue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
 	}
 
-	inline function buildPlayerInputManager() {
-		playerInputManager = new InputDeviceManager(Profile.primary.inputSettings, KEYBOARD);
+	inline function buildPlayerInputDevice() {
+		playerInputDevice = AnyInputDevice.instance;
 	}
 
 	inline function buildPlayerActionBuffer() {
 		playerActionBuffer = new LocalActionBuffer({
 			frameCounter: frameCounter,
-			inputManager: playerInputManager
+			inputDevice: playerInputDevice
 		});
 	}
 
@@ -276,7 +277,7 @@ class TrainingGameStateBuilder {
 	inline function buildEditState() {
 		editState = new EditingBoardState({
 			geometries: BoardGeometries.LEFT,
-			inputManager: playerInputManager,
+			inputDevice: playerInputDevice,
 			field: Field.create({
 				prefsSettings: Profile.primary.prefsSettings,
 				columns: 6,
@@ -293,7 +294,7 @@ class TrainingGameStateBuilder {
 	inline function buildPlayerBoard() {
 		playerBoard = new TrainingBoard({
 			pauseMediator: pauseMediator,
-			inputManager: playerInputManager,
+			inputDevice: playerInputDevice,
 			playActionBuffer: playerActionBuffer,
 			playState: playState,
 			editState: editState,
@@ -304,7 +305,7 @@ class TrainingGameStateBuilder {
 	inline function buildInfoBoard() {
 		infoBoard = new SingleStateBoard({
 			pauseMediator: pauseMediator,
-			inputManager: playerInputManager,
+			inputDevice: playerInputDevice,
 			actionBuffer: NullActionBuffer.instance,
 			state: infoState
 		});
@@ -376,7 +377,7 @@ class TrainingGameStateBuilder {
 		buildPlayerChainCounter();
 		buildPlayerField();
 		buildPlayerQueue();
-		buildPlayerInputManager();
+		buildPlayerInputDevice();
 		buildPlayerActionBuffer();
 		buildPlayerGeloGroup();
 		buildPlayerAllClearManager();

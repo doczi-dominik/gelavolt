@@ -37,11 +37,11 @@ class OptionListWidget implements IListWidget {
 	}
 
 	public function update() {
-		final inputManager = menu.inputManager;
+		final inputDevice = menu.inputDevice;
 
-		if (inputManager.getAction(LEFT)) {
+		if (inputDevice.getAction(LEFT)) {
 			changeValue(-1);
-		} else if (inputManager.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(RIGHT)) {
 			changeValue(1);
 		}
 	}

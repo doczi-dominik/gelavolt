@@ -9,7 +9,10 @@ class ControlsPage extends ListMenuPage {
 	public function new(header: String, actions: Array<Action>) {
 		super({
 			header: header,
-			widgetBuilder: (menu) -> actions.map((action) -> (new InputWidget(menu, action) : IListWidget))
+			widgetBuilder: (menu) -> actions.map((action) -> (new InputWidget({
+				action: action,
+				inputDevice: menu.inputDevice
+			}) : IListWidget))
 		});
 
 		controlDisplays = [
@@ -22,18 +25,18 @@ class ControlsPage extends ListMenuPage {
 	override function update() {
 		super.update();
 
-		final inputManager = menu.inputManager;
+		final inputDevice = menu.inputDevice;
 
 		final currentWidget = cast(widgets[widgetIndex], InputWidget);
 
-		if (inputManager.getAction(CONFIRM)) {
-			inputManager.rebind(currentWidget.action);
+		if (inputDevice.getAction(CONFIRM)) {
+			inputDevice.rebind(currentWidget.action);
 		}
 
-		if (currentWidget.isRebinding && !inputManager.isRebinding) {
+		if (currentWidget.isRebinding && !inputDevice.isRebinding) {
 			SaveManager.saveProfiles();
 		}
 
-		currentWidget.isRebinding = inputManager.isRebinding;
+		currentWidget.isRebinding = inputDevice.isRebinding;
 	}
 }

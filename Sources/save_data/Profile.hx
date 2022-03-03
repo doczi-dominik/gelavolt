@@ -31,6 +31,7 @@ class Profile {
 
 	public static function addOnChangePrimaryCallback(callback: Void->Void) {
 		onChangePrimary.push(callback);
+		callback();
 	}
 
 	public static function changePrimary(p: Profile) {

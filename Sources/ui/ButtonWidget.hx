@@ -24,7 +24,7 @@ class ButtonWidget implements IListWidget {
 	}
 
 	public function update() {
-		if (menu.inputManager.getAction(CONFIRM)) {
+		if (menu.inputDevice.getAction(CONFIRM)) {
 			callback();
 		}
 	}

@@ -1,6 +1,6 @@
 package game.gamestatebuilders;
 
-import input.IInputDeviceManager;
+import input.IInputDevice;
 import game.ui.PauseMenu;
 import game.ui.ReplayPauseMenu;
 import game.mediators.TransformationMediator;
@@ -8,7 +8,6 @@ import game.mediators.FrameCounter;
 import save_data.Profile;
 import game.actionbuffers.ReplayActionBuffer;
 import game.actionbuffers.LocalActionBuffer;
-import input.InputDeviceManager;
 import game.gamemodes.EndlessGameMode;
 import game.actionbuffers.IActionBuffer;
 import game.ui.EndlessPauseMenu;
@@ -37,7 +36,7 @@ import game.states.GameState;
 class EndlessGameStateBuilder {
 	final gameMode: EndlessGameMode;
 	final transformMediator: TransformationMediator;
-	final inputManager: IInputDeviceManager;
+	final inputDevice: IInputDevice;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -69,7 +68,7 @@ class EndlessGameStateBuilder {
 	public function new(opts: EndlessGameStateBuilderOptions) {
 		gameMode = opts.gameMode;
 		transformMediator = opts.transformMediator;
-		inputManager = opts.inputManager;
+		inputDevice = opts.inputDevice;
 	}
 
 	inline function buildRNG() {
@@ -147,7 +146,7 @@ class EndlessGameStateBuilder {
 		if (gameMode.replayData == null) {
 			actionBuffer = new LocalActionBuffer({
 				frameCounter: frameCounter,
-				inputManager: inputManager
+				inputDevice: inputDevice
 			});
 
 			return;
@@ -155,7 +154,7 @@ class EndlessGameStateBuilder {
 
 		actionBuffer = new ReplayActionBuffer({
 			frameCounter: frameCounter,
-			inputManager: inputManager,
+			inputDevice: inputDevice,
 			replayData: gameMode.replayData
 		});
 	}
@@ -213,7 +212,7 @@ class EndlessGameStateBuilder {
 		board = new SingleStateBoard({
 			actionBuffer: actionBuffer,
 			pauseMediator: pauseMediator,
-			inputManager: inputManager,
+			inputDevice: inputDevice,
 			state: boardState
 		});
 	}
