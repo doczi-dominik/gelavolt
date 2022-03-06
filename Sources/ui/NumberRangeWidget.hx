@@ -49,7 +49,7 @@ class NumberRangeWidget implements IListWidget {
 	}
 
 	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.height);
+		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
 		height = font.height(fontSize);
 	}
 
