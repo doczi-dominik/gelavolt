@@ -1,5 +1,6 @@
 package input;
 
+import save_data.SaveManager;
 import kha.Font;
 import kha.Assets;
 import ui.ControlDisplay;
@@ -95,6 +96,8 @@ class InputDevice implements IInputDevice {
 	final function finishRebind() {
 		isRebinding = false;
 		AnyInputDevice.rebindCounter--;
+
+		SaveManager.saveProfiles();
 
 		removeRebindListeners();
 		addListeners();
