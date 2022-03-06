@@ -1,0 +1,106 @@
+name: Build Binaries and Add Releases
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      datetime: ${{ steps.datetime.outputs.datetime }}
+    steps:
+    - name: Get Current Date and Time
+      id: datetime
+      run: echo "::set-output name=datetime::$(date '+%Y%m%d%H%M')"
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
+        prerelease: true
+        tag: ${{ steps.datetime.outputs.datetime }}
+        commit: prod
+        name: Build v${{ steps.datetime.outputs.datetime }}
+  build-linux:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Apt Update
+      run: sudo apt update
+    - name: Get Dependencies
+      run: sudo apt install libasound2-dev libxinerama-dev libxrandr-dev libgl1-mesa-dev libxi-dev libxcursor-dev libudev-dev libwayland-dev wayland-protocols libxkbcommon-dev --yes --quiet
+    - name: Kha Setup
+      uses: actions/checkout@v2
+      with:
+        repository: Kode/Kha
+        path: kha
+        submodules: recursive
+    - name: Checkout GelaVolt
+      uses: actions/checkout@v2
+      with:
+        path: gv
+    - name: Compile
+      working-directory: gv
+      run: node ../kha/make -t linux -g opengl --compile
+    - name: Zip Release
+      run: zip -r linux_x64.zip gv/build/linux
+    - name: Upload Artifacts
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: linux_x64.zip
+        tag: ${{ needs.create-release.outputs.datetime }}
+  build-windows:
+    needs: create-release
+    runs-on: windows-latest
+    steps:
+    - name: Kha Setup
+      uses: actions/checkout@v2
+      with:
+        repository: Kode/Kha
+        path: kha
+        submodules: recursive
+    - name: Checkout GelaVolt
+      uses: actions/checkout@v2
+      with:
+        path: gv
+    - name: Compile
+      working-directory: gv
+      run: node ../kha/make -v vs2022 -g direct3d11 --compile
+    - name: Zip Release
+      run: Compress-Archive -Path gv/build/windows windows_x64.zip
+    - name: Upload Artifacts
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: windows_x64.zip
+        tag: ${{ needs.create-release.outputs.datetime }}
+  build-macos:
+    needs: create-release
+    runs-on: macos-latest
+    steps:
+    - name: Kha Setup
+      uses: actions/checkout@v2
+      with:
+        repository: Kode/Kha
+        path: kha
+        submodules: recursive
+    - name: Checkout GelaVolt
+      uses: actions/checkout@v2
+      with:
+        path: gv
+    - name: Compile
+      working-directory: gv
+      run: node ../kha/make -t osx -g opengl --compile
+    - name: Move Binary and Zip Release
+      working-directory: gv
+      run: mv build/osx-build/build/Release/Project\ GelaVolt.app build/osx && cd build && 7z a -tzip osx_x64.zip osx
+    - name: Upload Artifacts
+      uses: svenstaro/upload-release-action@2.2.1
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: gv/build/osx_x64.zip
+        tag: ${{ needs.create-release.outputs.datetime }}
+        

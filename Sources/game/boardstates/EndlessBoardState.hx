@@ -24,6 +24,8 @@ class EndlessBoardState extends StandardBoardState {
 				queue.setIndex(0);
 				initSimStepState();
 			case NEW:
+				regenerateQueue();
+				initSimStepState();
 		}
 	}
 
