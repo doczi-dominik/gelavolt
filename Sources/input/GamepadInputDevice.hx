@@ -153,6 +153,9 @@ class GamepadInputDevice extends InputDevice {
 		final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadInput];
 
 		g.drawString(str, x, y);
+
+		g.color = White;
+
 		renderButton(g, x + strW, y, bindingsFontHeight / spr.height, spr);
 	}
 
