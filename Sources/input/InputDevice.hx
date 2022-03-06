@@ -28,6 +28,7 @@ class InputDevice implements IInputDevice {
 
 	var actions: Map<Action, Int->Bool>;
 	var isRebinding: Bool;
+	var latestRebindAction: Null<Action>;
 
 	public final type: InputDeviceType;
 

@@ -123,6 +123,7 @@ class GamepadInputDevice extends InputDevice {
 		super.rebind(action);
 
 		latestRebindFunction = rebindListener.bind(action);
+		latestRebindAction = action;
 
 		try {
 			gamepad.notify(null, latestRebindFunction);
@@ -141,7 +142,7 @@ class GamepadInputDevice extends InputDevice {
 
 		final title = ACTION_TITLES[action];
 
-		if (isRebinding) {
+		if (action == latestRebindAction && isRebinding) {
 			g.drawString('Press any button for [ $title ]', x, y);
 
 			return;

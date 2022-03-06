@@ -114,6 +114,7 @@ class KeyboardInputDevice extends InputDevice {
 		super.rebind(action);
 
 		latestRebindFunction = rebindListener.bind(action);
+		latestRebindAction = action;
 
 		try {
 			keyboard.notify(latestRebindFunction);
@@ -125,7 +126,7 @@ class KeyboardInputDevice extends InputDevice {
 
 		final title = ACTION_TITLES[action];
 
-		if (isRebinding) {
+		if (action == latestRebindAction && isRebinding) {
 			g.drawString('Press any key for [ $title ]', x, y);
 
 			return;
