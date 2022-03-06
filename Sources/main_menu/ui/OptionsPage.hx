@@ -2,7 +2,6 @@ package main_menu.ui;
 
 import ui.KeyboardConfirmWrapper;
 import ui.AnyGamepadDetectWrapper;
-import ui.InputLimitedPageWidget;
 import ui.InputLimitedListPage;
 import input.KeyboardInputDevice;
 import game.ui.ControlsPageWidget;
