@@ -1,21 +1,18 @@
 package game.boards;
 
+import input.IInputDevice;
 import game.mediators.PauseMediator;
-import game.actions.TrainingActions;
-import game.actions.MenuActions;
 import game.boardstates.TrainingBoardState;
 import game.boardstates.TrainingInfoBoardState;
 import game.boardstates.EditingBoardState;
 import game.actionbuffers.IActionBuffer;
-import input.IInputDeviceManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
-import game.garbage.IGarbageManager;
 import game.boardstates.IBoardState;
 
 class TrainingBoard implements IBoard {
 	final pauseMediator: PauseMediator;
-	final inputManager: IInputDeviceManager;
+	final inputDevice: IInputDevice;
 	final actionBuffer: IActionBuffer;
 	final infoState: TrainingInfoBoardState;
 
@@ -26,7 +23,7 @@ class TrainingBoard implements IBoard {
 
 	public function new(opts: TrainingBoardOptions) {
 		pauseMediator = opts.pauseMediator;
-		inputManager = opts.inputManager;
+		inputDevice = opts.inputDevice;
 		actionBuffer = opts.playActionBuffer;
 		infoState = opts.infoState;
 
@@ -72,11 +69,11 @@ class TrainingBoard implements IBoard {
 	}
 
 	public function update() {
-		if (inputManager.getAction(PAUSE)) {
-			pauseMediator.pause(inputManager);
+		if (inputDevice.getAction(PAUSE)) {
+			pauseMediator.pause(inputDevice);
 		}
 
-		if (inputManager.getAction(TOGGLE_EDIT_MODE)) {
+		if (inputDevice.getAction(TOGGLE_EDIT_MODE)) {
 			if (activeState == playState) {
 				changeToEdit();
 			} else {
@@ -85,16 +82,16 @@ class TrainingBoard implements IBoard {
 		}
 
 		if (activeState == playState) {
-			if (inputManager.getAction(PREVIOUS_STEP)) {
+			if (inputDevice.getAction(PREVIOUS_STEP)) {
 				playState.previousGroup();
-			} else if (inputManager.getAction(NEXT_STEP)) {
+			} else if (inputDevice.getAction(NEXT_STEP)) {
 				playState.nextGroup();
 			}
 		} else {
-			if (inputManager.getAction(PREVIOUS_STEP)) {
+			if (inputDevice.getAction(PREVIOUS_STEP)) {
 				editState.viewPrevious();
 				infoState.onViewChainStep();
-			} else if (inputManager.getAction(NEXT_STEP)) {
+			} else if (inputDevice.getAction(NEXT_STEP)) {
 				editState.viewNext();
 				infoState.onViewChainStep();
 			}

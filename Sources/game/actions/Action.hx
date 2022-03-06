@@ -1,3 +1,26 @@
 package game.actions;
 
-typedef Action = String;
+enum Action {
+	// Menu Actions
+	PAUSE;
+	LEFT;
+	RIGHT;
+	DOWN;
+	UP;
+	BACK;
+	CONFIRM;
+	// Game Actions
+	SHIFT_LEFT;
+	SHIFT_RIGHT;
+	SOFT_DROP;
+	HARD_DROP;
+	ROTATE_LEFT;
+	ROTATE_RIGHT;
+	// Training Actions
+	TOGGLE_EDIT_MODE;
+	PREVIOUS_STEP;
+	NEXT_STEP;
+	PREVIOUS_COLOR;
+	NEXT_COLOR;
+	TOGGLE_MARKERS;
+}

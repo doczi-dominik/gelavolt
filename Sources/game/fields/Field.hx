@@ -1,6 +1,6 @@
 package game.fields;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.rules.Rule;
 import utils.Utils;
 import game.gelos.GarbageGelo;
@@ -21,7 +21,7 @@ class Field {
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
 
 	public static function create(opts: FieldOptions) {
-		final f = new Field(opts.prefsSave);
+		final f = new Field(opts.prefsSettings);
 
 		init(f, opts);
 
@@ -62,7 +62,7 @@ class Field {
 		}
 	}
 
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
 	var data: Vector<Vector<FieldGelo>>;
 	var markers: Vector<Vector<IFieldMarker>>;
@@ -85,15 +85,15 @@ class Field {
 	}
 
 	public function copy() {
-		final copy = new Field(prefsSave);
+		final copy = new Field(prefsSettings);
 
 		copy.copyFrom(this);
 
 		return copy;
 	}
 
-	function new(prefsSave: PrefsSave) {
-		this.prefsSave = prefsSave;
+	function new(prefsSettings: PrefsSettings) {
+		this.prefsSettings = prefsSettings;
 	}
 
 	inline function rawSet(x: Int, y: Int, gelo: FieldGelo) {
@@ -177,7 +177,7 @@ class Field {
 		final screenCoords = cellToScreen(x, y);
 
 		final gelo = FieldGelo.create({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: color,
 			x: screenCoords.x,
 			y: screenCoords.y
@@ -197,7 +197,7 @@ class Field {
 		final screenCoords = cellToScreen(x, y);
 
 		final garbo = GarbageGelo.create({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: color,
 			x: screenCoords.x,
 			y: screenCoords.y

@@ -1,29 +1,14 @@
 package game.ui;
 
+import ui.InputLimitedListPage;
 import ui.IListWidget;
-import game.actions.OrderedCategoryKeys;
-import game.actions.ActionCategory;
-import save_data.InputSave;
-import save_data.SaveManager;
-import game.actions.MenuActions;
-import ui.Menu;
-import ui.ListMenuPage;
 
-class ControlsPage extends ListMenuPage {
-	final category: ActionCategory;
-
-	public function new(category: ActionCategory) {
+class ControlsPage extends InputLimitedListPage {
+	public function new(opts: ControlsPageOptions) {
 		super({
-			header: category,
-			widgetBuilder: (menu) -> {
-				final widgets: Array<IListWidget> = [];
-
-				for (k in OrderedCategoryKeys[category]) {
-					widgets.push(new InputWidget(menu, category, k));
-				}
-
-				return widgets;
-			}
+			header: opts.header,
+			widgetBuilder: (menu) -> opts.actions.map((action) -> (new InputWidget(action) : IListWidget)),
+			inputDevice: opts.inputDevice
 		});
 
 		controlDisplays = [
@@ -31,25 +16,5 @@ class ControlsPage extends ListMenuPage {
 			{actions: [BACK], description: "Back"},
 			{actions: [CONFIRM], description: "Rebind"}
 		];
-
-		this.category = category;
-	}
-
-	override function update() {
-		super.update();
-
-		final inputManager = menu.inputManager;
-
-		final currentWidget = cast(widgets[widgetIndex], InputWidget);
-
-		if (inputManager.getAction(CONFIRM)) {
-			inputManager.rebind(currentWidget.action, category);
-		}
-
-		if (currentWidget.isRebinding && !inputManager.isRebinding) {
-			SaveManager.saveProfiles();
-		}
-
-		currentWidget.isRebinding = inputManager.isRebinding;
 	}
 }

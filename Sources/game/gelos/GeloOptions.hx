@@ -1,10 +1,10 @@
 package game.gelos;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import kha.Color;
 
 @:structInit
 class GeloOptions {
-	public final prefsSave: PrefsSave;
+	public final prefsSettings: PrefsSettings;
 	public var color: GeloColor;
 }

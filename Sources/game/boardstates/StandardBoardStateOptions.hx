@@ -2,7 +2,7 @@ package game.boardstates;
 
 import game.mediators.TransformationMediator;
 import game.rules.Rule;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.Queue;
 import game.gelogroups.GeloGroup;
 import game.screens.GameScreen;
@@ -21,7 +21,7 @@ import kha.math.Random;
 @:structInit
 class StandardBoardStateOptions {
 	public final rule: Rule;
-	public final prefsSave: PrefsSave;
+	public final prefsSettings: PrefsSettings;
 
 	public final transformMediator: TransformationMediator;
 	public final rng: Random;

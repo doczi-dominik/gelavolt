@@ -1,10 +1,10 @@
 package game.actionbuffers;
 
+import input.IInputDevice;
 import game.mediators.FrameCounter;
-import input.IInputDeviceManager;
 
 @:structInit
 class LocalActionBufferOptions {
 	public final frameCounter: FrameCounter;
-	public final inputManager: IInputDeviceManager;
+	public final inputDevice: IInputDevice;
 }

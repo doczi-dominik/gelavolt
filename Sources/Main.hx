@@ -1,12 +1,13 @@
 package;
 
+import input.AnyInputDevice;
+import input.InputDevice;
+import game.screens.ReplayScreen;
 import save_data.Profile;
 import main_menu.MainMenuScreen;
 import haxe.Unserializer;
 import save_data.SaveManager;
-import input.InputDeviceManager;
 import Screen.GlobalScreenSwitcher;
-import game.screens.GameScreen;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
@@ -87,7 +88,9 @@ class Main {
 				Pipelines.init();
 				SaveManager.loadEverything();
 
-				Profile.primary = SaveManager.getProfile(0);
+				Profile.changePrimary(SaveManager.getProfile(0));
+
+				AnyInputDevice.init();
 
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;
@@ -104,7 +107,7 @@ class Main {
 					fr.readAsText(ev.dataTransfer.files.item(0));
 
 					fr.onload = () -> {
-						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(fr.result)));
+						GlobalScreenSwitcher.switchScreen(new ReplayScreen(Unserializer.run(fr.result)));
 					}
 				}
 				#else
@@ -112,7 +115,7 @@ class Main {
 					try {
 						final contents = File.getContent(path.trim());
 
-						GlobalScreenSwitcher.switchScreen(new GameScreen(Unserializer.run(contents)));
+						GlobalScreenSwitcher.switchScreen(new ReplayScreen(Unserializer.run(contents)));
 					} catch (_) {}
 				});
 				#end
@@ -127,7 +130,7 @@ class Main {
 					accumulator += frameTime;
 
 					while (accumulator >= FIXED_UPDATE_DELTA) {
-						InputDeviceManager.update();
+						InputDevice.update();
 						GlobalScreenSwitcher.updateCurrent();
 						accumulator -= FIXED_UPDATE_DELTA;
 					}

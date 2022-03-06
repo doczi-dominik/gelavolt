@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import input.IInputDevice;
 import game.ui.PauseMenu;
 import game.ui.ReplayPauseMenu;
 import game.mediators.TransformationMediator;
@@ -7,7 +8,6 @@ import game.mediators.FrameCounter;
 import save_data.Profile;
 import game.actionbuffers.ReplayActionBuffer;
 import game.actionbuffers.LocalActionBuffer;
-import input.InputDeviceManager;
 import game.gamemodes.EndlessGameMode;
 import game.actionbuffers.IActionBuffer;
 import game.ui.EndlessPauseMenu;
@@ -36,6 +36,7 @@ import game.states.GameState;
 class EndlessGameStateBuilder {
 	final gameMode: EndlessGameMode;
 	final transformMediator: TransformationMediator;
+	final inputDevice: IInputDevice;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -52,7 +53,6 @@ class EndlessGameStateBuilder {
 	var chainCounter: ChainCounter;
 	var field: Field;
 	var queue: Queue;
-	var inputManager: InputDeviceManager;
 	var actionBuffer: IActionBuffer;
 	var geloGroup: GeloGroup;
 	var allClearManager: AllClearManager;
@@ -68,6 +68,7 @@ class EndlessGameStateBuilder {
 	public function new(opts: EndlessGameStateBuilderOptions) {
 		gameMode = opts.gameMode;
 		transformMediator = opts.transformMediator;
+		inputDevice = opts.inputDevice;
 	}
 
 	inline function buildRNG() {
@@ -77,7 +78,7 @@ class EndlessGameStateBuilder {
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSave: Profile.primary.prefs
+			prefsSettings: Profile.primary.prefsSettings
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -118,8 +119,8 @@ class EndlessGameStateBuilder {
 				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
+			garbageDisplay: GarbageTray.create(Profile.primary.prefsSettings),
+			accumulatedDisplay: GarbageTray.create(Profile.primary.prefsSettings)
 		});
 	}
 
@@ -129,7 +130,7 @@ class EndlessGameStateBuilder {
 
 	inline function buildField() {
 		field = Field.create({
-			prefsSave: Profile.primary.prefs,
+			prefsSettings: Profile.primary.prefsSettings,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -141,15 +142,11 @@ class EndlessGameStateBuilder {
 		queue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
 	}
 
-	inline function buildInputManager() {
-		inputManager = new InputDeviceManager(Profile.primary.input);
-	}
-
 	inline function buildActionBuffer() {
 		if (gameMode.replayData == null) {
 			actionBuffer = new LocalActionBuffer({
 				frameCounter: frameCounter,
-				inputManager: inputManager
+				inputDevice: inputDevice
 			});
 
 			return;
@@ -157,24 +154,24 @@ class EndlessGameStateBuilder {
 
 		actionBuffer = new ReplayActionBuffer({
 			frameCounter: frameCounter,
-			inputManager: inputManager,
+			inputDevice: inputDevice,
 			replayData: gameMode.replayData
 		});
 	}
 
 	inline function buildGeloGroup() {
-		final prefsSave = Profile.primary.prefs;
+		final prefsSettings = Profile.primary.prefsSettings;
 
 		geloGroup = new GeloGroup({
 			field: field,
 			rule: gameMode.rule,
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			scoreManager: scoreManager,
 			chainSim: new ChainSimulator({
 				rule: gameMode.rule,
 				linkBuilder: NullLinkInfoBuilder.instance,
-				garbageDisplay: GarbageTray.create(prefsSave),
-				accumulatedDisplay: GarbageTray.create(prefsSave)
+				garbageDisplay: GarbageTray.create(prefsSettings),
+				accumulatedDisplay: GarbageTray.create(prefsSettings)
 			})
 		});
 	}
@@ -191,7 +188,7 @@ class EndlessGameStateBuilder {
 	inline function buildBoardState() {
 		boardState = new EndlessBoardState({
 			rule: gameMode.rule,
-			prefsSave: Profile.primary.prefs,
+			prefsSettings: Profile.primary.prefsSettings,
 			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,
@@ -206,7 +203,7 @@ class EndlessGameStateBuilder {
 			actionBuffer: actionBuffer,
 			chainCounter: chainCounter,
 			chainSim: chainSim,
-			trainingSave: Profile.primary.training,
+			trainingSettings: Profile.primary.trainingSettings,
 			randomizer: randomizer
 		});
 	}
@@ -215,7 +212,7 @@ class EndlessGameStateBuilder {
 		board = new SingleStateBoard({
 			actionBuffer: actionBuffer,
 			pauseMediator: pauseMediator,
-			inputManager: inputManager,
+			inputDevice: inputDevice,
 			state: boardState
 		});
 	}
@@ -224,8 +221,8 @@ class EndlessGameStateBuilder {
 		if (gameMode.replayData == null) {
 			pauseMenu = new EndlessPauseMenu({
 				pauseMediator: pauseMediator,
-				prefsSave: Profile.primary.prefs,
-				trainingSave: Profile.primary.training,
+				prefsSettings: Profile.primary.prefsSettings,
+				trainingSettings: Profile.primary.trainingSettings,
 				actionBuffer: actionBuffer,
 				gameMode: gameMode
 			});
@@ -235,7 +232,7 @@ class EndlessGameStateBuilder {
 
 		pauseMenu = new ReplayPauseMenu({
 			pauseMediator: pauseMediator,
-			prefsSave: Profile.primary.prefs,
+			prefsSettings: Profile.primary.prefsSettings,
 			actionBuffer: cast(actionBuffer, ReplayActionBuffer),
 		});
 	}
@@ -275,7 +272,6 @@ class EndlessGameStateBuilder {
 		buildChainCounter();
 		buildField();
 		buildQueue();
-		buildInputManager();
 		buildActionBuffer();
 		buildGeloGroup();
 		buildAllClearManager();

@@ -9,7 +9,7 @@ import save_data.ClearOnXMode;
 import ui.OptionListWidget;
 import ui.Menu;
 import ui.IListWidget;
-import save_data.TrainingSave;
+import save_data.TrainingSettings;
 #if js
 import js.html.URL;
 import js.html.File;
@@ -22,12 +22,12 @@ using DateTools;
 
 class EndlessPauseMenu extends PauseMenu {
 	final gameMode: EndlessGameMode;
-	final trainingSave: TrainingSave;
+	final trainingSettings: TrainingSettings;
 	final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
 		gameMode = opts.gameMode;
-		trainingSave = opts.trainingSave;
+		trainingSettings = opts.trainingSettings;
 		actionBuffer = opts.actionBuffer;
 
 		super(opts);
@@ -50,13 +50,13 @@ class EndlessPauseMenu extends PauseMenu {
 						"NEW: CLEAR + Regenerate Queue"
 					],
 					options: [ClearOnXMode.CLEAR, RESTART, NEW],
-					startIndex: switch (trainingSave.clearOnXMode) {
+					startIndex: switch (trainingSettings.clearOnXMode) {
 						case CLEAR: 0;
 						case RESTART: 1;
 						case NEW: 2;
 					},
 					onChange: (value) -> {
-						trainingSave.clearOnXMode = value;
+						trainingSettings.clearOnXMode = value;
 						SaveManager.saveProfiles();
 					}
 				}),

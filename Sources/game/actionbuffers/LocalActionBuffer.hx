@@ -1,20 +1,18 @@
 package game.actionbuffers;
 
+import input.IInputDevice;
 import game.mediators.FrameCounter;
-import game.actions.GameActions;
-import input.IInputDeviceManager;
-import game.screens.GameScreen;
 
 class LocalActionBuffer implements IActionBuffer {
 	final frameCounter: FrameCounter;
-	final inputManager: IInputDeviceManager;
+	final inputDevice: IInputDevice;
 	final actions: Map<Int, ActionSnapshot>;
 
 	public var latestAction(default, null): ActionSnapshot;
 
 	public function new(opts: LocalActionBufferOptions) {
 		frameCounter = opts.frameCounter;
-		inputManager = opts.inputManager;
+		inputDevice = opts.inputDevice;
 		actions = [];
 
 		latestAction = {
@@ -29,12 +27,12 @@ class LocalActionBuffer implements IActionBuffer {
 
 	public function update() {
 		final currentAction: ActionSnapshot = {
-			shiftLeft: inputManager.getAction(SHIFT_LEFT),
-			shiftRight: inputManager.getAction(SHIFT_RIGHT),
-			rotateLeft: inputManager.getAction(ROTATE_LEFT),
-			rotateRight: inputManager.getAction(ROTATE_RIGHT),
-			softDrop: inputManager.getAction(SOFT_DROP),
-			hardDrop: inputManager.getAction(HARD_DROP)
+			shiftLeft: inputDevice.getAction(SHIFT_LEFT),
+			shiftRight: inputDevice.getAction(SHIFT_RIGHT),
+			rotateLeft: inputDevice.getAction(ROTATE_LEFT),
+			rotateRight: inputDevice.getAction(ROTATE_RIGHT),
+			softDrop: inputDevice.getAction(SOFT_DROP),
+			hardDrop: inputDevice.getAction(HARD_DROP)
 		};
 
 		if (latestAction.isNotEqual(currentAction)) {

@@ -1,15 +1,15 @@
 package game.garbage.trays;
 
 import utils.Utils;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.geometries.BoardGeometries;
 import game.garbage.GarbageIcon.GARBAGE_ICON_GEOMETRIES;
 import kha.Assets;
 import kha.graphics2.Graphics;
 
 class CenterGarbageTray extends GarbageTray {
-	public static function create(prefsSave: PrefsSave) {
-		final a = new CenterGarbageTray(prefsSave);
+	public static function create(prefsSettings: PrefsSettings) {
+		final a = new CenterGarbageTray(prefsSettings);
 
 		init(a);
 
@@ -43,15 +43,15 @@ class CenterGarbageTray extends GarbageTray {
 	}
 
 	override function copy(): GarbageTray {
-		final a = new CenterGarbageTray(prefsSave);
+		final a = new CenterGarbageTray(prefsSettings);
 
 		a.copyFrom(this);
 
 		return a;
 	}
 
-	function new(prefsSave: PrefsSave) {
-		super(prefsSave);
+	function new(prefsSettings: PrefsSettings) {
+		super(prefsSettings);
 	}
 
 	override function updateClosingState() {

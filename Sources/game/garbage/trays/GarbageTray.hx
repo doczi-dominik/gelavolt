@@ -1,6 +1,6 @@
 package game.garbage.trays;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.gelos.Gelo;
 import kha.Assets;
 import game.garbage.GarbageIcon.GARBAGE_ICON_GEOMETRIES;
@@ -13,8 +13,8 @@ private enum abstract InnerState(Int) {
 }
 
 class GarbageTray {
-	public static function create(prefsSave: PrefsSave) {
-		final a = new GarbageTray(prefsSave);
+	public static function create(prefsSettings: PrefsSettings) {
+		final a = new GarbageTray(prefsSettings);
 
 		init(a);
 
@@ -29,7 +29,7 @@ class GarbageTray {
 		dest.state = src.state;
 	}
 
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 	final display: Array<GarbageIcon>;
 
 	var state: InnerState;
@@ -39,15 +39,15 @@ class GarbageTray {
 	}
 
 	public function copy() {
-		final a = new GarbageTray(prefsSave);
+		final a = new GarbageTray(prefsSettings);
 
 		a.copyFrom(this);
 
 		return a;
 	}
 
-	function new(prefsSave: PrefsSave) {
-		this.prefsSave = prefsSave;
+	function new(prefsSettings: PrefsSettings) {
+		this.prefsSettings = prefsSettings;
 		display = [];
 	}
 
@@ -63,7 +63,7 @@ class GarbageTray {
 
 		var current = garbage;
 
-		if (!prefsSave.capAtCrowns)
+		if (!prefsSettings.capAtCrowns)
 			current = pushIcon(current, 1440, COMET);
 		current = pushIcon(current, 720, CROWN);
 		current = pushIcon(current, 360, MOON);

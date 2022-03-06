@@ -1,12 +1,8 @@
 package ui;
 
-import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
-import input.KeyCodeToString.KEY_CODE_TO_STRING;
-import game.actions.ActionCategory;
-import input.InputDeviceManager;
+import input.IInputDevice;
 import kha.Assets;
 import kha.Font;
-import input.IInputDeviceManager;
 import haxe.ds.GenericStack;
 import kha.graphics2.Graphics;
 
@@ -23,26 +19,27 @@ class Menu {
 	];
 
 	final pages: GenericStack<IMenuPage>;
+	final inputDevices: GenericStack<IInputDevice>;
 	final headerFont: Font;
-	final controlsFont: Font;
+	final warningFont: Font;
 
 	var headerFontSize: Int;
 	var headerFontHeight: Float;
-	var controlsFontSize: Int;
-	var controlsFontHeight: Float;
 	var warningFontSize: Int;
 	var warningFontHeight: Float;
 	var warningFontWidths: Array<Float>;
 
 	public var padding(default, null): Float;
-	public var inputManager(default, null): IInputDeviceManager;
+	public var inputDevice(default, null): IInputDevice;
 
 	public function new(initialPage: IMenuPage) {
 		pages = new GenericStack();
 		pages.add(initialPage);
 
+		inputDevices = new GenericStack();
+
 		headerFont = Assets.fonts.DigitalDisco;
-		controlsFont = Assets.fonts.Pixellari;
+		warningFont = Assets.fonts.Pixellari;
 
 		ScaleManager.addOnResizeCallback(resize);
 	}
@@ -52,14 +49,12 @@ class Menu {
 
 		headerFontSize = Std.int(HEADER_FONT_SIZE * ssc);
 		headerFontHeight = headerFont.height(headerFontSize);
-		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ssc);
-		controlsFontHeight = controlsFont.height(controlsFontSize);
 		warningFontSize = Std.int(WARNING_FONT_SIZE * ssc);
-		warningFontHeight = controlsFont.height(warningFontSize);
+		warningFontHeight = warningFont.height(warningFontSize);
 		warningFontWidths = [];
 
 		for (line in WARNING) {
-			warningFontWidths.push(controlsFont.width(warningFontSize, line));
+			warningFontWidths.push(warningFont.width(warningFontSize, line));
 		}
 
 		padding = PADDING * ssc;
@@ -67,72 +62,28 @@ class Menu {
 		for (p in pages) {
 			p.onResize();
 		}
-	}
 
-	function renderKeyboardControls(g: Graphics) {
-		final mappings = inputManager.inputOptions.mappings[MENU];
-
-		var x = padding;
-
-		for (d in pages.first().controlDisplays) {
-			var str = "";
-
-			for (key in d.actions) {
-				str += '${KEY_CODE_TO_STRING[mappings[key].keyboardInput]}/';
-			}
-
-			str = str.substring(0, str.length - 1);
-
-			// Hackerman but it beats having to calculate with scaling
-			str += ' : ${d.description}    ';
-
-			final strWidth = controlsFont.width(controlsFontSize, str);
-
-			g.drawString(str, x, ScaleManager.height - headerFontHeight);
-
-			x += strWidth;
+		for (i in inputDevices.iterator()) {
+			i.onResize();
 		}
 	}
 
-	function renderGamepadControls(g: Graphics) {
-		final ssc = ScaleManager.smallerScale;
-		final mappings = inputManager.inputOptions.mappings[MENU];
-
-		final y = ScaleManager.height - headerFontHeight;
-
-		var x = padding;
-
-		for (d in pages.first().controlDisplays) {
-			var str = "";
-
-			for (key in d.actions) {
-				final spr = GAMEPAD_SPRITE_COORDINATES[mappings[key].gamepadInput];
-
-				inputManager.renderGamepadIcon(g, x, y, spr, controlsFontHeight / spr.height);
-
-				x += spr.width * ssc;
-			}
-
-			// Hackerman but it beats having to calculate with scaling
-			str += ': ${d.description}    ';
-
-			final strWidth = g.font.width(controlsFontSize, str);
-
-			g.drawString(str, x, y);
-
-			x += strWidth;
-		}
+	function setInputDevice() {
+		inputDevice = inputDevices.first();
 	}
 
-	public function onShow(inputManager: IInputDeviceManager) {
-		this.inputManager = inputManager;
+	public function onShow(inputDevice: IInputDevice) {
+		pushInputDevice(inputDevice);
 
-		pages.first().onShow(this);
+		final page = pages.first();
+
+		page.onShow(this);
+		page.onResize();
 	}
 
 	public function pushPage(page: IMenuPage) {
-		page.onResize();
 		page.onShow(this);
+		page.onResize();
 		pages.add(page);
 	}
 
@@ -144,6 +95,17 @@ class Menu {
 		if (pages.isEmpty()) {
 			pages.add(poppedPage);
 		}
+	}
+
+	public inline function pushInputDevice(inputDevice: IInputDevice) {
+		inputDevice.onResize();
+		inputDevices.add(inputDevice);
+		setInputDevice();
+	}
+
+	public inline function popInputDevice() {
+		inputDevices.pop();
+		setInputDevice();
 	}
 
 	public function update() {
@@ -164,7 +126,7 @@ class Menu {
 
 		currentPage.render(g, padding, topLineY + padding * 0.375);
 
-		g.font = controlsFont;
+		g.font = warningFont;
 		g.fontSize = warningFontSize;
 		g.color = Color.fromValue(0xFF777777);
 
@@ -178,14 +140,8 @@ class Menu {
 				- i * warningFontHeight);
 		}
 
-		g.fontSize = controlsFontSize;
 		g.color = White;
 
-		switch (InputDeviceManager.lastDevice) {
-			case KEYBOARD:
-				renderKeyboardControls(g);
-			case GAMEPAD:
-				renderGamepadControls(g);
-		}
+		inputDevice.renderControls(g, padding, ScaleManager.height - headerFontHeight, pages.first().controlDisplays);
 	}
 }

@@ -1,15 +1,15 @@
 package game.mediators;
 
+import input.IInputDevice;
 import game.states.GameState;
-import input.IInputDeviceManager;
 
 class PauseMediator {
 	public var gameState(null, default): GameState;
 
 	public function new() {}
 
-	public function pause(inputManager: IInputDeviceManager) {
-		gameState.pause(inputManager);
+	public function pause(inputDevice: IInputDevice) {
+		gameState.pause(inputDevice);
 	}
 
 	public function resume() {

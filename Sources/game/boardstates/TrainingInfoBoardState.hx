@@ -8,7 +8,7 @@ import game.rules.MarginTimeManager;
 import game.ChainCounter;
 import game.gelos.GeloColor;
 import kha.math.Random;
-import save_data.TrainingSave;
+import save_data.TrainingSettings;
 import game.garbage.trays.GarbageTray;
 import game.score.ScoreManager;
 import game.simulation.ILinkInfoBuilder;
@@ -36,7 +36,7 @@ class TrainingInfoBoardState implements IBoardState {
 	final rule: Rule;
 	final rng: Random;
 	final linkBuilder: ILinkInfoBuilder;
-	final trainingSave: TrainingSave;
+	final trainingSettings: TrainingSettings;
 	final chainAdvantageDisplay: GarbageTray;
 	final afterCounterDisplay: GarbageTray;
 	final autoChainCounter: ChainCounter;
@@ -94,7 +94,7 @@ class TrainingInfoBoardState implements IBoardState {
 		rule = opts.rule;
 		rng = opts.rng;
 		linkBuilder = opts.linkBuilder;
-		trainingSave = opts.trainingSave;
+		trainingSettings = opts.trainingSettings;
 		chainAdvantageDisplay = opts.chainAdvantageDisplay;
 		afterCounterDisplay = opts.afterCounterDisplay;
 		autoChainCounter = opts.autoChainCounter;
@@ -157,7 +157,7 @@ class TrainingInfoBoardState implements IBoardState {
 			autoAttackState = SENDING;
 			autoAttackT = 0;
 			autoAttackChain = 0;
-			autoAttackMaxChain = rng.GetIn(trainingSave.minAttackChain, trainingSave.maxAttackChain);
+			autoAttackMaxChain = rng.GetIn(trainingSettings.minAttackChain, trainingSettings.maxAttackChain);
 		} else {
 			--autoAttackT;
 		}
@@ -167,10 +167,10 @@ class TrainingInfoBoardState implements IBoardState {
 		if (autoAttackT == 0) {
 			final clearsByColor = [COLOR1 => 0, COLOR2 => 0, COLOR3 => 0, COLOR4 => 0, COLOR5 => 0];
 
-			final colorCount = rng.GetIn(trainingSave.minAttackColors, trainingSave.maxAttackColors);
+			final colorCount = rng.GetIn(trainingSettings.minAttackColors, trainingSettings.maxAttackColors);
 
 			for (i in 0...colorCount) {
-				clearsByColor[i] = rule.popCount + rng.GetIn(trainingSave.minAttackGroupDiff, trainingSave.maxAttackGroupDiff);
+				clearsByColor[i] = rule.popCount + rng.GetIn(trainingSettings.minAttackGroupDiff, trainingSettings.maxAttackGroupDiff);
 			}
 
 			final link = linkBuilder.build({
@@ -270,7 +270,7 @@ class TrainingInfoBoardState implements IBoardState {
 
 		shadowDrawString(g, 3, Black, White, 'Drop bonus: $dropBonus (${Std.int(dropBonus / targetPoints)} garbo)', 0, gameRow(16));
 
-		if (trainingSave.autoAttack) {
+		if (trainingSettings.autoAttack) {
 			final autoAttackString = switch (autoAttackState) {
 				case WAITING: 'Auto-Attack WAITING: ${Std.int(autoAttackT / 60 + 1)}';
 				case SENDING: 'Auto-Attack SENDING: $autoAttackMaxChain-CHAIN!';
@@ -311,7 +311,7 @@ class TrainingInfoBoardState implements IBoardState {
 
 	public function resetAutoAttackWaitingState() {
 		autoAttackState = WAITING;
-		autoAttackT = rng.GetIn(trainingSave.minAttackTime, trainingSave.maxAttackTime) * 60;
+		autoAttackT = rng.GetIn(trainingSettings.minAttackTime, trainingSettings.maxAttackTime) * 60;
 		autoAttackGarbage = 0;
 		autoAttackRemainder = 0;
 	}
@@ -355,7 +355,7 @@ class TrainingInfoBoardState implements IBoardState {
 		if (latestChain == 0)
 			return;
 
-		if (trainingSave.autoClear) {
+		if (trainingSettings.autoClear) {
 			garbageManager.clear();
 		}
 
@@ -435,7 +435,7 @@ class TrainingInfoBoardState implements IBoardState {
 			splitT++;
 		}
 
-		if (trainingSave.autoAttack && !showSteps) {
+		if (trainingSettings.autoAttack && !showSteps) {
 			switch (autoAttackState) {
 				case WAITING:
 					updateWaitingAutoAttack();

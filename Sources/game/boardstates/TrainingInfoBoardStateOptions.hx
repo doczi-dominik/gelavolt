@@ -4,7 +4,7 @@ import game.rules.Rule;
 import game.rules.MarginTimeManager;
 import game.ChainCounter;
 import kha.math.Random;
-import save_data.TrainingSave;
+import save_data.TrainingSettings;
 import game.garbage.trays.GarbageTray;
 import game.simulation.ChainSimulator;
 import game.score.ScoreManager;
@@ -19,7 +19,7 @@ class TrainingInfoBoardStateOptions {
 	public final rule: Rule;
 	public final rng: Random;
 	public final linkBuilder: ILinkInfoBuilder;
-	public final trainingSave: TrainingSave;
+	public final trainingSettings: TrainingSettings;
 	public final chainAdvantageDisplay: GarbageTray;
 	public final afterCounterDisplay: GarbageTray;
 	public final autoChainCounter: ChainCounter;

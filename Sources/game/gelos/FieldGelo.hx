@@ -64,7 +64,7 @@ class FieldGelo extends Gelo {
 
 	override function copy() {
 		final p = new FieldGelo({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: color
 		});
 

@@ -1,7 +1,6 @@
 package game.ui;
 
 import ui.ControlDisplay;
-import game.actions.MenuActions;
 import utils.Point;
 import kha.math.FastMatrix3;
 import game.gelos.Gelo;
@@ -79,11 +78,11 @@ class QueueEditorPage implements IMenuPage {
 	}
 
 	public function update() {
-		final inputManager = menu.inputManager;
+		final inputDevice = menu.inputDevice;
 
-		if (inputManager.getAction(LEFT)) {
+		if (inputDevice.getAction(LEFT)) {
 			selectHorizontal(-1);
-		} else if (inputManager.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(RIGHT)) {
 			selectHorizontal(1);
 		}
 
@@ -92,7 +91,7 @@ class QueueEditorPage implements IMenuPage {
 		final currentRow = Std.int(minView / 7);
 
 		// TODO: Refactor this ugly ass input handling
-		if (inputManager.getAction(UP)) {
+		if (inputDevice.getAction(UP)) {
 			if (selectionY > 0) {
 				selectVertical(-1);
 
@@ -104,7 +103,7 @@ class QueueEditorPage implements IMenuPage {
 				minView = (maxRows - 1) * 7;
 			}
 			selectHorizontal(0);
-		} else if (inputManager.getAction(DOWN)) {
+		} else if (inputDevice.getAction(DOWN)) {
 			if (selectionY < maxRows) {
 				selectVertical(1);
 
@@ -118,9 +117,9 @@ class QueueEditorPage implements IMenuPage {
 			selectHorizontal(0);
 		}
 
-		if (inputManager.getAction(BACK)) {
+		if (inputDevice.getAction(BACK)) {
 			menu.popPage();
-		} else if (inputManager.getAction(CONFIRM)) {
+		} else if (inputDevice.getAction(CONFIRM)) {
 			groupEditor.loadGroup(selectionToIndex());
 			menu.pushPage(groupEditor);
 		}

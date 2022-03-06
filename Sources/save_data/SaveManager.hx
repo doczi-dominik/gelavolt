@@ -1,5 +1,7 @@
 package save_data;
 
+import save_data.GraphicsSettings.GraphicsSettingsData;
+import save_data.Profile.ProfileData;
 import haxe.Unserializer;
 import kha.Storage;
 import haxe.Serializer;
@@ -8,14 +10,15 @@ class SaveManager {
 	static final PROFILES_FILENAME = "profiles";
 	static final GRAPHICS_FIELNAME = "graphics";
 
-	static final profiles: Array<Profile> = [];
-	public static var graphics: GraphicsSave;
+	public static final profiles: Array<Profile> = [];
+
+	public static var graphics: GraphicsSettings;
 
 	public static function saveProfiles() {
 		final ser = new Serializer();
 
 		for (p in profiles) {
-			ser.serialize(p);
+			ser.serialize(p.exportData());
 		}
 
 		Storage.namedFile(PROFILES_FILENAME).writeString(ser.toString());
@@ -26,7 +29,7 @@ class SaveManager {
 		// final serialized = null; // Hackerman manual save lol
 
 		if (serialized == null) {
-			saveDefaultProfiles();
+			newProfile();
 
 			return;
 		}
@@ -34,23 +37,57 @@ class SaveManager {
 		final unser = new Unserializer(serialized);
 
 		try {
-			final p: Profile = unser.unserialize();
+			while (true) {
+				final data: ProfileData = unser.unserialize();
 
-			p.setDefaults();
+				final inputData = data.inputSettings;
+				final prefsData = data.prefsSettings;
+				final trainingData = data.trainingSettings;
 
-			profiles.push(p);
+				profiles.push({
+					name: data.name,
+					inputSettings: {
+						menu: inputData.menu,
+						game: inputData.game,
+						training: inputData.training
+					},
+					prefsSettings: {
+						colorTints: prefsData.colorTints,
+						primaryColors: prefsData.primaryColors,
+						boardBackground: prefsData.boardBackground,
+						capAtCrowns: prefsData.capAtCrowns,
+						showGroupShadow: prefsData.showGroupShadow,
+						shadowOpacity: prefsData.shadowOpacity,
+						shadowHighlightOthers: prefsData.shadowHighlightOthers,
+						shadowWillTriggerChain: prefsData.shadowWillTriggerChain
+					},
+					trainingSettings: {
+						clearOnXMode: trainingData.clearOnXMode,
+						autoClear: trainingData.autoClear,
+						autoAttack: trainingData.autoAttack,
+						minAttackTime: trainingData.minAttackTime,
+						maxAttackTime: trainingData.maxAttackTime,
+						minAttackChain: trainingData.minAttackChain,
+						maxAttackChain: trainingData.maxAttackChain,
+						minAttackGroupDiff: trainingData.minAttackGroupDiff,
+						maxAttackGroupDiff: trainingData.maxAttackGroupDiff,
+						minAttackColors: trainingData.minAttackColors,
+						maxAttackColors: trainingData.maxAttackColors
+					}
+				});
+			}
 		} catch (_) {}
 
 		if (profiles.length == 0) {
-			saveDefaultProfiles();
+			newProfile();
 			return;
 		}
 
 		saveProfiles();
 	}
 
-	public static function saveDefaultProfiles() {
-		profiles.push(new Profile());
+	public static function newProfile() {
+		profiles.push({name: 'P${profiles.length + 1}'});
 		saveProfiles();
 	}
 
@@ -59,7 +96,7 @@ class SaveManager {
 	}
 
 	public static function saveGraphics() {
-		Storage.namedFile(GRAPHICS_FIELNAME).writeString(Serializer.run(graphics));
+		Storage.namedFile(GRAPHICS_FIELNAME).writeString(Serializer.run(graphics.exportData()));
 	}
 
 	public static function loadGraphics() {
@@ -72,8 +109,11 @@ class SaveManager {
 		}
 
 		try {
-			graphics = Unserializer.run(serialized);
-			graphics.setDefaults();
+			final graphicsData: GraphicsSettingsData = Unserializer.run(serialized);
+
+			graphics = {
+				fullscreen: graphicsData.fullscreen
+			}
 		} catch (_) {}
 
 		if (graphics == null) {
@@ -86,8 +126,7 @@ class SaveManager {
 	}
 
 	public static function saveDefaultGraphics() {
-		graphics = new GraphicsSave();
-		graphics.setDefaults();
+		graphics = {}
 		saveGraphics();
 	}
 

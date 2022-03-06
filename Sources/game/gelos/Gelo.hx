@@ -1,6 +1,6 @@
 package game.gelos;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import utils.Point;
 import utils.Utils.lerp;
 import kha.graphics2.Graphics;
@@ -74,7 +74,7 @@ class Gelo {
 		dest.willTriggerChain = src.willTriggerChain;
 	}
 
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
 	var spriteVariation: GeloSpriteVariation;
 	var subImageCoords: Point;
@@ -97,7 +97,7 @@ class Gelo {
 	public var willTriggerChain: Bool;
 
 	function new(opts: GeloOptions) {
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 		color = opts.color;
 	}
 
@@ -107,7 +107,7 @@ class Gelo {
 
 	public function copy() {
 		final p = new Gelo({
-			prefsSave: prefsSave,
+			prefsSettings: prefsSettings,
 			color: color,
 		});
 
@@ -224,7 +224,7 @@ class Gelo {
 			g4.setPipeline(g.pipeline);
 		}
 
-		g.color = prefsSave.colorTints[color];
+		g.color = prefsSettings.getColorTint(color);
 		g.drawScaledSubImage(Assets.images.pixel, subImageCoords.x, subImageCoords.y, SIZE, SIZE, offsetX - Gelo.HALFSIZE, offsetY - Gelo.HALFSIZE,
 			Gelo.SIZE * lerpScaleX, Gelo.SIZE * lerpScaleY);
 		g.color = White;

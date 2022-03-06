@@ -1,6 +1,6 @@
 package main_menu.ui;
 
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import ui.SubPageWidget;
 import game.gamemodes.EndlessGameMode;
 import kha.System;
@@ -20,10 +20,10 @@ class MainMenuPage extends ListMenuPage {
 	static inline final DISCORD_INVITE = "https://discord.gg/wsWArpAFJK";
 	static inline final RELEASES_URL = "https://github.com/doczi-dominik/gelavolt/releases";
 
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
-	public function new(prefsSave: PrefsSave) {
-		this.prefsSave = prefsSave;
+	public function new(prefsSettings: PrefsSettings) {
+		this.prefsSettings = prefsSettings;
 
 		super({
 			header: "GelaVolt",
@@ -51,7 +51,7 @@ class MainMenuPage extends ListMenuPage {
 				new SubPageWidget({
 					title: "Options",
 					description: ["Change Various Options and Settings"],
-					subPage: new OptionsPage(prefsSave)
+					subPage: new OptionsPage(prefsSettings)
 				}),
 				#if sys
 				new ButtonWidget({

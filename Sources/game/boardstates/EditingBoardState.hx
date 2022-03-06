@@ -1,8 +1,9 @@
 package game.boardstates;
 
+import input.IInputDevice;
 import utils.Utils;
 import game.fields.IFieldMarker;
-import save_data.PrefsSave;
+import save_data.PrefsSettings;
 import game.fields.ColorConflictFieldMarker;
 import game.fields.DependencyFieldMarker;
 import game.fields.AllClearFieldMarker;
@@ -10,12 +11,9 @@ import game.fields.ChainFieldMarker;
 import game.simulation.ChainSimulator;
 import game.ChainCounter;
 import game.fields.Field;
-import game.actions.TrainingActions;
-import game.actions.MenuActions;
 import game.geometries.BoardGeometries;
 import game.gelos.GeloColor;
 import game.gelos.Gelo;
-import input.IInputDeviceManager;
 import kha.Assets;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
@@ -33,10 +31,10 @@ class EditingBoardState implements IBoardState {
 	static final COLORS = [COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, GARBAGE];
 
 	final geometries: BoardGeometries;
-	final inputManager: IInputDeviceManager;
+	final inputDevice: IInputDevice;
 	final chainSim: ChainSimulator;
 	final chainCounter: ChainCounter;
-	final prefsSave: PrefsSave;
+	final prefsSettings: PrefsSettings;
 
 	final markers: Array<IFieldMarker>;
 
@@ -54,19 +52,20 @@ class EditingBoardState implements IBoardState {
 
 	public function new(opts: EditingBoardStateOptions) {
 		geometries = opts.geometries;
-		inputManager = opts.inputManager;
+		inputDevice = opts.inputDevice;
 		chainSim = opts.chainSim;
 		chainCounter = opts.chainCounter;
-		prefsSave = opts.prefsSave;
+		prefsSettings = opts.prefsSettings;
 
 		markers = [
-			new ChainFieldMarker(), AllClearFieldMarker.create(prefsSave, COLOR1), AllClearFieldMarker.create(prefsSave, COLOR2),
-			AllClearFieldMarker.create(prefsSave, COLOR3), AllClearFieldMarker.create(prefsSave, COLOR4), AllClearFieldMarker.create(prefsSave, COLOR5),
-			DependencyFieldMarker.create(prefsSave, COLOR1), DependencyFieldMarker.create(prefsSave, COLOR2), DependencyFieldMarker.create(prefsSave, COLOR3),
-			DependencyFieldMarker.create(prefsSave, COLOR4), DependencyFieldMarker.create(prefsSave, COLOR5),
-			ColorConflictFieldMarker.create(prefsSave, COLOR1), ColorConflictFieldMarker.create(prefsSave, COLOR2),
-			ColorConflictFieldMarker.create(prefsSave, COLOR3), ColorConflictFieldMarker.create(prefsSave, COLOR4),
-			ColorConflictFieldMarker.create(prefsSave, COLOR5),
+			new ChainFieldMarker(), AllClearFieldMarker.create(prefsSettings, COLOR1), AllClearFieldMarker.create(prefsSettings, COLOR2),
+			AllClearFieldMarker.create(prefsSettings, COLOR3), AllClearFieldMarker.create(prefsSettings, COLOR4),
+			AllClearFieldMarker.create(prefsSettings, COLOR5), DependencyFieldMarker.create(prefsSettings, COLOR1),
+			DependencyFieldMarker.create(prefsSettings, COLOR2), DependencyFieldMarker.create(prefsSettings, COLOR3),
+			DependencyFieldMarker.create(prefsSettings, COLOR4), DependencyFieldMarker.create(prefsSettings, COLOR5),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR1), ColorConflictFieldMarker.create(prefsSettings, COLOR2),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR3), ColorConflictFieldMarker.create(prefsSettings, COLOR4),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR5),
 		];
 
 		field = opts.field;
@@ -169,31 +168,31 @@ class EditingBoardState implements IBoardState {
 	}
 
 	public function update() {
-		if (inputManager.getAction(LEFT)) {
+		if (inputDevice.getAction(LEFT)) {
 			moveCursor(-1, 0);
-		} else if (inputManager.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(RIGHT)) {
 			moveCursor(1, 0);
 		}
 
-		if (inputManager.getAction(UP)) {
+		if (inputDevice.getAction(UP)) {
 			moveCursor(0, -1);
-		} else if (inputManager.getAction(DOWN)) {
+		} else if (inputDevice.getAction(DOWN)) {
 			moveCursor(0, 1);
 		}
 
-		if (inputManager.getAction(PREVIOUS_COLOR)) {
+		if (inputDevice.getAction(PREVIOUS_COLOR)) {
 			changeIndex(-1);
-		} else if (inputManager.getAction(NEXT_COLOR)) {
+		} else if (inputDevice.getAction(NEXT_COLOR)) {
 			changeIndex(1);
 		}
 
-		if (inputManager.getAction(TOGGLE_MARKERS)) {
+		if (inputDevice.getAction(TOGGLE_MARKERS)) {
 			switchMode();
 		}
 
-		if (inputManager.getAction(CONFIRM)) {
+		if (inputDevice.getAction(CONFIRM)) {
 			set();
-		} else if (inputManager.getAction(BACK)) {
+		} else if (inputDevice.getAction(BACK)) {
 			clear();
 		}
 
