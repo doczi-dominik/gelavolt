@@ -1,12 +1,11 @@
-package game.ui;
+package ui;
 
 import input.IInputDevice;
-import game.actions.Action;
 
 @:structInit
-class ControlsPageWidgetOptions {
+class InputLimitedPageWidgetOptions {
 	public final title: String;
 	public final description: Array<String>;
-	public final actions: Array<Action>;
+	public final widgetBuilder: Menu->Array<IListWidget>;
 	public final inputDevice: IInputDevice;
 }

@@ -1,11 +1,16 @@
 package main_menu.ui;
 
+import ui.KeyboardConfirmWrapper;
+import ui.AnyGamepadDetectWrapper;
+import ui.InputLimitedPageWidget;
+import ui.InputLimitedListPage;
+import input.KeyboardInputDevice;
+import game.ui.ControlsPageWidget;
 import ui.SubPageWidget;
 import save_data.PrefsSettings;
 import save_data.SaveManager;
 import ui.NumberRangeWidget;
 import ui.YesNoWidget;
-import game.ui.ControlsPageWidget;
 import game.ui.ListSubPageWidget;
 import ui.ListMenuPage;
 #if sys
@@ -24,30 +29,121 @@ class OptionsPage extends ListMenuPage {
 				new ListSubPageWidget({
 					header: "Controls",
 					description: ["Change Keybindings For Keyboard And Gamepads"],
-					widgetBuilder: (_) -> [
-						new ControlsPageWidget({
-							title: "Menu Controls",
-							description: ["Change Controls Related To", "Menu Navigation"],
-							actions: [PAUSE, LEFT, RIGHT, UP, DOWN, BACK, CONFIRM]
-						}),
-						new ControlsPageWidget({
-							title: "Game Controls",
-							description: ["Change Controls Related To", "Gameplay"],
-							actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT]
-						}),
-						new ControlsPageWidget({
-							title: "Training Controls",
-							description: ["Change Controls Specific To", "Training Mode"],
-							actions: [
-								TOGGLE_EDIT_MODE,
-								PREVIOUS_STEP,
-								NEXT_STEP,
-								PREVIOUS_COLOR,
-								NEXT_COLOR,
-								TOGGLE_MARKERS
-							]
-						})
-					]
+					widgetBuilder: (menu) -> {
+						final inputDevice = menu.inputDevice;
+
+						switch (inputDevice.type) {
+							case KEYBOARD | GAMEPAD:
+								return [
+									new ControlsPageWidget({
+										title: "Menu Controls",
+										description: ["Change Controls Related To", "Menu Navigation"],
+										actions: [PAUSE, LEFT, RIGHT, UP, DOWN, BACK, CONFIRM],
+										inputDevice: inputDevice
+									}),
+									new ControlsPageWidget({
+										title: "Game Controls",
+										description: ["Change Controls Related To", "Gameplay"],
+										actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT],
+										inputDevice: inputDevice
+									}),
+									new ControlsPageWidget({
+										title: "Training Controls",
+										description: ["Change Controls Specific To", "Training Mode"],
+										actions: [
+											TOGGLE_EDIT_MODE,
+											PREVIOUS_STEP,
+											NEXT_STEP,
+											PREVIOUS_COLOR,
+											NEXT_COLOR,
+											TOGGLE_MARKERS
+										],
+										inputDevice: inputDevice
+									}),
+								];
+							case ANY:
+								final keyboardDevice = new KeyboardInputDevice(inputDevice.inputSettings);
+
+								return [
+									new SubPageWidget({
+										title: "Keyboard Controls",
+										description: ["Change Keybindings"],
+										subPage: new KeyboardConfirmWrapper({
+											keyboardDevice: keyboardDevice,
+											pageBuilder: () -> new InputLimitedListPage({
+												header: "Keyboard Controls",
+												inputDevice: keyboardDevice,
+												widgetBuilder: (_) -> [
+													new ControlsPageWidget({
+														title: "Menu Controls",
+														description: ["Change Controls Related To", "Menu Navigation"],
+														actions: [PAUSE, LEFT, RIGHT, UP, DOWN, BACK, CONFIRM],
+														inputDevice: keyboardDevice
+													}),
+													new ControlsPageWidget({
+														title: "Game Controls",
+														description: ["Change Controls Related To", "Gameplay"],
+														actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT],
+														inputDevice: keyboardDevice
+													}),
+													new ControlsPageWidget({
+														title: "Training Controls",
+														description: ["Change Controls Specific To", "Training Mode"],
+														actions: [
+															TOGGLE_EDIT_MODE,
+															PREVIOUS_STEP,
+															NEXT_STEP,
+															PREVIOUS_COLOR,
+															NEXT_COLOR,
+															TOGGLE_MARKERS
+														],
+														inputDevice: keyboardDevice
+													}),
+												],
+											})
+										})
+									}),
+									new SubPageWidget({
+										title: "Gamepad Controls",
+										description: ["Change Gamepad Bindings"],
+										subPage: new AnyGamepadDetectWrapper({
+											keyboardDevice: keyboardDevice,
+											pageBuilder: (gamepadDevice) -> new InputLimitedListPage({
+												header: "Gamepad Controls",
+												widgetBuilder: (_) -> [
+													new ControlsPageWidget({
+														title: "Menu Controls",
+														description: ["Change Controls Related To", "Menu Navigation"],
+														actions: [PAUSE, LEFT, RIGHT, UP, DOWN, BACK, CONFIRM],
+														inputDevice: gamepadDevice
+													}),
+													new ControlsPageWidget({
+														title: "Game Controls",
+														description: ["Change Controls Related To", "Gameplay"],
+														actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT],
+														inputDevice: gamepadDevice
+													}),
+													new ControlsPageWidget({
+														title: "Training Controls",
+														description: ["Change Controls Specific To", "Training Mode"],
+														actions: [
+															TOGGLE_EDIT_MODE,
+															PREVIOUS_STEP,
+															NEXT_STEP,
+															PREVIOUS_COLOR,
+															NEXT_COLOR,
+															TOGGLE_MARKERS
+														],
+														inputDevice: gamepadDevice
+													}),
+												],
+												inputDevice: gamepadDevice
+											})
+										})
+									})
+								];
+						}
+					}
 				}),
 				#if sys
 				new SubPageWidget({

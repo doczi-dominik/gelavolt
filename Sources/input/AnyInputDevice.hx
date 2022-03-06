@@ -13,12 +13,12 @@ import save_data.Profile;
 
 class AnyInputDevice implements IInputDevice {
 	static inline final FONT_SIZE = 48;
-
-	static final devices: Map<Int, InputDevice> = [];
+	static inline final KEYBOARD_ID = -1;
 
 	public static var instance(default, null): AnyInputDevice;
 
 	public static var rebindCounter = 0;
+	public static var lastGamepadID: Null<Int>;
 
 	public static function init() {
 		instance = new AnyInputDevice();
@@ -26,18 +26,27 @@ class AnyInputDevice implements IInputDevice {
 
 	final font: Font;
 
+	final devices: Map<Int, InputDevice>;
+
 	var fontSize: Int;
-	var fontHeight: Float;
+
+	var isRebinding: Bool;
+
+	public final type: InputDeviceType;
 
 	public var inputSettings(get, null): InputSettings;
-	public var isRebinding(default, null): Bool;
+	public var height(default, null): Float;
 
 	function new() {
 		font = Assets.fonts.Pixellari;
 
+		devices = [];
+
 		isRebinding = false;
 
-		devices[-1] = new KeyboardInputDevice(Profile.primary.inputSettings);
+		type = ANY;
+
+		devices[KEYBOARD_ID] = new KeyboardInputDevice(Profile.primary.inputSettings);
 
 		Gamepad.notifyOnConnect(connectListener, disconnectListener);
 
@@ -62,6 +71,10 @@ class AnyInputDevice implements IInputDevice {
 		return Profile.primary.inputSettings;
 	}
 
+	public function clearLastGamepadID() {
+		lastGamepadID = null;
+	}
+
 	public final function rebind(action: Action) {
 		isRebinding = false;
 	}
@@ -80,9 +93,11 @@ class AnyInputDevice implements IInputDevice {
 
 	public function onResize() {
 		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
-		fontHeight = font.height(fontSize);
+		height = font.height(fontSize);
 	}
 
+	// AnyInputDevices cannot be rebound and shouldn't be active when
+	// displaying a rebinding menu.
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
 	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
@@ -96,7 +111,7 @@ class AnyInputDevice implements IInputDevice {
 				final mapping = inputSettings.getMapping(action);
 				final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadInput];
 
-				GamepadInputDevice.renderButton(g, x, y, fontHeight / spr.height, spr);
+				GamepadInputDevice.renderButton(g, x, y, height / spr.height, spr);
 
 				x += spr.width * ScaleManager.smallerScale;
 				str += '${KEY_CODE_TO_STRING[mapping.keyboardInput]},';

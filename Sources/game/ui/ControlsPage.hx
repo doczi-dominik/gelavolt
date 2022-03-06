@@ -1,18 +1,14 @@
 package game.ui;
 
-import game.actions.Action;
+import ui.InputLimitedListPage;
 import ui.IListWidget;
-import save_data.SaveManager;
-import ui.ListMenuPage;
 
-class ControlsPage extends ListMenuPage {
-	public function new(header: String, actions: Array<Action>) {
+class ControlsPage extends InputLimitedListPage {
+	public function new(opts: ControlsPageOptions) {
 		super({
-			header: header,
-			widgetBuilder: (menu) -> actions.map((action) -> (new InputWidget({
-				action: action,
-				inputDevice: menu.inputDevice
-			}) : IListWidget))
+			header: opts.header,
+			widgetBuilder: (menu) -> opts.actions.map((action) -> (new InputWidget(action) : IListWidget)),
+			inputDevice: opts.inputDevice
 		});
 
 		controlDisplays = [
@@ -20,23 +16,5 @@ class ControlsPage extends ListMenuPage {
 			{actions: [BACK], description: "Back"},
 			{actions: [CONFIRM], description: "Rebind"}
 		];
-	}
-
-	override function update() {
-		super.update();
-
-		final inputDevice = menu.inputDevice;
-
-		final currentWidget = cast(widgets[widgetIndex], InputWidget);
-
-		if (inputDevice.getAction(CONFIRM)) {
-			inputDevice.rebind(currentWidget.action);
-		}
-
-		if (currentWidget.isRebinding && !inputDevice.isRebinding) {
-			SaveManager.saveProfiles();
-		}
-
-		currentWidget.isRebinding = inputDevice.isRebinding;
 	}
 }

@@ -27,17 +27,23 @@ class InputDevice implements IInputDevice {
 	var bindingsFontSize: Int;
 
 	var actions: Map<Action, Int->Bool>;
+	var isRebinding: Bool;
+
+	public final type: InputDeviceType;
 
 	@:isVar public var inputSettings(get, set): InputSettings;
-	public var isRebinding(default, null): Bool;
+	public var height(default, null): Float;
 
-	function new(inputSettings: InputSettings) {
+	function new(type: InputDeviceType, inputSettings: InputSettings) {
 		font = Assets.fonts.Pixellari;
 
 		counters = [];
 
-		this.inputSettings = inputSettings;
 		isRebinding = false;
+
+		this.type = type;
+
+		this.inputSettings = inputSettings;
 
 		addListeners();
 
@@ -109,6 +115,8 @@ class InputDevice implements IInputDevice {
 	public function onResize() {
 		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ScaleManager.smallerScale);
 		bindingsFontSize = Std.int(BINDINGS_FONT_SIZE * ScaleManager.smallerScale);
+
+		height = font.height(bindingsFontSize);
 	}
 
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {

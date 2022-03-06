@@ -7,7 +7,11 @@ class ControlsPageWidget extends SubPageWidget {
 		super({
 			title: opts.title,
 			description: opts.description,
-			subPage: new ControlsPage(opts.title, opts.actions),
+			subPage: new ControlsPage({
+				header: opts.title,
+				actions: opts.actions,
+				inputDevice: opts.inputDevice
+			})
 		});
 	}
 }

@@ -1,5 +1,6 @@
 package input;
 
+import kha.Assets;
 import game.actions.ActionTitles.ACTION_TITLES;
 import utils.Geometry;
 import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
@@ -11,8 +12,14 @@ import save_data.InputSettings;
 import kha.input.Gamepad;
 
 class GamepadInputDevice extends InputDevice {
-	public static function renderButton(g: Graphics, x: Float, y: Float, scale: Float, sprite: Geometry) {}
+	public static function renderButton(g: Graphics, x: Float, y: Float, scale: Float, sprite: Geometry) {
+		final w = sprite.width;
+		final h = sprite.height;
 
+		g.drawScaledSubImage(Assets.images.Buttons, sprite.x, sprite.y, w, h, x, y, w * scale, h * scale);
+	}
+
+	final id: Int;
 	final gamepad: Gamepad;
 
 	var controlsFontHeight: Float;
@@ -22,12 +29,16 @@ class GamepadInputDevice extends InputDevice {
 	var latestRebindFunction: (Int, Float) -> Void;
 
 	public function new(inputSettings: InputSettings, gamepadID: Int) {
+		id = gamepadID;
 		gamepad = Gamepad.get(gamepadID);
 
-		super(inputSettings);
+		super(GAMEPAD, inputSettings);
 	}
 
 	function buttonListener(button: Int, value: Float) {
+		if (value != 0)
+			AnyInputDevice.lastGamepadID = id;
+
 		if (!buttonsToActions.exists(button))
 			return;
 
@@ -128,9 +139,16 @@ class GamepadInputDevice extends InputDevice {
 	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
 		super.renderBinding(g, x, y, action);
 
-		final str = '${ACTION_TITLES[action]}: ';
-		final strW = font.width(bindingsFontSize, str);
+		final title = ACTION_TITLES[action];
 
+		if (isRebinding) {
+			g.drawString('Press any button for [ $title ]', x, y);
+
+			return;
+		}
+
+		final str = '$title: ';
+		final strW = font.width(bindingsFontSize, str);
 		final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadInput];
 
 		g.drawString(str, x, y);

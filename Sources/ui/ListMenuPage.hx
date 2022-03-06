@@ -13,15 +13,11 @@ class ListMenuPage implements IMenuPage {
 		{actions: [BACK], description: "Back"},
 	];
 
-	public static inline final WIDGET_FONT_SIZE = 60;
-
 	final font: Font;
 	final widgetBuilder: Menu->Array<IListWidget>;
 
 	var menu: Menu;
 
-	var widgetFontSize: Int;
-	var widgetFontHeight: Float;
 	var widgetBottomPadding: Float;
 
 	var descFontSize: Int;
@@ -41,6 +37,7 @@ class ListMenuPage implements IMenuPage {
 
 		font = Assets.fonts.Pixellari;
 
+		widgets = [];
 		widgetIndex = 0;
 		minIndex = 0;
 	}
@@ -49,15 +46,21 @@ class ListMenuPage implements IMenuPage {
 		controlDisplays = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlDisplays);
 	}
 
+	function popPage() {
+		menu.popPage();
+	}
+
 	public function onResize() {
 		final smallerScale = ScaleManager.smallerScale;
 
-		widgetFontSize = Std.int(WIDGET_FONT_SIZE * smallerScale);
-		widgetFontHeight = font.height(widgetFontSize);
 		widgetBottomPadding = WIDGET_BOTTOM_PADDING * smallerScale;
 
 		descFontSize = Std.int(DESC_FONT_SIZE * smallerScale);
 		descFontHeight = font.height(descFontSize);
+
+		for (w in widgets) {
+			w.onResize();
+		}
 	}
 
 	inline function moveUp() {
@@ -112,16 +115,13 @@ class ListMenuPage implements IMenuPage {
 		}
 
 		if (inputDevice.getAction(BACK)) {
-			menu.popPage();
+			popPage();
 		}
 
 		widgets[widgetIndex].update();
 	}
 
 	public function render(g: Graphics, x: Float, y: Float) {
-		g.font = font;
-		g.fontSize = widgetFontSize;
-
 		for (i in 0...MAX_WIDGETS_PER_VIEW) {
 			final index = minIndex + i;
 			final widget = widgets[index];
@@ -129,11 +129,12 @@ class ListMenuPage implements IMenuPage {
 			if (widget == null)
 				break;
 
-			final widgetY = y + (widgetFontHeight + widgetBottomPadding) * i;
+			final widgetY = y + (widget.height + widgetBottomPadding) * i;
 
 			widget.render(g, x, widgetY, index == widgetIndex);
 		}
 
+		g.font = font;
 		g.fontSize = descFontSize;
 
 		final desc = widgets[widgetIndex].description;

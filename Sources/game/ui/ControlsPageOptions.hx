@@ -4,7 +4,8 @@ import input.IInputDevice;
 import game.actions.Action;
 
 @:structInit
-class InputWidgetOptions {
-	public final action: Action;
+class ControlsPageOptions {
+	public final header: String;
+	public final actions: Array<Action>;
 	public final inputDevice: IInputDevice;
 }

@@ -1,8 +1,6 @@
 package ui;
 
 import input.IInputDevice;
-import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
-import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import kha.Assets;
 import kha.Font;
 import haxe.ds.GenericStack;
@@ -21,6 +19,7 @@ class Menu {
 	];
 
 	final pages: GenericStack<IMenuPage>;
+	final inputDevices: GenericStack<IInputDevice>;
 	final headerFont: Font;
 	final warningFont: Font;
 
@@ -36,6 +35,8 @@ class Menu {
 	public function new(initialPage: IMenuPage) {
 		pages = new GenericStack();
 		pages.add(initialPage);
+
+		inputDevices = new GenericStack();
 
 		headerFont = Assets.fonts.DigitalDisco;
 		warningFont = Assets.fonts.Pixellari;
@@ -61,17 +62,28 @@ class Menu {
 		for (p in pages) {
 			p.onResize();
 		}
+
+		for (i in inputDevices.iterator()) {
+			i.onResize();
+		}
+	}
+
+	function setInputDevice() {
+		inputDevice = inputDevices.first();
 	}
 
 	public function onShow(inputDevice: IInputDevice) {
-		this.inputDevice = inputDevice;
+		pushInputDevice(inputDevice);
 
-		pages.first().onShow(this);
+		final page = pages.first();
+
+		page.onShow(this);
+		page.onResize();
 	}
 
 	public function pushPage(page: IMenuPage) {
-		page.onResize();
 		page.onShow(this);
+		page.onResize();
 		pages.add(page);
 	}
 
@@ -83,6 +95,17 @@ class Menu {
 		if (pages.isEmpty()) {
 			pages.add(poppedPage);
 		}
+	}
+
+	public inline function pushInputDevice(inputDevice: IInputDevice) {
+		inputDevice.onResize();
+		inputDevices.add(inputDevice);
+		setInputDevice();
+	}
+
+	public inline function popInputDevice() {
+		inputDevices.pop();
+		setInputDevice();
 	}
 
 	public function update() {

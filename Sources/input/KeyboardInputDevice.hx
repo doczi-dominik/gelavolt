@@ -13,16 +13,25 @@ import kha.input.Keyboard;
 class KeyboardInputDevice extends InputDevice {
 	final keyboard: Keyboard;
 
+	var anyKeyCounter: Int;
+
 	var keysToActions: Map<KeyCode, Null<Array<Action>>>;
 	var latestRebindFunction: KeyCode->Void;
+
+	public var isAnyKeyDown(default, null): Bool;
 
 	public function new(inputSettings: InputSettings) {
 		keyboard = Keyboard.get();
 
-		super(inputSettings);
+		anyKeyCounter = 0;
+
+		super(KEYBOARD, inputSettings);
 	}
 
 	function downListener(key: KeyCode) {
+		anyKeyCounter++;
+		isAnyKeyDown = true;
+
 		if (!keysToActions.exists(key))
 			return;
 
@@ -35,6 +44,12 @@ class KeyboardInputDevice extends InputDevice {
 	}
 
 	function upListener(key: KeyCode) {
+		if (anyKeyCounter > 0)
+			anyKeyCounter--;
+
+		if (anyKeyCounter == 0)
+			isAnyKeyDown = false;
+
 		if (!keysToActions.exists(key))
 			return;
 
@@ -108,7 +123,15 @@ class KeyboardInputDevice extends InputDevice {
 	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
 		super.renderBinding(g, x, y, action);
 
-		g.drawString('${ACTION_TITLES[action]}: ${KEY_CODE_TO_STRING[inputSettings.getMapping(action).keyboardInput]}', x, y);
+		final title = ACTION_TITLES[action];
+
+		if (isRebinding) {
+			g.drawString('Press any key for [ $title ]', x, y);
+
+			return;
+		}
+
+		g.drawString('$title: ${KEY_CODE_TO_STRING[inputSettings.getMapping(action).keyboardInput]}', x, y);
 	}
 
 	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
@@ -132,5 +155,10 @@ class KeyboardInputDevice extends InputDevice {
 
 			x += strWidth;
 		}
+	}
+
+	public function resetIsAnyKeyDown() {
+		anyKeyCounter = 0;
+		isAnyKeyDown = false;
 	}
 }
