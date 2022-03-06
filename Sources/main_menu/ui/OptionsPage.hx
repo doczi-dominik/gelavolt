@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import input.AnyInputDevice;
 import ui.KeyboardConfirmWrapper;
 import ui.AnyGamepadDetectWrapper;
 import ui.InputLimitedListPage;
@@ -61,7 +62,7 @@ class OptionsPage extends ListMenuPage {
 									}),
 								];
 							case ANY:
-								final keyboardDevice = new KeyboardInputDevice(inputDevice.inputSettings);
+								final keyboardDevice = AnyInputDevice.instance.getKeyboard();
 
 								return [
 									new SubPageWidget({

@@ -91,6 +91,14 @@ class AnyInputDevice implements IInputDevice {
 		return false;
 	}
 
+	public inline function getGamepad(id: Int) {
+		return cast(devices[id], GamepadInputDevice);
+	}
+
+	public inline function getKeyboard() {
+		return cast(devices[KEYBOARD_ID], KeyboardInputDevice);
+	}
+
 	public function onResize() {
 		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
 		height = font.height(fontSize);

@@ -57,8 +57,7 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 		final lastID = AnyInputDevice.lastGamepadID;
 
 		if (lastID != null) {
-			final gamepadDevice = new GamepadInputDevice(anyDevice.inputSettings, lastID);
-			final page = pageBuilder(gamepadDevice);
+			final page = pageBuilder(anyDevice.getGamepad(lastID));
 
 			// Replace Wrapper with actual widget
 			popPage();
