@@ -2,7 +2,7 @@ package input;
 
 import utils.Geometry;
 
-final GAMEPAD_SPRITE_COORDINATES: Map<GamepadButton, Geometry> = [
+final BUTTON_SPRITE_COORDINATES: Map<GamepadButton, Geometry> = [
 	CROSS => {
 		x: 0,
 		y: 0,

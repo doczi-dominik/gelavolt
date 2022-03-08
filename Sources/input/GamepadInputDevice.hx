@@ -1,10 +1,11 @@
 package input;
 
+import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
+import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
 import haxe.ds.HashMap;
 import kha.Assets;
 import game.actions.ActionTitles.ACTION_TITLES;
 import utils.Geometry;
-import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import kha.graphics2.Graphics;
 import ui.ControlDisplay;
 import game.actions.ActionInputTypes.ACTION_INPUT_TYPES;
@@ -13,6 +14,8 @@ import save_data.InputSettings;
 import kha.input.Gamepad;
 
 class GamepadInputDevice extends InputDevice {
+	static inline final SEPARATOR = " / ";
+
 	public static function renderButton(g: Graphics, x: Float, y: Float, scale: Float, sprite: Geometry) {
 		final w = sprite.width;
 		final h = sprite.height;
@@ -25,10 +28,12 @@ class GamepadInputDevice extends InputDevice {
 
 	var controlsFontHeight: Float;
 	var bindingsFontHeight: Float;
+	var separatorWidth: Float;
 
 	var buttonsToActions: Map<Int, Null<Array<Action>>>;
 	var axesToActions: HashMap<AxisMapping, Null<Array<Action>>>;
-	var latestRebindFunction: (Int, Float) -> Void;
+	var latestButtonRebindFunction: (Int, Float) -> Void;
+	var latestAxisRebindFunction: (Int, Float) -> Void;
 
 	public function new(inputSettings: InputSettings, gamepadID: Int) {
 		id = gamepadID;
@@ -85,14 +90,17 @@ class GamepadInputDevice extends InputDevice {
 				// properly configured deadzone, this prevents stick "rebound"
 				// and drifting.
 				final oppositeMapping: AxisMapping = {axis: axis, direction: k.direction * -1};
-				upListener(axesToActions[oppositeMapping]);
+
+				if (axesToActions.exists(oppositeMapping)) {
+					upListener(axesToActions[oppositeMapping]);
+				}
 
 				return;
 			}
 		}
 	}
 
-	function rebindListener(action: Action, button: Int, value: Float) {
+	function buttonRebindListener(action: Action, button: Int, value: Float) {
 		if (value == 0)
 			return;
 
@@ -102,6 +110,21 @@ class GamepadInputDevice extends InputDevice {
 			keyboardInput: original.keyboardInput,
 			gamepadButton: button,
 			gamepadAxis: original.gamepadAxis
+		});
+
+		finishRebind();
+	}
+
+	function axisRebindListener(action: Action, axis: Int, value: Float) {
+		if (value <= inputSettings.deadzone && value >= -inputSettings.deadzone)
+			return;
+
+		final original = inputSettings.getMapping(action);
+
+		inputSettings.setMapping(action, {
+			keyboardInput: original.keyboardInput,
+			gamepadButton: original.gamepadButton,
+			gamepadAxis: {axis: axis, direction: (value > 0) ? 1 : -1}
 		});
 
 		finishRebind();
@@ -150,24 +173,25 @@ class GamepadInputDevice extends InputDevice {
 
 	override function removeListeners() {
 		try {
-			gamepad.remove(null, buttonListener);
+			gamepad.remove(axisListener, buttonListener);
 		}
 	}
 
 	override function removeRebindListeners() {
 		try {
-			gamepad.remove(null, latestRebindFunction);
+			gamepad.remove(latestAxisRebindFunction, latestButtonRebindFunction);
 		}
 	}
 
 	override function rebind(action: Action) {
 		super.rebind(action);
 
-		latestRebindFunction = rebindListener.bind(action);
+		latestAxisRebindFunction = axisRebindListener.bind(action);
+		latestButtonRebindFunction = buttonRebindListener.bind(action);
 		latestRebindAction = action;
 
 		try {
-			gamepad.notify(null, latestRebindFunction);
+			gamepad.notify(latestAxisRebindFunction, latestButtonRebindFunction);
 		}
 	}
 
@@ -176,6 +200,7 @@ class GamepadInputDevice extends InputDevice {
 
 		controlsFontHeight = font.height(controlsFontSize);
 		bindingsFontHeight = font.height(bindingsFontSize);
+		separatorWidth = font.width(bindingsFontSize, SEPARATOR);
 	}
 
 	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
@@ -184,20 +209,36 @@ class GamepadInputDevice extends InputDevice {
 		final title = ACTION_TITLES[action];
 
 		if (action == latestRebindAction && isRebinding) {
-			g.drawString('Press any button for [ $title ]', x, y);
+			g.drawString('Press any button / stick for [ $title ]', x, y);
 
 			return;
 		}
 
 		final str = '$title: ';
 		final strW = font.width(bindingsFontSize, str);
-		final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadButton];
+		final mapping = inputSettings.getMapping(action);
+		final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
 		g.drawString(str, x, y);
+		x += strW;
 
 		g.color = White;
 
-		renderButton(g, x + strW, y, bindingsFontHeight / spr.height, spr);
+		renderButton(g, x, y, bindingsFontHeight / buttonSpr.height, buttonSpr);
+
+		final axisMapping = mapping.gamepadAxis;
+
+		if (axisMapping == null)
+			return;
+
+		x += buttonSpr.width * ScaleManager.smallerScale;
+
+		g.drawString(SEPARATOR, x, y);
+		x += separatorWidth;
+
+		final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
+
+		renderButton(g, x, y, bindingsFontHeight / axisSpr.height, axisSpr);
 	}
 
 	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
@@ -207,7 +248,7 @@ class GamepadInputDevice extends InputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadButton];
+				final spr = BUTTON_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadButton];
 
 				renderButton(g, x, y, controlsFontHeight / spr.height, spr);
 

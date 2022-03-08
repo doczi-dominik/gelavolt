@@ -1,7 +1,7 @@
 package input;
 
+import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
 import kha.Font;
-import input.GamepadSpriteCoordinates.GAMEPAD_SPRITE_COORDINATES;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import kha.Assets;
 import ui.ControlDisplay;
@@ -117,7 +117,7 @@ class AnyInputDevice implements IInputDevice {
 
 			for (action in d.actions) {
 				final mapping = inputSettings.getMapping(action);
-				final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadButton];
+				final spr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
 				GamepadInputDevice.renderButton(g, x, y, height / spr.height, spr);
 
