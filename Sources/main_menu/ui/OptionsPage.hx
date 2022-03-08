@@ -33,8 +33,56 @@ class OptionsPage extends ListMenuPage {
 						final inputDevice = menu.inputDevice;
 
 						switch (inputDevice.type) {
-							case KEYBOARD | GAMEPAD:
+							case KEYBOARD:
 								return [
+									new ControlsPageWidget({
+										title: "Menu Controls",
+										description: ["Change Controls Related To", "Menu Navigation"],
+										actions: [PAUSE, LEFT, RIGHT, UP, DOWN, BACK, CONFIRM],
+										inputDevice: inputDevice
+									}),
+									new ControlsPageWidget({
+										title: "Game Controls",
+										description: ["Change Controls Related To", "Gameplay"],
+										actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT],
+										inputDevice: inputDevice
+									}),
+									new ControlsPageWidget({
+										title: "Training Controls",
+										description: ["Change Controls Specific To", "Training Mode"],
+										actions: [
+											TOGGLE_EDIT_MODE,
+											PREVIOUS_STEP,
+											NEXT_STEP,
+											PREVIOUS_COLOR,
+											NEXT_COLOR,
+											TOGGLE_MARKERS
+										],
+										inputDevice: inputDevice
+									}),
+								];
+							case GAMEPAD:
+								return [
+									new NumberRangeWidget({
+										title: "Stick Deadzone",
+										description: [
+											"Adjust The Threshold Where",
+											"The Analog Stick Doesn't Respond",
+											"To Inputs",
+											"",
+											"Increase This Value In Small Increments",
+											" If You Experience Drifting, Rebounding",
+											"or Weird Inputs In General"
+										],
+										startValue: inputDevice.inputSettings.deadzone,
+										minValue: 0,
+										maxValue: 0.9,
+										delta: 0.05,
+										onChange: (value) -> {
+											inputDevice.inputSettings.deadzone = value;
+											SaveManager.saveProfiles();
+										}
+									}),
 									new ControlsPageWidget({
 										title: "Menu Controls",
 										description: ["Change Controls Related To", "Menu Navigation"],
@@ -111,6 +159,26 @@ class OptionsPage extends ListMenuPage {
 											pageBuilder: (gamepadDevice) -> new InputLimitedListPage({
 												header: "Gamepad Controls",
 												widgetBuilder: (_) -> [
+													new NumberRangeWidget({
+														title: "Stick Deadzone",
+														description: [
+															"Adjust The Threshold Where",
+															"The Analog Stick Doesn't Respond",
+															"To Inputs",
+															"",
+															"Increase This Value In Small Increments",
+															" If You Experience Drifting, Rebounding",
+															"or Weird Inputs In General"
+														],
+														startValue: inputDevice.inputSettings.deadzone,
+														minValue: 0,
+														maxValue: 0.9,
+														delta: 0.05,
+														onChange: (value) -> {
+															inputDevice.inputSettings.deadzone = value;
+															SaveManager.saveProfiles();
+														}
+													}),
 													new ControlsPageWidget({
 														title: "Menu Controls",
 														description: ["Change Controls Related To", "Menu Navigation"],

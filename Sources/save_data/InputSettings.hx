@@ -61,7 +61,7 @@ class InputSettings {
 		toggleMarkers: {keyboardInput: B, gamepadButton: R1, gamepadAxis: null}
 	};
 
-	@:optional public var deadzone = 0;
+	@:optional public var deadzone = 0.0;
 
 	public function getMapping(action: Action) {
 		return switch (action) {
