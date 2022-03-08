@@ -36,9 +36,6 @@ class KeyboardInputDevice extends InputDevice {
 			return;
 
 		for (action in keysToActions[key]) {
-			if (counters.exists(action))
-				continue;
-
 			counters[action] = 0;
 		}
 	}

@@ -60,9 +60,6 @@ class GamepadInputDevice extends InputDevice {
 
 	function downListener(actions: Array<Action>) {
 		for (action in actions) {
-			if (counters.exists(action))
-				continue;
-
 			counters[action] = 0;
 		}
 	}
