@@ -8,51 +8,60 @@ class InputSettings {
 	@:optional public final menu: MenuInputs = {
 		pause: {
 			keyboardInput: Escape,
-			gamepadInput: OPTIONS
+			gamepadButton: OPTIONS,
+			gamepadAxis: null
 		},
 		left: {
 			keyboardInput: Left,
-			gamepadInput: DPAD_LEFT
+			gamepadButton: DPAD_LEFT,
+			gamepadAxis: {axis: 0, direction: -1}
 		},
 		right: {
 			keyboardInput: Right,
-			gamepadInput: DPAD_RIGHT
+			gamepadButton: DPAD_RIGHT,
+			gamepadAxis: {axis: 0, direction: 1}
 		},
 		down: {
 			keyboardInput: Down,
-			gamepadInput: DPAD_DOWN
+			gamepadButton: DPAD_DOWN,
+			gamepadAxis: {axis: 1, direction: 1},
 		},
 		up: {
 			keyboardInput: Up,
-			gamepadInput: DPAD_UP
+			gamepadButton: DPAD_UP,
+			gamepadAxis: {axis: 1, direction: -1}
 		},
 		back: {
 			keyboardInput: Backspace,
-			gamepadInput: CROSS
+			gamepadButton: CROSS,
+			gamepadAxis: null
 		},
 		confirm: {
 			keyboardInput: Return,
-			gamepadInput: CIRCLE
+			gamepadButton: CIRCLE,
+			gamepadAxis: null
 		}
 	};
 
 	@:optional public final game: GameInputs = {
-		shiftLeft: {keyboardInput: Left, gamepadInput: DPAD_LEFT},
-		shiftRight: {keyboardInput: Right, gamepadInput: DPAD_RIGHT},
-		softDrop: {keyboardInput: Down, gamepadInput: DPAD_DOWN},
-		hardDrop: {keyboardInput: Up, gamepadInput: DPAD_UP},
-		rotateLeft: {keyboardInput: D, gamepadInput: CROSS},
-		rotateRight: {keyboardInput: F, gamepadInput: CIRCLE}
+		shiftLeft: {keyboardInput: Left, gamepadButton: DPAD_LEFT, gamepadAxis: {axis: 0, direction: -1}},
+		shiftRight: {keyboardInput: Right, gamepadButton: DPAD_RIGHT, gamepadAxis: {axis: 0, direction: 1}},
+		softDrop: {keyboardInput: Down, gamepadButton: DPAD_DOWN, gamepadAxis: {axis: 1, direction: 1}},
+		hardDrop: {keyboardInput: Up, gamepadButton: DPAD_UP, gamepadAxis: {axis: 1, direction: -1}},
+		rotateLeft: {keyboardInput: D, gamepadButton: CROSS, gamepadAxis: null},
+		rotateRight: {keyboardInput: F, gamepadButton: CIRCLE, gamepadAxis: null}
 	};
 
 	@:optional public final training: TrainingInputs = {
-		toggleEditMode: {keyboardInput: Q, gamepadInput: SHARE},
-		previousStep: {keyboardInput: Y, gamepadInput: SQUARE},
-		nextStep: {keyboardInput: X, gamepadInput: TRIANGLE},
-		previousColor: {keyboardInput: C, gamepadInput: L2},
-		nextColor: {keyboardInput: V, gamepadInput: R2},
-		toggleMarkers: {keyboardInput: B, gamepadInput: R1}
+		toggleEditMode: {keyboardInput: Q, gamepadButton: SHARE, gamepadAxis: null},
+		previousStep: {keyboardInput: Y, gamepadButton: SQUARE, gamepadAxis: null},
+		nextStep: {keyboardInput: X, gamepadButton: TRIANGLE, gamepadAxis: null},
+		previousColor: {keyboardInput: C, gamepadButton: L2, gamepadAxis: null},
+		nextColor: {keyboardInput: V, gamepadButton: R2, gamepadAxis: null},
+		toggleMarkers: {keyboardInput: B, gamepadButton: R1, gamepadAxis: null}
 	};
+
+	@:optional public var deadzone = 0;
 
 	public function getMapping(action: Action) {
 		return switch (action) {
@@ -151,7 +160,8 @@ class InputSettings {
 				previousColor: training.previousColor,
 				nextColor: training.nextColor,
 				toggleMarkers: training.toggleMarkers
-			}
+			},
+			deadzone: deadzone
 		};
 	}
 }
@@ -159,7 +169,8 @@ class InputSettings {
 typedef InputSettingsData = {
 	menu: MenuInputs,
 	game: GameInputs,
-	training: TrainingInputs
+	training: TrainingInputs,
+	deadzone: Float,
 };
 
 private typedef MenuInputs = {

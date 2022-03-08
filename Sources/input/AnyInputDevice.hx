@@ -117,7 +117,7 @@ class AnyInputDevice implements IInputDevice {
 
 			for (action in d.actions) {
 				final mapping = inputSettings.getMapping(action);
-				final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadInput];
+				final spr = GAMEPAD_SPRITE_COORDINATES[mapping.gamepadButton];
 
 				GamepadInputDevice.renderButton(g, x, y, height / spr.height, spr);
 

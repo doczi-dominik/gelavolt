@@ -1,5 +1,6 @@
 package input;
 
+import haxe.ds.HashMap;
 import kha.Assets;
 import game.actions.ActionTitles.ACTION_TITLES;
 import utils.Geometry;
@@ -26,6 +27,7 @@ class GamepadInputDevice extends InputDevice {
 	var bindingsFontHeight: Float;
 
 	var buttonsToActions: Map<Int, Null<Array<Action>>>;
+	var axesToActions: HashMap<AxisMapping, Null<Array<Action>>>;
 	var latestRebindFunction: (Int, Float) -> Void;
 
 	public function new(inputSettings: InputSettings, gamepadID: Int) {
@@ -42,15 +44,17 @@ class GamepadInputDevice extends InputDevice {
 		if (!buttonsToActions.exists(button))
 			return;
 
+		final actions = buttonsToActions[button];
+
 		if (value == 0) {
-			upListener(button);
+			upListener(actions);
 		} else {
-			downListener(button);
+			downListener(actions);
 		}
 	}
 
-	function downListener(button: Int) {
-		for (action in buttonsToActions[button]) {
+	function downListener(actions: Array<Action>) {
+		for (action in actions) {
 			if (counters.exists(action))
 				continue;
 
@@ -58,9 +62,33 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	function upListener(button: Int) {
-		for (action in buttonsToActions[button]) {
+	function upListener(actions: Array<Action>) {
+		for (action in actions) {
 			counters.remove(action);
+		}
+	}
+
+	function axisListener(axis: Int, value: Float) {
+		for (k => v in axesToActions.keyValueIterator()) {
+			// Easy matching using multiplication
+			// -1 * -1 => 1
+			// 1 * 1 => 1
+			// If the direction and value signs match, the result is positive
+			if (k.axis == axis && k.direction * value >= 0) {
+				if (Math.abs(value) > inputSettings.deadzone) {
+					downListener(v);
+				} else {
+					upListener(v);
+				}
+
+				// Clear actions assigned to the inverse direction. With
+				// properly configured deadzone, this prevents stick "rebound"
+				// and drifting.
+				final oppositeMapping: AxisMapping = {axis: axis, direction: k.direction * -1};
+				upListener(axesToActions[oppositeMapping]);
+
+				return;
+			}
 		}
 	}
 
@@ -72,7 +100,8 @@ class GamepadInputDevice extends InputDevice {
 
 		inputSettings.setMapping(action, {
 			keyboardInput: original.keyboardInput,
-			gamepadInput: button
+			gamepadButton: button,
+			gamepadAxis: original.gamepadAxis
 		});
 
 		finishRebind();
@@ -81,14 +110,26 @@ class GamepadInputDevice extends InputDevice {
 	override function buildActions() {
 		actions = [];
 		buttonsToActions = [];
+		axesToActions = new HashMap();
 
 		for (action in Type.allEnums(Action)) {
-			final kbInput = inputSettings.getMapping(action).gamepadInput;
+			final mapping = inputSettings.getMapping(action);
 
-			if (buttonsToActions[kbInput] == null)
-				buttonsToActions[kbInput] = [];
+			final buttonInput = mapping.gamepadButton;
 
-			buttonsToActions[kbInput].push(action);
+			if (buttonsToActions[buttonInput] == null)
+				buttonsToActions[buttonInput] = [];
+
+			buttonsToActions[buttonInput].push(action);
+
+			final axisMapping = mapping.gamepadAxis;
+
+			if (axisMapping != null) {
+				if (axesToActions[axisMapping] == null)
+					axesToActions[axisMapping] = [];
+
+				axesToActions[axisMapping].push(action);
+			}
 
 			switch (ACTION_INPUT_TYPES[action]) {
 				case HOLD:
@@ -103,7 +144,7 @@ class GamepadInputDevice extends InputDevice {
 
 	override function addListeners() {
 		try {
-			gamepad.notify(null, buttonListener);
+			gamepad.notify(axisListener, buttonListener);
 		}
 	}
 
@@ -150,7 +191,7 @@ class GamepadInputDevice extends InputDevice {
 
 		final str = '$title: ';
 		final strW = font.width(bindingsFontSize, str);
-		final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadInput];
+		final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadButton];
 
 		g.drawString(str, x, y);
 
@@ -166,7 +207,7 @@ class GamepadInputDevice extends InputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadInput];
+				final spr = GAMEPAD_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadButton];
 
 				renderButton(g, x, y, controlsFontHeight / spr.height, spr);
 

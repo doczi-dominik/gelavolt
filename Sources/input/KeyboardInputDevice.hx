@@ -63,7 +63,8 @@ class KeyboardInputDevice extends InputDevice {
 
 		inputSettings.setMapping(action, {
 			keyboardInput: key,
-			gamepadInput: original.gamepadInput
+			gamepadButton: original.gamepadButton,
+			gamepadAxis: original.gamepadAxis
 		});
 
 		finishRebind();

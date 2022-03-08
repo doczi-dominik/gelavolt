@@ -54,7 +54,8 @@ class Profile {
 			inputSettings: {
 				menu: inputSettings.menu,
 				game: inputSettings.game,
-				training: inputSettings.training
+				training: inputSettings.training,
+				deadzone: inputSettings.deadzone
 			},
 			prefsSettings: {
 				colorTints: prefsSettings.colorTints,
