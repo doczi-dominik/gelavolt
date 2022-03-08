@@ -1,5 +1,6 @@
 package input;
 
+import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
 import kha.Font;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
@@ -113,19 +114,26 @@ class AnyInputDevice implements IInputDevice {
 		g.fontSize = fontSize;
 
 		for (d in controls) {
-			var str = "/";
+			var str = "";
 
 			for (action in d.actions) {
 				final mapping = inputSettings.getMapping(action);
-				final spr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
+				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
-				GamepadInputDevice.renderButton(g, x, y, height / spr.height, spr);
+				GamepadInputDevice.renderButton(g, x, y, height / buttonSpr.height, buttonSpr);
+				x += buttonSpr.width * ScaleManager.smallerScale;
 
-				x += spr.width * ScaleManager.smallerScale;
-				str += '${KEY_CODE_TO_STRING[mapping.keyboardInput]},';
+				if (mapping.gamepadAxis != null) {
+					final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
+
+					GamepadInputDevice.renderButton(g, x, y, height / axisSpr.height, axisSpr);
+					x += axisSpr.width * ScaleManager.smallerScale;
+				}
+
+				str += '${KEY_CODE_TO_STRING[mapping.keyboardInput]}, ';
 			}
 
-			str = str.substr(0, str.length - 1);
+			str = str.substr(0, str.length - 2);
 
 			// Hackerman but it beats having to calculate with scaling
 			str += ': ${d.description}    ';

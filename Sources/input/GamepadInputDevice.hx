@@ -248,11 +248,19 @@ class GamepadInputDevice extends InputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				final spr = BUTTON_SPRITE_COORDINATES[inputSettings.getMapping(action).gamepadButton];
+				final mapping = inputSettings.getMapping(action);
+				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
-				renderButton(g, x, y, controlsFontHeight / spr.height, spr);
+				renderButton(g, x, y, controlsFontHeight / buttonSpr.height, buttonSpr);
+				x += buttonSpr.width * ScaleManager.smallerScale;
 
-				x += spr.width * ScaleManager.smallerScale;
+				if (mapping.gamepadAxis == null)
+					continue;
+
+				final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
+
+				renderButton(g, x, y, controlsFontHeight / axisSpr.height, axisSpr);
+				x += axisSpr.width * ScaleManager.smallerScale;
 			}
 
 			str = str.substring(0, str.length - 1);
