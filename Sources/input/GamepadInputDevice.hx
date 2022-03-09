@@ -54,11 +54,11 @@ class GamepadInputDevice extends InputDevice {
 		if (value == 0) {
 			upListener(actions);
 		} else {
-			downListener(actions);
+			buttonDownListener(actions);
 		}
 	}
 
-	function downListener(actions: Array<Action>) {
+	function buttonDownListener(actions: Array<Action>) {
 		for (action in actions) {
 			counters[action] = 0;
 		}
@@ -78,7 +78,7 @@ class GamepadInputDevice extends InputDevice {
 			// If the direction and value signs match, the result is positive
 			if (k.axis == axis && k.direction * value >= 0) {
 				if (Math.abs(value) > inputSettings.deadzone) {
-					downListener(v);
+					axisDownListener(v);
 				} else {
 					upListener(v);
 				}
@@ -94,6 +94,15 @@ class GamepadInputDevice extends InputDevice {
 
 				return;
 			}
+		}
+	}
+
+	function axisDownListener(actions: Array<Action>) {
+		for (action in actions) {
+			if (counters.exists(action))
+				continue;
+
+			counters[action] = 0;
 		}
 	}
 
