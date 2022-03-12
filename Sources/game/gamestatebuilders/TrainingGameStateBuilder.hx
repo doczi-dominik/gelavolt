@@ -91,7 +91,7 @@ class TrainingGameStateBuilder {
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSettings: Profile.primary.prefsSettings
+			prefsSettings: Profile.primary.prefs
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -134,10 +134,10 @@ class TrainingGameStateBuilder {
 		playerGarbageManager = new GarbageManager({
 			rule: gameMode.rule,
 			rng: rng,
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.LEFT,
-			tray: CenterGarbageTray.create(Profile.primary.prefsSettings),
+			tray: CenterGarbageTray.create(Profile.primary.prefs),
 			target: playerTargetMediator
 		});
 	}
@@ -156,8 +156,8 @@ class TrainingGameStateBuilder {
 				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefsSettings),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefsSettings)
+			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
+			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
 		});
 	}
 
@@ -167,7 +167,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerField() {
 		playerField = Field.create({
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -191,7 +191,7 @@ class TrainingGameStateBuilder {
 	}
 
 	inline function buildPlayerGeloGroup() {
-		final prefsSettings = Profile.primary.prefsSettings;
+		final prefsSettings = Profile.primary.prefs;
 
 		playerGeloGroup = new GeloGroup({
 			field: playerField,
@@ -220,16 +220,16 @@ class TrainingGameStateBuilder {
 		infoGarbageManager = new GarbageManager({
 			rule: gameMode.rule,
 			rng: rng,
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.RIGHT,
-			tray: CenterGarbageTray.create(Profile.primary.prefsSettings),
+			tray: CenterGarbageTray.create(Profile.primary.prefs),
 			target: infoTargetMediator
 		});
 	}
 
 	inline function buildInfoState() {
-		final prefsSettings = Profile.primary.prefsSettings;
+		final prefsSettings = Profile.primary.prefs;
 
 		infoState = new TrainingInfoBoardState({
 			geometries: BoardGeometries.RIGHT,
@@ -254,7 +254,7 @@ class TrainingGameStateBuilder {
 		playState = new TrainingBoardState({
 			infoState: infoState,
 			rule: gameMode.rule,
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.LEFT,
@@ -279,7 +279,7 @@ class TrainingGameStateBuilder {
 			geometries: BoardGeometries.LEFT,
 			inputDevice: playerInputDevice,
 			field: Field.create({
-				prefsSettings: Profile.primary.prefsSettings,
+				prefsSettings: Profile.primary.prefs,
 				columns: 6,
 				playAreaRows: 12,
 				hiddenRows: 1,
@@ -287,7 +287,7 @@ class TrainingGameStateBuilder {
 			}),
 			chainSim: playerChainSim,
 			chainCounter: playerChainCounter,
-			prefsSettings: Profile.primary.prefsSettings
+			prefsSettings: Profile.primary.prefs
 		});
 	}
 
@@ -315,7 +315,7 @@ class TrainingGameStateBuilder {
 		pauseMenu = new TrainingPauseMenu({
 			pauseMediator: pauseMediator,
 			rule: gameMode.rule,
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			randomizer: randomizer,
 			queue: playerQueue,
 			playState: playState,

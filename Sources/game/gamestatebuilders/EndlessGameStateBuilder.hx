@@ -78,7 +78,7 @@ class EndlessGameStateBuilder {
 	inline function buildRandomizer() {
 		randomizer = new Randomizer({
 			rng: rng,
-			prefsSettings: Profile.primary.prefsSettings
+			prefsSettings: Profile.primary.prefs
 		});
 
 		randomizer.currentPool = FOUR_COLOR;
@@ -119,8 +119,8 @@ class EndlessGameStateBuilder {
 				rule: gameMode.rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefsSettings),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefsSettings)
+			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
+			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
 		});
 	}
 
@@ -130,7 +130,7 @@ class EndlessGameStateBuilder {
 
 	inline function buildField() {
 		field = Field.create({
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,
 			hiddenRows: 1,
@@ -160,7 +160,7 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildGeloGroup() {
-		final prefsSettings = Profile.primary.prefsSettings;
+		final prefsSettings = Profile.primary.prefs;
 
 		geloGroup = new GeloGroup({
 			field: field,
@@ -188,7 +188,7 @@ class EndlessGameStateBuilder {
 	inline function buildBoardState() {
 		boardState = new EndlessBoardState({
 			rule: gameMode.rule,
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			transformMediator: transformMediator,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,
@@ -221,7 +221,7 @@ class EndlessGameStateBuilder {
 		if (gameMode.replayData == null) {
 			pauseMenu = new EndlessPauseMenu({
 				pauseMediator: pauseMediator,
-				prefsSettings: Profile.primary.prefsSettings,
+				prefsSettings: Profile.primary.prefs,
 				trainingSettings: Profile.primary.trainingSettings,
 				actionBuffer: actionBuffer,
 				gameMode: gameMode
@@ -232,7 +232,7 @@ class EndlessGameStateBuilder {
 
 		pauseMenu = new ReplayPauseMenu({
 			pauseMediator: pauseMediator,
-			prefsSettings: Profile.primary.prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			actionBuffer: cast(actionBuffer, ReplayActionBuffer),
 		});
 	}

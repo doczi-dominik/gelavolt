@@ -443,7 +443,7 @@ class GeloGroup {
 		g.pushOpacity(shadowOpacity);
 
 		for (o in otherShadows) {
-			g.color = prefsSettings.getPrimaryColor(o.color);
+			g.color = prefsSettings.primaryColors[o.color];
 			g.fillCircle(o.x, o.y, radius, 16);
 		}
 
@@ -460,7 +460,7 @@ class GeloGroup {
 
 		g.pushOpacity(shadowOpacity);
 
-		g.color = prefsSettings.getPrimaryColor(mainShadow.color);
+		g.color = prefsSettings.primaryColors[mainShadow.color];
 		g.fillCircle(mainShadow.x, mainShadow.y, radius, 16);
 
 		g.popOpacity();

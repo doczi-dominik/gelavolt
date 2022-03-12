@@ -9,7 +9,7 @@ import save_data.InputSettings;
 import game.actions.Action;
 
 class InputDevice implements IInputDevice {
-	static inline final BINDINGS_FONT_SIZE = 60;
+	static inline final MAPPINGS_FONT_SIZE = 60;
 	static inline final CONTROLS_FONT_SIZE = 56;
 
 	static final instances: Array<InputDevice> = [];
@@ -118,7 +118,7 @@ class InputDevice implements IInputDevice {
 
 	public function onResize() {
 		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ScaleManager.smallerScale);
-		bindingsFontSize = Std.int(BINDINGS_FONT_SIZE * ScaleManager.smallerScale);
+		bindingsFontSize = Std.int(MAPPINGS_FONT_SIZE * ScaleManager.smallerScale);
 
 		height = font.height(bindingsFontSize);
 	}

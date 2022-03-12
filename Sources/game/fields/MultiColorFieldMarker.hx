@@ -72,7 +72,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 		final width = 64 / colorCount;
 
 		for (i in 0...colorCount) {
-			g.color = prefsSettings.getPrimaryColor(colors[i]);
+			g.color = prefsSettings.primaryColors[colors[i]];
 
 			g.drawSubImage(Assets.images.pixel, x + i * width, y, spriteCoordinates.x + i * width, spriteCoordinates.y, width, 64);
 		}

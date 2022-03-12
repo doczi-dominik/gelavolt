@@ -224,7 +224,7 @@ class Gelo {
 			g4.setPipeline(g.pipeline);
 		}
 
-		g.color = prefsSettings.getColorTint(color);
+		g.color = prefsSettings.colorTints[color];
 		g.drawScaledSubImage(Assets.images.pixel, subImageCoords.x, subImageCoords.y, SIZE, SIZE, offsetX - Gelo.HALFSIZE, offsetY - Gelo.HALFSIZE,
 			Gelo.SIZE * lerpScaleX, Gelo.SIZE * lerpScaleY);
 		g.color = White;

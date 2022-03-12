@@ -94,7 +94,7 @@ class GarbageManager implements IGarbageManager {
 			final trayCenter = targetGeometries.garbageTray.add({x: BoardGeometries.CENTER.x, y: Gelo.HALFSIZE});
 			final absTrayCenter = targetGeometries.absolutePosition.add(trayCenter);
 
-			final primaryColor = prefsSettings.getPrimaryColor(b.color);
+			final primaryColor = prefsSettings.primaryColors[b.color];
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
 				particleManager: particleManager,
@@ -125,7 +125,7 @@ class GarbageManager implements IGarbageManager {
 		for (b in beginners) {
 			final absBegin = absPos.add({x: b.x, y: b.y});
 
-			final primaryColor = prefsSettings.getPrimaryColor(b.color);
+			final primaryColor = prefsSettings.primaryColors[b.color];
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
 				particleManager: particleManager,
@@ -163,7 +163,7 @@ class GarbageManager implements IGarbageManager {
 		final absTargetTrayCenter = targetGeometries.absolutePosition.add(targetTrayCenter);
 
 		for (b in beginners) {
-			final primaryColor = prefsSettings.getPrimaryColor(b.color);
+			final primaryColor = prefsSettings.primaryColors[b.color];
 			final absBegin = absPos.add({x: b.x, y: b.y});
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({

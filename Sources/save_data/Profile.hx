@@ -1,15 +1,20 @@
 package save_data;
 
+import haxe.ds.StringMap;
 import save_data.TrainingSettings;
 import save_data.PrefsSettings;
 import save_data.InputSettings;
-import game.geometries.BoardGeometries;
 
-/**
- * User-defined settings and preferences.
- */
-@:structInit
+enum abstract ProfileKey(String) to String {
+	final NAME;
+	final INPUT;
+	final PREFS;
+	final TRAINING_SETTINGS;
+}
+
 class Profile {
+	static inline final NAME_DEFAULT = "GUGU";
+
 	static final onChangePrimary: Array<Void->Void> = [];
 
 	/**
@@ -42,51 +47,66 @@ class Profile {
 		}
 	}
 
-	@:optional public var name = "P1";
+	public final input: InputSettings;
+	public final prefs: PrefsSettings;
+	public final trainingSettings: TrainingSettings;
 
-	@:optional public var inputSettings: InputSettings = {};
-	@:optional public var prefsSettings: PrefsSettings = {};
-	@:optional public var trainingSettings: TrainingSettings = {};
+	public var name: String;
 
-	public function exportData(): ProfileData {
-		return {
-			name: name,
-			inputSettings: {
-				menu: inputSettings.menu,
-				game: inputSettings.game,
-				training: inputSettings.training,
-				deadzone: inputSettings.deadzone
-			},
-			prefsSettings: {
-				colorTints: prefsSettings.colorTints,
-				primaryColors: prefsSettings.primaryColors,
-				boardBackground: prefsSettings.boardBackground,
-				capAtCrowns: prefsSettings.capAtCrowns,
-				showGroupShadow: prefsSettings.showGroupShadow,
-				shadowOpacity: prefsSettings.shadowOpacity,
-				shadowHighlightOthers: prefsSettings.shadowHighlightOthers,
-				shadowWillTriggerChain: prefsSettings.shadowWillTriggerChain
-			},
-			trainingSettings: {
-				clearOnXMode: trainingSettings.clearOnXMode,
-				autoClear: trainingSettings.autoClear,
-				autoAttack: trainingSettings.autoAttack,
-				minAttackTime: trainingSettings.minAttackTime,
-				maxAttackTime: trainingSettings.maxAttackTime,
-				minAttackChain: trainingSettings.minAttackChain,
-				maxAttackChain: trainingSettings.maxAttackChain,
-				minAttackGroupDiff: trainingSettings.minAttackGroupDiff,
-				maxAttackGroupDiff: trainingSettings.maxAttackGroupDiff,
-				minAttackColors: trainingSettings.minAttackColors,
-				maxAttackColors: trainingSettings.maxAttackColors
+	public function new(overrides: Map<ProfileKey, Any>) {
+		name = NAME_DEFAULT;
+
+		var inputOverrides = new Map();
+		var prefsOverrides = new Map();
+		var trainingOverrides = new Map();
+
+		try {
+			for (k => v in overrides) {
+				try {
+					switch (k) {
+						case NAME:
+							name = cast(v, String);
+						case INPUT:
+							inputOverrides = cast(v, Map<Dynamic, Dynamic>);
+						case PREFS:
+							prefsOverrides = cast(v, Map<Dynamic, Dynamic>);
+						case TRAINING_SETTINGS:
+							trainingOverrides = cast(v, Map<Dynamic, Dynamic>);
+					}
+				} catch (_) {
+					continue;
+				}
 			}
-		};
+		} catch (_) {}
+
+		input = new InputSettings(inputOverrides);
+		prefs = new PrefsSettings(prefsOverrides);
+		trainingSettings = new TrainingSettings(trainingOverrides);
+	}
+
+	public function exportOverrides() {
+		final overrides = new StringMap<Any>();
+
+		overrides.set(NAME, name);
+
+		final inputOverrides = input.exportOverrides();
+
+		if (inputOverrides != null) {
+			overrides.set(INPUT, inputOverrides);
+		}
+
+		final prefsOverrides = prefs.exportOverrides();
+
+		if (prefsOverrides != null) {
+			overrides.set(PREFS, prefsOverrides);
+		}
+
+		final trainingOverrides = trainingSettings.exportOverrides();
+
+		if (trainingOverrides != null) {
+			overrides.set(TRAINING_SETTINGS, trainingOverrides);
+		}
+
+		return overrides;
 	}
 }
-
-typedef ProfileData = {
-	name: String,
-	inputSettings: InputSettingsData,
-	prefsSettings: PrefsSettingsData,
-	trainingSettings: TrainingSettingsData
-};

@@ -1,108 +1,163 @@
 package save_data;
 
+import haxe.ds.StringMap;
 import game.gelos.GeloColor;
 import kha.Color;
 
-@:structInit
-class PrefsSettings {
-	@:optional public final colorTints: GeloColorSettings = {
-		color1: White,
-		color2: White,
-		color3: White,
-		color4: White,
-		color5: White,
-		empty: White,
-		garbage: White
-	};
-
-	@:optional public final primaryColors: GeloColorSettings = {
-		color1: Color.fromValue(0xFFFF001e),
-		color2: Color.fromValue(0xFF00FF15),
-		color3: Color.fromValue(0xFF006DFF),
-		color4: Color.fromValue(0xFFFFF300),
-		color5: Color.fromValue(0xFFc100FF),
-		empty: Transparent,
-		garbage: Transparent
-	};
-
-	@:optional public var boardBackground = Color.fromBytes(64, 32, 32);
-	@:optional public var capAtCrowns = true;
-	@:optional public var showGroupShadow = true;
-	@:optional public var shadowOpacity = 0.5;
-	@:optional public var shadowHighlightOthers = true;
-	@:optional public var shadowWillTriggerChain = true;
-
-	public function exportData(): PrefsSettingsData {
-		return {
-			colorTints: {
-				color1: colorTints.color1,
-				color2: colorTints.color2,
-				color3: colorTints.color3,
-				color4: colorTints.color4,
-				color5: colorTints.color5,
-				empty: colorTints.empty,
-				garbage: colorTints.garbage,
-			},
-			primaryColors: {
-				color1: primaryColors.color1,
-				color2: primaryColors.color2,
-				color3: primaryColors.color3,
-				color4: primaryColors.color4,
-				color5: primaryColors.color5,
-				empty: primaryColors.empty,
-				garbage: primaryColors.garbage,
-			},
-			boardBackground: boardBackground,
-			capAtCrowns: capAtCrowns,
-			showGroupShadow: showGroupShadow,
-			shadowOpacity: shadowOpacity,
-			shadowHighlightOthers: shadowHighlightOthers,
-			shadowWillTriggerChain: shadowWillTriggerChain
-		};
-	}
-
-	public function getColorTint(color: GeloColor) {
-		return switch (color) {
-			case COLOR1: colorTints.color1;
-			case COLOR2: colorTints.color2;
-			case COLOR3: colorTints.color3;
-			case COLOR4: colorTints.color4;
-			case COLOR5: colorTints.color5;
-			case EMPTY: colorTints.empty;
-			case GARBAGE: colorTints.garbage;
-		}
-	}
-
-	public function getPrimaryColor(color: GeloColor) {
-		return switch (color) {
-			case COLOR1: primaryColors.color1;
-			case COLOR2: primaryColors.color2;
-			case COLOR3: primaryColors.color3;
-			case COLOR4: primaryColors.color4;
-			case COLOR5: primaryColors.color5;
-			case EMPTY: primaryColors.empty;
-			case GARBAGE: primaryColors.garbage;
-		}
-	}
+enum abstract PrefsSettingsKey(String) to String {
+	final COLOR_TINTS;
+	final PRIMARY_COLORS;
+	final BOARD_BACKGROUND;
+	final CAP_AT_CROWNS;
+	final SHOW_GROUP_SHADOW;
+	final SHADOW_OPACITY;
+	final SHADOW_HIGHLIGHT_OTHERS;
+	final SHADOW_WILL_TRIGGER_CHAIN;
 }
 
-typedef PrefsSettingsData = {
-	colorTints: GeloColorSettings,
-	primaryColors: GeloColorSettings,
-	boardBackground: Color,
-	capAtCrowns: Bool,
-	showGroupShadow: Bool,
-	shadowOpacity: Float,
-	shadowHighlightOthers: Bool,
-	shadowWillTriggerChain: Bool
-};
+class PrefsSettings {
+	static final COLOR_TINTS_DEFAULT = [
+		COLOR1 => White,
+		COLOR2 => White,
+		COLOR3 => White,
+		COLOR4 => White,
+		COLOR5 => White,
+		EMPTY => White,
+		GARBAGE => White,
+	];
 
-private typedef GeloColorSettings = {
-	color1: Color,
-	color2: Color,
-	color3: Color,
-	color4: Color,
-	color5: Color,
-	empty: Color,
-	garbage: Color,
-};
+	static final PRIMARY_COLORS_DEFAULT = [
+		COLOR1 => Color.fromValue(0xFFFF001e),
+		COLOR2 => Color.fromValue(0xFF00FF15),
+		COLOR3 => Color.fromValue(0xFF006DFF),
+		COLOR4 => Color.fromValue(0xFFFFF300),
+		COLOR5 => Color.fromValue(0xFFC100FF),
+		EMPTY => Transparent,
+		GARBAGE => Transparent,
+	];
+
+	static final BOARD_BACKGROUND_DEFAULT = Color.fromBytes(64, 32, 32);
+	static inline final CAP_AT_CROWNS_DEFAULT = true;
+	static inline final SHOW_GROUP_SHADOW_DEFAULT = true;
+	static inline final SHADOW_OPACITY_DEFAULT = 0.5;
+	static inline final SHADOW_HIGHLIGHT_OTHERS_DEFAULT = true;
+	static inline final SHADOW_WILL_TRIGGER_CHAIN_DEFAULT = true;
+
+	public final colorTints: Map<GeloColor, Color>;
+	public final primaryColors: Map<GeloColor, Color>;
+
+	public var boardBackground: Color;
+	public var capAtCrowns: Bool;
+	public var showGroupShadow: Bool;
+	public var shadowOpacity: Float;
+	public var shadowHighlightOthers: Bool;
+	public var shadowWillTriggerChain: Bool;
+
+	public function new(overrides: Map<PrefsSettingsKey, Any>) {
+		colorTints = COLOR_TINTS_DEFAULT.copy();
+		primaryColors = PRIMARY_COLORS_DEFAULT.copy();
+
+		boardBackground = BOARD_BACKGROUND_DEFAULT;
+		capAtCrowns = CAP_AT_CROWNS_DEFAULT;
+		showGroupShadow = SHOW_GROUP_SHADOW_DEFAULT;
+		shadowOpacity = SHADOW_OPACITY_DEFAULT;
+		shadowHighlightOthers = SHADOW_HIGHLIGHT_OTHERS_DEFAULT;
+		shadowWillTriggerChain = SHADOW_WILL_TRIGGER_CHAIN_DEFAULT;
+
+		try {
+			for (k => v in overrides) {
+				try {
+					switch (k) {
+						case COLOR_TINTS:
+							for (kk => vv in cast(v, Map<Dynamic, Dynamic>))
+								colorTints[cast(kk, GeloColor)] = cast(vv, Color);
+						case PRIMARY_COLORS:
+							for (kk => vv in cast(v, Map<Dynamic, Dynamic>))
+								primaryColors[cast(kk, GeloColor)] = cast(vv, Color);
+						case BOARD_BACKGROUND:
+							boardBackground = cast(v, Color);
+						case CAP_AT_CROWNS:
+							capAtCrowns = cast(v, Bool);
+						case SHOW_GROUP_SHADOW:
+							showGroupShadow = cast(v, Bool);
+						case SHADOW_OPACITY:
+							shadowOpacity = cast(v, Float);
+						case SHADOW_HIGHLIGHT_OTHERS:
+							shadowHighlightOthers = cast(v, Bool);
+						case SHADOW_WILL_TRIGGER_CHAIN:
+							shadowWillTriggerChain = cast(v, Bool);
+					}
+				} catch (_) {
+					continue;
+				}
+			}
+		} catch (_) {}
+	}
+
+	public function exportOverrides() {
+		final overrides = new StringMap<Any>();
+		var wereOverrides = false;
+
+		final tintOverrides = new Map<GeloColor, Color>();
+		var wereTintOverrides = false;
+
+		for (k => v in colorTints) {
+			if (v != COLOR_TINTS_DEFAULT[k]) {
+				tintOverrides[k] = v;
+				wereTintOverrides = true;
+			}
+		}
+
+		if (wereTintOverrides) {
+			overrides.set(COLOR_TINTS, tintOverrides);
+			wereOverrides = true;
+		}
+
+		final primaryOverrides = new Map<GeloColor, Color>();
+		var werePrimaryOverrides = false;
+
+		for (k => v in primaryColors) {
+			if (v != PRIMARY_COLORS_DEFAULT[k]) {
+				primaryOverrides[k] = v;
+				werePrimaryOverrides = true;
+			}
+		}
+
+		if (werePrimaryOverrides) {
+			overrides.set(PRIMARY_COLORS, primaryOverrides);
+			wereOverrides = true;
+		}
+
+		if (boardBackground != BOARD_BACKGROUND_DEFAULT) {
+			overrides.set(BOARD_BACKGROUND, boardBackground);
+			wereOverrides = true;
+		}
+
+		if (capAtCrowns != CAP_AT_CROWNS_DEFAULT) {
+			overrides.set(CAP_AT_CROWNS, capAtCrowns);
+			wereOverrides = true;
+		}
+
+		if (showGroupShadow != SHOW_GROUP_SHADOW_DEFAULT) {
+			overrides.set(SHOW_GROUP_SHADOW, showGroupShadow);
+			wereOverrides = true;
+		}
+
+		if (shadowOpacity != SHADOW_OPACITY_DEFAULT) {
+			overrides.set(SHADOW_OPACITY, shadowOpacity);
+			wereOverrides = true;
+		}
+
+		if (shadowHighlightOthers != SHADOW_HIGHLIGHT_OTHERS_DEFAULT) {
+			overrides.set(SHADOW_HIGHLIGHT_OTHERS, shadowHighlightOthers);
+			wereOverrides = true;
+		}
+
+		if (shadowWillTriggerChain != SHADOW_WILL_TRIGGER_CHAIN_DEFAULT) {
+			overrides.set(SHADOW_WILL_TRIGGER_CHAIN, shadowWillTriggerChain);
+			wereOverrides = true;
+		}
+
+		return wereOverrides ? overrides : null;
+	}
+}

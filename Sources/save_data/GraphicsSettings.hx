@@ -1,16 +1,42 @@
 package save_data;
 
-@:structInit
-class GraphicsSettings {
-	@:optional public var fullscreen = true;
+import haxe.ds.StringMap;
 
-	public function exportData(): GraphicsSettingsData {
-		return {
-			fullscreen: fullscreen
-		};
-	}
+enum abstract GraphicsSettingsKey(String) to String {
+	final FULLSCREEN;
 }
 
-typedef GraphicsSettingsData = {
-	fullscreen: Bool
-};
+class GraphicsSettings {
+	static inline final FULLSCREEN_DEFAULT = true;
+
+	public var fullscreen: Bool;
+
+	public function new(overrides: Map<GraphicsSettingsKey, Any>) {
+		fullscreen = FULLSCREEN_DEFAULT;
+
+		try {
+			for (k => v in overrides) {
+				try {
+					switch (k) {
+						case FULLSCREEN:
+							fullscreen = cast(v, Bool);
+					}
+				} catch (_) {
+					continue;
+				}
+			}
+		} catch (_) {}
+	}
+
+	public function exportOverrides() {
+		final overrides = new StringMap<Any>();
+		var wereOverrides = false;
+
+		if (fullscreen != FULLSCREEN_DEFAULT) {
+			overrides.set(FULLSCREEN, fullscreen);
+			wereOverrides = true;
+		}
+
+		return wereOverrides ? overrides : null;
+	}
+}

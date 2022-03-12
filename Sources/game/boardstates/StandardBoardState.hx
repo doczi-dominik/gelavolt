@@ -329,7 +329,7 @@ class StandardBoardState implements IBoardState {
 					dy: -10 * rng.GetFloatIn(0.5, 1.5),
 					dyIncrement: 0.75 * rng.GetFloatIn(0.5, 1.5),
 					maxT: Std.int((30 + i * 6) * rng.GetFloatIn(0.5, 1.5)),
-					color: prefsSettings.getPrimaryColor(c.color)
+					color: prefsSettings.primaryColors[c.color]
 				}));
 			}
 		}

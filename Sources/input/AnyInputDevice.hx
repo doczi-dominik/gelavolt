@@ -47,7 +47,7 @@ class AnyInputDevice implements IInputDevice {
 
 		type = ANY;
 
-		devices[KEYBOARD_ID] = new KeyboardInputDevice(Profile.primary.inputSettings);
+		devices[KEYBOARD_ID] = new KeyboardInputDevice(Profile.primary.input);
 
 		Gamepad.notifyOnConnect(connectListener, disconnectListener);
 
@@ -55,7 +55,7 @@ class AnyInputDevice implements IInputDevice {
 	}
 
 	function connectListener(id: Int) {
-		devices[id] = new GamepadInputDevice(Profile.primary.inputSettings, id);
+		devices[id] = new GamepadInputDevice(Profile.primary.input, id);
 	}
 
 	function disconnectListener(id: Int) {
@@ -64,12 +64,12 @@ class AnyInputDevice implements IInputDevice {
 
 	function onChangePrimary() {
 		for (d in devices) {
-			d.inputSettings = Profile.primary.inputSettings;
+			d.inputSettings = Profile.primary.input;
 		}
 	}
 
 	function get_inputSettings() {
-		return Profile.primary.inputSettings;
+		return Profile.primary.input;
 	}
 
 	public function clearLastGamepadID() {
@@ -117,7 +117,7 @@ class AnyInputDevice implements IInputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				final mapping = inputSettings.getMapping(action);
+				final mapping = inputSettings.mappings[action];
 				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
 				GamepadInputDevice.renderButton(g, x, y, height / buttonSpr.height, buttonSpr);

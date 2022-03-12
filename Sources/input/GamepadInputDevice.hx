@@ -110,13 +110,13 @@ class GamepadInputDevice extends InputDevice {
 		if (value == 0)
 			return;
 
-		final original = inputSettings.getMapping(action);
+		final original = inputSettings.mappings[action];
 
-		inputSettings.setMapping(action, {
+		inputSettings.mappings[action] = ({
 			keyboardInput: original.keyboardInput,
 			gamepadButton: button,
 			gamepadAxis: original.gamepadAxis
-		});
+		} : InputMapping);
 
 		finishRebind();
 	}
@@ -125,13 +125,13 @@ class GamepadInputDevice extends InputDevice {
 		if (value <= inputSettings.deadzone && value >= -inputSettings.deadzone)
 			return;
 
-		final original = inputSettings.getMapping(action);
+		final original = inputSettings.mappings[action];
 
-		inputSettings.setMapping(action, {
+		inputSettings.mappings[action] = ({
 			keyboardInput: original.keyboardInput,
 			gamepadButton: original.gamepadButton,
 			gamepadAxis: {axis: axis, direction: (value > 0) ? 1 : -1}
-		});
+		} : InputMapping);
 
 		finishRebind();
 	}
@@ -141,8 +141,8 @@ class GamepadInputDevice extends InputDevice {
 		buttonsToActions = [];
 		axesToActions = new HashMap();
 
-		for (action in Type.allEnums(Action)) {
-			final mapping = inputSettings.getMapping(action);
+		for (action in Action.getValues()) {
+			final mapping = inputSettings.mappings[action];
 
 			final buttonInput = mapping.gamepadButton;
 
@@ -222,7 +222,7 @@ class GamepadInputDevice extends InputDevice {
 
 		final str = '$title: ';
 		final strW = font.width(bindingsFontSize, str);
-		final mapping = inputSettings.getMapping(action);
+		final mapping = inputSettings.mappings[action];
 		final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
 		g.drawString(str, x, y);
@@ -254,7 +254,7 @@ class GamepadInputDevice extends InputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				final mapping = inputSettings.getMapping(action);
+				final mapping = inputSettings.mappings[action];
 				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
 				renderButton(g, x, y, controlsFontHeight / buttonSpr.height, buttonSpr);

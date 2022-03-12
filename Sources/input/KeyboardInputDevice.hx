@@ -56,13 +56,13 @@ class KeyboardInputDevice extends InputDevice {
 	}
 
 	function rebindListener(action: Action, key: KeyCode) {
-		final original = inputSettings.getMapping(action);
+		final original = inputSettings.mappings[action];
 
-		inputSettings.setMapping(action, {
+		inputSettings.mappings[action] = ({
 			keyboardInput: key,
 			gamepadButton: original.gamepadButton,
 			gamepadAxis: original.gamepadAxis
-		});
+		} : InputMapping);
 
 		finishRebind();
 	}
@@ -71,8 +71,8 @@ class KeyboardInputDevice extends InputDevice {
 		actions = [];
 		keysToActions = [];
 
-		for (action in Type.allEnums(Action)) {
-			final kbInput = inputSettings.getMapping(action).keyboardInput;
+		for (action in Action.getValues()) {
+			final kbInput = inputSettings.mappings[action].keyboardInput;
 
 			if (keysToActions[kbInput] == null)
 				keysToActions[kbInput] = [];
@@ -130,7 +130,7 @@ class KeyboardInputDevice extends InputDevice {
 			return;
 		}
 
-		g.drawString('$title: ${KEY_CODE_TO_STRING[inputSettings.getMapping(action).keyboardInput]}', x, y);
+		g.drawString('$title: ${KEY_CODE_TO_STRING[inputSettings.mappings[action].keyboardInput]}', x, y);
 	}
 
 	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
@@ -140,7 +140,7 @@ class KeyboardInputDevice extends InputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				str += '${KEY_CODE_TO_STRING[inputSettings.getMapping(action).keyboardInput]}/';
+				str += '${KEY_CODE_TO_STRING[inputSettings.mappings[action].keyboardInput]}/';
 			}
 
 			str = str.substring(0, str.length - 1);
