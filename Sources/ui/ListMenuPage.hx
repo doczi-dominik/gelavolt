@@ -72,7 +72,7 @@ class ListMenuPage implements IMenuPage {
 			}
 		} else {
 			widgetIndex = widgets.length - 1;
-			minIndex = Std.int(Math.max(0, widgetIndex - MAX_WIDGETS_PER_VIEW));
+			minIndex = Std.int(Math.max(0, widgets.length - MAX_WIDGETS_PER_VIEW));
 		}
 
 		onSelect();
