@@ -29,7 +29,7 @@ class QueueEditorPage implements IMenuPage {
 	public final header = "Edit Queue";
 
 	public final controlDisplays: Array<ControlDisplay> = [
-		{actions: [LEFT, UP, DOWN, RIGHT], description: "Select"},
+		{actions: [MENU_LEFT, MENU_UP, MENU_DOWN, MENU_RIGHT], description: "Select"},
 		{actions: [BACK], description: "Back"},
 		{actions: [CONFIRM], description: "Edit"}
 	];
@@ -80,9 +80,9 @@ class QueueEditorPage implements IMenuPage {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getAction(LEFT)) {
+		if (inputDevice.getAction(MENU_LEFT)) {
 			selectHorizontal(-1);
-		} else if (inputDevice.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(MENU_RIGHT)) {
 			selectHorizontal(1);
 		}
 
@@ -91,7 +91,7 @@ class QueueEditorPage implements IMenuPage {
 		final currentRow = Std.int(minView / 7);
 
 		// TODO: Refactor this ugly ass input handling
-		if (inputDevice.getAction(UP)) {
+		if (inputDevice.getAction(MENU_UP)) {
 			if (selectionY > 0) {
 				selectVertical(-1);
 
@@ -103,7 +103,7 @@ class QueueEditorPage implements IMenuPage {
 				minView = (maxRows - 1) * 7;
 			}
 			selectHorizontal(0);
-		} else if (inputDevice.getAction(DOWN)) {
+		} else if (inputDevice.getAction(MENU_DOWN)) {
 			if (selectionY < maxRows) {
 				selectVertical(1);
 

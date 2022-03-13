@@ -16,22 +16,22 @@ class InputSettings {
 			gamepadButton: OPTIONS,
 			gamepadAxis: null
 		},
-		LEFT => {
+		MENU_LEFT => {
 			keyboardInput: Left,
 			gamepadButton: DPAD_LEFT,
 			gamepadAxis: {axis: 0, direction: -1}
 		},
-		RIGHT => {
+		MENU_RIGHT => {
 			keyboardInput: Right,
 			gamepadButton: DPAD_RIGHT,
 			gamepadAxis: {axis: 0, direction: 1}
 		},
-		DOWN => {
+		MENU_DOWN => {
 			keyboardInput: Down,
 			gamepadButton: DPAD_DOWN,
 			gamepadAxis: {axis: 1, direction: 1},
 		},
-		UP => {
+		MENU_UP => {
 			keyboardInput: Up,
 			gamepadButton: DPAD_UP,
 			gamepadAxis: {axis: 1, direction: -1}
@@ -81,10 +81,34 @@ class InputSettings {
 		ROTATE_LEFT => {keyboardInput: D, gamepadButton: CROSS, gamepadAxis: null},
 		ROTATE_RIGHT => {keyboardInput: F, gamepadButton: CIRCLE, gamepadAxis: null},
 		TOGGLE_EDIT_MODE => {keyboardInput: Q, gamepadButton: SHARE, gamepadAxis: null},
+		EDIT_LEFT => {
+			keyboardInput: Left,
+			gamepadButton: DPAD_LEFT,
+			gamepadAxis: {axis: 0, direction: -1}
+		},
+		EDIT_RIGHT => {
+			keyboardInput: Right,
+			gamepadButton: DPAD_RIGHT,
+			gamepadAxis: {axis: 0, direction: 1}
+		},
+		EDIT_DOWN => {
+			keyboardInput: Down,
+			gamepadButton: DPAD_DOWN,
+			gamepadAxis: {axis: 1, direction: 1},
+		},
+		EDIT_UP => {
+			keyboardInput: Up,
+			gamepadButton: DPAD_UP,
+			gamepadAxis: {axis: 1, direction: -1}
+		},
+		EDIT_CLEAR => {keyboardInput: D, gamepadButton: CROSS, gamepadAxis: null},
+		EDIT_SET => {keyboardInput: F, gamepadButton: CIRCLE, gamepadAxis: null},
 		PREVIOUS_STEP => {keyboardInput: Y, gamepadButton: SQUARE, gamepadAxis: null},
 		NEXT_STEP => {keyboardInput: X, gamepadButton: TRIANGLE, gamepadAxis: null},
 		PREVIOUS_COLOR => {keyboardInput: C, gamepadButton: L2, gamepadAxis: null},
 		NEXT_COLOR => {keyboardInput: V, gamepadButton: R2, gamepadAxis: null},
+		PREVIOUS_GROUP => {keyboardInput: Y, gamepadButton: SQUARE, gamepadAxis: null},
+		NEXT_GROUP => {keyboardInput: X, gamepadButton: TRIANGLE, gamepadAxis: null},
 		TOGGLE_MARKERS => {keyboardInput: B, gamepadButton: R1, gamepadAxis: null}
 	];
 

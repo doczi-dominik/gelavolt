@@ -12,7 +12,7 @@ class ControlsPage extends InputLimitedListPage {
 		});
 
 		controlDisplays = [
-			{actions: [UP, DOWN], description: "Select List Entry"},
+			{actions: [MENU_UP, MENU_DOWN], description: "Select List Entry"},
 			{actions: [BACK], description: "Back"},
 			{actions: [CONFIRM], description: "Rebind"}
 		];

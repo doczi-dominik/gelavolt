@@ -21,7 +21,7 @@ class OptionListWidget implements IListWidget {
 	var value: String;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [LEFT, RIGHT], description: "Change"}];
+	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
 	public var height(default, null): Float;
 
 	public function new(opts: OptionListWidgetOptions) {
@@ -55,9 +55,9 @@ class OptionListWidget implements IListWidget {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getAction(LEFT)) {
+		if (inputDevice.getAction(MENU_LEFT)) {
 			changeValue(-1);
-		} else if (inputDevice.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(MENU_RIGHT)) {
 			changeValue(1);
 		}
 	}

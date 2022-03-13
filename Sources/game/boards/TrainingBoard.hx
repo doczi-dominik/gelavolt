@@ -82,9 +82,9 @@ class TrainingBoard implements IBoard {
 		}
 
 		if (activeState == playState) {
-			if (inputDevice.getAction(PREVIOUS_STEP)) {
+			if (inputDevice.getAction(PREVIOUS_GROUP)) {
 				playState.previousGroup();
-			} else if (inputDevice.getAction(NEXT_STEP)) {
+			} else if (inputDevice.getAction(NEXT_GROUP)) {
 				playState.nextGroup();
 			}
 		} else {

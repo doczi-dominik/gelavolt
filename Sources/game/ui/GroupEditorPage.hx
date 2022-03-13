@@ -25,7 +25,7 @@ class GroupEditorPage implements IMenuPage {
 	public final header = "Edit Gelo Group";
 
 	public final controlDisplays: Array<ControlDisplay> = [
-		{actions: [LEFT, UP, DOWN, RIGHT], description: "Select"},
+		{actions: [MENU_LEFT, MENU_UP, MENU_DOWN, MENU_RIGHT], description: "Select"},
 		{actions: [BACK], description: "Back"},
 		{actions: [CONFIRM], description: "Cycle Colors"}
 	];
@@ -60,15 +60,15 @@ class GroupEditorPage implements IMenuPage {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getAction(LEFT)) {
+		if (inputDevice.getAction(MENU_LEFT)) {
 			selectHorizontal(-1);
-		} else if (inputDevice.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(MENU_RIGHT)) {
 			selectHorizontal(1);
 		}
 
-		if (inputDevice.getAction(UP)) {
+		if (inputDevice.getAction(MENU_UP)) {
 			selectVertical(-1);
-		} else if (inputDevice.getAction(DOWN)) {
+		} else if (inputDevice.getAction(MENU_DOWN)) {
 			selectVertical(1);
 		}
 

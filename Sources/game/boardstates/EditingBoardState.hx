@@ -168,15 +168,15 @@ class EditingBoardState implements IBoardState {
 	}
 
 	public function update() {
-		if (inputDevice.getAction(LEFT)) {
+		if (inputDevice.getAction(EDIT_LEFT)) {
 			moveCursor(-1, 0);
-		} else if (inputDevice.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(EDIT_RIGHT)) {
 			moveCursor(1, 0);
 		}
 
-		if (inputDevice.getAction(UP)) {
+		if (inputDevice.getAction(EDIT_UP)) {
 			moveCursor(0, -1);
-		} else if (inputDevice.getAction(DOWN)) {
+		} else if (inputDevice.getAction(EDIT_DOWN)) {
 			moveCursor(0, 1);
 		}
 

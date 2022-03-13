@@ -22,7 +22,7 @@ class NumberRangeWidget implements IListWidget {
 	var value: Float;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [LEFT, RIGHT], description: "Change"}];
+	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
 	public var height(default, null): Float;
 
 	public function new(opts: NumericalRangeWidgetOptions) {
@@ -56,7 +56,7 @@ class NumberRangeWidget implements IListWidget {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getAction(LEFT)) {
+		if (inputDevice.getAction(MENU_LEFT)) {
 			final nextValue = value - delta;
 
 			if (nextValue < minValue) {
@@ -64,7 +64,7 @@ class NumberRangeWidget implements IListWidget {
 			} else {
 				setValue(nextValue);
 			}
-		} else if (inputDevice.getAction(RIGHT)) {
+		} else if (inputDevice.getAction(MENU_RIGHT)) {
 			final nextValue = value + delta;
 
 			if (nextValue > maxValue) {

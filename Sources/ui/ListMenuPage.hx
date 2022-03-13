@@ -9,7 +9,7 @@ class ListMenuPage implements IMenuPage {
 	static inline final MAX_WIDGETS_PER_VIEW = 10;
 	static inline final WIDGET_BOTTOM_PADDING = 16;
 	static final DEFAULT_CONTROL_DISPLAYS: Array<ControlDisplay> = [
-		{actions: [UP, DOWN], description: "Select"},
+		{actions: [MENU_UP, MENU_DOWN], description: "Select"},
 		{actions: [BACK], description: "Back"},
 	];
 
@@ -108,9 +108,9 @@ class ListMenuPage implements IMenuPage {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getAction(UP)) {
+		if (inputDevice.getAction(MENU_UP)) {
 			moveUp();
-		} else if (inputDevice.getAction(DOWN)) {
+		} else if (inputDevice.getAction(MENU_DOWN)) {
 			moveDown();
 		}
 
