@@ -1,14 +1,13 @@
 package input;
 
+import game.actions.ActionData.ACTION_DATA;
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
 import haxe.ds.HashMap;
 import kha.Assets;
-import game.actions.ActionTitles.ACTION_TITLES;
 import utils.Geometry;
 import kha.graphics2.Graphics;
 import ui.ControlDisplay;
-import game.actions.ActionInputTypes.ACTION_INPUT_TYPES;
 import game.actions.Action;
 import save_data.InputSettings;
 import kha.input.Gamepad;
@@ -160,7 +159,7 @@ class GamepadInputDevice extends InputDevice {
 				axesToActions[axisMapping].push(action);
 			}
 
-			switch (ACTION_INPUT_TYPES[action]) {
+			switch (ACTION_DATA[action].inputType) {
 				case HOLD:
 					actions[action] = holdActionHandler;
 				case PRESS:
@@ -212,7 +211,7 @@ class GamepadInputDevice extends InputDevice {
 	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
 		super.renderBinding(g, x, y, action);
 
-		final title = ACTION_TITLES[action];
+		final title = ACTION_DATA[action].title;
 
 		if (action == latestRebindAction && isRebinding) {
 			g.drawString('Press any button / stick for [ $title ]', x, y);

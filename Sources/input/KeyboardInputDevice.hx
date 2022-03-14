@@ -1,10 +1,9 @@
 package input;
 
-import game.actions.ActionTitles.ACTION_TITLES;
+import game.actions.ActionData.ACTION_DATA;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import kha.graphics2.Graphics;
 import ui.ControlDisplay;
-import game.actions.ActionInputTypes;
 import game.actions.Action;
 import kha.input.KeyCode;
 import save_data.InputSettings;
@@ -79,7 +78,7 @@ class KeyboardInputDevice extends InputDevice {
 
 			keysToActions[kbInput].push(action);
 
-			switch (ACTION_INPUT_TYPES[action]) {
+			switch (ACTION_DATA[action].inputType) {
 				case HOLD:
 					actions[action] = holdActionHandler;
 				case PRESS:
@@ -122,7 +121,7 @@ class KeyboardInputDevice extends InputDevice {
 	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
 		super.renderBinding(g, x, y, action);
 
-		final title = ACTION_TITLES[action];
+		final title = ACTION_DATA[action].title;
 
 		if (action == latestRebindAction && isRebinding) {
 			g.drawString('Press any key for [ $title ]', x, y);

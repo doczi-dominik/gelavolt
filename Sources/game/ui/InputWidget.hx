@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.actions.ActionData.ACTION_DATA;
 import ui.ControlDisplay;
 import game.actions.Action;
 import kha.graphics2.Graphics;
@@ -11,12 +12,14 @@ class InputWidget implements IListWidget {
 
 	var menu: Menu;
 
-	public var description(default, null): Array<String> = [];
+	public var description(default, null): Array<String>;
 	public var controlDisplays: Array<ControlDisplay> = [{actions: [CONFIRM], description: "Rebind"}];
 	public var height(default, null): Float;
 
 	public function new(action: Action) {
 		this.action = action;
+
+		description = ACTION_DATA[action].description;
 	}
 
 	public function onShow(menu: Menu) {
