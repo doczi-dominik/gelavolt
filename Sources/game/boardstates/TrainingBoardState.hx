@@ -1,14 +1,15 @@
 package game.boardstates;
 
-import game.randomizers.Randomizer;
 import save_data.TrainingSettings;
 
 class TrainingBoardState extends EndlessBoardState {
+	final trainingSettings: TrainingSettings;
 	final infoState: TrainingInfoBoardState;
 
 	public function new(opts: TrainingBoardStateOptions) {
 		super(opts);
 
+		trainingSettings = opts.trainingSettings;
 		infoState = opts.infoState;
 	}
 

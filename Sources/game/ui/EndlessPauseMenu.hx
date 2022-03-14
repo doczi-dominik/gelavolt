@@ -1,5 +1,6 @@
 package game.ui;
 
+import save_data.EndlessSettings;
 import game.gamemodes.EndlessGameMode;
 import haxe.Serializer;
 import game.actionbuffers.IActionBuffer;
@@ -22,12 +23,12 @@ using DateTools;
 
 class EndlessPauseMenu extends PauseMenu {
 	final gameMode: EndlessGameMode;
-	final trainingSettings: TrainingSettings;
+	final endlessSettings: EndlessSettings;
 	final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
 		gameMode = opts.gameMode;
-		trainingSettings = opts.trainingSettings;
+		endlessSettings = opts.endlessSettings;
 		actionBuffer = opts.actionBuffer;
 
 		super(opts);
@@ -50,13 +51,13 @@ class EndlessPauseMenu extends PauseMenu {
 						"NEW: CLEAR + Regenerate Queue"
 					],
 					options: [ClearOnXMode.CLEAR, RESTART, NEW],
-					startIndex: switch (trainingSettings.clearOnXMode) {
+					startIndex: switch (endlessSettings.clearOnXMode) {
 						case CLEAR: 0;
 						case RESTART: 1;
 						case NEW: 2;
 					},
 					onChange: (value) -> {
-						trainingSettings.clearOnXMode = value;
+						endlessSettings.clearOnXMode = value;
 						SaveManager.saveProfiles();
 					}
 				}),

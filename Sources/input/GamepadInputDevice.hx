@@ -140,7 +140,7 @@ class GamepadInputDevice extends InputDevice {
 		buttonsToActions = [];
 		axesToActions = new HashMap();
 
-		for (action in Action.getValues()) {
+		for (action in ACTION_DATA.keys()) {
 			final mapping = inputSettings.mappings[action];
 
 			final buttonInput = mapping.gamepadButton;

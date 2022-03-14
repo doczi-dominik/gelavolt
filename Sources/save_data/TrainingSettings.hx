@@ -1,5 +1,6 @@
 package save_data;
 
+import save_data.IClearOnXModeContainer;
 import haxe.ds.StringMap;
 import save_data.ClearOnXMode;
 
@@ -17,7 +18,7 @@ enum abstract TrainingSettingsKey(String) to String {
 	final MAX_ATTACK_COLORS;
 }
 
-class TrainingSettings {
+class TrainingSettings implements IClearOnXModeContainer {
 	static inline final CLEAR_ON_X_MODE_DEFAULT = RESTART;
 	static inline final AUTO_CLEAR_DEFAULT = true;
 	static inline final AUTO_ATTACK_DEFAULT = false;

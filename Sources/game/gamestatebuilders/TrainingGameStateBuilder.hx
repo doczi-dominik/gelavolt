@@ -270,7 +270,8 @@ class TrainingGameStateBuilder {
 			chainCounter: playerChainCounter,
 			chainSim: playerChainSim,
 			trainingSettings: Profile.primary.trainingSettings,
-			randomizer: randomizer
+			randomizer: randomizer,
+			clearOnXModeContainer: Profile.primary.trainingSettings
 		});
 	}
 

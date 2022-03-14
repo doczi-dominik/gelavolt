@@ -10,6 +10,7 @@ enum abstract ProfileKey(String) to String {
 	final INPUT;
 	final PREFS;
 	final TRAINING_SETTINGS;
+	final ENDLESS_SETTINGS;
 }
 
 class Profile {
@@ -50,6 +51,7 @@ class Profile {
 	public final input: InputSettings;
 	public final prefs: PrefsSettings;
 	public final trainingSettings: TrainingSettings;
+	public final endlessSettings: EndlessSettings;
 
 	public var name: String;
 
@@ -59,6 +61,7 @@ class Profile {
 		var inputOverrides = new Map();
 		var prefsOverrides = new Map();
 		var trainingOverrides = new Map();
+		var endlessOverrides = new Map();
 
 		try {
 			for (k => v in overrides) {
@@ -72,6 +75,8 @@ class Profile {
 							prefsOverrides = cast(v, Map<Dynamic, Dynamic>);
 						case TRAINING_SETTINGS:
 							trainingOverrides = cast(v, Map<Dynamic, Dynamic>);
+						case ENDLESS_SETTINGS:
+							endlessOverrides = cast(v, Map<Dynamic, Dynamic>);
 					}
 				} catch (_) {
 					continue;
@@ -82,10 +87,12 @@ class Profile {
 		input = new InputSettings(inputOverrides);
 		prefs = new PrefsSettings(prefsOverrides);
 		trainingSettings = new TrainingSettings(trainingOverrides);
+		endlessSettings = new EndlessSettings(endlessOverrides);
 	}
 
 	public function exportOverrides() {
 		final overrides = new StringMap<Any>();
+		// No need for wereOverrides flag since NAME is always set
 
 		overrides.set(NAME, name);
 
@@ -105,6 +112,12 @@ class Profile {
 
 		if (trainingOverrides != null) {
 			overrides.set(TRAINING_SETTINGS, trainingOverrides);
+		}
+
+		final endlessOverrides = endlessSettings.exportOverrides();
+
+		if (endlessOverrides != null) {
+			overrides.set(ENDLESS_SETTINGS, endlessOverrides);
 		}
 
 		return overrides;

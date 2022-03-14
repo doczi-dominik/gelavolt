@@ -203,7 +203,7 @@ class EndlessGameStateBuilder {
 			actionBuffer: actionBuffer,
 			chainCounter: chainCounter,
 			chainSim: chainSim,
-			trainingSettings: Profile.primary.trainingSettings,
+			clearOnXModeContainer: Profile.primary.endlessSettings,
 			randomizer: randomizer
 		});
 	}
@@ -222,7 +222,7 @@ class EndlessGameStateBuilder {
 			pauseMenu = new EndlessPauseMenu({
 				pauseMediator: pauseMediator,
 				prefsSettings: Profile.primary.prefs,
-				trainingSettings: Profile.primary.trainingSettings,
+				endlessSettings: Profile.primary.endlessSettings,
 				actionBuffer: actionBuffer,
 				gameMode: gameMode
 			});

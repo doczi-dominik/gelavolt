@@ -8,7 +8,6 @@ import save_data.PrefsSettings;
 import game.fields.Field;
 import game.gelos.GeloPoint;
 import game.gelos.Gelo;
-import game.screens.GameScreen;
 import kha.Color;
 import game.particles.GeloPopParticle;
 import game.particles.ParticleManager;

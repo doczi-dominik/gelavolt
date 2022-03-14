@@ -1,10 +1,10 @@
 package game.boardstates;
 
+import save_data.IClearOnXModeContainer;
 import game.randomizers.Randomizer;
-import save_data.TrainingSettings;
 
 @:structInit
 class EndlessBoardStateOptions extends StandardBoardStateOptions {
-	public final trainingSettings: TrainingSettings;
+	public final clearOnXModeContainer: IClearOnXModeContainer;
 	public final randomizer: Randomizer;
 }

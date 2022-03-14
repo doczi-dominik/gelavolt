@@ -1,16 +1,16 @@
 package game.boardstates;
 
+import save_data.IClearOnXModeContainer;
 import game.randomizers.Randomizer;
-import save_data.TrainingSettings;
 
 class EndlessBoardState extends StandardBoardState {
-	final trainingSettings: TrainingSettings;
+	final clearOnXModeContainer: IClearOnXModeContainer;
 	final randomizer: Randomizer;
 
 	public function new(opts: EndlessBoardStateOptions) {
 		super(opts);
 
-		trainingSettings = opts.trainingSettings;
+		clearOnXModeContainer = opts.clearOnXModeContainer;
 		randomizer = opts.randomizer;
 	}
 
@@ -18,7 +18,7 @@ class EndlessBoardState extends StandardBoardState {
 		eraseField();
 		garbageManager.clear();
 
-		switch (trainingSettings.clearOnXMode) {
+		switch (clearOnXModeContainer.clearOnXMode) {
 			case CLEAR:
 			case RESTART:
 				queue.setIndex(0);

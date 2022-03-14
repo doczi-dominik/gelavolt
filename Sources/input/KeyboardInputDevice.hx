@@ -70,7 +70,7 @@ class KeyboardInputDevice extends InputDevice {
 		actions = [];
 		keysToActions = [];
 
-		for (action in Action.getValues()) {
+		for (action in ACTION_DATA.keys()) {
 			final kbInput = inputSettings.mappings[action].keyboardInput;
 
 			if (keysToActions[kbInput] == null)
