@@ -1,6 +1,6 @@
 package save_data;
 
-import js.Browser;
+import save_data.GraphicsSettings.GraphicsSettingsKey;
 import haxe.Unserializer;
 import kha.Storage;
 import haxe.Serializer;
@@ -76,7 +76,13 @@ class SaveManager {
 			return;
 		}
 
-		graphics = new GraphicsSettings(Unserializer.run(serialized));
+		var overrides: Map<GraphicsSettingsKey, Any> = [];
+
+		try {
+			overrides = Unserializer.run(serialized);
+		} catch (_) {}
+
+		graphics = new GraphicsSettings(overrides);
 	}
 
 	public static inline function loadEverything() {
