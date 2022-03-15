@@ -147,7 +147,7 @@ class KeyboardInputDevice extends InputDevice {
 			// Hackerman but it beats having to calculate with scaling
 			str += ' : ${d.description}    ';
 
-			final strWidth = font.width(controlsFontSize, str);
+			final strWidth = g.font.width(g.fontSize, str);
 
 			g.drawString(str, x, y);
 

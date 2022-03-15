@@ -200,14 +200,6 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	override function onResize() {
-		super.onResize();
-
-		controlsFontHeight = font.height(controlsFontSize);
-		bindingsFontHeight = font.height(bindingsFontSize);
-		separatorWidth = font.width(bindingsFontSize, SEPARATOR);
-	}
-
 	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
 		super.renderBinding(g, x, y, action);
 
@@ -220,7 +212,7 @@ class GamepadInputDevice extends InputDevice {
 		}
 
 		final str = '$title: ';
-		final strW = font.width(bindingsFontSize, str);
+		final strW = g.font.width(g.fontSize, str);
 		final mapping = inputSettings.mappings[action];
 		final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
@@ -273,7 +265,7 @@ class GamepadInputDevice extends InputDevice {
 			// Hackerman but it beats having to calculate with scaling
 			str += ' : ${d.description}    ';
 
-			final strWidth = font.width(controlsFontSize, str);
+			final strWidth = g.font.width(g.fontSize, str);
 
 			g.drawString(str, x, y);
 

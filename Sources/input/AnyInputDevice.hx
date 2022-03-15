@@ -2,9 +2,7 @@ package input;
 
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
-import kha.Font;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
-import kha.Assets;
 import ui.ControlDisplay;
 import kha.graphics2.Graphics;
 import game.actions.Action;
@@ -25,22 +23,15 @@ class AnyInputDevice implements IInputDevice {
 		instance = new AnyInputDevice();
 	}
 
-	final font: Font;
-
 	final devices: Map<Int, InputDevice>;
-
-	var fontSize: Int;
 
 	var isRebinding: Bool;
 
 	public final type: InputDeviceType;
 
 	public var inputSettings(get, null): InputSettings;
-	public var height(default, null): Float;
 
 	function new() {
-		font = Assets.fonts.Pixellari;
-
 		devices = [];
 
 		isRebinding = false;
@@ -100,18 +91,12 @@ class AnyInputDevice implements IInputDevice {
 		return cast(devices[KEYBOARD_ID], KeyboardInputDevice);
 	}
 
-	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
-		height = font.height(fontSize);
-	}
-
 	// AnyInputDevices cannot be rebound and shouldn't be active when
 	// displaying a rebinding menu.
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
 	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
-		g.font = font;
-		g.fontSize = fontSize;
+		final fontHeight = g.font.height(g.fontSize);
 
 		for (d in controls) {
 			var str = "";
@@ -120,13 +105,13 @@ class AnyInputDevice implements IInputDevice {
 				final mapping = inputSettings.mappings[action];
 				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
-				GamepadInputDevice.renderButton(g, x, y, height / buttonSpr.height, buttonSpr);
+				GamepadInputDevice.renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
 				x += buttonSpr.width * ScaleManager.smallerScale;
 
 				if (mapping.gamepadAxis != null) {
 					final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
 
-					GamepadInputDevice.renderButton(g, x, y, height / axisSpr.height, axisSpr);
+					GamepadInputDevice.renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
 					x += axisSpr.width * ScaleManager.smallerScale;
 				}
 
@@ -138,7 +123,7 @@ class AnyInputDevice implements IInputDevice {
 			// Hackerman but it beats having to calculate with scaling
 			str += ': ${d.description}    ';
 
-			final strWidth = g.font.width(fontSize, str);
+			final strWidth = g.font.width(g.fontSize, str);
 
 			g.drawString(str, x, y);
 

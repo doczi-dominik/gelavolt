@@ -20,12 +20,7 @@ class InputDevice implements IInputDevice {
 		}
 	}
 
-	final font: Font;
-
 	final counters: Map<Action, Int>;
-
-	var controlsFontSize: Int;
-	var bindingsFontSize: Int;
 
 	var actions: Map<Action, Int->Bool>;
 	var isRebinding: Bool;
@@ -34,11 +29,8 @@ class InputDevice implements IInputDevice {
 	public final type: InputDeviceType;
 
 	@:isVar public var inputSettings(get, set): InputSettings;
-	public var height(default, null): Float;
 
 	function new(type: InputDeviceType, inputSettings: InputSettings) {
-		font = Assets.fonts.Pixellari;
-
 		counters = [];
 
 		isRebinding = false;
@@ -116,20 +108,7 @@ class InputDevice implements IInputDevice {
 		return actions[action](counters[action]);
 	}
 
-	public function onResize() {
-		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ScaleManager.smallerScale);
-		bindingsFontSize = Std.int(MAPPINGS_FONT_SIZE * ScaleManager.smallerScale);
+	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
-		height = font.height(bindingsFontSize);
-	}
-
-	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
-		g.font = font;
-		g.fontSize = bindingsFontSize;
-	}
-
-	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
-		g.font = font;
-		g.fontSize = controlsFontSize;
-	}
+	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {}
 }

@@ -8,7 +8,7 @@ import kha.graphics2.Graphics;
 
 class Menu {
 	static inline final HEADER_FONT_SIZE = 128;
-	static inline final CONTROLS_FONT_SIZE = 64;
+	static inline final CONTROLS_FONT_SIZE = 56;
 	static inline final WARNING_FONT_SIZE = 24;
 	static inline final PADDING = 64;
 	static final WARNING = [
@@ -21,10 +21,11 @@ class Menu {
 	final pages: GenericStack<IMenuPage>;
 	final inputDevices: GenericStack<IInputDevice>;
 	final headerFont: Font;
-	final warningFont: Font;
+	final controlsFont: Font;
 
 	var headerFontSize: Int;
 	var headerFontHeight: Float;
+	var controlsFontSize: Int;
 	var warningFontSize: Int;
 	var warningFontHeight: Float;
 	var warningFontWidths: Array<Float>;
@@ -39,7 +40,7 @@ class Menu {
 		inputDevices = new GenericStack();
 
 		headerFont = Assets.fonts.DigitalDisco;
-		warningFont = Assets.fonts.Pixellari;
+		controlsFont = Assets.fonts.Pixellari;
 
 		ScaleManager.addOnResizeCallback(resize);
 	}
@@ -49,22 +50,19 @@ class Menu {
 
 		headerFontSize = Std.int(HEADER_FONT_SIZE * ssc);
 		headerFontHeight = headerFont.height(headerFontSize);
+		controlsFontSize = Std.int(CONTROLS_FONT_SIZE * ssc);
 		warningFontSize = Std.int(WARNING_FONT_SIZE * ssc);
-		warningFontHeight = warningFont.height(warningFontSize);
+		warningFontHeight = controlsFont.height(warningFontSize);
 		warningFontWidths = [];
 
 		for (line in WARNING) {
-			warningFontWidths.push(warningFont.width(warningFontSize, line));
+			warningFontWidths.push(controlsFont.width(warningFontSize, line));
 		}
 
 		padding = PADDING * ssc;
 
 		for (p in pages) {
 			p.onResize();
-		}
-
-		for (i in inputDevices.iterator()) {
-			i.onResize();
 		}
 	}
 
@@ -98,7 +96,6 @@ class Menu {
 	}
 
 	public inline function pushInputDevice(inputDevice: IInputDevice) {
-		inputDevice.onResize();
 		inputDevices.add(inputDevice);
 		setInputDevice();
 	}
@@ -126,7 +123,7 @@ class Menu {
 
 		currentPage.render(g, padding, topLineY + padding * 0.375);
 
-		g.font = warningFont;
+		g.font = controlsFont;
 		g.fontSize = warningFontSize;
 		g.color = Color.fromValue(0xFF777777);
 
@@ -142,6 +139,7 @@ class Menu {
 
 		g.color = White;
 
+		g.fontSize = controlsFontSize;
 		inputDevice.renderControls(g, padding, ScaleManager.height - headerFontHeight, pages.first().controlDisplays);
 	}
 }
