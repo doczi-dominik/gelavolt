@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.mediators.ControlDisplayContainer;
 import game.rules.ColorBonusTableType;
 import game.rules.PowerTableType;
 import ui.NumberRangeWidget;
@@ -36,6 +37,7 @@ class TrainingPauseMenu extends PauseMenu {
 	final trainingSettings: TrainingSettings;
 	final playerGarbageManager: GarbageManager;
 	final infoGarbageManager: GarbageManager;
+	final controlDisplayContainer: ControlDisplayContainer;
 
 	public function new(opts: TrainingPauseMenuOptions) {
 		rule = opts.rule;
@@ -50,6 +52,7 @@ class TrainingPauseMenu extends PauseMenu {
 		trainingSettings = opts.trainingSettings;
 		playerGarbageManager = opts.playerGarbageManager;
 		infoGarbageManager = opts.infoGarbageManager;
+		controlDisplayContainer = opts.controlDisplayContainer;
 
 		super(opts);
 	}
@@ -63,6 +66,14 @@ class TrainingPauseMenu extends PauseMenu {
 					header: "Misc. Options",
 					description: ["Change Miscelaneous", "Training Options"],
 					widgetBuilder: (_) -> [
+						new YesNoWidget({
+							title: "Show Control Hints",
+							description: ["Show Or Hide The Control Display", "At The Bottom"],
+							defaultValue: controlDisplayContainer.isVisible,
+							onChange: (value) -> {
+								controlDisplayContainer.isVisible = value;
+							}
+						}),
 						new OptionListWidget({
 							title: "Clear Field on X",
 							description: [

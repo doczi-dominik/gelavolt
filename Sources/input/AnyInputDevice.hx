@@ -1,8 +1,5 @@
 package input;
 
-import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
-import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
-import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import ui.ControlDisplay;
 import kha.graphics2.Graphics;
 import game.actions.Action;
@@ -12,12 +9,13 @@ import save_data.Profile;
 
 class AnyInputDevice implements IInputDevice {
 	static inline final FONT_SIZE = 48;
-	static inline final KEYBOARD_ID = -1;
+
+	public static inline final KEYBOARD_ID = -1;
 
 	public static var instance(default, null): AnyInputDevice;
 
 	public static var rebindCounter = 0;
-	public static var lastGamepadID: Null<Int>;
+	public static var lastDeviceID = KEYBOARD_ID;
 
 	public static function init() {
 		instance = new AnyInputDevice();
@@ -63,8 +61,8 @@ class AnyInputDevice implements IInputDevice {
 		return Profile.primary.input;
 	}
 
-	public function clearLastGamepadID() {
-		lastGamepadID = null;
+	public function resetLastDeviceID() {
+		lastDeviceID = KEYBOARD_ID;
 	}
 
 	public final function rebind(action: Action) {
@@ -96,38 +94,11 @@ class AnyInputDevice implements IInputDevice {
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
 	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
-		final fontHeight = g.font.height(g.fontSize);
+		final lastDevice = devices[lastDeviceID];
 
-		for (d in controls) {
-			var str = "";
+		if (lastDevice == null)
+			return;
 
-			for (action in d.actions) {
-				final mapping = inputSettings.mappings[action];
-				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
-
-				GamepadInputDevice.renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
-				x += buttonSpr.width * ScaleManager.smallerScale;
-
-				if (mapping.gamepadAxis != null) {
-					final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
-
-					GamepadInputDevice.renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
-					x += axisSpr.width * ScaleManager.smallerScale;
-				}
-
-				str += '${KEY_CODE_TO_STRING[mapping.keyboardInput]}, ';
-			}
-
-			str = str.substr(0, str.length - 2);
-
-			// Hackerman but it beats having to calculate with scaling
-			str += ': ${d.description}    ';
-
-			final strWidth = g.font.width(g.fontSize, str);
-
-			g.drawString(str, x, y);
-
-			x += strWidth;
-		}
+		lastDevice.renderControls(g, x, y, controls);
 	}
 }

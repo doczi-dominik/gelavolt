@@ -1,5 +1,6 @@
 package input;
 
+import utils.Utils;
 import game.actions.ActionData.ACTION_DATA;
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
@@ -25,8 +26,6 @@ class GamepadInputDevice extends InputDevice {
 	final id: Int;
 	final gamepad: Gamepad;
 
-	var controlsFontHeight: Float;
-	var bindingsFontHeight: Float;
 	var separatorWidth: Float;
 
 	var buttonsToActions: Map<Int, Null<Array<Action>>>;
@@ -43,7 +42,7 @@ class GamepadInputDevice extends InputDevice {
 
 	function buttonListener(button: Int, value: Float) {
 		if (value != 0)
-			AnyInputDevice.lastGamepadID = id;
+			AnyInputDevice.lastDeviceID = id;
 
 		if (!buttonsToActions.exists(button))
 			return;
@@ -77,6 +76,7 @@ class GamepadInputDevice extends InputDevice {
 			// If the direction and value signs match, the result is positive
 			if (k.axis == axis && k.direction * value >= 0) {
 				if (Math.abs(value) > inputSettings.deadzone) {
+					AnyInputDevice.lastDeviceID = id;
 					axisDownListener(v);
 				} else {
 					upListener(v);
@@ -211,6 +211,7 @@ class GamepadInputDevice extends InputDevice {
 			return;
 		}
 
+		final fontHeight = g.font.height(g.fontSize);
 		final str = '$title: ';
 		final strW = g.font.width(g.fontSize, str);
 		final mapping = inputSettings.mappings[action];
@@ -221,7 +222,7 @@ class GamepadInputDevice extends InputDevice {
 
 		g.color = White;
 
-		renderButton(g, x, y, bindingsFontHeight / buttonSpr.height, buttonSpr);
+		renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
 
 		final axisMapping = mapping.gamepadAxis;
 
@@ -235,10 +236,12 @@ class GamepadInputDevice extends InputDevice {
 
 		final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
 
-		renderButton(g, x, y, bindingsFontHeight / axisSpr.height, axisSpr);
+		renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
 	}
 
 	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
+		final fontHeight = g.font.height(g.fontSize);
+
 		super.renderControls(g, x, y, controls);
 
 		for (d in controls) {
@@ -247,17 +250,19 @@ class GamepadInputDevice extends InputDevice {
 			for (action in d.actions) {
 				final mapping = inputSettings.mappings[action];
 				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
+				final buttonScale = fontHeight / buttonSpr.height;
 
-				renderButton(g, x, y, controlsFontHeight / buttonSpr.height, buttonSpr);
-				x += buttonSpr.width * ScaleManager.smallerScale;
+				renderButton(g, x, y, buttonScale, buttonSpr);
+				x += buttonSpr.width * buttonScale * 1.25;
 
 				if (mapping.gamepadAxis == null)
 					continue;
 
 				final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
+				final axisScale = fontHeight / axisSpr.height;
 
-				renderButton(g, x, y, controlsFontHeight / axisSpr.height, axisSpr);
-				x += axisSpr.width * ScaleManager.smallerScale;
+				renderButton(g, x, y, axisScale, axisSpr);
+				x += axisSpr.width * axisScale * 1.25;
 			}
 
 			str = str.substring(0, str.length - 1);
@@ -267,7 +272,7 @@ class GamepadInputDevice extends InputDevice {
 
 			final strWidth = g.font.width(g.fontSize, str);
 
-			g.drawString(str, x, y);
+			Utils.shadowDrawString(g, 3, Black, White, str, x, y);
 
 			x += strWidth;
 		}

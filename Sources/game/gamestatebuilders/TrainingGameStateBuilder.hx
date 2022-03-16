@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import game.states.ControlDisplayGameState;
+import game.mediators.ControlDisplayContainer;
 import input.AnyInputDevice;
 import input.IInputDevice;
 import game.mediators.TransformationMediator;
@@ -49,6 +51,7 @@ class TrainingGameStateBuilder {
 	var particleManager: ParticleManager;
 	var marginManager: MarginTimeManager;
 	var frameCounter: FrameCounter;
+	var controlDisplayContainer: ControlDisplayContainer;
 
 	var pauseMediator: PauseMediator;
 	var playerBorderColorMediator: BorderColorMediator;
@@ -108,6 +111,10 @@ class TrainingGameStateBuilder {
 
 	inline function buildFrameCounter() {
 		frameCounter = new FrameCounter();
+	}
+
+	inline function buildControlDisplayContainer() {
+		controlDisplayContainer = new ControlDisplayContainer();
 	}
 
 	inline function buildPauseMediator() {
@@ -297,9 +304,10 @@ class TrainingGameStateBuilder {
 			pauseMediator: pauseMediator,
 			inputDevice: playerInputDevice,
 			playActionBuffer: playerActionBuffer,
+			controlDisplayContainer: controlDisplayContainer,
 			playState: playState,
 			editState: editState,
-			infoState: infoState
+			infoState: infoState,
 		});
 	}
 
@@ -327,12 +335,13 @@ class TrainingGameStateBuilder {
 			marginManager: marginManager,
 			trainingSettings: Profile.primary.trainingSettings,
 			playerGarbageManager: playerGarbageManager,
-			infoGarbageManager: infoGarbageManager
+			infoGarbageManager: infoGarbageManager,
+			controlDisplayContainer: controlDisplayContainer
 		});
 	}
 
 	inline function buildGameState() {
-		gameState = new GameState({
+		gameState = new ControlDisplayGameState({
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
@@ -348,7 +357,8 @@ class TrainingGameStateBuilder {
 				})
 			}),
 			pauseMenu: pauseMenu,
-			frameCounter: frameCounter
+			frameCounter: frameCounter,
+			controlDisplayContainer: controlDisplayContainer
 		});
 	}
 
@@ -366,6 +376,7 @@ class TrainingGameStateBuilder {
 		buildParticleManager();
 		buildMarginManager();
 		buildFrameCounter();
+		buildControlDisplayContainer();
 
 		buildPauseMediator();
 		buildPlayerBorderColorMediator();

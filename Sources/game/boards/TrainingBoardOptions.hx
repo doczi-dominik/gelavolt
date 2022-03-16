@@ -1,5 +1,6 @@
 package game.boards;
 
+import game.mediators.ControlDisplayContainer;
 import input.IInputDevice;
 import game.mediators.PauseMediator;
 import game.boardstates.TrainingBoardState;
@@ -13,6 +14,7 @@ class TrainingBoardOptions {
 	public final inputDevice: IInputDevice;
 	public final playActionBuffer: IActionBuffer;
 	public final infoState: TrainingInfoBoardState;
+	public final controlDisplayContainer: ControlDisplayContainer;
 
 	public final playState: TrainingBoardState;
 	public final editState: EditingBoardState;

@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.mediators.ControlDisplayContainer;
 import game.rules.Rule;
 import game.rules.MarginTimeManager;
 import game.boardstates.TrainingInfoBoardState;
@@ -26,4 +27,5 @@ class TrainingPauseMenuOptions extends PauseMenuOptions {
 	public final trainingSettings: TrainingSettings;
 	public final playerGarbageManager: GarbageManager;
 	public final infoGarbageManager: GarbageManager;
+	public final controlDisplayContainer: ControlDisplayContainer;
 }

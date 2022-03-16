@@ -1,5 +1,6 @@
 package input;
 
+import utils.Utils;
 import game.actions.ActionData.ACTION_DATA;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import kha.graphics2.Graphics;
@@ -30,6 +31,8 @@ class KeyboardInputDevice extends InputDevice {
 	function downListener(key: KeyCode) {
 		anyKeyCounter++;
 		isAnyKeyDown = true;
+
+		AnyInputDevice.lastDeviceID = AnyInputDevice.KEYBOARD_ID;
 
 		if (!keysToActions.exists(key))
 			return;
@@ -149,7 +152,7 @@ class KeyboardInputDevice extends InputDevice {
 
 			final strWidth = g.font.width(g.fontSize, str);
 
-			g.drawString(str, x, y);
+			Utils.shadowDrawString(g, 3, Black, White, str, x, y);
 
 			x += strWidth;
 		}

@@ -10,7 +10,7 @@ import game.boardmanagers.IBoardManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 
-final class GameState {
+class GameState {
 	final particleManager: ParticleManager;
 	final boardManager: IBoardManager;
 	final marginManager: MarginTimeManager;

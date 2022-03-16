@@ -49,14 +49,14 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 		this.menu = menu;
 
 		menu.pushInputDevice(keyboardDevice);
-		AnyInputDevice.instance.clearLastGamepadID();
+		AnyInputDevice.instance.resetLastDeviceID();
 	}
 
 	public function update() {
 		final anyDevice = AnyInputDevice.instance;
-		final lastID = AnyInputDevice.lastGamepadID;
+		final lastID = AnyInputDevice.lastDeviceID;
 
-		if (lastID != null) {
+		if (lastID != AnyInputDevice.KEYBOARD_ID) {
 			final page = pageBuilder(anyDevice.getGamepad(lastID));
 
 			// Replace Wrapper with actual widget

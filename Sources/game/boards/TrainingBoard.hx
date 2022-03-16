@@ -1,5 +1,7 @@
 package game.boards;
 
+import ui.ControlDisplay;
+import game.mediators.ControlDisplayContainer;
 import input.IInputDevice;
 import game.mediators.PauseMediator;
 import game.boardstates.TrainingBoardState;
@@ -11,10 +13,26 @@ import kha.graphics4.Graphics as Graphics4;
 import game.boardstates.IBoardState;
 
 class TrainingBoard implements IBoard {
+	static final GAME_CONTROL_DISPLAY: Array<ControlDisplay> = [
+		{actions: [TOGGLE_EDIT_MODE], description: "Edit Mode"},
+		{actions: [PREVIOUS_GROUP], description: "Undo"},
+		{actions: [NEXT_GROUP], description: "Get Next Group"}
+	];
+
+	static final EDIT_CONTROL_DISPLAY: Array<ControlDisplay> = [
+		{actions: [TOGGLE_EDIT_MODE], description: "Play Mode"},
+		{actions: [EDIT_SET], description: "Set"},
+		{actions: [EDIT_CLEAR], description: "Clear"},
+		{actions: [PREVIOUS_STEP, NEXT_STEP], description: "Cycle Chain Steps"},
+		{actions: [PREVIOUS_COLOR, NEXT_COLOR], description: "Cycle Gelos / Markers"},
+		{actions: [TOGGLE_MARKERS], description: "Toggle Gelos / Markers"},
+	];
+
 	final pauseMediator: PauseMediator;
 	final inputDevice: IInputDevice;
 	final actionBuffer: IActionBuffer;
 	final infoState: TrainingInfoBoardState;
+	final controlDisplayContainer: ControlDisplayContainer;
 
 	final playState: TrainingBoardState;
 	final editState: EditingBoardState;
@@ -26,17 +44,20 @@ class TrainingBoard implements IBoard {
 		inputDevice = opts.inputDevice;
 		actionBuffer = opts.playActionBuffer;
 		infoState = opts.infoState;
+		controlDisplayContainer = opts.controlDisplayContainer;
 
 		playState = opts.playState;
 		editState = opts.editState;
 
-		activeState = playState;
+		changeToGame();
 	}
 
 	function changeToEdit() {
 		editState.loadStep();
 
 		infoState.showChainSteps();
+
+		controlDisplayContainer.value = EDIT_CONTROL_DISPLAY;
 
 		activeState = editState;
 	}
@@ -45,6 +66,8 @@ class TrainingBoard implements IBoard {
 		playState.resume();
 
 		infoState.hideChainSteps();
+
+		controlDisplayContainer.value = GAME_CONTROL_DISPLAY;
 
 		activeState = playState;
 	}
