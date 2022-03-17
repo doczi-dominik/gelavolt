@@ -297,7 +297,6 @@ class GamepadInputDevice extends InputDevice {
 				}
 
 				if (!axis.isNull()) {
-					trace('Action: $action Axis: ${axis.axis} Direction: ${axis.direction}');
 					final axisSpr = AXIS_SPRITE_COORDINATES[axis.hashCode()];
 					final axisScale = fontHeight / axisSpr.height;
 
