@@ -162,7 +162,10 @@ class KeyboardInputDevice extends InputDevice {
 			var str = "";
 
 			for (action in d.actions) {
-				str += '${KEY_CODE_TO_STRING[inputSettings.mappings[action].keyboardInput]}/';
+				final mapping = inputSettings.mappings[action].keyboardInput;
+
+				if (mapping != null)
+					str += '${KEY_CODE_TO_STRING[mapping]}/';
 			}
 
 			str = str.substring(0, str.length - 1);

@@ -14,7 +14,10 @@ class InputSettings {
 		PAUSE => {
 			keyboardInput: Escape,
 			gamepadButton: OPTIONS,
-			gamepadAxis: null
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
 		},
 		MENU_LEFT => {
 			keyboardInput: Left,
@@ -39,12 +42,18 @@ class InputSettings {
 		BACK => {
 			keyboardInput: Backspace,
 			gamepadButton: CROSS,
-			gamepadAxis: null
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
 		},
 		CONFIRM => {
 			keyboardInput: Return,
 			gamepadButton: CIRCLE,
-			gamepadAxis: null
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
 		},
 		SHIFT_LEFT => {
 			keyboardInput: Left,
@@ -78,9 +87,30 @@ class InputSettings {
 				direction: -1
 			}
 		},
-		ROTATE_LEFT => {keyboardInput: D, gamepadButton: CROSS, gamepadAxis: null},
-		ROTATE_RIGHT => {keyboardInput: F, gamepadButton: CIRCLE, gamepadAxis: null},
-		TOGGLE_EDIT_MODE => {keyboardInput: Q, gamepadButton: SHARE, gamepadAxis: null},
+		ROTATE_LEFT => {
+			keyboardInput: D,
+			gamepadButton: CROSS,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		ROTATE_RIGHT => {
+			keyboardInput: F,
+			gamepadButton: CIRCLE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		TOGGLE_EDIT_MODE => {
+			keyboardInput: Q,
+			gamepadButton: SHARE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
 		EDIT_LEFT => {
 			keyboardInput: Left,
 			gamepadButton: DPAD_LEFT,
@@ -101,15 +131,78 @@ class InputSettings {
 			gamepadButton: DPAD_UP,
 			gamepadAxis: {axis: 1, direction: -1}
 		},
-		EDIT_CLEAR => {keyboardInput: D, gamepadButton: CROSS, gamepadAxis: null},
-		EDIT_SET => {keyboardInput: F, gamepadButton: CIRCLE, gamepadAxis: null},
-		PREVIOUS_STEP => {keyboardInput: Y, gamepadButton: SQUARE, gamepadAxis: null},
-		NEXT_STEP => {keyboardInput: X, gamepadButton: TRIANGLE, gamepadAxis: null},
-		PREVIOUS_COLOR => {keyboardInput: C, gamepadButton: L2, gamepadAxis: null},
-		NEXT_COLOR => {keyboardInput: V, gamepadButton: R2, gamepadAxis: null},
-		PREVIOUS_GROUP => {keyboardInput: Y, gamepadButton: SQUARE, gamepadAxis: null},
-		NEXT_GROUP => {keyboardInput: X, gamepadButton: TRIANGLE, gamepadAxis: null},
-		TOGGLE_MARKERS => {keyboardInput: B, gamepadButton: R1, gamepadAxis: null}
+		EDIT_CLEAR => {
+			keyboardInput: D,
+			gamepadButton: CROSS,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		EDIT_SET => {
+			keyboardInput: F,
+			gamepadButton: CIRCLE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		PREVIOUS_STEP => {
+			keyboardInput: Y,
+			gamepadButton: SQUARE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		NEXT_STEP => {
+			keyboardInput: X,
+			gamepadButton: TRIANGLE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		PREVIOUS_COLOR => {
+			keyboardInput: C,
+			gamepadButton: L2,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		NEXT_COLOR => {
+			keyboardInput: V,
+			gamepadButton: R2,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		PREVIOUS_GROUP => {
+			keyboardInput: Y,
+			gamepadButton: SQUARE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		NEXT_GROUP => {
+			keyboardInput: X,
+			gamepadButton: TRIANGLE,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		TOGGLE_MARKERS => {
+			keyboardInput: B,
+			gamepadButton: R1,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		}
 	];
 
 	static inline final DEADZONE_DEFAULT = 0.0;

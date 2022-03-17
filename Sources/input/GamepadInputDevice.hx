@@ -154,7 +154,7 @@ class GamepadInputDevice extends InputDevice {
 
 			final axisMapping = mapping.gamepadAxis;
 
-			if (axisMapping != null) {
+			if (!axisMapping.isNull()) {
 				if (axesToActions[axisMapping] == null)
 					axesToActions[axisMapping] = [];
 
@@ -196,7 +196,10 @@ class GamepadInputDevice extends InputDevice {
 		inputSettings.mappings[action] = ({
 			keyboardInput: old.keyboardInput,
 			gamepadButton: null,
-			gamepadAxis: null
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
 		} : InputMapping);
 
 		super.unbind(action);
@@ -240,7 +243,7 @@ class GamepadInputDevice extends InputDevice {
 
 		final mapping = inputSettings.mappings[action];
 
-		if (mapping.gamepadButton == null && mapping.gamepadAxis == null) {
+		if (mapping.gamepadButton == null && mapping.gamepadAxis.isNull()) {
 			g.drawString('$title: [ UNBOUND ]', x, y);
 			return;
 		}
@@ -265,7 +268,7 @@ class GamepadInputDevice extends InputDevice {
 
 		final axisMapping = mapping.gamepadAxis;
 
-		if (axisMapping != null) {
+		if (!axisMapping.isNull()) {
 			final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
 
 			renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
@@ -282,20 +285,25 @@ class GamepadInputDevice extends InputDevice {
 
 			for (action in d.actions) {
 				final mapping = inputSettings.mappings[action];
-				final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
-				final buttonScale = fontHeight / buttonSpr.height;
+				final button = mapping.gamepadButton;
+				final axis = mapping.gamepadAxis;
 
-				renderButton(g, x, y, buttonScale, buttonSpr);
-				x += buttonSpr.width * buttonScale * 1.25;
+				if (button != null) {
+					final buttonSpr = BUTTON_SPRITE_COORDINATES[button];
+					final buttonScale = fontHeight / buttonSpr.height;
 
-				if (mapping.gamepadAxis == null)
-					continue;
+					renderButton(g, x, y, buttonScale, buttonSpr);
+					x += buttonSpr.width * buttonScale * 1.25;
+				}
 
-				final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
-				final axisScale = fontHeight / axisSpr.height;
+				if (!axis.isNull()) {
+					trace('Action: $action Axis: ${axis.axis} Direction: ${axis.direction}');
+					final axisSpr = AXIS_SPRITE_COORDINATES[axis.hashCode()];
+					final axisScale = fontHeight / axisSpr.height;
 
-				renderButton(g, x, y, axisScale, axisSpr);
-				x += axisSpr.width * axisScale * 1.25;
+					renderButton(g, x, y, axisScale, axisSpr);
+					x += axisSpr.width * axisScale * 1.25;
+				}
 			}
 
 			str = str.substring(0, str.length - 1);

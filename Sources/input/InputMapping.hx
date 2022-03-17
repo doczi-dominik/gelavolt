@@ -17,20 +17,10 @@ class InputMapping {
 
 	public final keyboardInput: Null<KeyCode>;
 	public final gamepadButton: Null<GamepadButton>;
-	public final gamepadAxis: Null<AxisMapping>;
+	public final gamepadAxis: AxisMapping;
 
 	public function isNotEqual(other: InputMapping) {
-		var isAxisNotEqual: Bool;
-
-		if (gamepadAxis == null && other.gamepadAxis == null) {
-			isAxisNotEqual = false;
-		} else if (gamepadAxis != null && other.gamepadAxis != null) {
-			isAxisNotEqual = gamepadAxis.isNotEqual(other.gamepadAxis);
-		} else {
-			isAxisNotEqual = true;
-		}
-
-		return keyboardInput != other.keyboardInput || gamepadButton != other.gamepadButton || isAxisNotEqual;
+		return keyboardInput != other.keyboardInput || gamepadButton != other.gamepadButton || gamepadAxis.isNotEqual(other.gamepadAxis);
 	}
 
 	public function asString() {

@@ -11,8 +11,8 @@ class AxisMapping {
 		};
 	}
 
-	public final axis: Int;
-	public final direction: Int;
+	public final axis: Null<Int>;
+	public final direction: Null<Int>;
 
 	public function hashCode() {
 		return (axis << 4) + direction;
@@ -20,6 +20,10 @@ class AxisMapping {
 
 	public function isNotEqual(other: AxisMapping) {
 		return axis != other.axis || direction != other.direction;
+	}
+
+	public inline function isNull() {
+		return axis == null && direction == null;
 	}
 
 	public function asString() {
