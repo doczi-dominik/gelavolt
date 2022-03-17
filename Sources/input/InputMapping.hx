@@ -11,7 +11,10 @@ class InputMapping {
 		return {
 			keyboardInput: (parts[0] != "") ? cast(Std.parseInt(parts[0]), KeyCode) : null,
 			gamepadButton: (parts[1] != "") ? Std.parseInt(parts[1]) : null,
-			gamepadAxis: (parts[2] != "") ? AxisMapping.fromString(parts[2]) : null
+			gamepadAxis: (parts[2] != "") ? AxisMapping.fromString(parts[2]) : {
+				axis: null,
+				direction: null
+			}
 		};
 	}
 
