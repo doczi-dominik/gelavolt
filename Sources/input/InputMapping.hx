@@ -36,7 +36,7 @@ class InputMapping {
 	public function asString() {
 		final kb = keyboardInput == null ? '' : '$keyboardInput';
 		final bt = gamepadButton == null ? '' : '$gamepadButton';
-		final ax = gamepadAxis == null ? '' : '$gamepadAxis';
+		final ax = gamepadAxis == null ? '' : '${gamepadAxis.asString()}';
 
 		return '$kb;$bt;$ax';
 	}
