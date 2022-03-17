@@ -271,7 +271,11 @@ class GamepadInputDevice extends InputDevice {
 		if (!axisMapping.isNull()) {
 			final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
 
-			renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
+			if (axisSpr != null) {
+				renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
+			} else {
+				g.drawString('AXIS${axisMapping.axis}', x, y);
+			}
 		}
 	}
 
