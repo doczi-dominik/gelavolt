@@ -3,10 +3,9 @@ package main_menu.ui;
 import ui.IListWidget;
 import save_data.SaveManager;
 import ui.ButtonWidget;
-import ui.Menu;
 import ui.ListMenuPage;
 
-class ProfilePage extends ListMenuPage {
+class ProfileListPage extends ListMenuPage {
 	public function new() {
 		super({
 			header: "Profiles",
