@@ -33,5 +33,6 @@ class ProfilePage extends ListMenuPage {
 
 	public inline function rebuild() {
 		onShow(menu);
+		onResize();
 	}
 }
