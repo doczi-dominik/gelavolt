@@ -65,6 +65,10 @@ class AnyInputDevice implements IInputDevice {
 		lastDeviceID = KEYBOARD_ID;
 	}
 
+	public final function unbind(action: Action) {}
+
+	public final function bindDefault(action: Action) {}
+
 	public final function rebind(action: Action) {
 		isRebinding = false;
 	}

@@ -19,7 +19,11 @@ class InputWidget implements IListWidget {
 	var menu: Menu;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays: Array<ControlDisplay> = [{actions: [CONFIRM], description: "Rebind"}];
+	public var controlDisplays: Array<ControlDisplay> = [
+		{actions: [MENU_LEFT], description: "Unbind"},
+		{actions: [MENU_RIGHT], description: "Default"},
+		{actions: [CONFIRM], description: "Rebind"}
+	];
 	public var height(default, null): Float;
 
 	public function new(action: Action) {
@@ -39,8 +43,18 @@ class InputWidget implements IListWidget {
 	}
 
 	public function update() {
-		if (menu.inputDevice.getAction(CONFIRM)) {
-			menu.inputDevice.rebind(action);
+		final inputDevice = menu.inputDevice;
+
+		if (inputDevice.getAction(MENU_LEFT)) {
+			inputDevice.unbind(action);
+		}
+
+		if (inputDevice.getAction(MENU_RIGHT)) {
+			inputDevice.bindDefault(action);
+		}
+
+		if (inputDevice.getAction(CONFIRM)) {
+			inputDevice.rebind(action);
 		}
 	}
 

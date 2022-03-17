@@ -10,7 +10,7 @@ enum abstract InputSettingsKey(String) to String {
 }
 
 class InputSettings {
-	static final MAPPINGS_DEFAULTS: Map<Action, InputMapping> = [
+	public static final MAPPINGS_DEFAULTS: Map<Action, InputMapping> = [
 		PAUSE => {
 			keyboardInput: Escape,
 			gamepadButton: OPTIONS,

@@ -10,6 +10,8 @@ interface IInputDevice {
 
 	public var inputSettings(get, null): InputSettings;
 
+	public function unbind(action: Action): Void;
+	public function bindDefault(action: Action): Void;
 	public function rebind(action: Action): Void;
 	public function getAction(action: Action): Bool;
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action): Void;

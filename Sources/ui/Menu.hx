@@ -8,7 +8,7 @@ import kha.graphics2.Graphics;
 
 class Menu {
 	static inline final HEADER_FONT_SIZE = 128;
-	static inline final CONTROLS_FONT_SIZE = 56;
+	static inline final CONTROLS_FONT_SIZE = 52;
 	static inline final WARNING_FONT_SIZE = 24;
 	static inline final PADDING = 64;
 	static final WARNING = [

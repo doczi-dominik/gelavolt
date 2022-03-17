@@ -57,7 +57,7 @@ class KeyboardInputDevice extends InputDevice {
 		}
 	}
 
-	function rebindListener(action: Action, key: KeyCode) {
+	function changeKeybind(action: Action, key: Null<KeyCode>) {
 		final original = inputSettings.mappings[action];
 
 		inputSettings.mappings[action] = ({
@@ -65,7 +65,10 @@ class KeyboardInputDevice extends InputDevice {
 			gamepadButton: original.gamepadButton,
 			gamepadAxis: original.gamepadAxis
 		} : InputMapping);
+	}
 
+	inline function rebindListener(action: Action, key: KeyCode) {
+		changeKeybind(action, key);
 		finishRebind();
 	}
 
@@ -76,13 +79,12 @@ class KeyboardInputDevice extends InputDevice {
 		for (action in ACTION_DATA.keys()) {
 			final kbInput = inputSettings.mappings[action].keyboardInput;
 
-			if (kbInput == null)
-				continue;
+			if (kbInput != null) {
+				if (keysToActions[kbInput] == null)
+					keysToActions[kbInput] = [];
 
-			if (keysToActions[kbInput] == null)
-				keysToActions[kbInput] = [];
-
-			keysToActions[kbInput].push(action);
+				keysToActions[kbInput].push(action);
+			}
 
 			switch (ACTION_DATA[action].inputType) {
 				case HOLD:
@@ -111,6 +113,18 @@ class KeyboardInputDevice extends InputDevice {
 		try {
 			keyboard.remove(latestRebindFunction);
 		}
+	}
+
+	override function unbind(action: Action) {
+		changeKeybind(action, null);
+
+		super.unbind(action);
+	}
+
+	override function bindDefault(action: Action) {
+		changeKeybind(action, InputSettings.MAPPINGS_DEFAULTS[action].keyboardInput);
+
+		super.bindDefault(action);
 	}
 
 	override function rebind(action: Action) {

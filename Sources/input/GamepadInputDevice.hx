@@ -190,6 +190,31 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
+	override function unbind(action: Action) {
+		final old = inputSettings.mappings[action];
+
+		inputSettings.mappings[action] = ({
+			keyboardInput: old.keyboardInput,
+			gamepadButton: null,
+			gamepadAxis: null
+		} : InputMapping);
+
+		super.unbind(action);
+	}
+
+	override function bindDefault(action: Action) {
+		final def = InputSettings.MAPPINGS_DEFAULTS[action];
+		final old = inputSettings.mappings[action];
+
+		inputSettings.mappings[action] = ({
+			keyboardInput: old.keyboardInput,
+			gamepadButton: def.gamepadButton,
+			gamepadAxis: def.gamepadAxis
+		} : InputMapping);
+
+		super.bindDefault(action);
+	}
+
 	override function rebind(action: Action) {
 		super.rebind(action);
 

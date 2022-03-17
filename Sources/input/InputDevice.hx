@@ -97,6 +97,16 @@ class InputDevice implements IInputDevice {
 		buildActions();
 	}
 
+	public function unbind(action: Action) {
+		SaveManager.saveProfiles();
+		buildActions();
+	}
+
+	public function bindDefault(action: Action) {
+		SaveManager.saveProfiles();
+		buildActions();
+	}
+
 	public function rebind(action: Action) {
 		isRebinding = true;
 		AnyInputDevice.rebindCounter++;
