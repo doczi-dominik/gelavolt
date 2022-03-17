@@ -42,7 +42,10 @@ class Profile {
 
 	public static function changePrimary(p: Profile) {
 		primary = p;
+		reloadPrimary();
+	}
 
+	public static function reloadPrimary() {
 		for (f in onChangePrimary) {
 			f();
 		}

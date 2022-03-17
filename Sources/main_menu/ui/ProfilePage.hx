@@ -27,6 +27,7 @@ class ProfilePage extends ListMenuPage {
 								description: ["Reset Input Settings"],
 								callback: () -> {
 									profile.setInputDefaults();
+									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -35,6 +36,7 @@ class ProfilePage extends ListMenuPage {
 								description: ["Reset Preferences"],
 								callback: () -> {
 									profile.setPrefsDefaults();
+									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -43,6 +45,7 @@ class ProfilePage extends ListMenuPage {
 								description: ["Reset Training Mode-Exclusive Options"],
 								callback: () -> {
 									profile.setTrainingDefaults();
+									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -51,6 +54,7 @@ class ProfilePage extends ListMenuPage {
 								description: ["Reset Endless Mode-Exclusive Options"],
 								callback: () -> {
 									profile.setEndlessDefaults();
+									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -59,6 +63,7 @@ class ProfilePage extends ListMenuPage {
 								description: ["Reset Input, Preferences, Training", "And Endless Options"],
 								callback: () -> {
 									profile.setDefaults();
+									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							})
