@@ -9,9 +9,6 @@ import save_data.InputSettings;
 import game.actions.Action;
 
 class InputDevice implements IInputDevice {
-	static inline final MAPPINGS_FONT_SIZE = 60;
-	static inline final CONTROLS_FONT_SIZE = 56;
-
 	static final instances: Array<InputDevice> = [];
 
 	public static function update() {
