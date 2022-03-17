@@ -48,12 +48,12 @@ class Profile {
 		}
 	}
 
-	public final input: InputSettings;
-	public final prefs: PrefsSettings;
-	public final trainingSettings: TrainingSettings;
-	public final endlessSettings: EndlessSettings;
-
 	public var name: String;
+
+	public var input(default, null): InputSettings;
+	public var prefs(default, null): PrefsSettings;
+	public var trainingSettings(default, null): TrainingSettings;
+	public var endlessSettings(default, null): EndlessSettings;
 
 	public function new(overrides: Map<ProfileKey, Any>) {
 		name = NAME_DEFAULT;
@@ -88,6 +88,29 @@ class Profile {
 		prefs = new PrefsSettings(prefsOverrides);
 		trainingSettings = new TrainingSettings(trainingOverrides);
 		endlessSettings = new EndlessSettings(endlessOverrides);
+	}
+
+	public inline function setInputDefaults() {
+		input = new InputSettings([]);
+	}
+
+	public inline function setPrefsDefaults() {
+		prefs = new PrefsSettings([]);
+	}
+
+	public inline function setTrainingDefaults() {
+		trainingSettings = new TrainingSettings([]);
+	}
+
+	public inline function setEndlessDefaults() {
+		endlessSettings = new EndlessSettings([]);
+	}
+
+	public inline function setDefaults() {
+		setInputDefaults();
+		setPrefsDefaults();
+		setTrainingDefaults();
+		setEndlessDefaults();
 	}
 
 	public function exportOverrides() {

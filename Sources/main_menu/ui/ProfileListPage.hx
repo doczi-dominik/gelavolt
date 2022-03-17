@@ -1,5 +1,8 @@
 package main_menu.ui;
 
+import ui.SubPageWidget;
+import save_data.Profile;
+import game.ui.ListSubPageWidget;
 import ui.IListWidget;
 import save_data.SaveManager;
 import ui.ButtonWidget;
@@ -22,7 +25,11 @@ class ProfileListPage extends ListMenuPage {
 				];
 
 				for (p in SaveManager.profiles) {
-					widgets.push(new ProfileWidget(this, p));
+					widgets.push(new SubPageWidget({
+						title: p.name,
+						description: ['Edit ${p.name} Or Set It As Primary'],
+						subPage: new ProfilePage(this, p)
+					}));
 				}
 
 				return widgets;

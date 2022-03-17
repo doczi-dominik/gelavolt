@@ -1,5 +1,6 @@
 package ui;
 
+import utils.Utils;
 import kha.Assets;
 import kha.Font;
 import kha.graphics2.Graphics;
@@ -44,6 +45,7 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	function onSelect() {
+		widgetIndex = Utils.intClamp(0, widgetIndex, widgets.length - 1);
 		controlDisplays = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlDisplays);
 	}
 

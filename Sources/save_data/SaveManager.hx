@@ -54,8 +54,17 @@ class SaveManager {
 		saveProfiles();
 	}
 
-	public static function getProfile(index: Int) {
+	public static function deleteProfile(p: Profile) {
+		profiles.remove(p);
+		saveProfiles();
+	}
+
+	public static inline function getProfile(index: Int) {
 		return profiles[index];
+	}
+
+	public static inline function getProfileCount() {
+		return profiles.length;
 	}
 
 	public static function saveGraphics() {
