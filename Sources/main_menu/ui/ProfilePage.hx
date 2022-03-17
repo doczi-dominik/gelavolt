@@ -25,27 +25,42 @@ class ProfilePage extends ListMenuPage {
 							new ButtonWidget({
 								title: "Reset Input Settings",
 								description: ["Reset Input Settings"],
-								callback: profile.setInputDefaults
+								callback: () -> {
+									profile.setInputDefaults();
+									SaveManager.saveProfiles();
+								}
 							}),
 							new ButtonWidget({
 								title: "Reset Preferences",
 								description: ["Reset Preferences"],
-								callback: profile.setPrefsDefaults
+								callback: () -> {
+									profile.setPrefsDefaults();
+									SaveManager.saveProfiles();
+								}
 							}),
 							new ButtonWidget({
 								title: "Reset Training Options",
 								description: ["Reset Training Mode-Exclusive Options"],
-								callback: profile.setTrainingDefaults
+								callback: () -> {
+									profile.setTrainingDefaults();
+									SaveManager.saveProfiles();
+								}
 							}),
 							new ButtonWidget({
 								title: "Reset Endless Options",
 								description: ["Reset Endless Mode-Exclusive Options"],
-								callback: profile.setEndlessDefaults
+								callback: () -> {
+									profile.setEndlessDefaults();
+									SaveManager.saveProfiles();
+								}
 							}),
 							new ButtonWidget({
 								title: "Reset All",
 								description: ["Reset Input, Preferences, Training", "And Endless Options"],
-								callback: profile.setDefaults
+								callback: () -> {
+									profile.setDefaults();
+									SaveManager.saveProfiles();
+								}
 							})
 						]
 					}),
