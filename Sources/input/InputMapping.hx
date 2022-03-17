@@ -9,14 +9,14 @@ class InputMapping {
 		final parts = str.split(";");
 
 		return {
-			keyboardInput: cast(Std.parseInt(parts[0]), KeyCode),
-			gamepadButton: Std.parseInt(parts[1]),
-			gamepadAxis: (parts[2] == null) ? null : AxisMapping.fromString(parts[2])
+			keyboardInput: (parts[0] != "") ? cast(Std.parseInt(parts[0]), KeyCode) : null,
+			gamepadButton: (parts[1] != "") ? Std.parseInt(parts[1]) : null,
+			gamepadAxis: (parts[2] != "") ? AxisMapping.fromString(parts[2]) : null
 		};
 	}
 
-	public final keyboardInput: KeyCode;
-	public final gamepadButton: GamepadButton;
+	public final keyboardInput: Null<KeyCode>;
+	public final gamepadButton: Null<GamepadButton>;
 	public final gamepadAxis: Null<AxisMapping>;
 
 	public function isNotEqual(other: InputMapping) {
@@ -34,6 +34,10 @@ class InputMapping {
 	}
 
 	public function asString() {
-		return '$keyboardInput;$gamepadButton${gamepadAxis == null ? '' : ';gamepadAxis.asString()'}';
+		final kb = keyboardInput == null ? '' : '$keyboardInput';
+		final bt = gamepadButton == null ? '' : '$gamepadButton';
+		final ax = gamepadAxis == null ? '' : '$gamepadAxis';
+
+		return '$kb;$bt;$ax';
 	}
 }

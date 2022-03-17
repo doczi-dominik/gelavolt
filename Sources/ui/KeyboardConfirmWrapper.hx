@@ -1,7 +1,6 @@
 package ui;
 
 import input.KeyboardInputDevice;
-import input.GamepadInputDevice;
 import input.AnyInputDevice;
 import kha.Assets;
 import kha.Font;

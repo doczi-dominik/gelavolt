@@ -143,12 +143,14 @@ class GamepadInputDevice extends InputDevice {
 		for (action in ACTION_DATA.keys()) {
 			final mapping = inputSettings.mappings[action];
 
-			final buttonInput = mapping.gamepadButton;
+			final buttonMapping = mapping.gamepadButton;
 
-			if (buttonsToActions[buttonInput] == null)
-				buttonsToActions[buttonInput] = [];
+			if (buttonMapping != null) {
+				if (buttonsToActions[buttonMapping] == null)
+					buttonsToActions[buttonMapping] = [];
 
-			buttonsToActions[buttonInput].push(action);
+				buttonsToActions[buttonMapping].push(action);
+			}
 
 			final axisMapping = mapping.gamepadAxis;
 
@@ -211,32 +213,38 @@ class GamepadInputDevice extends InputDevice {
 			return;
 		}
 
+		final mapping = inputSettings.mappings[action];
+
+		if (mapping.gamepadButton == null && mapping.gamepadAxis == null) {
+			g.drawString('$title: [ UNBOUND ]', x, y);
+			return;
+		}
+
 		final fontHeight = g.font.height(g.fontSize);
 		final str = '$title: ';
 		final strW = g.font.width(g.fontSize, str);
-		final mapping = inputSettings.mappings[action];
-		final buttonSpr = BUTTON_SPRITE_COORDINATES[mapping.gamepadButton];
 
 		g.drawString(str, x, y);
 		x += strW;
 
 		g.color = White;
 
-		renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
+		final buttonMapping = mapping.gamepadButton;
+
+		if (buttonMapping != null) {
+			final buttonSpr = BUTTON_SPRITE_COORDINATES[buttonMapping];
+
+			renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
+			x += buttonSpr.width * ScaleManager.smallerScale;
+		}
 
 		final axisMapping = mapping.gamepadAxis;
 
-		if (axisMapping == null)
-			return;
+		if (axisMapping != null) {
+			final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
 
-		x += buttonSpr.width * ScaleManager.smallerScale;
-
-		g.drawString(SEPARATOR, x, y);
-		x += separatorWidth;
-
-		final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
-
-		renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
+			renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
+		}
 	}
 
 	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {

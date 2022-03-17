@@ -76,6 +76,9 @@ class KeyboardInputDevice extends InputDevice {
 		for (action in ACTION_DATA.keys()) {
 			final kbInput = inputSettings.mappings[action].keyboardInput;
 
+			if (kbInput == null)
+				continue;
+
 			if (keysToActions[kbInput] == null)
 				keysToActions[kbInput] = [];
 
@@ -127,12 +130,15 @@ class KeyboardInputDevice extends InputDevice {
 		final title = ACTION_DATA[action].title;
 
 		if (action == latestRebindAction && isRebinding) {
-			g.drawString('Press any key for [ $title ]', x, y);
+			g.drawString('[ Press any key for $title ]', x, y);
 
 			return;
 		}
 
-		g.drawString('$title: ${KEY_CODE_TO_STRING[inputSettings.mappings[action].keyboardInput]}', x, y);
+		final kbInput = inputSettings.mappings[action].keyboardInput;
+		final binding = kbInput == null ? "[ UNBOUND ]" : KEY_CODE_TO_STRING[kbInput];
+
+		g.drawString('$title: $binding', x, y);
 	}
 
 	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
