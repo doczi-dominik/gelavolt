@@ -298,10 +298,17 @@ class GamepadInputDevice extends InputDevice {
 
 				if (!axis.isNull()) {
 					final axisSpr = AXIS_SPRITE_COORDINATES[axis.hashCode()];
-					final axisScale = fontHeight / axisSpr.height;
 
-					renderButton(g, x, y, axisScale, axisSpr);
-					x += axisSpr.width * axisScale * 1.25;
+					if (axisSpr != null) {
+						final axisScale = fontHeight / axisSpr.height;
+
+						renderButton(g, x, y, axisScale, axisSpr);
+						x += axisSpr.width * axisScale * 1.25;
+					} else {
+						final str = 'AXIS${axis.axis}';
+						g.drawString(str, x, y);
+						x += g.font.width(g.fontSize, str) * 1.25;
+					}
 				}
 			}
 
