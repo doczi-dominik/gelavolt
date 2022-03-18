@@ -34,10 +34,8 @@ class OptionsPage extends ListMenuPage {
 						final inputDevice = menu.inputDevice;
 
 						switch (inputDevice.type) {
-							case KEYBOARD:
+							case KEYBOARD | GAMEPAD:
 								return buildControls(inputDevice);
-							case GAMEPAD:
-								return buildGamepadControls(inputDevice);
 							case ANY:
 								final keyboardDevice = AnyInputDevice.instance.getKeyboard();
 
@@ -62,7 +60,7 @@ class OptionsPage extends ListMenuPage {
 											pageBuilder: (gamepadDevice) -> new InputLimitedListPage({
 												header: "Gamepad Controls",
 												inputDevice: gamepadDevice,
-												widgetBuilder: (_) -> buildGamepadControls(gamepadDevice)
+												widgetBuilder: (_) -> buildControls(gamepadDevice)
 											})
 										})
 									})
@@ -157,6 +155,26 @@ class OptionsPage extends ListMenuPage {
 
 	function buildControls(inputDevice: IInputDevice): Array<IListWidget> {
 		return [
+			new NumberRangeWidget({
+				title: "Gamepad Stick Deadzone",
+				description: [
+					"Adjust The Threshold Where",
+					"The Analog Stick Doesn't Respond",
+					"To Inputs",
+					"",
+					"Increase This Value In Small Increments",
+					" If You Experience Drifting, Rebounding",
+					"or Weird Inputs In General"
+				],
+				startValue: inputDevice.inputSettings.deadzone,
+				minValue: 0,
+				maxValue: 0.9,
+				delta: 0.05,
+				onChange: (value) -> {
+					inputDevice.inputSettings.deadzone = value;
+					SaveManager.saveProfiles();
+				}
+			}),
 			new ControlsPageWidget({
 				title: "Menu Controls",
 				description: ["Change Controls Related To", "Menu Navigation"],
@@ -197,30 +215,5 @@ class OptionsPage extends ListMenuPage {
 				]
 			}),
 		];
-	}
-
-	function buildGamepadControls(inputDevice: IInputDevice): Array<IListWidget> {
-		return ([
-			new NumberRangeWidget({
-				title: "Stick Deadzone",
-				description: [
-					"Adjust The Threshold Where",
-					"The Analog Stick Doesn't Respond",
-					"To Inputs",
-					"",
-					"Increase This Value In Small Increments",
-					" If You Experience Drifting, Rebounding",
-					"or Weird Inputs In General"
-				],
-				startValue: inputDevice.inputSettings.deadzone,
-				minValue: 0,
-				maxValue: 0.9,
-				delta: 0.05,
-				onChange: (value) -> {
-					inputDevice.inputSettings.deadzone = value;
-					SaveManager.saveProfiles();
-				}
-			})
-		] : Array<IListWidget>).concat(buildControls(inputDevice));
 	}
 }
