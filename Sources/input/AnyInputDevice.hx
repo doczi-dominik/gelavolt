@@ -91,6 +91,18 @@ class AnyInputDevice implements IInputDevice {
 		return false;
 	}
 
+	public function getRawAction(action: Action) {
+		if (rebindCounter > 0) 
+			return false;
+
+		for (d in devices) {
+			if (d.getRawAction(action))
+				return true;
+		}
+
+		return false;
+	}
+
 	public inline function getGamepad(id: Int) {
 		return cast(devices[id], GamepadInputDevice);
 	}

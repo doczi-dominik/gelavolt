@@ -18,10 +18,13 @@ class InputWidget implements IListWidget {
 	var fontSize: Int;
 	var menu: Menu;
 
+	var unbindCounter: Int;
+	var defaultCounter: Int;
+
 	public var description(default, null): Array<String>;
 	public var controlDisplays: Array<ControlDisplay> = [
-		{actions: [MENU_LEFT], description: "Unbind"},
-		{actions: [MENU_RIGHT], description: "Default"},
+		{actions: [MENU_LEFT], description: "Unbind (HOLD)"},
+		{actions: [MENU_RIGHT], description: "Default (HOLD)"},
 		{actions: [CONFIRM], description: "Rebind"}
 	];
 	public var height(default, null): Float;
@@ -45,12 +48,32 @@ class InputWidget implements IListWidget {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getAction(MENU_LEFT)) {
-			inputDevice.unbind(action);
+		if (inputDevice.getRawAction(MENU_LEFT)) {
+			++unbindCounter;
+		} else {
+			unbindCounter = 0;
 		}
 
-		if (inputDevice.getAction(MENU_RIGHT)) {
+		if (inputDevice.getRawAction(MENU_RIGHT)) {
+			++defaultCounter;
+		} else {
+			defaultCounter = 0;
+		}
+
+		if (unbindCounter == 90) {
+			inputDevice.unbind(action);
+
+			// Disallow other action
+			unbindCounter = 100;
+			defaultCounter = 100;
+		}
+
+		if (defaultCounter == 90) {
 			inputDevice.bindDefault(action);
+
+			// Disallow other action
+			unbindCounter = 100;
+			defaultCounter = 100;
 		}
 
 		if (inputDevice.getAction(CONFIRM)) {

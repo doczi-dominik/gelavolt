@@ -115,6 +115,10 @@ class InputDevice implements IInputDevice {
 		return actions[action](counters[action]);
 	}
 
+	public final function getRawAction(action: Action) {
+		return holdActionHandler(counters[action]);
+	}
+
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
 	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {}
