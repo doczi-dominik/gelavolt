@@ -205,7 +205,7 @@ class InputSettings {
 		}
 	];
 
-	static inline final DEADZONE_DEFAULT = 0.2;
+	static inline final DEADZONE_DEFAULT = 0.5;
 
 	public final mappings: Map<Action, InputMapping>;
 	public var deadzone: Float;
