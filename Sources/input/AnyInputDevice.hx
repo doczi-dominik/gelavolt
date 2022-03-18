@@ -36,7 +36,13 @@ class AnyInputDevice implements IInputDevice {
 
 		type = ANY;
 
-		devices[KEYBOARD_ID] = new KeyboardInputDevice(Profile.primary.input);
+		devices[KEYBOARD_ID] = new KeyboardInputDevice(inputSettings);
+
+		for (i in 0...4) {
+			if (Gamepad.get(i).connected) {
+				connectListener(i);
+			}	
+		}
 
 		Gamepad.notifyOnConnect(connectListener, disconnectListener);
 

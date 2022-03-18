@@ -30,6 +30,7 @@ class GamepadInputDevice extends InputDevice {
 
 	var buttonsToActions: Map<Int, Null<Array<Action>>>;
 	var axesToActions: HashMap<AxisMapping, Null<Array<Action>>>;
+	var axesCache: Array<Int>;
 	var latestButtonRebindFunction: (Int, Float) -> Void;
 	var latestAxisRebindFunction: (Int, Float) -> Void;
 
@@ -52,11 +53,11 @@ class GamepadInputDevice extends InputDevice {
 		if (value == 0) {
 			upListener(actions);
 		} else {
-			buttonDownListener(actions);
+			downListener(actions);
 		}
 	}
 
-	function buttonDownListener(actions: Array<Action>) {
+	function downListener(actions: Array<Action>) {
 		for (action in actions) {
 			counters[action] = 0;
 		}
@@ -75,33 +76,37 @@ class GamepadInputDevice extends InputDevice {
 			// 1 * 1 => 1
 			// If the direction and value signs match, the result is positive
 			if (k.axis == axis && k.direction * value >= 0) {
+				var somethingChanged = false;
+
 				if (Math.abs(value) > inputSettings.deadzone) {
-					AnyInputDevice.lastDeviceID = id;
-					axisDownListener(v);
+					if (!axesCache.contains(axis)) {
+						AnyInputDevice.lastDeviceID = id;
+
+						downListener(v);
+
+						axesCache.push(axis);
+						somethingChanged = true;
+					}
 				} else {
-					upListener(v);
+					if (axesCache.contains(axis)) {
+						upListener(v);
+
+						axesCache.remove(axis);
+						somethingChanged = true;
+					}
 				}
 
-				// Clear actions assigned to the inverse direction. With
-				// properly configured deadzone, this prevents stick "rebound"
-				// and drifting.
-				final oppositeMapping: AxisMapping = {axis: axis, direction: k.direction * -1};
+				if (somethingChanged) {
+					// Clear actions assigned to the inverse direction. With
+					// properly configured deadzone, this prevents stick "rebound"
+					// and drifting.
+					final oppositeMapping: AxisMapping = {axis: axis, direction: k.direction * -1};
 
-				if (axesToActions.exists(oppositeMapping)) {
-					upListener(axesToActions[oppositeMapping]);
+					if (axesToActions.exists(oppositeMapping)) {
+						upListener(axesToActions[oppositeMapping]);
+					}
 				}
-
-				return;
 			}
-		}
-	}
-
-	function axisDownListener(actions: Array<Action>) {
-		for (action in actions) {
-			if (counters.exists(action))
-				continue;
-
-			counters[action] = 0;
 		}
 	}
 
@@ -139,6 +144,7 @@ class GamepadInputDevice extends InputDevice {
 		actions = [];
 		buttonsToActions = [];
 		axesToActions = new HashMap();
+		axesCache = [];
 
 		for (action in ACTION_DATA.keys()) {
 			final mapping = inputSettings.mappings[action];
