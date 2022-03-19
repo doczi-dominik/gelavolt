@@ -156,12 +156,9 @@ class KeyboardInputDevice extends InputDevice {
 	}
 
 	override function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
-		final y = ScaleManager.height - padding - g.font.height(g.fontSize);
-		var x = padding;
+		var str = "";
 
 		for (d in controls) {
-			var str = "";
-
 			for (action in d.actions) {
 				final mapping = inputSettings.mappings[action].keyboardInput;
 
@@ -173,13 +170,16 @@ class KeyboardInputDevice extends InputDevice {
 
 			// Hackerman but it beats having to calculate with scaling
 			str += ' : ${d.description}    ';
-
-			final strWidth = g.font.width(g.fontSize, str);
-
-			Utils.shadowDrawString(g, 3, Black, White, str, x, y);
-
-			x += strWidth;
 		}
+
+		final strWidth = g.font.width(g.fontSize, str);
+		final paddedScreenWidth = ScaleManager.width - padding * 2;
+
+		Utils.shadowDrawString(g, 3, Black, White, str, padding
+			- getScrollX(strWidth, paddedScreenWidth),
+			ScaleManager.height
+			- padding
+			- g.font.height(g.fontSize));
 	}
 
 	public function resetIsAnyKeyDown() {

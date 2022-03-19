@@ -1,5 +1,6 @@
 package input;
 
+import utils.Utils;
 import save_data.SaveManager;
 import ui.ControlDisplay;
 import kha.graphics2.Graphics;
@@ -11,7 +12,7 @@ class InputDevice implements IInputDevice {
 
 	public static function update() {
 		for (i in instances) {
-			i.updateCounters();
+			i.updateInstance();
 		}
 	}
 
@@ -20,6 +21,7 @@ class InputDevice implements IInputDevice {
 	var actions: Map<Action, Int->Bool>;
 	var isRebinding: Bool;
 	var latestRebindAction: Null<Action>;
+	var scrollT: Int;
 
 	public final type: InputDeviceType;
 
@@ -29,6 +31,7 @@ class InputDevice implements IInputDevice {
 		counters = [];
 
 		isRebinding = false;
+		scrollT = 0;
 
 		this.type = type;
 
@@ -58,10 +61,12 @@ class InputDevice implements IInputDevice {
 		return inputSettings;
 	}
 
-	final function updateCounters() {
+	final function updateInstance() {
 		for (k in counters.keys()) {
 			++counters[k];
 		}
+
+		++scrollT;
 	}
 
 	final function holdActionHandler(value: Int) {
@@ -90,6 +95,17 @@ class InputDevice implements IInputDevice {
 		addListeners();
 
 		buildActions();
+	}
+
+	final function getScrollX(width: Float, screenWidth: Float) {
+		final diff = (width - screenWidth);
+
+		if (diff <= 0)
+			return 0.0;
+
+		final sinCalc = Math.sin(scrollT / 100);
+
+		return (Utils.clamp(-0.4, sinCalc, 0.4) + 0.4) * diff * 1.25;
 	}
 
 	public function unbind(action: Action) {

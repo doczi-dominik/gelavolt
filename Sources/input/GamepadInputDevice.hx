@@ -288,8 +288,39 @@ class GamepadInputDevice extends InputDevice {
 	override function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
 		final fontHeight = g.font.height(g.fontSize);
 		final y = ScaleManager.height - padding - fontHeight;
+		final paddedScreenWidth = ScaleManager.width - padding * 2;
 
 		var x = padding;
+
+		var totalWidth = 0.0;
+
+		for (d in controls) {
+			for (action in d.actions) {
+				final mapping = inputSettings.mappings[action];
+				final button = mapping.gamepadButton;
+				final axis = mapping.gamepadAxis;
+
+				if (button != null) {
+					final buttonSpr = BUTTON_SPRITE_COORDINATES[button];
+
+					totalWidth += buttonSpr.width * (fontHeight / buttonSpr.height) * 1.25;
+				}
+
+				if (!axis.isNull()) {
+					final axisSpr = AXIS_SPRITE_COORDINATES[axis.hashCode()];
+
+					if (axisSpr != null) {
+						totalWidth += axisSpr.width * (fontHeight / axisSpr.height) * 1.25;
+					} else {
+						totalWidth += g.font.width(g.fontSize, 'AXIS${axis.axis}') * 1.25;
+					}
+				}
+			}
+
+			totalWidth += g.font.width(g.fontSize, ' : ${d.description}    ');
+		}
+
+		final scrollX = getScrollX(totalWidth, paddedScreenWidth);
 
 		for (d in controls) {
 			var str = "";
@@ -303,7 +334,7 @@ class GamepadInputDevice extends InputDevice {
 					final buttonSpr = BUTTON_SPRITE_COORDINATES[button];
 					final buttonScale = fontHeight / buttonSpr.height;
 
-					renderButton(g, x, y, buttonScale, buttonSpr);
+					renderButton(g, x - scrollX, y, buttonScale, buttonSpr);
 					x += buttonSpr.width * buttonScale * 1.25;
 				}
 
@@ -313,11 +344,11 @@ class GamepadInputDevice extends InputDevice {
 					if (axisSpr != null) {
 						final axisScale = fontHeight / axisSpr.height;
 
-						renderButton(g, x, y, axisScale, axisSpr);
+						renderButton(g, x - scrollX, y, axisScale, axisSpr);
 						x += axisSpr.width * axisScale * 1.25;
 					} else {
 						final str = 'AXIS${axis.axis}';
-						g.drawString(str, x, y);
+						g.drawString(str, x - scrollX, y);
 						x += g.font.width(g.fontSize, str) * 1.25;
 					}
 				}
@@ -330,7 +361,7 @@ class GamepadInputDevice extends InputDevice {
 
 			final strWidth = g.font.width(g.fontSize, str);
 
-			Utils.shadowDrawString(g, 3, Black, White, str, x, y);
+			Utils.shadowDrawString(g, 3, Black, White, str, x - scrollX, y);
 
 			x += strWidth;
 		}
