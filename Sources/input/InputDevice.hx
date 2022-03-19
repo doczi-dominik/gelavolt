@@ -16,8 +16,7 @@ class InputDevice implements IInputDevice {
 		}
 	}
 
-	final counters: Map<Action, Int>;
-
+	var counters: Map<Action, Int>;
 	var actions: Map<Action, Int->Bool>;
 	var isRebinding: Bool;
 	var latestRebindAction: Null<Action>;
@@ -28,8 +27,6 @@ class InputDevice implements IInputDevice {
 	@:isVar public var inputSettings(get, set): InputSettings;
 
 	function new(type: InputDeviceType, inputSettings: InputSettings) {
-		counters = [];
-
 		isRebinding = false;
 		scrollT = 0;
 

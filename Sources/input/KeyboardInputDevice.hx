@@ -73,6 +73,7 @@ class KeyboardInputDevice extends InputDevice {
 	}
 
 	override function buildActions() {
+		counters = [];
 		actions = [];
 		keysToActions = [];
 

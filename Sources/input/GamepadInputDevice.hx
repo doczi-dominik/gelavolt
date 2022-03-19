@@ -141,6 +141,7 @@ class GamepadInputDevice extends InputDevice {
 	}
 
 	override function buildActions() {
+		counters = [];
 		actions = [];
 		buttonsToActions = [];
 		axesToActions = new HashMap();
