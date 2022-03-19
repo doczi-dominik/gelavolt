@@ -1,5 +1,8 @@
 package save_data;
 
+import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
+import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
+import input.GamepadBrand;
 import haxe.ds.StringMap;
 import game.actions.Action;
 import input.InputMapping;
@@ -7,6 +10,7 @@ import input.InputMapping;
 enum abstract InputSettingsKey(String) to String {
 	final MAPPINGS;
 	final DEADZONE;
+	final GAMEPAD_BRAND;
 }
 
 class InputSettings {
@@ -206,14 +210,17 @@ class InputSettings {
 	];
 
 	static inline final DEADZONE_DEFAULT = 0.5;
+	static inline final GAMEPAD_BRAND_DEFAULT = GamepadBrand.DS4;
 
 	public final mappings: Map<Action, InputMapping>;
 	public var deadzone: Float;
+	public var gamepadBrand: GamepadBrand;
 
 	public function new(overrides: Map<InputSettingsKey, Any>) {
 		mappings = MAPPINGS_DEFAULTS.copy();
 
 		deadzone = DEADZONE_DEFAULT;
+		gamepadBrand = GAMEPAD_BRAND_DEFAULT;
 
 		try {
 			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
@@ -225,6 +232,8 @@ class InputSettings {
 							}
 						case DEADZONE:
 							deadzone = cast(v, Float);
+						case GAMEPAD_BRAND:
+							gamepadBrand = cast(v, GamepadBrand);
 					}
 				} catch (_) {
 					continue;
@@ -257,6 +266,19 @@ class InputSettings {
 			wereOverrides = true;
 		}
 
+		if (gamepadBrand != GAMEPAD_BRAND_DEFAULT) {
+			overrides.set(GAMEPAD_BRAND, gamepadBrand);
+			wereOverrides = true;
+		}
+
 		return wereOverrides ? overrides : null;
+	}
+
+	public function getButtonSprite(action: Action) {
+		return BUTTON_SPRITE_COORDINATES[gamepadBrand][mappings[action].gamepadButton];
+	}
+
+	public function getAxisSprite(action: Action) {
+		return AXIS_SPRITE_COORDINATES[gamepadBrand][mappings[action].gamepadAxis.hashCode()];
 	}
 }

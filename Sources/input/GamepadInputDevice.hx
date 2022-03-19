@@ -267,7 +267,7 @@ class GamepadInputDevice extends InputDevice {
 		final buttonMapping = mapping.gamepadButton;
 
 		if (buttonMapping != null) {
-			final buttonSpr = BUTTON_SPRITE_COORDINATES[buttonMapping];
+			final buttonSpr = BUTTON_SPRITE_COORDINATES[inputSettings.gamepadBrand][buttonMapping];
 
 			renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
 			x += buttonSpr.width * ScaleManager.smallerScale;
@@ -276,7 +276,7 @@ class GamepadInputDevice extends InputDevice {
 		final axisMapping = mapping.gamepadAxis;
 
 		if (!axisMapping.isNull()) {
-			final axisSpr = AXIS_SPRITE_COORDINATES[mapping.gamepadAxis.hashCode()];
+			final axisSpr = AXIS_SPRITE_COORDINATES[inputSettings.gamepadBrand][mapping.gamepadAxis.hashCode()];
 
 			if (axisSpr != null) {
 				renderButton(g, x, y, fontHeight / axisSpr.height, axisSpr);
@@ -301,14 +301,14 @@ class GamepadInputDevice extends InputDevice {
 				final button = mapping.gamepadButton;
 				final axis = mapping.gamepadAxis;
 
-				if (button != null) {
-					final buttonSpr = BUTTON_SPRITE_COORDINATES[button];
+				final buttonSpr = inputSettings.getButtonSprite(action);
 
+				if (buttonSpr != null) {
 					totalWidth += buttonSpr.width * (fontHeight / buttonSpr.height) * 1.25;
 				}
 
 				if (!axis.isNull()) {
-					final axisSpr = AXIS_SPRITE_COORDINATES[axis.hashCode()];
+					final axisSpr = inputSettings.getAxisSprite(action);
 
 					if (axisSpr != null) {
 						totalWidth += axisSpr.width * (fontHeight / axisSpr.height) * 1.25;
@@ -328,11 +328,11 @@ class GamepadInputDevice extends InputDevice {
 
 			for (action in d.actions) {
 				final mapping = inputSettings.mappings[action];
-				final button = mapping.gamepadButton;
 				final axis = mapping.gamepadAxis;
 
-				if (button != null) {
-					final buttonSpr = BUTTON_SPRITE_COORDINATES[button];
+				final buttonSpr = inputSettings.getButtonSprite(action);
+
+				if (buttonSpr != null) {
 					final buttonScale = fontHeight / buttonSpr.height;
 
 					renderButton(g, x - scrollX, y, buttonScale, buttonSpr);
@@ -340,7 +340,7 @@ class GamepadInputDevice extends InputDevice {
 				}
 
 				if (!axis.isNull()) {
-					final axisSpr = AXIS_SPRITE_COORDINATES[axis.hashCode()];
+					final axisSpr = inputSettings.getAxisSprite(action);
 
 					if (axisSpr != null) {
 						final axisScale = fontHeight / axisSpr.height;
