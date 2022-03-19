@@ -23,9 +23,9 @@ class InputWidget implements IListWidget {
 
 	public var description(default, null): Array<String>;
 	public var controlDisplays: Array<ControlDisplay> = [
+		{actions: [CONFIRM], description: "Rebind"},
 		{actions: [MENU_LEFT], description: "Unbind (HOLD)"},
 		{actions: [MENU_RIGHT], description: "Default (HOLD)"},
-		{actions: [CONFIRM], description: "Rebind"}
 	];
 	public var height(default, null): Float;
 
