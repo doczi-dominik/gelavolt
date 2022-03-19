@@ -17,9 +17,9 @@ class EndlessSettings implements IClearOnXModeContainer {
 		clearOnXMode = CLEAR_ON_X_MODE_DEFAULT;
 
 		try {
-			for (k => v in overrides) {
+			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
-					switch (k) {
+					switch (cast(k, EndlessSettingsKey)) {
 						case CLEAR_ON_X_MODE:
 							clearOnXMode = cast(v, ClearOnXMode);
 					}

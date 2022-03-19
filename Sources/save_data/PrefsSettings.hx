@@ -65,9 +65,9 @@ class PrefsSettings {
 		shadowWillTriggerChain = SHADOW_WILL_TRIGGER_CHAIN_DEFAULT;
 
 		try {
-			for (k => v in overrides) {
+			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
-					switch (k) {
+					switch (cast(k, PrefsSettingsKey)) {
 						case COLOR_TINTS:
 							for (kk => vv in cast(v, Map<Dynamic, Dynamic>))
 								colorTints[cast(kk, GeloColor)] = cast(vv, Color);

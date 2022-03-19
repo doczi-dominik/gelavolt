@@ -53,9 +53,9 @@ class TrainingSettings implements IClearOnXModeContainer {
 		maxAttackColors = ATTACK_COLORS_DEFAULT;
 
 		try {
-			for (k => v in overrides) {
+			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
-					switch (k) {
+					switch (cast(k, TrainingSettingsKey)) {
 						case CLEAR_ON_X_MODE:
 							clearOnXMode = cast(v, ClearOnXMode);
 						case AUTO_CLEAR:

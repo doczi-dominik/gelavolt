@@ -15,9 +15,9 @@ class GraphicsSettings {
 		fullscreen = FULLSCREEN_DEFAULT;
 
 		try {
-			for (k => v in overrides) {
+			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
-					switch (k) {
+					switch (cast(k, GraphicsSettingsKey)) {
 						case FULLSCREEN:
 							fullscreen = cast(v, Bool);
 					}

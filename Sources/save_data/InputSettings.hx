@@ -216,9 +216,9 @@ class InputSettings {
 		deadzone = DEADZONE_DEFAULT;
 
 		try {
-			for (k => v in overrides) {
+			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
-					switch (k) {
+					switch (cast(k, InputSettingsKey)) {
 						case MAPPINGS:
 							for (kk => vv in cast(v, Map<Dynamic, Dynamic>)) {
 								mappings[cast(kk, Action)] = InputMapping.fromString(cast(vv, String));

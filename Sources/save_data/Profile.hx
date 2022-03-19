@@ -67,19 +67,21 @@ class Profile {
 		var endlessOverrides = new Map();
 
 		try {
-			for (k => v in overrides) {
+			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
-					switch (k) {
+					switch (cast(k, ProfileKey)) {
 						case NAME:
 							name = cast(v, String);
+
+						// Validated in respective constructors
 						case INPUT:
-							inputOverrides = cast(v, Map<Dynamic, Dynamic>);
+							inputOverrides = v;
 						case PREFS:
-							prefsOverrides = cast(v, Map<Dynamic, Dynamic>);
+							prefsOverrides = v;
 						case TRAINING_SETTINGS:
-							trainingOverrides = cast(v, Map<Dynamic, Dynamic>);
+							trainingOverrides = v;
 						case ENDLESS_SETTINGS:
-							endlessOverrides = cast(v, Map<Dynamic, Dynamic>);
+							endlessOverrides = v;
 					}
 				} catch (_) {
 					continue;

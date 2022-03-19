@@ -1,8 +1,6 @@
 package input;
 
 import save_data.SaveManager;
-import kha.Font;
-import kha.Assets;
 import ui.ControlDisplay;
 import kha.graphics2.Graphics;
 import save_data.InputSettings;
