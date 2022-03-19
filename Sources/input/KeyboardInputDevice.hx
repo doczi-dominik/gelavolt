@@ -155,8 +155,9 @@ class KeyboardInputDevice extends InputDevice {
 		g.drawString('$title: $binding', x, y);
 	}
 
-	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
-		super.renderControls(g, x, y, controls);
+	override function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
+		final y = ScaleManager.height - padding - g.font.height(g.fontSize);
+		var x = padding;
 
 		for (d in controls) {
 			var str = "";

@@ -119,5 +119,5 @@ class InputDevice implements IInputDevice {
 
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
-	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {}
+	public function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {}
 }

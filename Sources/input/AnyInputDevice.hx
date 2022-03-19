@@ -41,7 +41,7 @@ class AnyInputDevice implements IInputDevice {
 		for (i in 0...4) {
 			if (Gamepad.get(i).connected) {
 				connectListener(i);
-			}	
+			}
 		}
 
 		Gamepad.notifyOnConnect(connectListener, disconnectListener);
@@ -92,7 +92,7 @@ class AnyInputDevice implements IInputDevice {
 	}
 
 	public function getRawAction(action: Action) {
-		if (rebindCounter > 0) 
+		if (rebindCounter > 0)
 			return false;
 
 		for (d in devices) {
@@ -115,12 +115,12 @@ class AnyInputDevice implements IInputDevice {
 	// displaying a rebinding menu.
 	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
 
-	public function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
+	public function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
 		final lastDevice = devices[lastDeviceID];
 
 		if (lastDevice == null)
 			return;
 
-		lastDevice.renderControls(g, x, y, controls);
+		lastDevice.renderControls(g, padding, controls);
 	}
 }

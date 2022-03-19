@@ -140,6 +140,6 @@ class Menu {
 		g.color = White;
 
 		g.fontSize = controlsFontSize;
-		inputDevice.renderControls(g, padding, ScaleManager.height - headerFontHeight, pages.first().controlDisplays);
+		inputDevice.renderControls(g, padding, pages.first().controlDisplays);
 	}
 }

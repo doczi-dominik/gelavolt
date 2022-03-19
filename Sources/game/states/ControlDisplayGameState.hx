@@ -36,7 +36,7 @@ class ControlDisplayGameState extends GameState {
 		if (container.isVisible) {
 			g.font = font;
 			g.fontSize = fontSize;
-			AnyInputDevice.instance.renderControls(g, 0, ScaleManager.height - fontHeight, container.value);
+			AnyInputDevice.instance.renderControls(g, 0, container.value);
 		}
 
 		super.render(g, g4, alpha);

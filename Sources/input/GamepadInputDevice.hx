@@ -285,10 +285,11 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	override function renderControls(g: Graphics, x: Float, y: Float, controls: Array<ControlDisplay>) {
+	override function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
 		final fontHeight = g.font.height(g.fontSize);
+		final y = ScaleManager.height - padding - fontHeight;
 
-		super.renderControls(g, x, y, controls);
+		var x = padding;
 
 		for (d in controls) {
 			var str = "";
