@@ -103,7 +103,7 @@ class InputDevice implements IInputDevice {
 		if (diff <= 0)
 			return 0.0;
 
-		final sinCalc = Math.sin(scrollT / 100);
+		final sinCalc = Math.sin(scrollT / 75);
 
 		return (Utils.clamp(-0.4, sinCalc, 0.4) + 0.4) * diff * 1.25;
 	}
