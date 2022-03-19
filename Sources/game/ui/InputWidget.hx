@@ -20,11 +20,11 @@ class InputWidget implements IListWidget {
 
 	var unbindCounter: Int;
 	var defaultCounter: Int;
+	var isUnbindable: Bool;
 
 	public var description(default, null): Array<String>;
 	public var controlDisplays: Array<ControlDisplay> = [
 		{actions: [CONFIRM], description: "Rebind"},
-		{actions: [MENU_LEFT], description: "Unbind (HOLD)"},
 		{actions: [MENU_RIGHT], description: "Default (HOLD)"},
 	];
 	public var height(default, null): Float;
@@ -33,7 +33,14 @@ class InputWidget implements IListWidget {
 		font = Assets.fonts.Pixellari;
 		this.action = action;
 
-		description = ACTION_DATA[action].description;
+		final data = ACTION_DATA[action];
+
+		isUnbindable = data.isUnbindable;
+
+		if (isUnbindable)
+			controlDisplays.push({actions: [MENU_LEFT], description: "Unbind (HOLD)"});
+
+		description = data.description;
 	}
 
 	public function onShow(menu: Menu) {
@@ -48,7 +55,7 @@ class InputWidget implements IListWidget {
 	public function update() {
 		final inputDevice = menu.inputDevice;
 
-		if (inputDevice.getRawAction(MENU_LEFT)) {
+		if (isUnbindable && inputDevice.getRawAction(MENU_LEFT)) {
 			++unbindCounter;
 		} else {
 			unbindCounter = 0;
