@@ -1,5 +1,7 @@
 package main_menu.ui;
 
+import input.GamepadBrand;
+import ui.OptionListWidget;
 import ui.IListWidget;
 import input.IInputDevice;
 import input.AnyInputDevice;
@@ -154,6 +156,8 @@ class OptionsPage extends ListMenuPage {
 	}
 
 	function buildControls(inputDevice: IInputDevice): Array<IListWidget> {
+		final inputSettings = inputDevice.inputSettings;
+
 		return [
 			new NumberRangeWidget({
 				title: "Gamepad Stick Deadzone",
@@ -166,12 +170,28 @@ class OptionsPage extends ListMenuPage {
 					" If You Experience Drifting, Rebounding",
 					"or Weird Inputs In General"
 				],
-				startValue: inputDevice.inputSettings.deadzone,
+				startValue: inputSettings.deadzone,
 				minValue: 0,
 				maxValue: 0.9,
 				delta: 0.05,
 				onChange: (value) -> {
-					inputDevice.inputSettings.deadzone = value;
+					inputSettings.deadzone = value;
+					SaveManager.saveProfiles();
+				}
+			}),
+			new OptionListWidget({
+				title: "Gamepad Brand",
+				description: ["Change The Type Of Button Icons", "To Display"],
+				options: [GamepadBrand.DS4, SW_PRO, JOYCON, XBONE, XB360],
+				startIndex: switch (inputSettings.gamepadBrand) {
+					case DS4: 0;
+					case SW_PRO: 1;
+					case JOYCON: 2;
+					case XBONE: 3;
+					case XB360: 4;
+				},
+				onChange: (value) -> {
+					inputSettings.gamepadBrand = value;
 					SaveManager.saveProfiles();
 				}
 			}),
