@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import ui.AreYouSureSubPageWidget;
 import input.GamepadBrand;
 import ui.OptionListWidget;
 import ui.IListWidget;
@@ -35,13 +36,15 @@ class OptionsPage extends ListMenuPage {
 					widgetBuilder: (menu) -> {
 						final inputDevice = menu.inputDevice;
 
+						var middle: Array<IListWidget>;
+
 						switch (inputDevice.type) {
 							case KEYBOARD | GAMEPAD:
-								return buildControls(inputDevice);
+								middle = buildControls(inputDevice);
 							case ANY:
 								final keyboardDevice = AnyInputDevice.instance.getKeyboard();
 
-								return [
+								middle = [
 									new SubPageWidget({
 										title: "Keyboard Controls",
 										description: ["Change Keybindings"],
@@ -68,6 +71,8 @@ class OptionsPage extends ListMenuPage {
 									})
 								];
 						}
+
+						return buildUniversalTop(inputDevice).concat(middle).concat(buildUniversalBottom(inputDevice));
 					}
 				}),
 				#if sys
@@ -155,7 +160,7 @@ class OptionsPage extends ListMenuPage {
 		});
 	}
 
-	function buildControls(inputDevice: IInputDevice): Array<IListWidget> {
+	function buildUniversalTop(inputDevice: IInputDevice): Array<IListWidget> {
 		final inputSettings = inputDevice.inputSettings;
 
 		return [
@@ -195,6 +200,25 @@ class OptionsPage extends ListMenuPage {
 					SaveManager.saveProfiles();
 				}
 			}),
+		];
+	}
+
+	function buildUniversalBottom(inputDevice: IInputDevice): Array<IListWidget> {
+		return [
+			new AreYouSureSubPageWidget({
+				title: "Reset To Default",
+				description: ["Reset Input Settings"],
+				content: "This Will IRREVERSIBLY Reset Your Input Settings",
+				callback: () -> {
+					inputDevice.inputSettings.setDefaults();
+					SaveManager.saveProfiles();
+				}
+			})
+		];
+	}
+
+	function buildControls(inputDevice: IInputDevice): Array<IListWidget> {
+		return [
 			new ControlsPageWidget({
 				title: "Menu Controls",
 				description: ["Change Controls Related To", "Menu Navigation"],
