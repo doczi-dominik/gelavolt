@@ -52,6 +52,18 @@ final BUTTON_SPRITE_COORDINATES: Map<GamepadBrand, Map<GamepadButton, Geometry>>
 			width: 64,
 			height: 64
 		},
+		L3 => {
+			x: 128,
+			y: 64,
+			width: 64,
+			height: 64
+		},
+		R3 => {
+			x: 192,
+			y: 64,
+			width: 64,
+			height: 64
+		},
 		SHARE => {
 			x: 384,
 			y: 64,
@@ -135,6 +147,18 @@ final BUTTON_SPRITE_COORDINATES: Map<GamepadBrand, Map<GamepadButton, Geometry>>
 		R2 => {
 			x: 448,
 			y: 192,
+			width: 64,
+			height: 64
+		},
+		L3 => {
+			x: 0,
+			y: 256,
+			width: 64,
+			height: 64
+		},
+		R3 => {
+			x: 64,
+			y: 256,
 			width: 64,
 			height: 64
 		},
@@ -224,6 +248,18 @@ final BUTTON_SPRITE_COORDINATES: Map<GamepadBrand, Map<GamepadButton, Geometry>>
 			width: 64,
 			height: 64
 		},
+		L3 => {
+			x: 0,
+			y: 256,
+			width: 64,
+			height: 64
+		},
+		R3 => {
+			x: 64,
+			y: 256,
+			width: 64,
+			height: 64
+		},
 		SHARE => {
 			x: 320,
 			y: 320,
@@ -310,6 +346,18 @@ final BUTTON_SPRITE_COORDINATES: Map<GamepadBrand, Map<GamepadButton, Geometry>>
 			width: 64,
 			height: 64
 		},
+		L3 => {
+			x: 0,
+			y: 704,
+			width: 64,
+			height: 64
+		},
+		R3 => {
+			x: 64,
+			y: 704,
+			width: 64,
+			height: 64
+		},
 		SHARE => {
 			x: 128,
 			y: 704,
@@ -393,6 +441,18 @@ final BUTTON_SPRITE_COORDINATES: Map<GamepadBrand, Map<GamepadButton, Geometry>>
 		R2 => {
 			x: 448,
 			y: 448,
+			width: 64,
+			height: 64
+		},
+		L3 => {
+			x: 0,
+			y: 512,
+			width: 64,
+			height: 64
+		},
+		R3 => {
+			x: 64,
+			y: 512,
 			width: 64,
 			height: 64
 		},
