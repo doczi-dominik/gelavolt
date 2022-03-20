@@ -24,7 +24,7 @@ class InputDevice implements IInputDevice {
 
 	public final type: InputDeviceType;
 
-	@:isVar public var inputSettings(get, set): InputSettings;
+	public var inputSettings(get, default): InputSettings;
 
 	function new(type: InputDeviceType, inputSettings: InputSettings) {
 		isRebinding = false;
@@ -33,6 +33,7 @@ class InputDevice implements IInputDevice {
 		this.type = type;
 
 		this.inputSettings = inputSettings;
+		inputSettings.addUpdateListener(buildActions);
 
 		addListeners();
 
@@ -48,13 +49,6 @@ class InputDevice implements IInputDevice {
 	function removeRebindListeners() {}
 
 	function get_inputSettings() {
-		return inputSettings;
-	}
-
-	function set_inputSettings(value: InputSettings) {
-		inputSettings = value;
-		buildActions();
-
 		return inputSettings;
 	}
 
@@ -91,7 +85,7 @@ class InputDevice implements IInputDevice {
 		removeRebindListeners();
 		addListeners();
 
-		buildActions();
+		inputSettings.notifyListeners();
 	}
 
 	final function getScrollX(width: Float, screenWidth: Float) {
@@ -112,12 +106,12 @@ class InputDevice implements IInputDevice {
 
 	public function unbind(action: Action) {
 		SaveManager.saveProfiles();
-		buildActions();
+		inputSettings.notifyListeners();
 	}
 
 	public function bindDefault(action: Action) {
 		SaveManager.saveProfiles();
-		buildActions();
+		inputSettings.notifyListeners();
 	}
 
 	public function rebind(action: Action) {

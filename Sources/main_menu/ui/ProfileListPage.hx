@@ -1,8 +1,6 @@
 package main_menu.ui;
 
 import ui.SubPageWidget;
-import save_data.Profile;
-import game.ui.ListSubPageWidget;
 import ui.IListWidget;
 import save_data.SaveManager;
 import ui.ButtonWidget;

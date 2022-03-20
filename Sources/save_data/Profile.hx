@@ -42,10 +42,7 @@ class Profile {
 
 	public static function changePrimary(p: Profile) {
 		primary = p;
-		reloadPrimary();
-	}
 
-	public static function reloadPrimary() {
 		for (f in onChangePrimary) {
 			f();
 		}
@@ -96,7 +93,7 @@ class Profile {
 	}
 
 	public inline function setInputDefaults() {
-		input = new InputSettings([]);
+		input.setDefaults();
 	}
 
 	public inline function setPrefsDefaults() {

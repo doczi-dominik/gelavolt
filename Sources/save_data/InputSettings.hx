@@ -212,15 +212,16 @@ class InputSettings {
 	static inline final DEADZONE_DEFAULT = 0.5;
 	static inline final GAMEPAD_BRAND_DEFAULT = GamepadBrand.DS4;
 
-	public final mappings: Map<Action, InputMapping>;
+	final updateListeners: Array<Void->Void>;
+
+	public var mappings(default, null): Map<Action, InputMapping>;
 	public var deadzone: Float;
 	public var gamepadBrand: GamepadBrand;
 
 	public function new(overrides: Map<InputSettingsKey, Any>) {
-		mappings = MAPPINGS_DEFAULTS.copy();
+		updateListeners = [];
 
-		deadzone = DEADZONE_DEFAULT;
-		gamepadBrand = GAMEPAD_BRAND_DEFAULT;
+		setDefaults();
 
 		try {
 			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
@@ -272,6 +273,27 @@ class InputSettings {
 		}
 
 		return wereOverrides ? overrides : null;
+	}
+
+	public function addUpdateListener(callback: Void->Void) {
+		updateListeners.push(callback);
+
+		callback();
+	}
+
+	public function notifyListeners() {
+		for (f in updateListeners) {
+			f();
+		}
+	}
+
+	public function setDefaults() {
+		mappings = MAPPINGS_DEFAULTS.copy();
+
+		deadzone = DEADZONE_DEFAULT;
+		gamepadBrand = GAMEPAD_BRAND_DEFAULT;
+
+		notifyListeners();
 	}
 
 	public function getButtonSprite(action: Action) {

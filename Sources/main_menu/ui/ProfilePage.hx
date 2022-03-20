@@ -29,7 +29,6 @@ class ProfilePage extends ListMenuPage {
 								content: "This Will IRREVERSIBLY Reset Your Input Settings",
 								callback: () -> {
 									profile.setInputDefaults();
-									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -39,7 +38,6 @@ class ProfilePage extends ListMenuPage {
 								content: "This Will IRREVERSIBLY Reset Your Preferences",
 								callback: () -> {
 									profile.setPrefsDefaults();
-									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -49,7 +47,6 @@ class ProfilePage extends ListMenuPage {
 								content: "This Will IRREVERSIBLY Reset Your Training Options",
 								callback: () -> {
 									profile.setTrainingDefaults();
-									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -59,7 +56,6 @@ class ProfilePage extends ListMenuPage {
 								content: "This Will IRREVERSIBLY Reset Your Endless Options",
 								callback: () -> {
 									profile.setEndlessDefaults();
-									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
@@ -69,7 +65,6 @@ class ProfilePage extends ListMenuPage {
 								content: "This Will IRREVERSIBLY Reset All Of Your Data",
 								callback: () -> {
 									profile.setDefaults();
-									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							})
