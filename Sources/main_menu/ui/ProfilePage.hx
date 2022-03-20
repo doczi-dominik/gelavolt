@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import ui.AreYouSureSubPageWidget;
 import save_data.SaveManager;
 import game.ui.ListSubPageWidget;
 import ui.ButtonWidget;
@@ -22,45 +23,50 @@ class ProfilePage extends ListMenuPage {
 						header: "Reset To Default",
 						description: ["Reset Various Aspects Of The Profile", "To Their Default Values"],
 						widgetBuilder: (_) -> [
-							new ButtonWidget({
+							new AreYouSureSubPageWidget({
 								title: "Reset Input Settings",
 								description: ["Reset Input Settings"],
+								content: "This Will IRREVERSIBLY Reset Your Input Settings",
 								callback: () -> {
 									profile.setInputDefaults();
 									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
-							new ButtonWidget({
+							new AreYouSureSubPageWidget({
 								title: "Reset Preferences",
 								description: ["Reset Preferences"],
+								content: "This Will IRREVERSIBLY Reset Your Preferences",
 								callback: () -> {
 									profile.setPrefsDefaults();
 									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
-							new ButtonWidget({
+							new AreYouSureSubPageWidget({
 								title: "Reset Training Options",
 								description: ["Reset Training Mode-Exclusive Options"],
+								content: "This Will IRREVERSIBLY Reset Your Training Options",
 								callback: () -> {
 									profile.setTrainingDefaults();
 									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
-							new ButtonWidget({
+							new AreYouSureSubPageWidget({
 								title: "Reset Endless Options",
 								description: ["Reset Endless Mode-Exclusive Options"],
+								content: "This Will IRREVERSIBLY Reset Your Endless Options",
 								callback: () -> {
 									profile.setEndlessDefaults();
 									Profile.reloadPrimary();
 									SaveManager.saveProfiles();
 								}
 							}),
-							new ButtonWidget({
+							new AreYouSureSubPageWidget({
 								title: "Reset All",
 								description: ["Reset Input, Preferences, Training", "And Endless Options"],
+								content: "This Will IRREVERSIBLY Reset All Of Your Data",
 								callback: () -> {
 									profile.setDefaults();
 									Profile.reloadPrimary();
