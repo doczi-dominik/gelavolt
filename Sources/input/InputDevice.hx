@@ -97,8 +97,13 @@ class InputDevice implements IInputDevice {
 	final function getScrollX(width: Float, screenWidth: Float) {
 		final diff = (width - screenWidth);
 
-		if (diff <= 0)
+		if (diff <= 0) {
+			// When scrolling is needed, it will always start at the beginning
+			// unlike whatever scrollT was at the time
+			scrollT = 375; // Math.sin(375 / 75) == -0.95
+
 			return 0.0;
+		}
 
 		final sinCalc = Math.sin(scrollT / 75);
 
