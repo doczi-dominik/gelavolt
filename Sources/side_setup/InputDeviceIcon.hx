@@ -9,12 +9,12 @@ class InputDeviceIcon {
 	static inline final FONT_SIZE = 56;
 
 	final font: Font;
-	final device: IInputDevice;
 
 	var fontSize: Int;
 	var nameTextHalfWidth: Float;
 
 	public final name: String;
+	public final device: IInputDevice;
 
 	public var height(default, null): Float;
 	public var slot: InputSlot;
@@ -23,7 +23,6 @@ class InputDeviceIcon {
 		font = Assets.fonts.Pixellari;
 
 		this.name = name;
-
 		this.device = device;
 
 		slot = UNASSIGNED;
@@ -35,6 +34,14 @@ class InputDeviceIcon {
 
 	public inline function getRightAction() {
 		return device.getAction(MENU_RIGHT);
+	}
+
+	public inline function getControlsAction() {
+		return device.getAction(MENU_UP);
+	}
+
+	public inline function getReadyAction() {
+		return device.getAction(CONFIRM);
 	}
 
 	public function onResize() {

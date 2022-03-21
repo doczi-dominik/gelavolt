@@ -1,5 +1,6 @@
 package side_setup;
 
+import input.IInputDevice;
 import kha.Assets;
 import kha.Font;
 import kha.graphics2.Graphics;
@@ -12,6 +13,7 @@ class SideSetupScreen implements IScreen {
 	static inline final RIGHT_BOARD_STR = "Right Board";
 
 	final font: Font;
+	final onReady: (Null<IInputDevice>, Null<IInputDevice>) -> Void;
 
 	var fontSize: Int;
 	var leftBoardTextCenter: Float;
@@ -20,8 +22,9 @@ class SideSetupScreen implements IScreen {
 	var rightSlot: Null<InputDeviceIcon>;
 	var devices: Array<InputDeviceIcon>;
 
-	function new() {
+	function new(onReady: (Null<IInputDevice>, Null<IInputDevice>) -> Void) {
 		font = Assets.fonts.DigitalDisco;
+		this.onReady = onReady;
 
 		ScaleManager.addOnResizeCallback(onResize);
 	}
