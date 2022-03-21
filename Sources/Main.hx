@@ -1,5 +1,6 @@
 package;
 
+import side_setup.VersusSideSetupScreen;
 import input.AnyInputDevice;
 import input.InputDevice;
 import game.screens.ReplayScreen;
@@ -98,7 +99,7 @@ class Main {
 
 				ScaleManager.resize(System.windowWidth(), System.windowHeight());
 
-				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+				GlobalScreenSwitcher.switchScreen(new VersusSideSetupScreen((_, _) -> {}));
 
 				#if kha_html5
 				Browser.window.ondrop = (ev: DragEvent) -> {

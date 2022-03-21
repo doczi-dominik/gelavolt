@@ -15,7 +15,7 @@ class VersusSideSetupScreen extends SideSetupScreen {
 		isRightReady = false;
 
 		devices = [
-			new InputDeviceIcon("Keyboard (Arrow Keys)", new KeyboardInputDevice(new InputSettings([]))),
+			new InputDeviceIcon("Keyboard (Arrows)", new KeyboardInputDevice(new InputSettings([]))),
 			new InputDeviceIcon("Keyboard (WASD)", new KeyboardInputDevice(new InputSettings([
 				MAPPINGS => [
 					MENU_LEFT => ({
