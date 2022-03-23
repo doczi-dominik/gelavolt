@@ -12,7 +12,11 @@ class MainMenuScreen implements IScreen {
 	final menu: Menu;
 
 	public function new() {
-		menu = new Menu(new MainMenuPage(Profile.primary.prefs));
+		menu = new Menu({
+			positionFactor: 0,
+			widthFactor: 1,
+			initialPage: new MainMenuPage(Profile.primary.prefs)
+		});
 		menu.onShow(AnyInputDevice.instance);
 	}
 

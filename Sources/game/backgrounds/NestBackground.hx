@@ -21,12 +21,12 @@ private class BackgroundParticle {
 
 		randomizeData();
 
-		y += ScaleManager.height / 8;
+		y += ScaleManager.screen.height / 8;
 	}
 
 	function randomizeData() {
-		x = rng.GetFloatIn(0, ScaleManager.width);
-		y = ScaleManager.height * rng.GetFloatIn(1, 1.25);
+		x = rng.GetFloatIn(0, ScaleManager.screen.width);
+		y = ScaleManager.screen.height * rng.GetFloatIn(1, 1.25);
 		dy = rng.GetFloatIn(0.5, 2);
 		t = rng.GetIn(0, 12);
 

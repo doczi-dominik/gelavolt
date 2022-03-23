@@ -1,34 +1,36 @@
 class ScaleManager {
-	public static inline final DESIGN_WIDTH = 1920;
-	public static inline final DESIGN_HEIGHT = 1080;
+	public static inline final SCREEN_DESIGN_WIDTH = 1920;
+	public static inline final SCREEN_DESIGN_HEIGHT = 1080;
 
-	static final onResize: Array<Void->Void> = [];
+	public static final screen = new ScaleManager(SCREEN_DESIGN_WIDTH, SCREEN_DESIGN_HEIGHT);
 
-	public static var width(default, null) = 1920;
-	public static var height(default, null) = 1080;
+	final designWidth: Float;
+	final designHeight: Float;
+	final onResize: Array<Void->Void>;
 
-	public static var scaleX(default, null): Float;
-	public static var scaleY(default, null): Float;
-	public static var largerScale(default, null): Float;
-	public static var smallerScale(default, null): Float;
+	public var width(default, null): Float;
+	public var height(default, null): Float;
+	public var smallerScale(default, null): Float;
 
-	public static function resize(newWidth: Int, newHeight: Int) {
+	public function new(designWidth: Float, designHeight: Float) {
+		this.designWidth = designWidth;
+		this.designHeight = designHeight;
+		onResize = [];
+	}
+
+	public function resize(newWidth: Float, newHeight: Float) {
 		width = newWidth;
 		height = newHeight;
 
-		scaleX = width / DESIGN_WIDTH;
-		scaleY = height / DESIGN_HEIGHT;
+		smallerScale = Math.min(width / designWidth, height / designHeight);
 
-		largerScale = Math.max(scaleX, scaleY);
-		smallerScale = Math.min(scaleX, scaleY);
-
-		for (k => f in onResize.keyValueIterator()) {
+		for (f in onResize) {
 			f();
 		}
 	}
 
 	public static function addOnResizeCallback(callback: Void->Void) {
-		onResize.push(callback);
+		screen.onResize.push(callback);
 
 		callback();
 	}

@@ -33,7 +33,7 @@ class AreYouSurePage implements IMenuPage {
 	}
 
 	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
+		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
 	}
 
 	public function onShow(menu: Menu) {

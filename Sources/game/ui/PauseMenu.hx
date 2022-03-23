@@ -2,11 +2,8 @@ package game.ui;
 
 import main_menu.ui.MainMenuPage;
 import main_menu.ui.OptionsPage;
-import ui.YesNoWidget;
 import game.mediators.PauseMediator;
-import save_data.SaveManager;
 import save_data.PrefsSettings;
-import ui.NumberRangeWidget;
 import ui.IListWidget;
 import ui.SubPageWidget;
 import ui.ButtonWidget;
@@ -27,10 +24,14 @@ class PauseMenu extends Menu {
 		prefsSettings = opts.prefsSettings;
 		pauseMediator = opts.pauseMediator;
 
-		super(new ListMenuPage({
-			header: "Paused",
-			widgetBuilder: generateInitalPage
-		}));
+		super({
+			positionFactor: 0,
+			widthFactor: 1,
+			initialPage: new ListMenuPage({
+				header: "Paused",
+				widgetBuilder: generateInitalPage
+			})
+		});
 	}
 
 	function generateInitalPage(menu: Menu): Array<IListWidget> {
@@ -82,9 +83,11 @@ class PauseMenu extends Menu {
 	}
 
 	override function render(g: Graphics, alpha: Float) {
+		final scr = ScaleManager.screen;
+
 		g.pushOpacity(0.90);
 		g.color = Black;
-		g.fillRect(0, 0, ScaleManager.width, ScaleManager.height);
+		g.fillRect(0, 0, scr.width, scr.height);
 		g.color = White;
 		g.popOpacity();
 

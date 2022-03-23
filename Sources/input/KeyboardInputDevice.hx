@@ -139,9 +139,7 @@ class KeyboardInputDevice extends InputDevice {
 		}
 	}
 
-	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
-		super.renderBinding(g, x, y, action);
-
+	override function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action) {
 		final title = ACTION_DATA[action].title;
 
 		if (action == latestRebindAction && isRebinding) {
@@ -156,7 +154,7 @@ class KeyboardInputDevice extends InputDevice {
 		g.drawString('$title: $binding', x, y);
 	}
 
-	override function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
+	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>) {
 		var str = "";
 
 		for (d in controls) {
@@ -174,11 +172,12 @@ class KeyboardInputDevice extends InputDevice {
 		}
 
 		final strWidth = g.font.width(g.fontSize, str);
-		final paddedScreenWidth = ScaleManager.width - padding * 2;
+		final paddedScreenWidth = width - padding * 2;
 
-		Utils.shadowDrawString(g, 3, Black, White, str, padding
+		Utils.shadowDrawString(g, 3, Black, White, str, x
+			+ padding
 			- getScrollX(strWidth, paddedScreenWidth),
-			ScaleManager.height
+			ScaleManager.screen.height
 			- padding
 			- g.font.height(g.fontSize));
 	}

@@ -30,7 +30,7 @@ class SideSetupScreen implements IScreen {
 	}
 
 	function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
+		fontSize = Std.int(FONT_SIZE * ScaleManager.screen.smallerScale);
 
 		leftBoardTextCenter = font.width(fontSize, LEFT_BOARD_STR) / 2;
 		rightBoardTextCenter = font.width(fontSize, RIGHT_BOARD_STR) / 2;
@@ -82,8 +82,8 @@ class SideSetupScreen implements IScreen {
 		g.font = font;
 		g.fontSize = fontSize;
 
-		final quarterW = ScaleManager.width / 4;
-		final eightH = ScaleManager.height / 8;
+		final quarterW = ScaleManager.screen.width / 4;
+		final eightH = ScaleManager.screen.height / 8;
 
 		g.drawString(LEFT_BOARD_STR, quarterW - leftBoardTextCenter, eightH);
 		g.drawString(RIGHT_BOARD_STR, quarterW * 3 - rightBoardTextCenter, eightH);

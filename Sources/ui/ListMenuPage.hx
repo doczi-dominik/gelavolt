@@ -58,13 +58,13 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	public function onResize() {
-		final smallerScale = ScaleManager.smallerScale;
+		final smallerScale = menu.scaleManager.smallerScale;
 
 		widgetBottomPadding = WIDGET_BOTTOM_PADDING * smallerScale;
 
 		descFontSize = Std.int(DESC_FONT_SIZE * smallerScale);
 		descFontHeight = font.height(descFontSize);
-		scrollArrowSize = 64 * ScaleManager.smallerScale;
+		scrollArrowSize = 64 * smallerScale;
 
 		for (w in widgets) {
 			w.onResize();
@@ -159,14 +159,12 @@ class ListMenuPage implements IMenuPage {
 
 		final desc = widgets[widgetIndex].description;
 
-		final rightBorder = ScaleManager.width - menu.padding;
-
 		for (i in 0...desc.length) {
 			final row = desc[i];
 
 			final rowWidth = font.width(descFontSize, row);
 
-			g.drawString(row, rightBorder - rowWidth, y + descFontHeight * i);
+			g.drawString(row, x + menu.scaleManager.width - menu.padding * 2 - rowWidth, y + descFontHeight * i);
 		}
 	}
 }

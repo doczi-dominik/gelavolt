@@ -68,7 +68,7 @@ class Main {
 	public static function main() {
 		#if kha_html5
 		window.onresize = () -> {
-			ScaleManager.resize(window.innerWidth, window.innerHeight);
+			ScaleManager.screen.resize(window.innerWidth, window.innerHeight);
 		};
 
 		setFullHTML5Canvas();
@@ -97,9 +97,9 @@ class Main {
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;
 				#end
 
-				ScaleManager.resize(System.windowWidth(), System.windowHeight());
+				ScaleManager.screen.resize(System.windowWidth(), System.windowHeight());
 
-				GlobalScreenSwitcher.switchScreen(new VersusSideSetupScreen((_, _) -> {}));
+				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 
 				#if kha_html5
 				Browser.window.ondrop = (ev: DragEvent) -> {

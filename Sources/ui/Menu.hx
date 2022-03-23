@@ -22,6 +22,8 @@ class Menu {
 	final inputDevices: GenericStack<IInputDevice>;
 	final headerFont: Font;
 	final controlsFont: Font;
+	final positionFactor: Float;
+	final widthFactor: Float;
 
 	var headerFontSize: Int;
 	var headerFontHeight: Float;
@@ -29,24 +31,34 @@ class Menu {
 	var warningFontSize: Int;
 	var warningFontHeight: Float;
 	var warningFontWidths: Array<Float>;
+	var renderX: Float;
+
+	public final scaleManager: ScaleManager;
 
 	public var padding(default, null): Float;
 	public var inputDevice(default, null): IInputDevice;
 
-	public function new(initialPage: IMenuPage) {
+	public function new(opts: MenuOptions) {
 		pages = new GenericStack();
-		pages.add(initialPage);
+		pages.add(opts.initialPage);
 
 		inputDevices = new GenericStack();
-
 		headerFont = Assets.fonts.DigitalDisco;
 		controlsFont = Assets.fonts.Pixellari;
+		positionFactor = opts.positionFactor;
+		widthFactor = opts.widthFactor;
+
+		scaleManager = new ScaleManager(ScaleManager.SCREEN_DESIGN_WIDTH, ScaleManager.SCREEN_DESIGN_HEIGHT);
 
 		ScaleManager.addOnResizeCallback(resize);
 	}
 
 	function resize() {
-		final ssc = ScaleManager.smallerScale;
+		final scr = ScaleManager.screen;
+
+		scaleManager.resize(scr.width * widthFactor, scr.height);
+
+		final ssc = scaleManager.smallerScale;
 
 		headerFontSize = Std.int(HEADER_FONT_SIZE * ssc);
 		headerFontHeight = headerFont.height(headerFontSize);
@@ -59,9 +71,12 @@ class Menu {
 			warningFontWidths.push(controlsFont.width(warningFontSize, line));
 		}
 
+		renderX = scr.width * positionFactor;
+
 		padding = PADDING * ssc;
 
 		for (p in pages) {
+			p.onShow(this);
 			p.onResize();
 		}
 	}
@@ -111,35 +126,38 @@ class Menu {
 
 	public function render(g: Graphics, alpha: Float) {
 		final currentPage = pages.first();
+		final paddedX = renderX + padding;
 
 		g.font = headerFont;
 		g.fontSize = headerFontSize;
 
-		g.drawString(currentPage.header, padding, padding);
+		g.drawString(currentPage.header, paddedX, padding);
 
 		final topLineY = padding + headerFontHeight;
 
-		g.drawLine(padding, topLineY, ScaleManager.width - padding, topLineY, 4);
+		g.drawLine(paddedX, topLineY, renderX + scaleManager.width - padding, topLineY, 4);
 
-		currentPage.render(g, padding, topLineY + padding * 0.375);
+		currentPage.render(g, paddedX, topLineY + padding * 0.375);
 
 		g.font = controlsFont;
 		g.fontSize = warningFontSize;
 		g.color = Color.fromValue(0xFF777777);
 
-		final warningBaseline = ScaleManager.height - headerFontHeight * 1.5;
+		final warningBaseline = scaleManager.height - headerFontHeight * 1.5;
 
 		for (i in 0...4) {
 			final invertedIndex = 3 - i;
-			g.drawString(WARNING[invertedIndex], ScaleManager.width
+			g.drawString(WARNING[invertedIndex], renderX
+				+ scaleManager.width
 				- padding
-				- warningFontWidths[invertedIndex], warningBaseline
+				- warningFontWidths[invertedIndex],
+				warningBaseline
 				- i * warningFontHeight);
 		}
 
 		g.color = White;
 
 		g.fontSize = controlsFontSize;
-		inputDevice.renderControls(g, padding, pages.first().controlDisplays);
+		inputDevice.renderControls(g, renderX, scaleManager.width, padding, currentPage.controlDisplays);
 	}
 }

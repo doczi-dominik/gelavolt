@@ -237,9 +237,7 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	override function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {
-		super.renderBinding(g, x, y, action);
-
+	override function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action) {
 		final title = ACTION_DATA[action].title;
 
 		if (action == latestRebindAction && isRebinding) {
@@ -270,7 +268,7 @@ class GamepadInputDevice extends InputDevice {
 			final buttonSpr = BUTTON_SPRITE_COORDINATES[inputSettings.gamepadBrand][buttonMapping];
 
 			renderButton(g, x, y, fontHeight / buttonSpr.height, buttonSpr);
-			x += buttonSpr.width * ScaleManager.smallerScale;
+			x += buttonSpr.width * scale;
 		}
 
 		final axisMapping = mapping.gamepadAxis;
@@ -286,12 +284,10 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	override function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
+	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>) {
 		final fontHeight = g.font.height(g.fontSize);
-		final y = ScaleManager.height - padding - fontHeight;
-		final paddedScreenWidth = ScaleManager.width - padding * 2;
-
-		var x = padding;
+		final y = ScaleManager.screen.height - padding - fontHeight;
+		final paddedScreenWidth = width - padding * 2;
 
 		var totalWidth = 0.0;
 

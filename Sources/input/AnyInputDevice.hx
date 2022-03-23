@@ -113,14 +113,14 @@ class AnyInputDevice implements IInputDevice {
 
 	// AnyInputDevices cannot be rebound and shouldn't be active when
 	// displaying a rebinding menu.
-	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action) {}
+	public function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action) {}
 
-	public function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>) {
+	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>) {
 		final lastDevice = devices[lastDeviceID];
 
 		if (lastDevice == null)
 			return;
 
-		lastDevice.renderControls(g, padding, controls);
+		lastDevice.renderControls(g, x, width, padding, controls);
 	}
 }

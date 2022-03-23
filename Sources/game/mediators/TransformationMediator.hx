@@ -13,12 +13,14 @@ class TransformationMediator {
 	public function new() {}
 
 	public function onResize() {
-		translationX = (ScaleManager.width - PLAY_AREA_DESIGN_WIDTH * ScaleManager.smallerScale) / 2;
-		translationY = (ScaleManager.height - PLAY_AREA_DESIGN_HEIGHT * ScaleManager.smallerScale) / 2;
+		final scr = ScaleManager.screen;
+
+		translationX = (scr.width - PLAY_AREA_DESIGN_WIDTH * scr.smallerScale) / 2;
+		translationY = (scr.height - PLAY_AREA_DESIGN_HEIGHT * scr.smallerScale) / 2;
 	}
 
 	public function setTransformedScissor(g: Graphics, x: Float, y: Float, w: Float, h: Float) {
-		final scale = ScaleManager.smallerScale;
+		final scale = ScaleManager.screen.smallerScale;
 
 		final tx = Std.int(translationX + x * scale);
 		final ty = Std.int(translationY + y * scale);
@@ -29,7 +31,7 @@ class TransformationMediator {
 	}
 
 	public function pushTransformation(g: Graphics) {
-		final scale = ScaleManager.smallerScale;
+		final scale = ScaleManager.screen.smallerScale;
 
 		final transform = FastMatrix3.translation(translationX, translationY).multmat(FastMatrix3.scale(scale, scale));
 		g.pushTransformation(transform);

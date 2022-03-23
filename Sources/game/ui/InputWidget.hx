@@ -48,7 +48,7 @@ class InputWidget implements IListWidget {
 	}
 
 	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
+		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
 		height = font.height(fontSize);
 	}
 
@@ -92,7 +92,7 @@ class InputWidget implements IListWidget {
 		g.color = (isSelected) ? Orange : White;
 		g.font = font;
 		g.fontSize = fontSize;
-		menu.inputDevice.renderBinding(g, x, y, action);
+		menu.inputDevice.renderBinding(g, x, y, menu.scaleManager.smallerScale, action);
 		g.color = White;
 	}
 }

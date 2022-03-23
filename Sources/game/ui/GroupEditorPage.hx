@@ -46,7 +46,7 @@ class GroupEditorPage implements IMenuPage {
 	}
 
 	public function onResize() {
-		scale = ScaleManager.smallerScale * 4;
+		scale = menu.scaleManager.smallerScale * 4;
 	}
 
 	public function onShow(menu: Menu) {

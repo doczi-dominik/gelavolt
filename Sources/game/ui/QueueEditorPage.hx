@@ -69,7 +69,7 @@ class QueueEditorPage implements IMenuPage {
 	}
 
 	public function onResize() {
-		scale = ScaleManager.smallerScale;
+		scale = menu.scaleManager.smallerScale;
 		fontSize = Std.int(FONT_SIZE * scale);
 	}
 

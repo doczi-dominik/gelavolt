@@ -45,7 +45,7 @@ class InputDeviceIcon {
 	}
 
 	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
+		fontSize = Std.int(FONT_SIZE * ScaleManager.screen.smallerScale);
 		nameTextHalfWidth = font.width(fontSize, name) / 2;
 
 		height = font.height(fontSize);
@@ -54,6 +54,6 @@ class InputDeviceIcon {
 	public function render(g: Graphics, y: Float) {
 		g.font = font;
 		g.fontSize = fontSize;
-		g.drawString(name, ScaleManager.width / 4 * slot - nameTextHalfWidth, y);
+		g.drawString(name, ScaleManager.screen.width / 4 * slot - nameTextHalfWidth, y);
 	}
 }

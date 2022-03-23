@@ -15,6 +15,6 @@ interface IInputDevice {
 	public function rebind(action: Action): Void;
 	public function getAction(action: Action): Bool;
 	public function getRawAction(action: Action): Bool;
-	public function renderBinding(g: Graphics, x: Float, y: Float, action: Action): Void;
-	public function renderControls(g: Graphics, padding: Float, controls: Array<ControlDisplay>): Void;
+	public function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action): Void;
+	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>): Void;
 }

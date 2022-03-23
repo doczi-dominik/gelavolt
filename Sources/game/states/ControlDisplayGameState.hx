@@ -28,7 +28,7 @@ class ControlDisplayGameState extends GameState {
 	}
 
 	function onResize() {
-		fontSize = Std.int(FONT_SIZE * ScaleManager.smallerScale);
+		fontSize = Std.int(FONT_SIZE * ScaleManager.screen.smallerScale);
 		fontHeight = font.height(fontSize);
 	}
 
@@ -36,7 +36,7 @@ class ControlDisplayGameState extends GameState {
 		if (container.isVisible) {
 			g.font = font;
 			g.fontSize = fontSize;
-			AnyInputDevice.instance.renderControls(g, 0, container.value);
+			AnyInputDevice.instance.renderControls(g, 0, ScaleManager.screen.width, 0, container.value);
 		}
 
 		super.render(g, g4, alpha);
