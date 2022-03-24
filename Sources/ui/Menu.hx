@@ -127,6 +127,9 @@ class Menu {
 	public function render(g: Graphics, alpha: Float) {
 		final currentPage = pages.first();
 		final paddedX = renderX + padding;
+		final width = scaleManager.width;
+
+		g.scissor(Std.int(renderX), 0, Std.int(width), Std.int(scaleManager.height));
 
 		g.font = headerFont;
 		g.fontSize = headerFontSize;
@@ -135,7 +138,7 @@ class Menu {
 
 		final topLineY = padding + headerFontHeight;
 
-		g.drawLine(paddedX, topLineY, renderX + scaleManager.width - padding, topLineY, 4);
+		g.drawLine(paddedX, topLineY, renderX + width - padding, topLineY, 4);
 
 		currentPage.render(g, paddedX, topLineY + padding * 0.375);
 
@@ -148,16 +151,17 @@ class Menu {
 		for (i in 0...4) {
 			final invertedIndex = 3 - i;
 			g.drawString(WARNING[invertedIndex], renderX
-				+ scaleManager.width
+				+ width
 				- padding
-				- warningFontWidths[invertedIndex],
-				warningBaseline
+				- warningFontWidths[invertedIndex], warningBaseline
 				- i * warningFontHeight);
 		}
 
 		g.color = White;
 
 		g.fontSize = controlsFontSize;
-		inputDevice.renderControls(g, renderX, scaleManager.width, padding, currentPage.controlDisplays);
+		inputDevice.renderControls(g, renderX, width, padding, currentPage.controlDisplays);
+
+		g.disableScissor();
 	}
 }
