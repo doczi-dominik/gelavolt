@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.gelogroups.TrainingGeloGroup;
 import game.states.ControlDisplayGameState;
 import game.mediators.ControlDisplayContainer;
 import input.AnyInputDevice;
@@ -200,7 +201,7 @@ class TrainingGameStateBuilder {
 	inline function buildPlayerGeloGroup() {
 		final prefsSettings = Profile.primary.prefs;
 
-		playerGeloGroup = new GeloGroup({
+		playerGeloGroup = new TrainingGeloGroup({
 			field: playerField,
 			rule: gameMode.rule,
 			prefsSettings: prefsSettings,
@@ -210,7 +211,8 @@ class TrainingGameStateBuilder {
 				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: GarbageTray.create(prefsSettings),
 				accumulatedDisplay: GarbageTray.create(prefsSettings)
-			})
+			}),
+			trainingSettings: Profile.primary.trainingSettings
 		});
 	}
 

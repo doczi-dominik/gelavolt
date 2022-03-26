@@ -394,6 +394,20 @@ class TrainingPauseMenu extends PauseMenu {
 							onChange: (value) -> {
 								rule.physics = (value == "FEVER") ? FEVER : TSU;
 							}
+						}),
+						new YesNoWidget({
+							title: "Enable Blind Mode",
+							description: [
+								"Blind Mode Grays Out Your Active",
+								"Gelo Group To Encourage Looking At",
+								"The Preview And Planning",
+								"Ahead!"
+							],
+							defaultValue: trainingSettings.groupBlindMode,
+							onChange: (value) -> {
+								trainingSettings.groupBlindMode = value;
+								SaveManager.saveProfiles();
+							}
 						})
 					]
 				}),

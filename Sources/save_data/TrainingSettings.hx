@@ -16,6 +16,7 @@ enum abstract TrainingSettingsKey(String) to String {
 	final MAX_ATTACK_GROUP_DIFF;
 	final MIN_ATTACK_COLORS;
 	final MAX_ATTACK_COLORS;
+	final GROUP_BLIND_MODE;
 }
 
 class TrainingSettings implements IClearOnXModeContainer {
@@ -26,6 +27,7 @@ class TrainingSettings implements IClearOnXModeContainer {
 	static inline final ATTACK_CHAIN_DEFAULT = 3;
 	static inline final ATTACK_GROUP_DIFF_DEFAULT = 0;
 	static inline final ATTACK_COLORS_DEFAULT = 1;
+	static inline final GROUP_BLIND_MODE_DEFAULT = false;
 
 	public var clearOnXMode: ClearOnXMode;
 	public var autoClear: Bool;
@@ -38,6 +40,7 @@ class TrainingSettings implements IClearOnXModeContainer {
 	public var maxAttackGroupDiff: Int;
 	public var minAttackColors: Int;
 	public var maxAttackColors: Int;
+	public var groupBlindMode: Bool;
 
 	public function new(overrides: Map<TrainingSettingsKey, Dynamic>) {
 		clearOnXMode = CLEAR_ON_X_MODE_DEFAULT;
@@ -51,6 +54,7 @@ class TrainingSettings implements IClearOnXModeContainer {
 		maxAttackGroupDiff = ATTACK_GROUP_DIFF_DEFAULT;
 		minAttackColors = ATTACK_COLORS_DEFAULT;
 		maxAttackColors = ATTACK_COLORS_DEFAULT;
+		groupBlindMode = GROUP_BLIND_MODE_DEFAULT;
 
 		try {
 			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
@@ -78,6 +82,8 @@ class TrainingSettings implements IClearOnXModeContainer {
 							minAttackColors = cast(v, Int);
 						case MAX_ATTACK_COLORS:
 							maxAttackColors = cast(v, Int);
+						case GROUP_BLIND_MODE:
+							groupBlindMode = cast(v, Bool);
 					}
 				} catch (_) {
 					continue;
@@ -137,6 +143,11 @@ class TrainingSettings implements IClearOnXModeContainer {
 
 		if (maxAttackColors != ATTACK_COLORS_DEFAULT) {
 			overrides.set(MAX_ATTACK_COLORS, maxAttackColors);
+			wereOverrides = true;
+		}
+
+		if (groupBlindMode != GROUP_BLIND_MODE_DEFAULT) {
+			overrides.set(GROUP_BLIND_MODE, groupBlindMode);
 			wereOverrides = true;
 		}
 

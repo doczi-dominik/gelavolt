@@ -1,5 +1,6 @@
 package game.gelogroups;
 
+import game.gelos.GeloColor;
 import game.gelos.OtherGelo;
 import game.rules.Rule;
 import save_data.PrefsSettings;
@@ -431,6 +432,10 @@ class GeloGroup {
 		return false;
 	}
 
+	function getPrimaryColor(geloColor: GeloColor) {
+		return prefsSettings.primaryColors[geloColor];
+	}
+
 	function renderShadow(g: Graphics, g4: Graphics4, alpha: Float) {
 		if (!prefsSettings.showGroupShadow || !isShadowVisible)
 			return;
@@ -443,7 +448,7 @@ class GeloGroup {
 		g.pushOpacity(shadowOpacity);
 
 		for (o in otherShadows) {
-			g.color = prefsSettings.primaryColors[o.color];
+			g.color = getPrimaryColor(o.color);
 			g.fillCircle(o.x, o.y, radius, 16);
 		}
 
@@ -460,12 +465,16 @@ class GeloGroup {
 
 		g.pushOpacity(shadowOpacity);
 
-		g.color = prefsSettings.primaryColors[mainShadow.color];
+		g.color = getPrimaryColor(mainShadow.color);
 		g.fillCircle(mainShadow.x, mainShadow.y, radius, 16);
 
 		g.popOpacity();
 
 		g.color = White;
+	}
+
+	function renderGelo(g: Graphics, g4: Graphics4, x: Float, y: Float, alpha: Float, gelo: Gelo) {
+		gelo.render(g, g4, x, y, alpha);
 	}
 
 	public function update() {
@@ -513,10 +522,10 @@ class GeloGroup {
 		final lerpSin = lerp(prevSin, currentSin, alpha);
 
 		for (o in others) {
-			o.render(g, g4, lerpDisplayX + lerpCos * Gelo.SIZE, lerpDisplayY + lerpSin * Gelo.SIZE, alpha);
+			renderGelo(g, g4, lerpDisplayX + lerpCos * Gelo.SIZE, lerpDisplayY + lerpSin * Gelo.SIZE, alpha, o);
 		}
 
-		main.render(g, g4, lerpDisplayX, lerpDisplayY, alpha);
+		renderGelo(g, g4, lerpDisplayX, lerpDisplayY, alpha, main);
 
 		g.color = White;
 	}
