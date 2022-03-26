@@ -30,6 +30,7 @@ class TrainingInfoBoardState implements IBoardState {
 	static inline final TITLE_FONT_SIZE = 40;
 	static inline final CARD_FONT_SIZE = 32;
 	static inline final CARD_SIZE = 512;
+	static inline final GAME_INFO_X = -64;
 
 	final geometries: BoardGeometries;
 	final marginManager: MarginTimeManager;
@@ -208,19 +209,19 @@ class TrainingInfoBoardState implements IBoardState {
 	function renderSplitStatistics(g: Graphics, title: String, y: Float, splitCounter: Int, great: Int, okay: Int, slow: Int) {
 		final titleWidth = font.width(TITLE_FONT_SIZE, title);
 
-		shadowDrawString(g, 3, Black, White, title, 0, y);
+		shadowDrawString(g, 3, Black, White, title, GAME_INFO_X, y);
 
 		if (splitCounter == 0) {
-			renderSplitPercentage(g, titleWidth, y, Green, 0);
-			renderSplitPercentage(g, titleWidth + splitPercentageWidth, y, Yellow, 0);
-			renderSplitPercentage(g, titleWidth + splitPercentageWidth * 2, y, Red, 0);
+			renderSplitPercentage(g, GAME_INFO_X + titleWidth, y, Green, 0);
+			renderSplitPercentage(g, GAME_INFO_X + titleWidth + splitPercentageWidth, y, Yellow, 0);
+			renderSplitPercentage(g, GAME_INFO_X + titleWidth + splitPercentageWidth * 2, y, Red, 0);
 
 			return;
 		}
 
-		renderSplitPercentage(g, titleWidth, y, Green, Math.round(great / splitCounter * 100));
-		renderSplitPercentage(g, titleWidth + splitPercentageWidth, y, Yellow, Math.round(okay / splitCounter * 100));
-		renderSplitPercentage(g, titleWidth + splitPercentageWidth * 2, y, Red, Math.round(slow / splitCounter * 100));
+		renderSplitPercentage(g, GAME_INFO_X + titleWidth, y, Green, Math.round(great / splitCounter * 100));
+		renderSplitPercentage(g, GAME_INFO_X + titleWidth + splitPercentageWidth, y, Yellow, Math.round(okay / splitCounter * 100));
+		renderSplitPercentage(g, GAME_INFO_X + titleWidth + splitPercentageWidth * 2, y, Red, Math.round(slow / splitCounter * 100));
 
 		g.color = White;
 	}
@@ -228,11 +229,11 @@ class TrainingInfoBoardState implements IBoardState {
 	function renderGameInfo(g: Graphics, alpha: Float) {
 		g.fontSize = TITLE_FONT_SIZE;
 
-		shadowDrawString(g, 3, Black, White, 'Chain: $chain / $chainLength', 0, gameRow(-3));
+		shadowDrawString(g, 3, Black, White, 'Chain: $chain / $chainLength', GAME_INFO_X, gameRow(-3));
 
-		shadowDrawString(g, 3, Black, White, 'Remainder: $linkRemainder', 0, gameRow(0));
+		shadowDrawString(g, 3, Black, White, 'Remainder: $linkRemainder', GAME_INFO_X, gameRow(0));
 
-		shadowDrawString(g, 3, Black, White, 'Damage: $chainDamage / $totalDamage', 0, gameRow(1));
+		shadowDrawString(g, 3, Black, White, 'Damage: $chainDamage / $totalDamage', GAME_INFO_X, gameRow(1));
 
 		// Font is not monospace ;(
 		renderSplitStatistics(g, "Splits (ALL):  ", gameRow(3), overallSplitCounter, overallGreatSplits, overallOkaySplits, overallSlowSplits);
@@ -248,27 +249,26 @@ class TrainingInfoBoardState implements IBoardState {
 				g.color = Red;
 		}
 
-		shadowDrawString(g, 3, Black, splitColor, '$splitT'.lpad(" ", 3), 0, gameRow(5));
-		g.fillRect(64, gameRow(5), splitT * 4, 32);
+		shadowDrawString(g, 3, Black, splitColor, '$splitT'.lpad(" ", 3), GAME_INFO_X, gameRow(5));
+		g.fillRect(0, gameRow(5), splitT * 4, 32);
 
 		g.color = White;
 
-		shadowDrawString(g, 3, Black, White, 'Chain Standard Advantage: $chainAdvantage', 0, gameRow(8));
+		shadowDrawString(g, 3, Black, White, 'Chain Standard Advantage: $chainAdvantage', GAME_INFO_X, gameRow(8));
 
-		chainAdvantageDisplay.render(g, 0, gameRow(9), alpha);
+		chainAdvantageDisplay.render(g, GAME_INFO_X, gameRow(9), alpha);
 
-		shadowDrawString(g, 3, Black, White, 'To Counter: $toCounterChain ($counterDifference remains)', 0, gameRow(11));
+		shadowDrawString(g, 3, Black, White, 'To Counter: $toCounterChain ($counterDifference remains)', GAME_INFO_X, gameRow(11));
 
-		afterCounterDisplay.render(g, 0, gameRow(12), alpha);
+		afterCounterDisplay.render(g, GAME_INFO_X, gameRow(12), alpha);
 
 		final targetPoints = marginManager.targetPoints;
 
-		shadowDrawString(g, 3, Black, White, 'Target Points: $targetPoints', 0, gameRow(14));
-		shadowDrawString(g, 3, Black, White, 'Margin Time: ${Std.int(marginManager.marginTime / 60)}', 0, gameRow(15));
+		shadowDrawString(g, 3, Black, White, 'Target Pts (Margin T): $targetPoints (${Std.int(marginManager.marginTime / 60)})', GAME_INFO_X, gameRow(14));
 
 		final dropBonus = Std.int(playerScoreManager.dropBonus);
 
-		shadowDrawString(g, 3, Black, White, 'Drop bonus: $dropBonus (${Std.int(dropBonus / targetPoints)} garbo)', 0, gameRow(16));
+		shadowDrawString(g, 3, Black, White, 'Drop bonus: $dropBonus (${Std.int(dropBonus / targetPoints)} garbo)', GAME_INFO_X, gameRow(16));
 
 		if (trainingSettings.autoAttack) {
 			final autoAttackString = switch (autoAttackState) {
@@ -276,9 +276,9 @@ class TrainingInfoBoardState implements IBoardState {
 				case SENDING: 'Auto-Attack SENDING: $autoAttackMaxChain-CHAIN!';
 			}
 
-			shadowDrawString(g, 3, Black, White, autoAttackString, 0, gameRow(17));
+			shadowDrawString(g, 3, Black, White, autoAttackString, GAME_INFO_X, gameRow(17));
 		} else {
-			shadowDrawString(g, 3, Black, White, "Auto-Attack DISABLED", 0, gameRow(17));
+			shadowDrawString(g, 3, Black, White, "Auto-Attack DISABLED", GAME_INFO_X, gameRow(17));
 		}
 	}
 
