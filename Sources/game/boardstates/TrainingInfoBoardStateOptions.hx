@@ -1,5 +1,7 @@
 package game.boardstates;
 
+import save_data.PrefsSettings;
+import game.particles.ParticleManager;
 import game.rules.Rule;
 import game.rules.MarginTimeManager;
 import game.ChainCounter;
@@ -23,6 +25,8 @@ class TrainingInfoBoardStateOptions {
 	public final chainAdvantageDisplay: GarbageTray;
 	public final afterCounterDisplay: GarbageTray;
 	public final autoChainCounter: ChainCounter;
+	public final particleManager: ParticleManager;
+	public final prefsSettings: PrefsSettings;
 
 	public final playerScoreManager: ScoreManager;
 	public final playerChainSim: ChainSimulator;

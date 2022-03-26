@@ -252,6 +252,8 @@ class TrainingGameStateBuilder {
 			afterCounterDisplay: GarbageTray.create(prefsSettings),
 			autoChainCounter: new ChainCounter(),
 			garbageManager: infoGarbageManager,
+			prefsSettings: prefsSettings,
+			particleManager: particleManager,
 			playerScoreManager: playerScoreManager,
 			playerChainSim: playerChainSim,
 		});

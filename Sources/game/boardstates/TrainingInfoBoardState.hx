@@ -1,5 +1,10 @@
 package game.boardstates;
 
+import save_data.PrefsSettings;
+import game.particles.ParticleManager;
+import utils.Point;
+import game.gelos.Gelo;
+import game.particles.GeloPopParticle;
 import game.garbage.IGarbageManager;
 import game.rules.Rule;
 import utils.Utils;
@@ -43,6 +48,8 @@ class TrainingInfoBoardState implements IBoardState {
 	final afterCounterDisplay: GarbageTray;
 	final autoChainCounter: ChainCounter;
 	final garbageManager: IGarbageManager;
+	final particleManager: ParticleManager;
+	final prefsSettings: PrefsSettings;
 
 	final playerScoreManager: ScoreManager;
 	final playerChainSim: ChainSimulator;
@@ -106,6 +113,8 @@ class TrainingInfoBoardState implements IBoardState {
 		afterCounterDisplay = opts.afterCounterDisplay;
 		autoChainCounter = opts.autoChainCounter;
 		garbageManager = opts.garbageManager;
+		particleManager = opts.particleManager;
+		prefsSettings = opts.prefsSettings;
 
 		playerScoreManager = opts.playerScoreManager;
 		playerChainSim = opts.playerChainSim;
@@ -201,7 +210,26 @@ class TrainingInfoBoardState implements IBoardState {
 
 			autoAttackT = 80;
 
-			autoChainCounter.startAnimation(autoAttackChain, {x: 112, y: gameRow(20)}, link.isPowerful);
+			final coords: Point = {x: 112, y: gameRow(20)};
+
+			autoChainCounter.startAnimation(autoAttackChain, coords, link.isPowerful);
+
+			final absCoords = geometries.absolutePosition.add(coords);
+
+			// Random GeloColor value
+			final color = prefsSettings.primaryColors[COLOR1];
+
+			for (i in 0...48) {
+				particleManager.add(FRONT, GeloPopParticle.create({
+					x: absCoords.x + Gelo.HALFSIZE * rng.GetFloatIn(-1, 1),
+					y: absCoords.y + Gelo.HALFSIZE * rng.GetFloatIn(-1, 1),
+					dx: ((i % 2 == 0) ? -8 : 8) * rng.GetFloatIn(0.5, 1.5),
+					dy: -10 * rng.GetFloatIn(0.5, 1.5),
+					dyIncrement: 0.75 * rng.GetFloatIn(0.5, 1.5),
+					maxT: Std.int((30 + i * 6) * rng.GetFloatIn(0.5, 1.5)),
+					color: color
+				}));
+			}
 
 			if (autoAttackChain == autoAttackMaxChain) {
 				garbageManager.confirmGarbage(autoAttackGarbage);
