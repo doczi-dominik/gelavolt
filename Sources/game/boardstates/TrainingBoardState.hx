@@ -44,6 +44,7 @@ class TrainingBoardState extends EndlessBoardState {
 		super.onLose();
 
 		infoState.resetCurrentSplitStatistics();
+		infoState.resetAutoAttackWaitingState();
 	}
 
 	// Makes regenerateQueue public
