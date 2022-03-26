@@ -190,9 +190,9 @@ class EditingBoardState implements IBoardState {
 			switchMode();
 		}
 
-		if (inputDevice.getAction(CONFIRM)) {
+		if (inputDevice.getAction(EDIT_SET)) {
 			set();
-		} else if (inputDevice.getAction(BACK)) {
+		} else if (inputDevice.getAction(EDIT_CLEAR)) {
 			clear();
 		}
 
