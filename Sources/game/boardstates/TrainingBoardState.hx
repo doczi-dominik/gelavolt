@@ -18,6 +18,8 @@ class TrainingBoardState extends EndlessBoardState {
 
 		infoState.loadChain();
 		infoState.startSplitTimer();
+		infoState.incrementGroupCounter();
+		infoState.shouldUpdatePPST = false;
 	}
 
 	override function afterDrop() {
@@ -35,6 +37,7 @@ class TrainingBoardState extends EndlessBoardState {
 
 	override function afterEnd() {
 		infoState.saveSplitCategory();
+		infoState.shouldUpdatePPST = true;
 	}
 
 	override function onLose() {

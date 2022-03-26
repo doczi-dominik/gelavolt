@@ -127,7 +127,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildPlayerTargetMediator() {
 		playerTargetMediator = {
-			geometries: BoardGeometries.RIGHT
+			geometries: BoardGeometries.INFO
 		};
 	}
 
@@ -229,7 +229,7 @@ class TrainingGameStateBuilder {
 			rng: rng,
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
-			geometries: BoardGeometries.RIGHT,
+			geometries: BoardGeometries.INFO,
 			tray: CenterGarbageTray.create(Profile.primary.prefs),
 			target: infoTargetMediator
 		});
@@ -239,7 +239,7 @@ class TrainingGameStateBuilder {
 		final prefsSettings = Profile.primary.prefs;
 
 		infoState = new TrainingInfoBoardState({
-			geometries: BoardGeometries.RIGHT,
+			geometries: BoardGeometries.INFO,
 			marginManager: marginManager,
 			rule: gameMode.rule,
 			rng: rng,
@@ -352,7 +352,7 @@ class TrainingGameStateBuilder {
 				}),
 				boardTwo: new SingleBoardManager({
 					transformMediator: transformMediator,
-					geometries: BoardGeometries.RIGHT,
+					geometries: BoardGeometries.INFO,
 					board: infoBoard
 				})
 			}),

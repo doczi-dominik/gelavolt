@@ -30,7 +30,8 @@ class TrainingInfoBoardState implements IBoardState {
 	static inline final TITLE_FONT_SIZE = 40;
 	static inline final CARD_FONT_SIZE = 32;
 	static inline final CARD_SIZE = 512;
-	static inline final GAME_INFO_X = -64;
+
+	public static inline final GAME_INFO_X = -64;
 
 	final geometries: BoardGeometries;
 	final marginManager: MarginTimeManager;
@@ -65,6 +66,9 @@ class TrainingInfoBoardState implements IBoardState {
 	var toCounterChain: Int;
 	var counterDifference: Int;
 
+	var groupCounter: Int;
+	var ppsT: Int;
+
 	var splitT: Int;
 
 	var currentGreatSplits: Int;
@@ -88,6 +92,8 @@ class TrainingInfoBoardState implements IBoardState {
 	var autoAttackRemainder: Float;
 
 	var viewMin: Int;
+
+	public var shouldUpdatePPST: Bool;
 
 	public function new(opts: TrainingInfoBoardStateOptions) {
 		geometries = opts.geometries;
@@ -122,6 +128,9 @@ class TrainingInfoBoardState implements IBoardState {
 		toCounterChain = 1;
 		counterDifference = 0;
 
+		groupCounter = 0;
+		ppsT = 0;
+
 		splitT = 0;
 
 		resetCurrentSplitStatistics();
@@ -137,6 +146,8 @@ class TrainingInfoBoardState implements IBoardState {
 		resetAutoAttackWaitingState();
 
 		viewMin = 0;
+
+		shouldUpdatePPST = true;
 	}
 
 	function gameRow(index: Int) {
@@ -230,15 +241,15 @@ class TrainingInfoBoardState implements IBoardState {
 		g.fontSize = TITLE_FONT_SIZE;
 
 		shadowDrawString(g, 3, Black, White, 'Chain: $chain / $chainLength', GAME_INFO_X, gameRow(-3));
-
 		shadowDrawString(g, 3, Black, White, 'Remainder: $linkRemainder', GAME_INFO_X, gameRow(0));
-
 		shadowDrawString(g, 3, Black, White, 'Damage: $chainDamage / $totalDamage', GAME_INFO_X, gameRow(1));
 
-		// Font is not monospace ;(
-		renderSplitStatistics(g, "Splits (ALL):  ", gameRow(3), overallSplitCounter, overallGreatSplits, overallOkaySplits, overallSlowSplits);
+		shadowDrawString(g, 3, Black, White, 'Speed (PPS): ${Utils.limitDecimals(groupCounter / (ppsT / 60), 2)}', GAME_INFO_X, gameRow(3));
 
-		renderSplitStatistics(g, "Splits (NOW): ", gameRow(4), currentSplitCounter, currentGreatSplits, currentOkaySplits, currentSlowSplits);
+		// Font is not monospace ;(
+		renderSplitStatistics(g, "Splits (ALL):  ", gameRow(4), overallSplitCounter, overallGreatSplits, overallOkaySplits, overallSlowSplits);
+
+		renderSplitStatistics(g, "Splits (NOW): ", gameRow(5), currentSplitCounter, currentGreatSplits, currentOkaySplits, currentSlowSplits);
 
 		final splitColor = switch (getSplitCategory()) {
 			case GREAT:
@@ -249,22 +260,22 @@ class TrainingInfoBoardState implements IBoardState {
 				g.color = Red;
 		}
 
-		shadowDrawString(g, 3, Black, splitColor, '$splitT'.lpad(" ", 3), GAME_INFO_X, gameRow(5));
-		g.fillRect(0, gameRow(5), splitT * 4, 32);
+		shadowDrawString(g, 3, Black, splitColor, '$splitT'.lpad(" ", 3), GAME_INFO_X, gameRow(6));
+		g.fillRect(0, gameRow(6), splitT * 4, 32);
 
 		g.color = White;
 
-		shadowDrawString(g, 3, Black, White, 'Chain Standard Advantage: $chainAdvantage', GAME_INFO_X, gameRow(8));
+		shadowDrawString(g, 3, Black, White, 'Chain Standard Advantage: $chainAdvantage', GAME_INFO_X, gameRow(9));
 
-		chainAdvantageDisplay.render(g, GAME_INFO_X, gameRow(9), alpha);
+		chainAdvantageDisplay.render(g, GAME_INFO_X, gameRow(10), alpha);
 
-		shadowDrawString(g, 3, Black, White, 'To Counter: $toCounterChain ($counterDifference remains)', GAME_INFO_X, gameRow(11));
+		shadowDrawString(g, 3, Black, White, 'To Counter: $toCounterChain ($counterDifference remains)', GAME_INFO_X, gameRow(12));
 
-		afterCounterDisplay.render(g, GAME_INFO_X, gameRow(12), alpha);
+		afterCounterDisplay.render(g, GAME_INFO_X, gameRow(13), alpha);
 
 		final targetPoints = marginManager.targetPoints;
 
-		shadowDrawString(g, 3, Black, White, 'Target Pts (Margin T): $targetPoints (${Std.int(marginManager.marginTime / 60)})', GAME_INFO_X, gameRow(14));
+		shadowDrawString(g, 3, Black, White, 'Target Pts (Margin T): $targetPoints (${Std.int(marginManager.marginTime / 60)})', GAME_INFO_X, gameRow(15));
 
 		final dropBonus = Std.int(playerScoreManager.dropBonus);
 
@@ -276,9 +287,9 @@ class TrainingInfoBoardState implements IBoardState {
 				case SENDING: 'Auto-Attack SENDING: $autoAttackMaxChain-CHAIN!';
 			}
 
-			shadowDrawString(g, 3, Black, White, autoAttackString, GAME_INFO_X, gameRow(17));
+			shadowDrawString(g, 3, Black, White, autoAttackString, GAME_INFO_X, gameRow(18));
 		} else {
-			shadowDrawString(g, 3, Black, White, "Auto-Attack DISABLED", GAME_INFO_X, gameRow(17));
+			shadowDrawString(g, 3, Black, White, "Auto-Attack DISABLED", GAME_INFO_X, gameRow(18));
 		}
 	}
 
@@ -321,6 +332,10 @@ class TrainingInfoBoardState implements IBoardState {
 		currentOkaySplits = 0;
 		currentSlowSplits = 0;
 		currentSplitCounter = 0;
+	}
+
+	public inline function incrementGroupCounter() {
+		++groupCounter;
 	}
 
 	public function startSplitTimer() {
@@ -433,6 +448,10 @@ class TrainingInfoBoardState implements IBoardState {
 	public function update() {
 		if (updateSplitT) {
 			splitT++;
+		}
+
+		if (shouldUpdatePPST) {
+			ppsT++;
 		}
 
 		if (trainingSettings.autoAttack && !showSteps) {

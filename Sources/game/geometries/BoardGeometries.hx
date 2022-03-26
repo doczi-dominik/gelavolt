@@ -1,5 +1,6 @@
 package game.geometries;
 
+import game.boardstates.TrainingInfoBoardState;
 import game.gelos.Gelo;
 import utils.Point;
 
@@ -40,6 +41,17 @@ class BoardGeometries {
 		scoreDisplayY: HEIGHT + 33,
 		garbageTray: {x: 0, y: -Gelo.SIZE - 13},
 		editGeloDisplay: {x: WIDTH + 48, y: BoardGeometries.HEIGHT - Gelo.SIZE}
+	}
+
+	public static final INFO: BoardGeometries = {
+		absolutePosition: {x: 888, y: 160},
+		scale: 1,
+		orientation: BoardOrientation.RIGHT,
+		preview: {x: -48, y: Gelo.HALFSIZE},
+		allClearIndicator: {x: CENTER.x, y: HEIGHT / 5},
+		scoreDisplayY: HEIGHT + 33,
+		garbageTray: {x: TrainingInfoBoardState.GAME_INFO_X, y: -Gelo.SIZE - 13},
+		editGeloDisplay: {x: -48, y: BoardGeometries.HEIGHT - Gelo.SIZE}
 	}
 
 	public final absolutePosition: Point;
