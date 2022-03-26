@@ -205,7 +205,8 @@ class EndlessGameStateBuilder {
 			chainCounter: chainCounter,
 			chainSim: chainSim,
 			clearOnXModeContainer: Profile.primary.endlessSettings,
-			randomizer: randomizer
+			randomizer: randomizer,
+			marginManager: marginManager
 		});
 	}
 

@@ -278,7 +278,8 @@ class TrainingGameStateBuilder {
 			chainSim: playerChainSim,
 			trainingSettings: Profile.primary.trainingSettings,
 			randomizer: randomizer,
-			clearOnXModeContainer: Profile.primary.trainingSettings
+			clearOnXModeContainer: Profile.primary.trainingSettings,
+			marginManager: marginManager
 		});
 	}
 
