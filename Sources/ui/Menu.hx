@@ -108,6 +108,11 @@ class Menu {
 		if (pages.isEmpty()) {
 			pages.add(poppedPage);
 		}
+
+		final firstPage = pages.first();
+
+		firstPage.onShow(this);
+		firstPage.onResize();
 	}
 
 	public inline function pushInputDevice(inputDevice: IInputDevice) {

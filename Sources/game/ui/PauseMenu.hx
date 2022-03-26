@@ -71,7 +71,14 @@ class PauseMenu extends Menu {
 		if (pages.isEmpty()) {
 			pages.add(poppedPage);
 			pauseMediator.resume();
+
+			return;
 		}
+
+		final firstPage = pages.first();
+
+		firstPage.onShow(this);
+		firstPage.onResize();
 	}
 
 	override function update() {

@@ -40,13 +40,15 @@ class ListMenuPage implements IMenuPage {
 		font = Assets.fonts.Pixellari;
 
 		widgets = [];
-		widgetIndex = 0;
-		minIndex = 0;
+	}
+
+	inline function setControlDisplays() {
+		controlDisplays = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlDisplays);
 	}
 
 	function onSelect() {
 		widgetIndex = Utils.intClamp(0, widgetIndex, widgets.length - 1);
-		controlDisplays = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlDisplays);
+		setControlDisplays();
 	}
 
 	function popPage() {
@@ -110,7 +112,10 @@ class ListMenuPage implements IMenuPage {
 			w.onShow(menu);
 		}
 
-		onSelect();
+		widgetIndex = 0;
+		minIndex = 0;
+
+		setControlDisplays();
 	}
 
 	public function update() {
