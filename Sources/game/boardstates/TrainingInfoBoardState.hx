@@ -332,6 +332,8 @@ class TrainingInfoBoardState implements IBoardState {
 		currentOkaySplits = 0;
 		currentSlowSplits = 0;
 		currentSplitCounter = 0;
+
+		stopSplitTimer();
 	}
 
 	public inline function incrementGroupCounter() {
