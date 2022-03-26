@@ -228,7 +228,15 @@ class OptionsPage extends ListMenuPage {
 			new ControlsPageWidget({
 				title: "Game Controls",
 				description: ["Change Controls Related To", "Gameplay"],
-				actions: [SHIFT_LEFT, SHIFT_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_LEFT, ROTATE_RIGHT],
+				actions: [
+					SHIFT_LEFT,
+					SHIFT_RIGHT,
+					SOFT_DROP,
+					HARD_DROP,
+					ROTATE_LEFT,
+					ROTATE_RIGHT,
+					QUICK_RESTART
+				],
 				inputDevice: inputDevice
 			}),
 			new ListSubPageWidget({

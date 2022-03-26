@@ -14,7 +14,8 @@ class EndlessBoardState extends StandardBoardState {
 		randomizer = opts.randomizer;
 	}
 
-	override function onLose() {
+	// public for EndlessBoard
+	override public function onLose() {
 		eraseField();
 		garbageManager.clear();
 
@@ -22,11 +23,11 @@ class EndlessBoardState extends StandardBoardState {
 			case CLEAR:
 			case RESTART:
 				queue.setIndex(0);
-				initSimStepState();
 			case NEW:
 				regenerateQueue();
-				initSimStepState();
 		}
+
+		initSimStepState();
 	}
 
 	function eraseField() {

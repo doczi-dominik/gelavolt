@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.boards.EndlessBoard;
 import input.IInputDevice;
 import game.ui.PauseMenu;
 import game.ui.ReplayPauseMenu;
@@ -209,11 +210,11 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildBoard() {
-		board = new SingleStateBoard({
+		board = new EndlessBoard({
 			actionBuffer: actionBuffer,
 			pauseMediator: pauseMediator,
 			inputDevice: inputDevice,
-			state: boardState
+			endlessState: boardState
 		});
 	}
 

@@ -87,7 +87,7 @@ final ACTION_DATA: Map<Action, ActionDataEntry> = [
 		title: "Toggle Edit Mode",
 		description: ["Toggle Between Play Mode And Edit Mode"],
 		inputType: PRESS,
-		isUnbindable: false
+		isUnbindable: true
 	},
 	EDIT_LEFT => {
 		title: "Move Cursor Left",
@@ -153,18 +153,28 @@ final ACTION_DATA: Map<Action, ActionDataEntry> = [
 		title: "Undo",
 		description: ["Undo The Last Gelo Group Placement"],
 		inputType: REPEAT,
-		isUnbindable: false
+		isUnbindable: true
 	},
 	NEXT_GROUP => {
 		title: "Draw Next Group",
 		description: ["Discard The Current Gelo Group", "And Draw The Next One From", "The Queue"],
 		inputType: REPEAT,
-		isUnbindable: false
+		isUnbindable: true
 	},
 	TOGGLE_MARKERS => {
 		title: "Toggle Gelos / Markers",
 		description: ["Alternate Between Editing Gelos And", "Editing Markers"],
 		inputType: PRESS,
-		isUnbindable: false
+		isUnbindable: true
 	},
+	QUICK_RESTART => {
+		title: "Quick Restart",
+		description: [
+			"Clear The Field And Reset According",
+			"To The 'Clear On X Mode' Settings",
+			"(Endless/Training Mode ONLY)"
+		],
+		inputType: REPEAT,
+		isUnbindable: true
+	}
 ];

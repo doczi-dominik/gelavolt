@@ -206,6 +206,14 @@ class InputSettings {
 				axis: null,
 				direction: null
 			}
+		},
+		QUICK_RESTART => {
+			keyboardInput: R,
+			gamepadButton: L1,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
 		}
 	];
 

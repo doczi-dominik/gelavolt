@@ -110,6 +110,10 @@ class TrainingBoard implements IBoard {
 			} else if (inputDevice.getAction(NEXT_GROUP)) {
 				playState.nextGroup();
 			}
+
+			if (inputDevice.getAction(QUICK_RESTART)) {
+				playState.onLose();
+			}
 		} else {
 			if (inputDevice.getAction(PREVIOUS_STEP)) {
 				editState.viewPrevious();
