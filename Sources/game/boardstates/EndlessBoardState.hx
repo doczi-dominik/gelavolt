@@ -22,6 +22,7 @@ class EndlessBoardState extends StandardBoardState {
 		eraseField();
 		garbageManager.clear();
 		marginManager.reset();
+		allClearManager.stopAnimation();
 
 		switch (clearOnXModeContainer.clearOnXMode) {
 			case CLEAR:
