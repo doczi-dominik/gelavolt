@@ -288,6 +288,22 @@ class TrainingPauseMenu extends PauseMenu {
 								playState.regenerateQueue();
 								playState.previousGroup();
 							}
+						}),
+						new NumberRangeWidget({
+							title: "Keep Groups",
+							description: [
+								"Set The Number Of Gelo Groups",
+								"To Keep From The Start Of The",
+								"Previous Queue After Randomization"
+							],
+							startValue: trainingSettings.keepGroupCount,
+							minValue: 0,
+							maxValue: 128,
+							delta: 1,
+							onChange: (value) -> {
+								trainingSettings.keepGroupCount = Std.int(value);
+								SaveManager.saveProfiles();
+							}
 						})
 					]
 				}),

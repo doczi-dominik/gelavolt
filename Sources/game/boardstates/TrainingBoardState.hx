@@ -49,7 +49,15 @@ class TrainingBoardState extends EndlessBoardState {
 
 	// Makes regenerateQueue public
 	override public function regenerateQueue() {
-		super.regenerateQueue();
+		randomizer.generatePools(TSU);
+
+		final data = randomizer.createQueueData(Dropsets.CLASSICAL);
+
+		for (i in 0...trainingSettings.keepGroupCount) {
+			data[i] = queue.get(i);
+		}
+
+		queue.load(data);
 	}
 
 	public function getField() {
