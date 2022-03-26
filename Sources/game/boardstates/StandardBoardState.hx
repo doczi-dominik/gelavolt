@@ -387,8 +387,6 @@ class StandardBoardState implements IBoardState {
 		} else {
 			state = SIM_STEP(END);
 		}
-
-		afterEnd();
 	}
 
 	function handleEndStep() {
