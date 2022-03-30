@@ -1,6 +1,8 @@
 package game.ui;
 
-import main_menu.ui.MainMenuPage;
+import main_menu.MainMenuScreen;
+import Screen.GlobalScreenSwitcher;
+import ui.AreYouSureSubPageWidget;
 import main_menu.ui.OptionsPage;
 import game.mediators.PauseMediator;
 import save_data.PrefsSettings;
@@ -46,13 +48,14 @@ class PauseMenu extends Menu {
 				description: ["Change Various Options and Settings"],
 				subPage: new OptionsPage(prefsSettings)
 			}),
-			new ButtonWidget({
-				title: "Show Main Menu",
-				description: ["Display The Main Menu"],
+			new AreYouSureSubPageWidget({
+				title: "Exit To Main Menu",
+				description: ["Return To The Main Menu"],
+				content: "Return To The Main Menu?",
 				callback: () -> {
-					pushPage(new MainMenuPage(prefsSettings));
+					GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 				}
-			}),
+			})
 			#if sys
 			new ButtonWidget({
 				title: "Exit To Desktop",
