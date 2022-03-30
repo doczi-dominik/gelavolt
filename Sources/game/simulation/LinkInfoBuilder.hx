@@ -40,7 +40,7 @@ class LinkInfoBuilder implements ILinkInfoBuilder {
 		final chainPower = powerTable.get(chain);
 
 		final bonuses = groupBonus + colorBonus;
-		final score = 10 * clearCount * Utils.intClamp(1, chainPower + bonuses, 99);
+		final score = 10 * clearCount * Utils.intClamp(1, chainPower + bonuses, 999);
 
 		final garbageScore = (rule.dropBonusGarbage) ? score + params.dropBonus : score;
 
