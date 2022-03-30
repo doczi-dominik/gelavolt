@@ -1,9 +1,9 @@
 package game.ui;
 
+import auto_attack.AutoAttackManager;
 import game.mediators.ControlDisplayContainer;
 import game.rules.Rule;
 import game.rules.MarginTimeManager;
-import game.boardstates.TrainingInfoBoardState;
 import game.garbage.GarbageManager;
 import save_data.TrainingSettings;
 import game.simulation.ChainSimulator;
@@ -19,7 +19,6 @@ class TrainingPauseMenuOptions extends PauseMenuOptions {
 	public final randomizer: Randomizer;
 	public final queue: Queue;
 	public final playState: TrainingBoardState;
-	public final infoState: TrainingInfoBoardState;
 	public final trainingBoard: TrainingBoard;
 	public final allClearManager: AllClearManager;
 	public final chainSim: ChainSimulator;
@@ -28,4 +27,5 @@ class TrainingPauseMenuOptions extends PauseMenuOptions {
 	public final playerGarbageManager: GarbageManager;
 	public final infoGarbageManager: GarbageManager;
 	public final controlDisplayContainer: ControlDisplayContainer;
+	public final autoAttackManager: AutoAttackManager;
 }

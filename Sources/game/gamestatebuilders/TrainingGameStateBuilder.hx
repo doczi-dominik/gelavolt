@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import auto_attack.AutoAttackManager;
 import game.gelogroups.TrainingGeloGroup;
 import game.states.ControlDisplayGameState;
 import game.mediators.ControlDisplayContainer;
@@ -71,6 +72,7 @@ class TrainingGameStateBuilder {
 	var playerAllClearManager: AllClearManager;
 
 	var infoGarbageManager: GarbageManager;
+	var autoAttackManager: AutoAttackManager;
 
 	var infoState: TrainingInfoBoardState;
 	var playState: TrainingBoardState;
@@ -237,6 +239,23 @@ class TrainingGameStateBuilder {
 		});
 	}
 
+	inline function buildAutoAttackManager() {
+		autoAttackManager = new AutoAttackManager({
+			rule: gameMode.rule,
+			rng: rng,
+			geometries: BoardGeometries.INFO,
+			trainingSettings: Profile.primary.trainingSettings,
+			prefsSettings: Profile.primary.prefs,
+			linkBuilder: new LinkInfoBuilder({
+				rule: gameMode.rule,
+				marginManager: marginManager
+			}),
+			garbageManager: infoGarbageManager,
+			chainCounter: new ChainCounter(),
+			particleManager: particleManager
+		});
+	}
+
 	inline function buildInfoState() {
 		final prefsSettings = Profile.primary.prefs;
 
@@ -244,7 +263,6 @@ class TrainingGameStateBuilder {
 			geometries: BoardGeometries.INFO,
 			marginManager: marginManager,
 			rule: gameMode.rule,
-			rng: rng,
 			linkBuilder: new LinkInfoBuilder({
 				rule: gameMode.rule,
 				marginManager: marginManager
@@ -252,12 +270,11 @@ class TrainingGameStateBuilder {
 			trainingSettings: Profile.primary.trainingSettings,
 			chainAdvantageDisplay: GarbageTray.create(prefsSettings),
 			afterCounterDisplay: GarbageTray.create(prefsSettings),
-			autoChainCounter: new ChainCounter(),
-			garbageManager: infoGarbageManager,
 			prefsSettings: prefsSettings,
-			particleManager: particleManager,
+			autoAttackManager: autoAttackManager,
 			playerScoreManager: playerScoreManager,
 			playerChainSim: playerChainSim,
+			garbageManager: infoGarbageManager,
 		});
 	}
 
@@ -283,7 +300,8 @@ class TrainingGameStateBuilder {
 			trainingSettings: Profile.primary.trainingSettings,
 			randomizer: randomizer,
 			clearOnXModeContainer: Profile.primary.trainingSettings,
-			marginManager: marginManager
+			marginManager: marginManager,
+			autoAttackManager: autoAttackManager
 		});
 	}
 
@@ -333,7 +351,6 @@ class TrainingGameStateBuilder {
 			randomizer: randomizer,
 			queue: playerQueue,
 			playState: playState,
-			infoState: infoState,
 			trainingBoard: playerBoard,
 			allClearManager: playerAllClearManager,
 			chainSim: playerChainSim,
@@ -341,7 +358,8 @@ class TrainingGameStateBuilder {
 			trainingSettings: Profile.primary.trainingSettings,
 			playerGarbageManager: playerGarbageManager,
 			infoGarbageManager: infoGarbageManager,
-			controlDisplayContainer: controlDisplayContainer
+			controlDisplayContainer: controlDisplayContainer,
+			autoAttackManager: autoAttackManager
 		});
 	}
 
@@ -400,6 +418,7 @@ class TrainingGameStateBuilder {
 		buildPlayerAllClearManager();
 
 		buildInfoGarbageManager();
+		buildAutoAttackManager();
 
 		buildInfoState();
 		buildPlayState();

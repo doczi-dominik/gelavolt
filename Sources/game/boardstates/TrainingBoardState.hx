@@ -1,16 +1,19 @@
 package game.boardstates;
 
+import auto_attack.AutoAttackManager;
 import save_data.TrainingSettings;
 
 class TrainingBoardState extends EndlessBoardState {
 	final trainingSettings: TrainingSettings;
 	final infoState: TrainingInfoBoardState;
+	final autoAttackManager: AutoAttackManager;
 
 	public function new(opts: TrainingBoardStateOptions) {
 		super(opts);
 
 		trainingSettings = opts.trainingSettings;
 		infoState = opts.infoState;
+		autoAttackManager = opts.autoAttackManager;
 	}
 
 	override function lockGroup() {
@@ -44,7 +47,7 @@ class TrainingBoardState extends EndlessBoardState {
 		super.onLose();
 
 		infoState.resetCurrentSplitStatistics();
-		infoState.resetAutoAttackWaitingState();
+		autoAttackManager.reset();
 	}
 
 	// Makes regenerateQueue public

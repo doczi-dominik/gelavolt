@@ -1,5 +1,9 @@
 package game.ui;
 
+import auto_attack.AutoAttackManager;
+import game.simulation.LinkInfoBuilder;
+import ui.ListMenuPage;
+import auto_attack.AutoAttackType;
 import game.mediators.ControlDisplayContainer;
 import game.rules.ColorBonusTableType;
 import game.rules.PowerTableType;
@@ -29,7 +33,6 @@ class TrainingPauseMenu extends PauseMenu {
 	final randomizer: Randomizer;
 	final queue: Queue;
 	final playState: TrainingBoardState;
-	final infoState: TrainingInfoBoardState;
 	final trainingBoard: TrainingBoard;
 	final allClearManager: AllClearManager;
 	final chainSim: ChainSimulator;
@@ -38,13 +41,13 @@ class TrainingPauseMenu extends PauseMenu {
 	final playerGarbageManager: GarbageManager;
 	final infoGarbageManager: GarbageManager;
 	final controlDisplayContainer: ControlDisplayContainer;
+	final autoAttackManager: AutoAttackManager;
 
 	public function new(opts: TrainingPauseMenuOptions) {
 		rule = opts.rule;
 		randomizer = opts.randomizer;
 		queue = opts.queue;
 		playState = opts.playState;
-		infoState = opts.infoState;
 		trainingBoard = opts.trainingBoard;
 		allClearManager = opts.allClearManager;
 		chainSim = opts.chainSim;
@@ -53,6 +56,7 @@ class TrainingPauseMenu extends PauseMenu {
 		playerGarbageManager = opts.playerGarbageManager;
 		infoGarbageManager = opts.infoGarbageManager;
 		controlDisplayContainer = opts.controlDisplayContainer;
+		autoAttackManager = opts.autoAttackManager;
 
 		super(opts);
 	}
@@ -134,13 +138,14 @@ class TrainingPauseMenu extends PauseMenu {
 									defaultValue: trainingSettings.autoAttack,
 									onChange: (value) -> {
 										trainingSettings.autoAttack = value;
+										autoAttackManager.reset();
 										SaveManager.saveProfiles();
 									}
 								}),
 								new ButtonWidget({
 									title: "Reset Timer",
 									description: ["Reset The Auto-Attack", "Timer"],
-									callback: infoState.resetAutoAttackWaitingState
+									callback: autoAttackManager.reset
 								}),
 								new NumberRangeWidget({
 									title: "Min. Delay",
@@ -151,7 +156,7 @@ class TrainingPauseMenu extends PauseMenu {
 									startValue: trainingSettings.minAttackTime,
 									onChange: (value) -> {
 										trainingSettings.minAttackTime = Std.int(value);
-										infoState.resetAutoAttackWaitingState();
+										autoAttackManager.reset();
 										SaveManager.saveProfiles();
 									}
 								}),
@@ -164,82 +169,119 @@ class TrainingPauseMenu extends PauseMenu {
 									startValue: trainingSettings.maxAttackTime,
 									onChange: (value) -> {
 										trainingSettings.maxAttackTime = Std.int(value);
-										infoState.resetAutoAttackWaitingState();
+										autoAttackManager.reset();
 										SaveManager.saveProfiles();
 									}
 								}),
-								new NumberRangeWidget({
-									title: "Min. Chain",
-									description: ["Set The Smallest Chain", "That Can Be Sent"],
-									minValue: 1,
-									maxValue: 50,
-									delta: 1,
-									startValue: trainingSettings.minAttackChain,
+								new OptionListWidget({
+									title: "Auto-Attack Type",
+									description: [
+										"Alternate Between RANDOM And CUSTOM",
+										"Auto-Attack Types.",
+										"",
+										"CUSTOM Enables You To Specify",
+										"Settings For Each Chain Link"
+									],
+									options: [AutoAttackType.RANDOM, CUSTOM],
+									startIndex: switch (autoAttackManager.type) {
+										case RANDOM: 0;
+										case CUSTOM: 1;
+									},
 									onChange: (value) -> {
-										trainingSettings.minAttackChain = Std.int(value);
-										SaveManager.saveProfiles();
+										autoAttackManager.type = value;
 									}
 								}),
-								new NumberRangeWidget({
-									title: "Max. Chain",
-									description: ["Set The Largest Chain", "That Can Be Sent"],
-									minValue: 1,
-									maxValue: 50,
-									delta: 1,
-									startValue: trainingSettings.maxAttackChain,
-									onChange: (value) -> {
-										trainingSettings.maxAttackChain = Std.int(value);
-										SaveManager.saveProfiles();
+								new ButtonWidget({
+									title: "Configure",
+									description: ["Configure Chain Steps According", "To The Selected Type"],
+									callback: () -> {
+										pushPage(switch (autoAttackManager.type) {
+											case RANDOM: new ListMenuPage({
+													header: "Configure",
+													widgetBuilder: (_) -> [
+														new NumberRangeWidget({
+															title: "Min. Chain",
+															description: ["Set The Smallest Chain", "That Can Be Sent"],
+															minValue: 1,
+															maxValue: 50,
+															delta: 1,
+															startValue: trainingSettings.minAttackChain,
+															onChange: (value) -> {
+																trainingSettings.minAttackChain = Std.int(value);
+																SaveManager.saveProfiles();
+															}
+														}),
+														new NumberRangeWidget({
+															title: "Max. Chain",
+															description: ["Set The Largest Chain", "That Can Be Sent"],
+															minValue: 1,
+															maxValue: 50,
+															delta: 1,
+															startValue: trainingSettings.maxAttackChain,
+															onChange: (value) -> {
+																trainingSettings.maxAttackChain = Std.int(value);
+																SaveManager.saveProfiles();
+															}
+														}),
+														new NumberRangeWidget({
+															title: "Min. Colors",
+															description: ["Set The Minimum Number of", "Colors That Can Be Used", "In The Chain"],
+															minValue: 1,
+															maxValue: 5,
+															delta: 1,
+															startValue: trainingSettings.minAttackColors,
+															onChange: (value) -> {
+																trainingSettings.minAttackColors = Std.int(value);
+																SaveManager.saveProfiles();
+															}
+														}),
+														new NumberRangeWidget({
+															title: "Max. Colors",
+															description: ["Set The Maximum Number of", "Colors That Can Be Used", "In the Chain"],
+															minValue: 1,
+															maxValue: 5,
+															delta: 1,
+															startValue: trainingSettings.maxAttackColors,
+															onChange: (value) -> {
+																trainingSettings.maxAttackColors = Std.int(value);
+																SaveManager.saveProfiles();
+															}
+														}),
+														new NumberRangeWidget({
+															title: "Min. Plus Gelos/Color",
+															description: ["Set The Minimum", " Number of Gelos That", "Can Be Added To", "The Pop Count"],
+															minValue: 0,
+															maxValue: 14,
+															delta: 1,
+															startValue: trainingSettings.minAttackGroupDiff,
+															onChange: (value) -> {
+																trainingSettings.minAttackGroupDiff = Std.int(value);
+																SaveManager.saveProfiles();
+															}
+														}),
+														new NumberRangeWidget({
+															title: "Max. Plus Gelos/Color",
+															description: ["Set The Maximum", " Number Of Gelos That", "Can Be Added To", "The Pop Count"],
+															minValue: 0,
+															maxValue: 14,
+															delta: 1,
+															startValue: trainingSettings.maxAttackGroupDiff,
+															onChange: (value) -> {
+																trainingSettings.maxAttackGroupDiff = Std.int(value);
+																SaveManager.saveProfiles();
+															}
+														})
+													]
+												});
+											case CUSTOM:
+												new CustomAutoAttackPage(autoAttackManager, new LinkInfoBuilder({
+													rule: rule,
+													marginManager: marginManager
+												}));
+										});
 									}
 								}),
-								new NumberRangeWidget({
-									title: "Min. Colors",
-									description: ["Set The Minimum Number of", "Colors That Can Be Used", "In The Chain"],
-									minValue: 1,
-									maxValue: 5,
-									delta: 1,
-									startValue: trainingSettings.minAttackColors,
-									onChange: (value) -> {
-										trainingSettings.minAttackColors = Std.int(value);
-										SaveManager.saveProfiles();
-									}
-								}),
-								new NumberRangeWidget({
-									title: "Max. Colors",
-									description: ["Set The Maximum Number of", "Colors That Can Be Used", "In the Chain"],
-									minValue: 1,
-									maxValue: 5,
-									delta: 1,
-									startValue: trainingSettings.maxAttackColors,
-									onChange: (value) -> {
-										trainingSettings.maxAttackColors = Std.int(value);
-										SaveManager.saveProfiles();
-									}
-								}),
-								new NumberRangeWidget({
-									title: "Min. Plus Gelos/Color",
-									description: ["Set The Minimum", " Number of Gelos That", "Can Be Added To", "The Pop Count"],
-									minValue: 0,
-									maxValue: 14,
-									delta: 1,
-									startValue: trainingSettings.minAttackGroupDiff,
-									onChange: (value) -> {
-										trainingSettings.minAttackGroupDiff = Std.int(value);
-										SaveManager.saveProfiles();
-									}
-								}),
-								new NumberRangeWidget({
-									title: "Max. Plus Gelos/Color",
-									description: ["Set The Maximum", " Number Of Gelos That", "Can Be Added To", "The Pop Count"],
-									minValue: 0,
-									maxValue: 14,
-									delta: 1,
-									startValue: trainingSettings.maxAttackGroupDiff,
-									onChange: (value) -> {
-										trainingSettings.maxAttackGroupDiff = Std.int(value);
-										SaveManager.saveProfiles();
-									}
-								})
+
 							]
 						})
 					]
