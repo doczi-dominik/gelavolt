@@ -432,6 +432,21 @@ class GeloGroup {
 		return false;
 	}
 
+	public function hardDrop() {
+		final mainCell = field.screenToCell(mainShadow.x, mainShadow.y);
+
+		field.newGelo(mainCell.x, mainCell.y, mainShadow.color, false).startSplitting();
+
+		for (o in otherShadows) {
+			final otherCell = field.screenToCell(o.x, o.y);
+
+			field.newGelo(otherCell.x, otherCell.y, o.color, false).startSplitting();
+		}
+
+		isShadowVisible = false;
+		isVisible = false;
+	}
+
 	function getPrimaryColor(geloColor: GeloColor) {
 		return prefsSettings.primaryColors[geloColor];
 	}

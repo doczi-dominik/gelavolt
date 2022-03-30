@@ -195,6 +195,13 @@ class StandardBoardState implements IBoardState {
 	function updateControllingState() {
 		controlGroup();
 
+		if (currentActions.hardDrop) {
+			geloGroup.hardDrop();
+			lockGroup();
+
+			return;
+		}
+
 		if (geloGroup.drop(currentActions.softDrop)) {
 			lockGroup();
 		}
