@@ -99,6 +99,7 @@ class TrainingBoardState extends EndlessBoardState {
 		copyFromSnapshot();
 
 		geloGroup.isVisible = false;
+		geloGroup.isShadowVisible = false;
 
 		beginChainSimulation();
 	}
