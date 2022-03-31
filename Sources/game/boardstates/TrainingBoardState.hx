@@ -86,21 +86,20 @@ class TrainingBoardState extends EndlessBoardState {
 	}
 
 	public function previousGroup() {
-		// Must call twice since initSpawningState() calls next()
-		queue.previous();
-		queue.previous();
+		if (chainSim.viewIndex < 3)
+			return;
 
 		chainSim.rewindToPreviousEndStep();
+
+		resume();
+	}
+
+	public function nextGroup() {
+		chainSim.jumpToBeginStep();
 		copyFromSnapshot();
 
 		geloGroup.isVisible = false;
 
-		initSimStepState();
-	}
-
-	public function nextGroup() {
-		geloGroup.isVisible = false;
-
-		lockGroup();
+		beginChainSimulation();
 	}
 }

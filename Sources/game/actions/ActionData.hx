@@ -156,8 +156,13 @@ final ACTION_DATA: Map<Action, ActionDataEntry> = [
 		isUnbindable: true
 	},
 	NEXT_GROUP => {
-		title: "Draw Next Group",
-		description: ["Discard The Current Gelo Group", "And Draw The Next One From", "The Queue"],
+		title: "Redo",
+		description: [
+			"Redo The Last Undone Placement Or Get",
+			"The Next Gelo Group From",
+			"The Queue If There Is Nothing",
+			"To Undo"
+		],
 		inputType: REPEAT,
 		isUnbindable: true
 	},

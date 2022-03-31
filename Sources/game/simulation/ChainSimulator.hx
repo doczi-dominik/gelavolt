@@ -22,7 +22,7 @@ class ChainSimulator {
 	final garbageDisplay: GarbageTray;
 	final accumulatedDisplay: GarbageTray;
 
-	var stepIndex: Int;
+	public var stepIndex: Int;
 
 	public final steps: Array<SimulationStep> = [];
 
@@ -215,7 +215,7 @@ class ChainSimulator {
 
 			if (getViewedStep().type == END) {
 				if (passedOne) {
-					editViewed();
+					stepIndex = viewIndex + 1;
 					return;
 				}
 
@@ -223,6 +223,19 @@ class ChainSimulator {
 			}
 
 			viewPrevious();
+		}
+	}
+
+	public function jumpToBeginStep() {
+		var i = viewIndex;
+
+		while (++i < steps.length) {
+			if (steps[i].type == BEGIN) {
+				viewIndex = i;
+				editViewed();
+
+				return;
+			}
 		}
 	}
 
