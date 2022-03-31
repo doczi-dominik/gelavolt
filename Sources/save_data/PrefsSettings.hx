@@ -8,6 +8,7 @@ enum abstract PrefsSettingsKey(String) to String {
 	final COLOR_TINTS;
 	final PRIMARY_COLORS;
 	final BOARD_BACKGROUND;
+	final MENU_REMEMBER_CURSOR;
 	final CAP_AT_CROWNS;
 	final SHOW_GROUP_SHADOW;
 	final SHADOW_OPACITY;
@@ -15,6 +16,9 @@ enum abstract PrefsSettingsKey(String) to String {
 	final SHADOW_WILL_TRIGGER_CHAIN;
 }
 
+// TODO: Separate into GamePrefs And MenuPrefs
+// Should explain that e.g.: OptionsPage uses the provided Prefs
+// to adjust a specific profile while Menu's Prefs are tied
 class PrefsSettings {
 	static final COLOR_TINTS_DEFAULT = [
 		COLOR1 => White,
@@ -37,6 +41,7 @@ class PrefsSettings {
 	];
 
 	static final BOARD_BACKGROUND_DEFAULT = Color.fromBytes(64, 32, 32);
+	static inline final MENU_REMEMBER_CURSOR_DEFAULT = true;
 	static inline final CAP_AT_CROWNS_DEFAULT = true;
 	static inline final SHOW_GROUP_SHADOW_DEFAULT = true;
 	static inline final SHADOW_OPACITY_DEFAULT = 0.5;
@@ -47,6 +52,7 @@ class PrefsSettings {
 	public final primaryColors: Map<GeloColor, Color>;
 
 	public var boardBackground: Color;
+	public var menuRememberCursor: Bool;
 	public var capAtCrowns: Bool;
 	public var showGroupShadow: Bool;
 	public var shadowOpacity: Float;
@@ -58,6 +64,7 @@ class PrefsSettings {
 		primaryColors = PRIMARY_COLORS_DEFAULT.copy();
 
 		boardBackground = BOARD_BACKGROUND_DEFAULT;
+		menuRememberCursor = MENU_REMEMBER_CURSOR_DEFAULT;
 		capAtCrowns = CAP_AT_CROWNS_DEFAULT;
 		showGroupShadow = SHOW_GROUP_SHADOW_DEFAULT;
 		shadowOpacity = SHADOW_OPACITY_DEFAULT;
@@ -76,6 +83,8 @@ class PrefsSettings {
 								primaryColors[cast(kk, GeloColor)] = cast(vv, Color);
 						case BOARD_BACKGROUND:
 							boardBackground = cast(v, Color);
+						case MENU_REMEMBER_CURSOR:
+							menuRememberCursor = cast(v, Bool);
 						case CAP_AT_CROWNS:
 							capAtCrowns = cast(v, Bool);
 						case SHOW_GROUP_SHADOW:
@@ -130,6 +139,11 @@ class PrefsSettings {
 
 		if (boardBackground != BOARD_BACKGROUND_DEFAULT) {
 			overrides.set(BOARD_BACKGROUND, boardBackground);
+			wereOverrides = true;
+		}
+
+		if (menuRememberCursor != MENU_REMEMBER_CURSOR_DEFAULT) {
+			overrides.set(MENU_REMEMBER_CURSOR, menuRememberCursor);
 			wereOverrides = true;
 		}
 

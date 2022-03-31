@@ -40,6 +40,8 @@ class ListMenuPage implements IMenuPage {
 		font = Assets.fonts.Pixellari;
 
 		widgets = [];
+		widgetIndex = 0;
+		minIndex = 0;
 	}
 
 	inline function setControlDisplays() {
@@ -112,8 +114,10 @@ class ListMenuPage implements IMenuPage {
 			w.onShow(menu);
 		}
 
-		widgetIndex = 0;
-		minIndex = 0;
+		if (!menu.prefsSettings.menuRememberCursor) {
+			widgetIndex = 0;
+			minIndex = 0;
+		}
 
 		setControlDisplays();
 	}

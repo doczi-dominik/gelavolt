@@ -17,16 +17,15 @@ import kha.Window;
 #end
 
 class PauseMenu extends Menu {
-	final prefsSettings: PrefsSettings;
 	final pauseMediator: PauseMediator;
 
 	public var updateGameState(default, null) = false;
 
 	public function new(opts: PauseMenuOptions) {
-		prefsSettings = opts.prefsSettings;
 		pauseMediator = opts.pauseMediator;
 
 		super({
+			prefsSettings: opts.prefsSettings,
 			positionFactor: 0,
 			widthFactor: 1,
 			initialPage: new ListMenuPage({

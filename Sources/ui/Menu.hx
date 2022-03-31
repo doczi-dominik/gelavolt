@@ -1,5 +1,6 @@
 package ui;
 
+import save_data.PrefsSettings;
 import input.IInputDevice;
 import kha.Assets;
 import kha.Font;
@@ -33,6 +34,7 @@ class Menu {
 	var warningFontWidths: Array<Float>;
 	var renderX: Float;
 
+	public final prefsSettings: PrefsSettings;
 	public final scaleManager: ScaleManager;
 
 	public var padding(default, null): Float;
@@ -48,6 +50,7 @@ class Menu {
 		positionFactor = opts.positionFactor;
 		widthFactor = opts.widthFactor;
 
+		prefsSettings = opts.prefsSettings;
 		scaleManager = new ScaleManager(ScaleManager.SCREEN_DESIGN_WIDTH, ScaleManager.SCREEN_DESIGN_HEIGHT);
 
 		ScaleManager.addOnResizeCallback(resize);

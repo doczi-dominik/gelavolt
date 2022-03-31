@@ -102,53 +102,87 @@ class OptionsPage extends ListMenuPage {
 				#end
 				new ListSubPageWidget({
 					header: "Personalization",
-					description: ["Change Various Options Related", "To Appearance And Game Mechanics"],
+					description: [
+						"Change Various Options Related",
+						"To Appearance, Menu Navigation",
+						"And Game Mechanics"
+					],
 					widgetBuilder: (_) -> [
 						new ListSubPageWidget({
-							header: "Gelo Group Shadow Options",
-							description: ["Change Various Options Related", "To the Gelo Group Shadow Appearance"],
-							widgetBuilder: (_) -> [
+							header: "Menu Preferences",
+							description: ["Change Various Options Related To", "Menu Navigation And Appearance"],
+							widgetBuilder: (menu) -> [
 								new YesNoWidget({
-									title: "Enable",
-									description: ["Enable Or Disable The Shadow", "That Shows Where Gelo", "Groups Will Fall"],
-									defaultValue: prefsSettings.showGroupShadow,
+									title: "Remember Cursor Position",
+									description: [
+										"Whether To Remember",
+										"The Cursor's Position",
+										"When Entering/Leaving",
+										"A Submenu",
+										"",
+										"If Disabled, The Initial",
+										"Selection Will Always Be",
+										"The First Item"
+									],
+									defaultValue: menu.prefsSettings.menuRememberCursor,
 									onChange: (value) -> {
-										prefsSettings.showGroupShadow = value;
-										SaveManager.saveProfiles();
-									}
-								}),
-								new NumberRangeWidget({
-									title: "Opacity",
-									description: ["Change The Transparency Of The", "Gelo Group Shadow"],
-									minValue: 0,
-									maxValue: 1,
-									delta: 0.1,
-									startValue: prefsSettings.shadowOpacity,
-									onChange: (value) -> {
-										prefsSettings.shadowOpacity = value;
-										SaveManager.saveProfiles();
-									}
-								}),
-								new YesNoWidget({
-									title: "Highlight Rotating Shadows",
-									description: ["Alter The Appearance Of Rotating", "Gelos' Shadow"],
-									defaultValue: prefsSettings.shadowHighlightOthers,
-									onChange: (value) -> {
-										prefsSettings.shadowHighlightOthers = value;
-										SaveManager.saveProfiles();
-									}
-								}),
-								new YesNoWidget({
-									title: "Show Potential Chain Triggering",
-									description: ["Animate The Gelo Group Shadow", "If A Chain Is About To Be", "Triggered"],
-									defaultValue: prefsSettings.shadowWillTriggerChain,
-									onChange: (value) -> {
-										prefsSettings.shadowWillTriggerChain = value;
+										menu.prefsSettings.menuRememberCursor = value;
 										SaveManager.saveProfiles();
 									}
 								})
 							]
-						})
+						}),
+						new ListSubPageWidget({
+							header: "Game Preferences",
+							description: ["Change Various Options Related To", "Game Appearance And Mechanics"],
+							widgetBuilder: (_) -> [
+								new ListSubPageWidget({
+									header: "Gelo Group Shadow Options",
+									description: ["Change Various Options Related", "To the Gelo Group Shadow Appearance"],
+									widgetBuilder: (_) -> [
+										new YesNoWidget({
+											title: "Enable",
+											description: ["Enable Or Disable The Shadow", "That Shows Where Gelo", "Groups Will Fall"],
+											defaultValue: prefsSettings.showGroupShadow,
+											onChange: (value) -> {
+												prefsSettings.showGroupShadow = value;
+												SaveManager.saveProfiles();
+											}
+										}),
+										new NumberRangeWidget({
+											title: "Opacity",
+											description: ["Change The Transparency Of The", "Gelo Group Shadow"],
+											minValue: 0,
+											maxValue: 1,
+											delta: 0.1,
+											startValue: prefsSettings.shadowOpacity,
+											onChange: (value) -> {
+												prefsSettings.shadowOpacity = value;
+												SaveManager.saveProfiles();
+											}
+										}),
+										new YesNoWidget({
+											title: "Highlight Rotating Shadows",
+											description: ["Alter The Appearance Of Rotating", "Gelos' Shadow"],
+											defaultValue: prefsSettings.shadowHighlightOthers,
+											onChange: (value) -> {
+												prefsSettings.shadowHighlightOthers = value;
+												SaveManager.saveProfiles();
+											}
+										}),
+										new YesNoWidget({
+											title: "Show Potential Chain Triggering",
+											description: ["Animate The Gelo Group Shadow", "If A Chain Is About To Be", "Triggered"],
+											defaultValue: prefsSettings.shadowWillTriggerChain,
+											onChange: (value) -> {
+												prefsSettings.shadowWillTriggerChain = value;
+												SaveManager.saveProfiles();
+											}
+										})
+									]
+								})
+							]
+						}),
 					]
 				}),
 				new SubPageWidget({
