@@ -54,7 +54,7 @@ class PauseMenu extends Menu {
 				callback: () -> {
 					GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 				}
-			})
+			}),
 			#if sys
 			new ButtonWidget({
 				title: "Exit To Desktop",

@@ -81,7 +81,7 @@ class Main {
 			framebuffer: {verticalSync: false}
 		}, function(_) {
 			#if cpp
-			Window.get(0).notifyOnResize(ScaleManager.resize);
+			Window.get(0).notifyOnResize(ScaleManager.screen.resize);
 			#end
 
 			// Just loading everything is ok for small projects
