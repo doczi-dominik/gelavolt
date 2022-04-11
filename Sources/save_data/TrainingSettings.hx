@@ -7,7 +7,6 @@ import save_data.ClearOnXMode;
 enum abstract TrainingSettingsKey(String) to String {
 	final CLEAR_ON_X_MODE;
 	final AUTO_CLEAR;
-	final AUTO_ATTACK;
 	final MIN_ATTACK_TIME;
 	final MAX_ATTACK_TIME;
 	final MIN_ATTACK_CHAIN;
@@ -33,7 +32,6 @@ class TrainingSettings implements IClearOnXModeContainer {
 
 	public var clearOnXMode: ClearOnXMode;
 	public var autoClear: Bool;
-	public var autoAttack: Bool;
 	public var minAttackTime: Int;
 	public var maxAttackTime: Int;
 	public var minAttackChain: Int;
@@ -48,7 +46,6 @@ class TrainingSettings implements IClearOnXModeContainer {
 	public function new(overrides: Map<TrainingSettingsKey, Dynamic>) {
 		clearOnXMode = CLEAR_ON_X_MODE_DEFAULT;
 		autoClear = AUTO_CLEAR_DEFAULT;
-		autoAttack = AUTO_ATTACK_DEFAULT;
 		minAttackTime = ATTACK_TIME_DEFAULT;
 		maxAttackTime = ATTACK_TIME_DEFAULT;
 		minAttackChain = ATTACK_CHAIN_DEFAULT;
@@ -68,8 +65,6 @@ class TrainingSettings implements IClearOnXModeContainer {
 							clearOnXMode = cast(v, ClearOnXMode);
 						case AUTO_CLEAR:
 							autoClear = cast(v, Bool);
-						case AUTO_ATTACK:
-							autoAttack = cast(v, Bool);
 						case MIN_ATTACK_TIME:
 							minAttackTime = cast(v, Int);
 						case MAX_ATTACK_TIME:

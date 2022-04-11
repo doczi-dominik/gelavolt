@@ -34,7 +34,7 @@ class TrainingBoardState extends EndlessBoardState {
 	}
 
 	override function beforeEnd() {
-		if (!trainingSettings.autoAttack)
+		if (autoAttackManager.isPaused)
 			garbageManager.clear();
 	}
 

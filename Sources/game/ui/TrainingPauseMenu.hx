@@ -135,11 +135,10 @@ class TrainingPauseMenu extends PauseMenu {
 								new YesNoWidget({
 									title: "Enable",
 									description: ["Enable Or Disable", "Auto-Attacking"],
-									defaultValue: trainingSettings.autoAttack,
+									defaultValue: !autoAttackManager.isPaused,
 									onChange: (value) -> {
-										trainingSettings.autoAttack = value;
+										autoAttackManager.isPaused = !value;
 										autoAttackManager.reset();
-										SaveManager.saveProfiles();
 									}
 								}),
 								new ButtonWidget({

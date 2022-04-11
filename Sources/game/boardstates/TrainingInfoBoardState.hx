@@ -219,7 +219,7 @@ class TrainingInfoBoardState implements IBoardState {
 
 		shadowDrawString(g, 3, Black, White, 'Drop bonus: $dropBonus (${Std.int(dropBonus / targetPoints)} garbo)', GAME_INFO_X, gameRow(16));
 
-		if (trainingSettings.autoAttack) {
+		if (!autoAttackManager.isPaused) {
 			final autoAttackString = switch (autoAttackManager.state) {
 				case WAITING: 'Auto-Attack WAITING: ${Std.int(autoAttackManager.timer / 60 + 1)}';
 				case SENDING: 'Auto-Attack SENDING: ${autoAttackManager.chain}-CHAIN!';

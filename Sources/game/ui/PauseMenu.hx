@@ -5,7 +5,6 @@ import Screen.GlobalScreenSwitcher;
 import ui.AreYouSureSubPageWidget;
 import main_menu.ui.OptionsPage;
 import game.mediators.PauseMediator;
-import save_data.PrefsSettings;
 import ui.IListWidget;
 import ui.SubPageWidget;
 import ui.ButtonWidget;

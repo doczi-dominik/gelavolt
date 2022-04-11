@@ -63,7 +63,7 @@ class AutoAttackManager {
 
 		linkData = [];
 
-		isPaused = false;
+		isPaused = true;
 		type = RANDOM;
 	}
 
@@ -180,7 +180,7 @@ class AutoAttackManager {
 	}
 
 	public function update() {
-		if (!trainingSettings.autoAttack)
+		if (isPaused)
 			return;
 
 		if (timer == 0) {
