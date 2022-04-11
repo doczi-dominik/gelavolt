@@ -1,5 +1,7 @@
 package game.ui;
 
+import game.mediators.ControlDisplayContainer;
+import ui.YesNoWidget;
 import save_data.EndlessSettings;
 import game.gamemodes.EndlessGameMode;
 import haxe.Serializer;
@@ -24,11 +26,13 @@ using DateTools;
 class EndlessPauseMenu extends PauseMenu {
 	final gameMode: EndlessGameMode;
 	final endlessSettings: EndlessSettings;
+	final controlDisplayContainer: ControlDisplayContainer;
 	final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
 		gameMode = opts.gameMode;
 		endlessSettings = opts.endlessSettings;
+		controlDisplayContainer = opts.controlDisplayContainer;
 		actionBuffer = opts.actionBuffer;
 
 		super(opts);
@@ -39,6 +43,17 @@ class EndlessPauseMenu extends PauseMenu {
 			header: "Endless Options",
 			description: ["Change Various Options And Settings", "Specific to Endless Mode"],
 			widgetBuilder: (_) -> [
+				new YesNoWidget({
+					title: "Show Control Hints",
+					description: ["Show Or Hide The Control Display", "At The Bottom"],
+					defaultValue: endlessSettings.showControlHints,
+					onChange: (value) -> {
+						endlessSettings.showControlHints = value;
+						controlDisplayContainer.isVisible = value;
+
+						SaveManager.saveProfiles();
+					}
+				}),
 				new OptionListWidget({
 					title: "Clear Field on X",
 					description: [

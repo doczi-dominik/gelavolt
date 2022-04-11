@@ -16,7 +16,8 @@ class TrainingBoard implements IBoard {
 	static final GAME_CONTROL_DISPLAY: Array<ControlDisplay> = [
 		{actions: [TOGGLE_EDIT_MODE], description: "Edit Mode"},
 		{actions: [PREVIOUS_GROUP], description: "Undo"},
-		{actions: [NEXT_GROUP], description: "Redo / Get Next Group"}
+		{actions: [NEXT_GROUP], description: "Redo / Get Next Group"},
+		{actions: [QUICK_RESTART], description: "Quick Restart"}
 	];
 
 	static final EDIT_CONTROL_DISPLAY: Array<ControlDisplay> = [

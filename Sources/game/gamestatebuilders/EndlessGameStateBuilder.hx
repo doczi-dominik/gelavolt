@@ -1,5 +1,7 @@
 package game.gamestatebuilders;
 
+import game.mediators.ControlDisplayContainer;
+import game.states.ControlDisplayGameState;
 import game.boards.EndlessBoard;
 import input.IInputDevice;
 import game.ui.PauseMenu;
@@ -64,6 +66,7 @@ class EndlessGameStateBuilder {
 
 	var pauseMenu: PauseMenu;
 
+	var controlDisplayContainer: ControlDisplayContainer;
 	var gameState: GameState;
 
 	public function new(opts: EndlessGameStateBuilderOptions) {
@@ -96,6 +99,13 @@ class EndlessGameStateBuilder {
 
 	inline function buildFrameCounter() {
 		frameCounter = new FrameCounter();
+	}
+
+	inline function buildControlDisplayContainer() {
+		controlDisplayContainer = new ControlDisplayContainer();
+
+		controlDisplayContainer.isVisible = Profile.primary.endlessSettings.showControlHints;
+		controlDisplayContainer.value = [{actions: [QUICK_RESTART], description: "Quick Restart"}];
 	}
 
 	inline function buildPauseMediator() {
@@ -225,8 +235,9 @@ class EndlessGameStateBuilder {
 				pauseMediator: pauseMediator,
 				prefsSettings: Profile.primary.prefs,
 				endlessSettings: Profile.primary.endlessSettings,
+				controlDisplayContainer: controlDisplayContainer,
 				actionBuffer: actionBuffer,
-				gameMode: gameMode
+				gameMode: gameMode,
 			});
 
 			return;
@@ -240,7 +251,7 @@ class EndlessGameStateBuilder {
 	}
 
 	inline function buildGameState() {
-		gameState = new GameState({
+		gameState = new ControlDisplayGameState({
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new SingleBoardManager({
@@ -249,7 +260,8 @@ class EndlessGameStateBuilder {
 				board: board
 			}),
 			pauseMenu: pauseMenu,
-			frameCounter: frameCounter
+			frameCounter: frameCounter,
+			controlDisplayContainer: controlDisplayContainer
 		});
 	}
 
@@ -265,6 +277,7 @@ class EndlessGameStateBuilder {
 		buildParticleManager();
 		buildMarginManager();
 		buildFrameCounter();
+		buildControlDisplayContainer();
 
 		buildPauseMediator();
 		buildBorderColorMediator();

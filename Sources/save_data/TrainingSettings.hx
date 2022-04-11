@@ -5,6 +5,7 @@ import haxe.ds.StringMap;
 import save_data.ClearOnXMode;
 
 enum abstract TrainingSettingsKey(String) to String {
+	final SHOW_CONTROL_HINTS;
 	final CLEAR_ON_X_MODE;
 	final AUTO_CLEAR;
 	final MIN_ATTACK_TIME;
@@ -20,6 +21,7 @@ enum abstract TrainingSettingsKey(String) to String {
 }
 
 class TrainingSettings implements IClearOnXModeContainer {
+	static inline final SHOW_CONTROL_HINTS_DEFAULT = true;
 	static inline final CLEAR_ON_X_MODE_DEFAULT = RESTART;
 	static inline final AUTO_CLEAR_DEFAULT = true;
 	static inline final AUTO_ATTACK_DEFAULT = false;
@@ -30,6 +32,7 @@ class TrainingSettings implements IClearOnXModeContainer {
 	static inline final GROUP_BLIND_MODE_DEFAULT = false;
 	static inline final KEEP_GROUP_COUNT_DEFAULT = 0;
 
+	public var showControlHints: Bool;
 	public var clearOnXMode: ClearOnXMode;
 	public var autoClear: Bool;
 	public var minAttackTime: Int;
@@ -44,6 +47,7 @@ class TrainingSettings implements IClearOnXModeContainer {
 	public var keepGroupCount: Int;
 
 	public function new(overrides: Map<TrainingSettingsKey, Dynamic>) {
+		showControlHints = SHOW_CONTROL_HINTS_DEFAULT;
 		clearOnXMode = CLEAR_ON_X_MODE_DEFAULT;
 		autoClear = AUTO_CLEAR_DEFAULT;
 		minAttackTime = ATTACK_TIME_DEFAULT;
@@ -61,6 +65,8 @@ class TrainingSettings implements IClearOnXModeContainer {
 			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
 				try {
 					switch (cast(k, TrainingSettingsKey)) {
+						case SHOW_CONTROL_HINTS:
+							showControlHints = cast(v, Bool);
 						case CLEAR_ON_X_MODE:
 							clearOnXMode = cast(v, ClearOnXMode);
 						case AUTO_CLEAR:
@@ -96,6 +102,11 @@ class TrainingSettings implements IClearOnXModeContainer {
 	public function exportOverrides() {
 		final overrides = new StringMap<Any>();
 		var wereOverrides = false;
+
+		if (showControlHints != SHOW_CONTROL_HINTS_DEFAULT) {
+			overrides.set(SHOW_CONTROL_HINTS, showControlHints);
+			wereOverrides = true;
+		}
 
 		if (clearOnXMode != CLEAR_ON_X_MODE_DEFAULT) {
 			overrides.set(CLEAR_ON_X_MODE, clearOnXMode);

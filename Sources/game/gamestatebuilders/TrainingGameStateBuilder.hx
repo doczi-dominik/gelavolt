@@ -118,6 +118,7 @@ class TrainingGameStateBuilder {
 
 	inline function buildControlDisplayContainer() {
 		controlDisplayContainer = new ControlDisplayContainer();
+		controlDisplayContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
 	}
 
 	inline function buildPauseMediator() {

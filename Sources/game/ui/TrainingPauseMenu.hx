@@ -73,9 +73,12 @@ class TrainingPauseMenu extends PauseMenu {
 						new YesNoWidget({
 							title: "Show Control Hints",
 							description: ["Show Or Hide The Control Display", "At The Bottom"],
-							defaultValue: controlDisplayContainer.isVisible,
+							defaultValue: trainingSettings.showControlHints,
 							onChange: (value) -> {
+								trainingSettings.showControlHints = value;
 								controlDisplayContainer.isVisible = value;
+
+								SaveManager.saveProfiles();
 							}
 						}),
 						new OptionListWidget({
