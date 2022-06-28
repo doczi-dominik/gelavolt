@@ -1,4 +1,4 @@
-package auto_attack;
+package game.auto_attack;
 
 import game.rules.Rule;
 import game.particles.ParticleManager;

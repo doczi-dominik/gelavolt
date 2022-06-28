@@ -1,6 +1,6 @@
 package game.gamestatebuilders;
 
-import auto_attack.AutoAttackManager;
+import game.auto_attack.AutoAttackManager;
 import game.gelogroups.TrainingGeloGroup;
 import game.states.ControlDisplayGameState;
 import game.mediators.ControlDisplayContainer;

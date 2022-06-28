@@ -1,6 +1,6 @@
 package game.boardstates;
 
-import auto_attack.AutoAttackManager;
+import game.auto_attack.AutoAttackManager;
 import save_data.PrefsSettings;
 import game.garbage.IGarbageManager;
 import game.rules.Rule;

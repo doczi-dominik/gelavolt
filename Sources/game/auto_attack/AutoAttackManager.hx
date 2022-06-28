@@ -1,4 +1,4 @@
-package auto_attack;
+package game.auto_attack;
 
 import kha.graphics2.Graphics;
 import game.gelos.Gelo;

@@ -1,6 +1,6 @@
 package game.ui;
 
-import auto_attack.AutoAttackManager;
+import game.auto_attack.AutoAttackManager;
 import game.mediators.ControlDisplayContainer;
 import game.rules.Rule;
 import game.rules.MarginTimeManager;

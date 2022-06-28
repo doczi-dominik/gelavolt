@@ -1,6 +1,6 @@
 package game.boardstates;
 
-import auto_attack.AutoAttackManager;
+import game.auto_attack.AutoAttackManager;
 import save_data.TrainingSettings;
 
 class TrainingBoardState extends EndlessBoardState {

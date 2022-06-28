@@ -1,9 +1,9 @@
 package game.ui;
 
-import auto_attack.AutoAttackManager;
+import game.auto_attack.AutoAttackManager;
 import game.simulation.LinkInfoBuilder;
 import ui.ListMenuPage;
-import auto_attack.AutoAttackType;
+import game.auto_attack.AutoAttackType;
 import game.mediators.ControlDisplayContainer;
 import game.rules.ColorBonusTableType;
 import game.rules.PowerTableType;
