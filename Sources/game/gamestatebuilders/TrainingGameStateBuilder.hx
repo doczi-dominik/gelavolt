@@ -47,6 +47,7 @@ import game.simulation.ChainSimulator;
 @:build(game.Macros.buildOptionsClass(TrainingGameStateBuilder))
 class TrainingGameStateBuilderOptions {}
 
+@:build(game.Macros.addGameStateBuildMethod())
 class TrainingGameStateBuilder {
 	@inject final gameMode: TrainingGameMode;
 	@inject final transformMediator: TransformationMediator;
@@ -394,49 +395,5 @@ class TrainingGameStateBuilder {
 		playerBorderColorMediator.boardState = playState;
 		playerTargetMediator.garbageManager = infoGarbageManager;
 		infoTargetMediator.garbageManager = playerGarbageManager;
-	}
-
-	public function build() {
-		buildRNG();
-		buildRandomizer();
-
-		buildParticleManager();
-		buildMarginManager();
-		buildFrameCounter();
-		buildControlDisplayContainer();
-
-		buildPauseMediator();
-		buildPlayerBorderColorMediator();
-		buildPlayerTargetMediator();
-		buildInfoTargetMediator();
-
-		buildPlayerGarbageManager();
-		buildPlayerScoreManager();
-		buildPlayerChainSim();
-		buildPlayerChainCounter();
-		buildPlayerField();
-		buildPlayerQueue();
-		buildPlayerInputDevice();
-		buildPlayerActionBuffer();
-		buildPlayerGeloGroup();
-		buildPlayerAllClearManager();
-
-		buildInfoGarbageManager();
-		buildAutoAttackManager();
-
-		buildInfoState();
-		buildPlayState();
-		buildEditState();
-
-		buildPlayerBoard();
-		buildInfoBoard();
-
-		buildPauseMenu();
-
-		buildGameState();
-
-		wireMediators();
-
-		return gameState;
 	}
 }

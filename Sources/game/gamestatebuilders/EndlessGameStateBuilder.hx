@@ -40,6 +40,7 @@ import game.states.GameState;
 @:build(game.Macros.buildOptionsClass(EndlessGameStateBuilder))
 class EndlessGameStateBuilderOptions {}
 
+@:build(game.Macros.addGameStateBuildMethod())
 class EndlessGameStateBuilder {
 	@inject final gameMode: EndlessGameMode;
 	@inject final transformMediator: TransformationMediator;
@@ -271,39 +272,5 @@ class EndlessGameStateBuilder {
 	inline function wireMediators() {
 		pauseMediator.gameState = gameState;
 		borderColorMediator.boardState = boardState;
-	}
-
-	public function build() {
-		buildRNG();
-		buildRandomizer();
-
-		buildParticleManager();
-		buildMarginManager();
-		buildFrameCounter();
-		buildControlDisplayContainer();
-
-		buildPauseMediator();
-		buildBorderColorMediator();
-
-		buildScoreManager();
-		buildChainSim();
-		buildChainCounter();
-		buildField();
-		buildQueue();
-		buildActionBuffer();
-		buildGeloGroup();
-		buildAllClearManager();
-
-		buildBoardState();
-
-		buildBoard();
-
-		buildPauseMenu();
-
-		buildGameState();
-
-		wireMediators();
-
-		return gameState;
 	}
 }

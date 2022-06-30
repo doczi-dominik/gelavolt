@@ -82,4 +82,38 @@ class Macros {
 
 		return macro $b{exprs};
 	}
+
+	public static macro function addGameStateBuildMethod(): Array<Field> {
+		final pos = Context.currentPos();
+		final localClass = Context.getLocalClass();
+
+		if (localClass == null)
+			Context.fatalError("Not called in a class", pos);
+
+		final fields = Context.getBuildFields();
+		final methods = fields.filter((f) -> f.name != "new" && !f.kind.match(FVar(_, _)));
+
+		final exprs = new Array<Expr>();
+
+		for (m in methods)
+			exprs.push(macro $i{m.name}());
+
+		exprs.push(macro return gameState);
+
+		fields.push({
+			pos: pos,
+			name: "build",
+			meta: null,
+			kind: FFun({
+				args: [],
+				params: null,
+				ret: null,
+				expr: macro $b{exprs}
+			}),
+			doc: null,
+			access: [APublic]
+		});
+
+		return fields;
+	}
 }
