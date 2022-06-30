@@ -8,7 +8,7 @@ import utils.Utils;
 import game.rules.MarginTimeManager;
 import save_data.TrainingSettings;
 import game.garbage.trays.GarbageTray;
-import game.score.ScoreManager;
+import game.ScoreManager;
 import game.simulation.ILinkInfoBuilder;
 import kha.Color;
 import game.geometries.BoardGeometries;
@@ -22,6 +22,10 @@ import utils.Utils.shadowDrawString;
 
 using StringTools;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(TrainingInfoBoardState))
+class TrainingInfoBoardStateOptions {}
+
 @:access(game.rules.Rule)
 class TrainingInfoBoardState implements IBoardState {
 	static inline final TITLE_FONT_SIZE = 40;
@@ -30,19 +34,19 @@ class TrainingInfoBoardState implements IBoardState {
 
 	public static inline final GAME_INFO_X = -64;
 
-	final geometries: BoardGeometries;
-	final marginManager: MarginTimeManager;
-	final rule: Rule;
-	final linkBuilder: ILinkInfoBuilder;
-	final trainingSettings: TrainingSettings;
-	final chainAdvantageDisplay: GarbageTray;
-	final afterCounterDisplay: GarbageTray;
-	final garbageManager: IGarbageManager;
-	final prefsSettings: PrefsSettings;
-	final autoAttackManager: AutoAttackManager;
+	@inject final geometries: BoardGeometries;
+	@inject final marginManager: MarginTimeManager;
+	@inject final rule: Rule;
+	@inject final linkBuilder: ILinkInfoBuilder;
+	@inject final trainingSettings: TrainingSettings;
+	@inject final chainAdvantageDisplay: GarbageTray;
+	@inject final afterCounterDisplay: GarbageTray;
+	@inject final garbageManager: IGarbageManager;
+	@inject final prefsSettings: PrefsSettings;
+	@inject final autoAttackManager: AutoAttackManager;
 
-	final playerScoreManager: ScoreManager;
-	final playerChainSim: ChainSimulator;
+	@inject final playerScoreManager: ScoreManager;
+	@inject final playerChainSim: ChainSimulator;
 
 	final font: Font;
 	final titleFontHeight: Float;
@@ -86,19 +90,7 @@ class TrainingInfoBoardState implements IBoardState {
 	public var shouldUpdatePPST: Bool;
 
 	public function new(opts: TrainingInfoBoardStateOptions) {
-		geometries = opts.geometries;
-		marginManager = opts.marginManager;
-		rule = opts.rule;
-		linkBuilder = opts.linkBuilder;
-		trainingSettings = opts.trainingSettings;
-		chainAdvantageDisplay = opts.chainAdvantageDisplay;
-		afterCounterDisplay = opts.afterCounterDisplay;
-		garbageManager = opts.garbageManager;
-		prefsSettings = opts.prefsSettings;
-		autoAttackManager = opts.autoAttackManager;
-
-		playerScoreManager = opts.playerScoreManager;
-		playerChainSim = opts.playerChainSim;
+		game.Macros.initFromOpts();
 
 		font = Assets.fonts.Pixellari;
 		titleFontHeight = font.height(TITLE_FONT_SIZE);

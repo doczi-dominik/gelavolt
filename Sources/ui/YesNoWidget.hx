@@ -1,5 +1,13 @@
 package ui;
 
+@:structInit
+class YesNoWidgetOptions {
+	public final title: String;
+	public final description: Array<String>;
+	public final defaultValue: Bool;
+	public final onChange: Bool->Void;
+}
+
 class YesNoWidget extends OptionListWidget {
 	public function new(opts: YesNoWidgetOptions) {
 		super({

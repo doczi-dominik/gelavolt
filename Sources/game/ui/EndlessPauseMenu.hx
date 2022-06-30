@@ -1,5 +1,6 @@
 package game.ui;
 
+import game.ui.PauseMenu.PauseMenuOptions;
 import game.mediators.ControlDisplayContainer;
 import ui.YesNoWidget;
 import save_data.EndlessSettings;
@@ -23,17 +24,18 @@ import sys.io.File;
 
 using DateTools;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(EndlessPauseMenu))
+class EndlessPauseMenuOptions extends PauseMenuOptions {}
+
 class EndlessPauseMenu extends PauseMenu {
-	final gameMode: EndlessGameMode;
-	final endlessSettings: EndlessSettings;
-	final controlDisplayContainer: ControlDisplayContainer;
-	final actionBuffer: IActionBuffer;
+	@inject final gameMode: EndlessGameMode;
+	@inject final endlessSettings: EndlessSettings;
+	@inject final controlDisplayContainer: ControlDisplayContainer;
+	@inject final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
-		gameMode = opts.gameMode;
-		endlessSettings = opts.endlessSettings;
-		controlDisplayContainer = opts.controlDisplayContainer;
-		actionBuffer = opts.actionBuffer;
+		game.Macros.initFromOpts();
 
 		super(opts);
 	}
@@ -79,7 +81,10 @@ class EndlessPauseMenu extends PauseMenu {
 				new ButtonWidget({
 					title: "Save Replay",
 					description: [
-						#if kha_html5 "Download A Replay File Of This Session", #else "Save A Replay File To GelaVolt's Folder",
+						#if kha_html5
+						"Download A Replay File Of This Session",
+						#else
+						"Save A Replay File To GelaVolt's Folder",
 						#end
 						"",
 						"To View It, Just Drag & Drop The File",

@@ -1,5 +1,7 @@
 package game.gelos;
 
+import game.gelos.FieldGelo.FieldGeloOptions;
+
 class GarbageGelo extends FieldGelo {
 	public static function create(opts: FieldGeloOptions) {
 		final p = new GarbageGelo(opts);

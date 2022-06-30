@@ -1,5 +1,6 @@
 package game.ui;
 
+import save_data.PrefsSettings;
 import main_menu.MainMenuScreen;
 import Screen.GlobalScreenSwitcher;
 import ui.AreYouSureSubPageWidget;
@@ -14,6 +15,12 @@ import kha.graphics2.Graphics;
 #if sys
 import kha.Window;
 #end
+
+@:structInit
+class PauseMenuOptions {
+	public final prefsSettings: PrefsSettings;
+	public final pauseMediator: PauseMediator;
+}
 
 class PauseMenu extends Menu {
 	final pauseMediator: PauseMediator;

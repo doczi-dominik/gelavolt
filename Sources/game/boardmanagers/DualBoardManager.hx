@@ -3,13 +3,16 @@ package game.boardmanagers;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(DualBoardManager))
+class DualBoardManagerOptions {}
+
 class DualBoardManager implements IBoardManager {
-	final boardOne: SingleBoardManager;
-	final boardTwo: SingleBoardManager;
+	@inject final boardOne: SingleBoardManager;
+	@inject final boardTwo: SingleBoardManager;
 
 	public function new(opts: DualBoardManagerOptions) {
-		boardOne = opts.boardOne;
-		boardTwo = opts.boardTwo;
+		game.Macros.initFromOpts();
 	}
 
 	public function update() {

@@ -1,5 +1,6 @@
 package game.simulation;
 
+import game.simulation.SimulationStep.SimulationStepOptions;
 import kha.graphics2.Graphics;
 import game.fields.Field;
 

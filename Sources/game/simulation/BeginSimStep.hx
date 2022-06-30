@@ -1,24 +1,25 @@
 package game.simulation;
 
+import game.simulation.SimulationStep.SimulationStepOptions;
 import game.gelos.Gelo;
 import game.gelogroups.GeloGroupData;
 import kha.graphics2.Graphics;
 
-class BeginSimStep extends SimulationStep {
-	final groupData: Null<GeloGroupData>;
+@:structInit
+@:build(game.Macros.buildOptionsClass(BeginSimStep))
+class BeginSimStepOptions extends SimulationStepOptions {}
 
-	public final sendsAllClearBonus: Bool;
-	public final dropBonus: Float;
-	public final groupIndex: Null<Int>;
+class BeginSimStep extends SimulationStep {
+	@inject final groupData: Null<GeloGroupData>;
+
+	@inject public final sendsAllClearBonus: Bool;
+	@inject public final dropBonus: Float;
+	@inject public final groupIndex: Null<Int>;
 
 	public function new(opts: BeginSimStepOptions) {
 		super(BEGIN, opts);
 
-		groupData = opts.groupData;
-
-		sendsAllClearBonus = opts.sendsAllClearBonus;
-		dropBonus = opts.dropBonus;
-		groupIndex = opts.groupIndex;
+		game.Macros.initFromOpts();
 	}
 
 	override function renderLabel(g: Graphics, y: Float, alpha: Float) {

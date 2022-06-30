@@ -8,6 +8,10 @@ import utils.Utils.lerp;
 
 using kha.graphics2.GraphicsExtension;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(GarbageBulletParticle))
+class GarbageBulletParticleOptions {}
+
 class GarbageBulletParticle implements IParticle {
 	public static function create(opts: GarbageBulletParticleOptions) {
 		final p = new GarbageBulletParticle(opts);
@@ -26,17 +30,17 @@ class GarbageBulletParticle implements IParticle {
 		return p;
 	}
 
-	final particleManager: ParticleManager;
-	final layer: ParticleLayer;
+	@inject final particleManager: ParticleManager;
+	@inject final layer: ParticleLayer;
 
-	final begin: Point;
-	final control: Point;
-	final target: Point;
-	final beginScale: Float;
-	final targetScale: Float;
-	final duration: Int;
-	final color: Color;
-	final onFinish: Void->Void;
+	@inject final begin: Point;
+	@inject final control: Point;
+	@inject final target: Point;
+	@inject final beginScale: Float;
+	@inject final targetScale: Float;
+	@inject final duration: Int;
+	@inject final color: Color;
+	@inject final onFinish: Void->Void;
 
 	var prevX: Float;
 	var prevY: Float;
@@ -48,17 +52,7 @@ class GarbageBulletParticle implements IParticle {
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GarbageBulletParticleOptions) {
-		particleManager = opts.particleManager;
-		layer = opts.layer;
-
-		begin = opts.begin;
-		control = opts.control;
-		target = opts.target;
-		beginScale = opts.beginScale;
-		targetScale = opts.targetScale;
-		duration = opts.duration;
-		color = opts.color;
-		onFinish = opts.onFinish;
+		game.Macros.initFromOpts();
 	}
 
 	public function update() {

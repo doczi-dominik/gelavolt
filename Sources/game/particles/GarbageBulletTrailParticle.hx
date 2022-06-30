@@ -7,6 +7,10 @@ using kha.graphics2.GraphicsExtension;
 import kha.Color;
 import utils.Utils.lerp;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(GarbageBulletTrailParticle))
+class GarbageBulletTrailParticleOptions {}
+
 class GarbageBulletTrailParticle implements IParticle {
 	public static function create(opts: GarbageBulletTrailParticleOptions) {
 		final p = new GarbageBulletTrailParticle(opts);
@@ -19,9 +23,9 @@ class GarbageBulletTrailParticle implements IParticle {
 		return p;
 	}
 
-	final x: Float;
-	final y: Float;
-	final color: Color;
+	@inject final x: Float;
+	@inject final y: Float;
+	@inject final color: Color;
 
 	var lastT: Int;
 	var t: Int;
@@ -29,9 +33,7 @@ class GarbageBulletTrailParticle implements IParticle {
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GarbageBulletTrailParticleOptions) {
-		x = opts.x;
-		y = opts.y;
-		color = opts.color;
+		game.Macros.initFromOpts();
 	}
 
 	public function update() {

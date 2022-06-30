@@ -1,4 +1,4 @@
-package game.score;
+package game;
 
 import kha.Color;
 import game.rules.Rule;
@@ -14,9 +14,13 @@ import game.simulation.LinkInfo;
 
 using StringTools;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(ScoreManager))
+class ScoreManagerOptions {}
+
 class ScoreManager {
-	final rule: Rule;
-	final orientation: BoardOrientation;
+	@inject final rule: Rule;
+	@inject final orientation: BoardOrientation;
 
 	var scoreFont: Font;
 	var scoreFontSize: Int;
@@ -49,8 +53,7 @@ class ScoreManager {
 	public var dropBonus(default, null): Float;
 
 	public function new(opts: ScoreManagerOptions) {
-		rule = opts.rule;
-		orientation = opts.orientation;
+		game.Macros.initFromOpts();
 
 		scoreFont = Assets.fonts.DigitalDisco;
 		scoreFontSize = 52;

@@ -16,6 +16,10 @@ import haxe.ds.Vector;
 import utils.Utils.negativeMod;
 import haxe.ds.ReadOnlyArray;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(Field))
+class FieldOptions {}
+
 class Field {
 	static final ORIGINAL_GARBAGE_ACCELERATIONS = [0.5625, 0.59375, 0.5, 0.5625, 0.53125, 0.625];
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
@@ -62,14 +66,15 @@ class Field {
 		}
 	}
 
-	final prefsSettings: PrefsSettings;
+	@inject final prefsSettings: PrefsSettings;
+
+	@inject public var columns(default, null): Int;
+	@inject public var playAreaRows(default, null): Int;
+	@inject public var garbageRows(default, null): Int;
+	@inject public var hiddenRows: Int;
 
 	var data: Vector<Vector<FieldGelo>>;
 	var markers: Vector<Vector<IFieldMarker>>;
-
-	public var columns(default, null): Int;
-	public var playAreaRows(default, null): Int;
-	public var garbageRows(default, null): Int;
 
 	public var outerRows(default, null): Int;
 	public var totalRows(default, null): Int;
@@ -77,8 +82,6 @@ class Field {
 
 	public var garbageAccelerations(default, null): ReadOnlyArray<Float>;
 	public var garbageColumns(default, null): ReadOnlyArray<Int>;
-
-	public var hiddenRows: Int;
 
 	public function copyFrom(src: Field) {
 		copyTo(src, this);

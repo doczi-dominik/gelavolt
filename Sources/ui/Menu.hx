@@ -7,6 +7,10 @@ import kha.Font;
 import haxe.ds.GenericStack;
 import kha.graphics2.Graphics;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(Menu))
+class MenuOptions {}
+
 class Menu {
 	static inline final HEADER_FONT_SIZE = 128;
 	static inline final CONTROLS_FONT_SIZE = 48;
@@ -19,12 +23,16 @@ class Menu {
 		"Feedback On The Official Server! :)"
 	];
 
+	@inject final positionFactor: Float;
+	@inject final widthFactor: Float;
+	@inject final initialPage: IMenuPage;
+
+	@inject public final prefsSettings: PrefsSettings;
+
 	final pages: GenericStack<IMenuPage>;
 	final inputDevices: GenericStack<IInputDevice>;
 	final headerFont: Font;
 	final controlsFont: Font;
-	final positionFactor: Float;
-	final widthFactor: Float;
 
 	var headerFontSize: Int;
 	var headerFontHeight: Float;
@@ -34,23 +42,21 @@ class Menu {
 	var warningFontWidths: Array<Float>;
 	var renderX: Float;
 
-	public final prefsSettings: PrefsSettings;
 	public final scaleManager: ScaleManager;
 
 	public var padding(default, null): Float;
 	public var inputDevice(default, null): IInputDevice;
 
 	public function new(opts: MenuOptions) {
+		game.Macros.initFromOpts();
+
 		pages = new GenericStack();
 		pages.add(opts.initialPage);
 
 		inputDevices = new GenericStack();
 		headerFont = Assets.fonts.DigitalDisco;
 		controlsFont = Assets.fonts.Pixellari;
-		positionFactor = opts.positionFactor;
-		widthFactor = opts.widthFactor;
 
-		prefsSettings = opts.prefsSettings;
 		scaleManager = new ScaleManager(ScaleManager.SCREEN_DESIGN_WIDTH, ScaleManager.SCREEN_DESIGN_HEIGHT);
 
 		ScaleManager.addOnResizeCallback(resize);

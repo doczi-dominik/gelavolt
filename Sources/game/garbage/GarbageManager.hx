@@ -17,14 +17,18 @@ import kha.graphics2.Graphics;
 import game.gelos.GeloPoint;
 import game.rules.Rule;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(GarbageManager))
+class GarbageManagerOptions {}
+
 class GarbageManager implements IGarbageManager {
-	final rule: Rule;
-	final rng: Random;
-	final prefsSettings: PrefsSettings;
-	final particleManager: ParticleManager;
-	final geometries: BoardGeometries;
-	final tray: GarbageTray;
-	final target: GarbageTargetMediator;
+	@inject final rule: Rule;
+	@inject final rng: Random;
+	@inject final prefsSettings: PrefsSettings;
+	@inject final particleManager: ParticleManager;
+	@inject final geometries: BoardGeometries;
+	@inject final tray: GarbageTray;
+	@inject final target: GarbageTargetMediator;
 
 	var currentGarbage: Int;
 	var confirmedGarbage: Int;
@@ -34,13 +38,7 @@ class GarbageManager implements IGarbageManager {
 	public var droppableGarbage(get, never): Int;
 
 	public function new(opts: GarbageManagerOptions) {
-		rule = opts.rule;
-		rng = opts.rng;
-		prefsSettings = opts.prefsSettings;
-		particleManager = opts.particleManager;
-		geometries = opts.geometries;
-		tray = opts.tray;
-		target = opts.target;
+		game.Macros.initFromOpts();
 
 		currentGarbage = 0;
 		confirmedGarbage = 0;

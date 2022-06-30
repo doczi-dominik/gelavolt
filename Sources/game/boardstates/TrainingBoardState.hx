@@ -1,19 +1,22 @@
 package game.boardstates;
 
+import game.boardstates.EndlessBoardState.EndlessBoardStateOptions;
 import game.auto_attack.AutoAttackManager;
 import save_data.TrainingSettings;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(TrainingBoardState))
+class TrainingBoardStateOptions extends EndlessBoardStateOptions {}
+
 class TrainingBoardState extends EndlessBoardState {
-	final trainingSettings: TrainingSettings;
-	final infoState: TrainingInfoBoardState;
-	final autoAttackManager: AutoAttackManager;
+	@inject final trainingSettings: TrainingSettings;
+	@inject final infoState: TrainingInfoBoardState;
+	@inject final autoAttackManager: AutoAttackManager;
 
 	public function new(opts: TrainingBoardStateOptions) {
 		super(opts);
 
-		trainingSettings = opts.trainingSettings;
-		infoState = opts.infoState;
-		autoAttackManager = opts.autoAttackManager;
+		game.Macros.initFromOpts();
 	}
 
 	override function lockGroup() {

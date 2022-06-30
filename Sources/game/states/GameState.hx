@@ -10,12 +10,16 @@ import game.boardmanagers.IBoardManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(GameState))
+class GameStateOptions {}
+
 class GameState {
-	final particleManager: ParticleManager;
-	final boardManager: IBoardManager;
-	final marginManager: MarginTimeManager;
-	final pauseMenu: PauseMenu;
-	final frameCounter: FrameCounter;
+	@inject final particleManager: ParticleManager;
+	@inject final boardManager: IBoardManager;
+	@inject final marginManager: MarginTimeManager;
+	@inject final pauseMenu: PauseMenu;
+	@inject final frameCounter: FrameCounter;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
 
@@ -23,11 +27,7 @@ class GameState {
 	var pausingInputs: Null<IInputDevice>;
 
 	public function new(opts: GameStateOptions) {
-		particleManager = opts.particleManager;
-		boardManager = opts.boardManager;
-		marginManager = opts.marginManager;
-		pauseMenu = opts.pauseMenu;
-		frameCounter = opts.frameCounter;
+		game.Macros.initFromOpts();
 
 		FADE_TO_WHITELocation = Pipelines.FADE_TO_WHITE.getConstantLocation("comp");
 	}

@@ -20,8 +20,8 @@ import game.simulation.ChainSimulator;
 import game.geometries.BoardGeometries;
 import kha.Assets;
 import game.actionbuffers.IActionBuffer;
-import game.score.ScoreManager;
-import game.all_clear.AllClearManager;
+import game.ScoreManager;
+import game.AllClearManager;
 import game.actionbuffers.ActionSnapshot;
 import game.previews.IPreview;
 import game.Queue;
@@ -38,25 +38,29 @@ private enum InnerState {
 	POP_PAUSE;
 }
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(StandardBoardState))
+class StandardBoardStateOptions {}
+
 class StandardBoardState implements IBoardState {
-	final rule: Rule;
-	final prefsSettings: PrefsSettings;
+	@inject final rule: Rule;
+	@inject final prefsSettings: PrefsSettings;
 
-	final transformMediator: TransformationMediator;
-	final rng: Random;
-	final geometries: BoardGeometries;
-	final particleManager: ParticleManager;
+	@inject final transformMediator: TransformationMediator;
+	@inject final rng: Random;
+	@inject final geometries: BoardGeometries;
+	@inject final particleManager: ParticleManager;
 
-	final geloGroup: GeloGroup;
-	final queue: Queue;
-	final preview: IPreview;
-	final allClearManager: AllClearManager;
-	final scoreManager: ScoreManager;
-	final actionBuffer: IActionBuffer;
-	final chainCounter: ChainCounter;
-	final field: Field;
-	final chainSim: ChainSimulator;
-	final garbageManager: IGarbageManager;
+	@inject final geloGroup: GeloGroup;
+	@inject final queue: Queue;
+	@inject final preview: IPreview;
+	@inject final allClearManager: AllClearManager;
+	@inject final scoreManager: ScoreManager;
+	@inject final actionBuffer: IActionBuffer;
+	@inject final chainCounter: ChainCounter;
+	@inject final field: Field;
+	@inject final chainSim: ChainSimulator;
+	@inject final garbageManager: IGarbageManager;
 
 	var popPauseMaxT: Int;
 
@@ -81,25 +85,7 @@ class StandardBoardState implements IBoardState {
 	var state: InnerState;
 
 	public function new(opts: StandardBoardStateOptions) {
-		rule = opts.rule;
-		prefsSettings = opts.prefsSettings;
-
-		transformMediator = opts.transformMediator;
-		rng = opts.rng;
-		geometries = opts.geometries;
-		particleManager = opts.particleManager;
-
-		geloGroup = opts.geloGroup;
-
-		queue = opts.queue;
-		preview = opts.preview;
-		allClearManager = opts.allClearManager;
-		scoreManager = opts.scoreManager;
-		actionBuffer = opts.actionBuffer;
-		chainCounter = opts.chainCounter;
-		field = opts.field;
-		chainSim = opts.chainSim;
-		garbageManager = opts.garbageManager;
+		game.Macros.initFromOpts();
 
 		popPauseMaxT = 30;
 

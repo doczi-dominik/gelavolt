@@ -10,6 +10,10 @@ import kha.Assets;
 import game.gelos.GeloSpriteCoordinates;
 import game.gelos.GeloBounceTables;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(Gelo))
+class GeloOptions {}
+
 class Gelo {
 	public inline static final SIZE = 64;
 	public inline static final HALFSIZE = 32;
@@ -74,7 +78,9 @@ class Gelo {
 		dest.willTriggerChain = src.willTriggerChain;
 	}
 
-	final prefsSettings: PrefsSettings;
+	@inject final prefsSettings: PrefsSettings;
+
+	@inject public final color: GeloColor;
 
 	var spriteVariation: GeloSpriteVariation;
 	var subImageCoords: Point;
@@ -90,15 +96,12 @@ class Gelo {
 	var prevScaleX: Float;
 	var prevScaleY: Float;
 
-	public final color: GeloColor;
-
 	public var scaleX(default, null): Float;
 	public var scaleY(default, null): Float;
 	public var willTriggerChain: Bool;
 
 	function new(opts: GeloOptions) {
-		prefsSettings = opts.prefsSettings;
-		color = opts.color;
+		game.Macros.initFromOpts();
 	}
 
 	public function copyFrom(src: Gelo) {

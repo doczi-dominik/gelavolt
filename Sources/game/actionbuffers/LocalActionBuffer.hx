@@ -3,16 +3,20 @@ package game.actionbuffers;
 import input.IInputDevice;
 import game.mediators.FrameCounter;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(LocalActionBuffer))
+class LocalActionBufferOptions {}
+
 class LocalActionBuffer implements IActionBuffer {
-	final frameCounter: FrameCounter;
-	final inputDevice: IInputDevice;
+	@inject final frameCounter: FrameCounter;
+	@inject final inputDevice: IInputDevice;
 	final actions: Map<Int, ActionSnapshot>;
 
 	public var latestAction(default, null): ActionSnapshot;
 
 	public function new(opts: LocalActionBufferOptions) {
-		frameCounter = opts.frameCounter;
-		inputDevice = opts.inputDevice;
+		game.Macros.initFromOpts();
+
 		actions = [];
 
 		latestAction = {

@@ -16,11 +16,15 @@ private class SimOptions {
 	public final groupData: Null<GeloGroupData>;
 }
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(ChainSimulator))
+class ChainSimulatorOptions {}
+
 class ChainSimulator {
-	final rule: Rule;
-	final linkBuilder: ILinkInfoBuilder;
-	final garbageDisplay: GarbageTray;
-	final accumulatedDisplay: GarbageTray;
+	@inject final rule: Rule;
+	@inject final linkBuilder: ILinkInfoBuilder;
+	@inject final garbageDisplay: GarbageTray;
+	@inject final accumulatedDisplay: GarbageTray;
 
 	public var stepIndex: Int;
 
@@ -31,10 +35,7 @@ class ChainSimulator {
 	public var viewIndex(default, null): Int;
 
 	public function new(opts: ChainSimulatorOptions) {
-		rule = opts.rule;
-		linkBuilder = opts.linkBuilder;
-		garbageDisplay = opts.garbageDisplay;
-		accumulatedDisplay = opts.accumulatedDisplay;
+		game.Macros.initFromOpts();
 
 		stepIndex = 0;
 		latestGarbageCounter = 0;

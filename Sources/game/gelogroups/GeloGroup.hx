@@ -11,7 +11,7 @@ import game.simulation.ChainSimulator;
 import game.gelos.GeloPoint;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
-import game.score.ScoreManager;
+import game.ScoreManager;
 import game.gelos.FieldGelo;
 import game.gelos.Gelo;
 import utils.Utils.lerp;
@@ -24,13 +24,16 @@ enum GeloGroupState {
 	SPLITTING;
 }
 
-class GeloGroup {
-	final rule: Rule;
-	final prefsSettings: PrefsSettings;
+@:structInit
+@:build(game.Macros.buildOptionsClass(GeloGroup))
+class GeloGroupOptions {}
 
-	final scoreManager: ScoreManager;
-	final field: Field;
-	final chainSim: ChainSimulator;
+class GeloGroup {
+	@inject final rule: Rule;
+	@inject final prefsSettings: PrefsSettings;
+	@inject final scoreManager: ScoreManager;
+	@inject final field: Field;
+	@inject final chainSim: ChainSimulator;
 
 	var main: Gelo;
 	var others: Array<OtherGelo>;
@@ -71,12 +74,7 @@ class GeloGroup {
 	public var isShadowVisible: Bool;
 
 	public function new(opts: GeloGroupOptions) {
-		rule = opts.rule;
-		prefsSettings = opts.prefsSettings;
-
-		scoreManager = opts.scoreManager;
-		field = opts.field;
-		chainSim = opts.chainSim;
+		game.Macros.initFromOpts();
 
 		isVisible = false;
 		isShadowVisible = false;

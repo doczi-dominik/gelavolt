@@ -21,7 +21,7 @@ import game.ui.TrainingPauseMenu;
 import game.boardmanagers.SingleBoardManager;
 import game.boardstates.EditingBoardState;
 import game.ChainCounter;
-import game.all_clear.AllClearManager;
+import game.AllClearManager;
 import game.previews.VerticalPreview;
 import game.simulation.NullLinkInfoBuilder;
 import game.actionbuffers.LocalActionBuffer;
@@ -35,7 +35,7 @@ import game.boards.SingleStateBoard;
 import game.garbage.trays.CenterGarbageTray;
 import game.boardmanagers.DualBoardManager;
 import game.particles.ParticleManager;
-import game.score.ScoreManager;
+import game.ScoreManager;
 import game.garbage.trays.GarbageTray;
 import game.garbage.GarbageManager;
 import game.geometries.BoardGeometries;
@@ -43,9 +43,13 @@ import game.boardstates.TrainingInfoBoardState;
 import game.simulation.LinkInfoBuilder;
 import game.simulation.ChainSimulator;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(TrainingGameStateBuilder))
+class TrainingGameStateBuilderOptions {}
+
 class TrainingGameStateBuilder {
-	final gameMode: TrainingGameMode;
-	final transformMediator: TransformationMediator;
+	@inject final gameMode: TrainingGameMode;
+	@inject final transformMediator: TransformationMediator;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -86,8 +90,7 @@ class TrainingGameStateBuilder {
 	var gameState: GameState;
 
 	public function new(opts: TrainingGameStateBuilderOptions) {
-		gameMode = opts.gameMode;
-		transformMediator = opts.transformMediator;
+		game.Macros.initFromOpts();
 	}
 
 	inline function buildRNG() {
@@ -339,7 +342,7 @@ class TrainingGameStateBuilder {
 		infoBoard = new SingleStateBoard({
 			pauseMediator: pauseMediator,
 			inputDevice: playerInputDevice,
-			actionBuffer: NullActionBuffer.instance,
+			playActionBuffer: NullActionBuffer.instance,
 			state: infoState
 		});
 	}

@@ -7,13 +7,16 @@ import utils.Utils;
 import game.rules.MarginTimeManager;
 import game.rules.Rule;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(LinkInfoBuilder))
+class LinkInfoBuilderOptions {}
+
 class LinkInfoBuilder implements ILinkInfoBuilder {
-	final rule: Rule;
-	final marginManager: MarginTimeManager;
+	@inject final rule: Rule;
+	@inject final marginManager: MarginTimeManager;
 
 	public function new(opts: LinkInfoBuilderOptions) {
-		rule = opts.rule;
-		marginManager = opts.marginManager;
+		game.Macros.initFromOpts();
 	}
 
 	public function build(params: LinkInfoBuildParameters): LinkInfo {

@@ -5,7 +5,7 @@ import game.gelos.OtherGeloPositions.OTHERGELO_POSITIONS;
 import game.gelos.Gelo;
 import kha.graphics2.Graphics;
 import game.gelos.GeloColor;
-import game.gelos.OtherGeloOptions;
+import game.gelos.OtherGelo.OtherGeloOptions;
 
 @:structInit
 class GeloGroupData {

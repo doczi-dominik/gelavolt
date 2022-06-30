@@ -1,4 +1,4 @@
-package game.all_clear;
+package game;
 
 import game.mediators.BorderColorMediator;
 import game.particles.PixelFloatParticle;
@@ -12,13 +12,17 @@ import kha.Assets;
 import kha.Font;
 import utils.Utils;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(AllClearManager))
+class AllClearManagerOptions {}
+
 class AllClearManager {
 	static final SHORT_STR = "AC!";
 
-	final rng: Random;
-	final geometries: BoardGeometries;
-	final particleManager: ParticleManager;
-	final borderColorMediator: BorderColorMediator;
+	@inject final rng: Random;
+	@inject final geometries: BoardGeometries;
+	@inject final particleManager: ParticleManager;
+	@inject final borderColorMediator: BorderColorMediator;
 
 	var targetY: Float;
 	var boardCenterX: Float;
@@ -40,10 +44,7 @@ class AllClearManager {
 	public var sendAllClearBonus(default, null): Bool;
 
 	public function new(opts: AllClearManagerOptions) {
-		rng = opts.rng;
-		geometries = opts.geometries;
-		particleManager = opts.particleManager;
-		borderColorMediator = opts.borderColorMediator;
+		game.Macros.initFromOpts();
 
 		targetY = BoardGeometries.HEIGHT / 5;
 		boardCenterX = BoardGeometries.CENTER.x;

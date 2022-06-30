@@ -27,14 +27,18 @@ private enum abstract Mode(Int) from Int to Int {
 	final MARKERS;
 }
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(EditingBoardState))
+class EditingBoardStateOptions {}
+
 class EditingBoardState implements IBoardState {
 	static final COLORS = [COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, GARBAGE];
 
-	final geometries: BoardGeometries;
-	final inputDevice: IInputDevice;
-	final chainSim: ChainSimulator;
-	final chainCounter: ChainCounter;
-	final prefsSettings: PrefsSettings;
+	@inject final geometries: BoardGeometries;
+	@inject final inputDevice: IInputDevice;
+	@inject final chainSim: ChainSimulator;
+	@inject final chainCounter: ChainCounter;
+	@inject final prefsSettings: PrefsSettings;
 
 	final markers: Array<IFieldMarker>;
 
@@ -48,23 +52,27 @@ class EditingBoardState implements IBoardState {
 
 	var mode: Mode;
 
-	public final field: Field;
+	@inject public final field: Field;
 
 	public function new(opts: EditingBoardStateOptions) {
-		geometries = opts.geometries;
-		inputDevice = opts.inputDevice;
-		chainSim = opts.chainSim;
-		chainCounter = opts.chainCounter;
-		prefsSettings = opts.prefsSettings;
+		game.Macros.initFromOpts();
 
 		markers = [
-			new ChainFieldMarker(), AllClearFieldMarker.create(prefsSettings, COLOR1), AllClearFieldMarker.create(prefsSettings, COLOR2),
-			AllClearFieldMarker.create(prefsSettings, COLOR3), AllClearFieldMarker.create(prefsSettings, COLOR4),
-			AllClearFieldMarker.create(prefsSettings, COLOR5), DependencyFieldMarker.create(prefsSettings, COLOR1),
-			DependencyFieldMarker.create(prefsSettings, COLOR2), DependencyFieldMarker.create(prefsSettings, COLOR3),
-			DependencyFieldMarker.create(prefsSettings, COLOR4), DependencyFieldMarker.create(prefsSettings, COLOR5),
-			ColorConflictFieldMarker.create(prefsSettings, COLOR1), ColorConflictFieldMarker.create(prefsSettings, COLOR2),
-			ColorConflictFieldMarker.create(prefsSettings, COLOR3), ColorConflictFieldMarker.create(prefsSettings, COLOR4),
+			new ChainFieldMarker(),
+			AllClearFieldMarker.create(prefsSettings, COLOR1),
+			AllClearFieldMarker.create(prefsSettings, COLOR2),
+			AllClearFieldMarker.create(prefsSettings, COLOR3),
+			AllClearFieldMarker.create(prefsSettings, COLOR4),
+			AllClearFieldMarker.create(prefsSettings, COLOR5),
+			DependencyFieldMarker.create(prefsSettings, COLOR1),
+			DependencyFieldMarker.create(prefsSettings, COLOR2),
+			DependencyFieldMarker.create(prefsSettings, COLOR3),
+			DependencyFieldMarker.create(prefsSettings, COLOR4),
+			DependencyFieldMarker.create(prefsSettings, COLOR5),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR1),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR2),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR3),
+			ColorConflictFieldMarker.create(prefsSettings, COLOR4),
 			ColorConflictFieldMarker.create(prefsSettings, COLOR5),
 		];
 

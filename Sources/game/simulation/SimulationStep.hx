@@ -6,20 +6,24 @@ import kha.Color;
 import kha.graphics2.Graphics;
 import game.fields.Field;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(SimulationStep))
+class SimulationStepOptions {}
+
 class SimulationStep {
 	public static inline final LABEL_SIZE = 64;
 	public static inline final CARD_SIZE = 512;
 	public static inline final TITLE_FONT_SIZE = 40;
 	public static inline final CARD_FONT_SIZE = 32;
 
+	@inject public final chain: Int;
+	@inject public final fieldSnapshot: Field;
 	public final type: SimulationStepType;
-	public final chain: Int;
-	public final fieldSnapshot: Field;
 
 	function new(type: SimulationStepType, opts: SimulationStepOptions) {
+		game.Macros.initFromOpts();
+
 		this.type = type;
-		chain = opts.chain;
-		fieldSnapshot = opts.fieldSnapshot;
 	}
 
 	final function cardRow(row: Int) {

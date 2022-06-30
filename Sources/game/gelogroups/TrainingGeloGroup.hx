@@ -1,5 +1,6 @@
 package game.gelogroups;
 
+import game.gelogroups.GeloGroup.GeloGroupOptions;
 import game.gelos.GeloColor;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
@@ -9,15 +10,19 @@ import save_data.TrainingSettings;
 
 using kha.graphics2.GraphicsExtension;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(TrainingGeloGroup))
+class TrainingGeloGroupOptions extends GeloGroupOptions {}
+
 class TrainingGeloGroup extends GeloGroup {
 	static final BLIND_MODE_COLOR = Color.fromValue(0xFF666666);
 
-	final trainingSettings: TrainingSettings;
+	@inject final trainingSettings: TrainingSettings;
 
 	public function new(opts: TrainingGeloGroupOptions) {
 		super(opts);
 
-		trainingSettings = opts.trainingSettings;
+		game.Macros.initFromOpts();
 	}
 
 	override function getPrimaryColor(geloColor: GeloColor) {

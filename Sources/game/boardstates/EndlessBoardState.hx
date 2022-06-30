@@ -1,20 +1,23 @@
 package game.boardstates;
 
+import game.boardstates.StandardBoardState.StandardBoardStateOptions;
 import game.rules.MarginTimeManager;
 import save_data.IClearOnXModeContainer;
 import game.randomizers.Randomizer;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(EndlessBoardState))
+class EndlessBoardStateOptions extends StandardBoardStateOptions {}
+
 class EndlessBoardState extends StandardBoardState {
-	final clearOnXModeContainer: IClearOnXModeContainer;
-	final randomizer: Randomizer;
-	final marginManager: MarginTimeManager;
+	@inject final clearOnXModeContainer: IClearOnXModeContainer;
+	@inject final randomizer: Randomizer;
+	@inject final marginManager: MarginTimeManager;
 
 	public function new(opts: EndlessBoardStateOptions) {
 		super(opts);
 
-		clearOnXModeContainer = opts.clearOnXModeContainer;
-		randomizer = opts.randomizer;
-		marginManager = opts.marginManager;
+		game.Macros.initFromOpts();
 	}
 
 	// public for EndlessBoard

@@ -7,6 +7,10 @@ using kha.graphics2.GraphicsExtension;
 import kha.Color;
 import utils.Utils.lerp;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(GeloPopParticle))
+class GeloPopParticleOptions {}
+
 class GeloPopParticle implements IParticle {
 	public static function create(opts: GeloPopParticleOptions) {
 		final p = new GeloPopParticle(opts);
@@ -24,27 +28,23 @@ class GeloPopParticle implements IParticle {
 		return p;
 	}
 
-	final dx: Float;
-	final dyIncrement: Float;
-	final color: Color;
-	final maxT: Int;
+	@inject final dx: Float;
+	@inject final dyIncrement: Float;
+	@inject final color: Color;
+	@inject final maxT: Int;
+
+	@inject var x: Float;
+	@inject var y: Float;
+	@inject var dy: Float;
 
 	var lastX: Float;
 	var lastY: Float;
-
-	var x: Float;
-	var y: Float;
-	var dy: Float;
 	var t: Int;
 
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GeloPopParticleOptions) {
-		dx = opts.dx;
-		dy = opts.dy;
-		dyIncrement = opts.dyIncrement;
-		maxT = opts.maxT;
-		color = opts.color;
+		game.Macros.initFromOpts();
 	}
 
 	public function init() {

@@ -5,14 +5,21 @@ import kha.Font;
 import utils.Utils;
 import kha.graphics2.Graphics;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(OptionListWidget))
+class OptionListWidgetOptions {}
+
 class OptionListWidget implements IListWidget {
 	static inline final FONT_SIZE = 60;
 
-	final font: Font;
+	@inject final title: String;
+	@inject final options: Array<String>;
+	@inject final startIndex: Int;
+	@inject final onChange: String->Void;
 
-	final title: String;
-	final options: Array<String>;
-	final onChange: String->Void;
+	@inject public var description(default, null): Array<String>;
+
+	final font: Font;
 
 	var fontSize: Int;
 
@@ -20,21 +27,16 @@ class OptionListWidget implements IListWidget {
 	var index: Int;
 	var value: String;
 
-	public var description(default, null): Array<String>;
 	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
 	public var height(default, null): Float;
 
 	public function new(opts: OptionListWidgetOptions) {
+		game.Macros.initFromOpts();
+
 		font = Assets.fonts.Pixellari;
 
-		title = opts.title;
-		options = opts.options;
-		onChange = opts.onChange;
-
-		index = opts.startIndex;
+		index = startIndex;
 		value = options[index];
-
-		description = opts.description;
 	}
 
 	function changeValue(delta: Int) {

@@ -23,11 +23,11 @@ import game.garbage.trays.GarbageTray;
 import game.simulation.NullLinkInfoBuilder;
 import game.geometries.BoardGeometries;
 import game.boards.SingleStateBoard;
-import game.all_clear.AllClearManager;
+import game.AllClearManager;
 import game.gelogroups.GeloGroup;
 import game.fields.Field;
 import game.simulation.ChainSimulator;
-import game.score.ScoreManager;
+import game.ScoreManager;
 import game.mediators.BorderColorMediator;
 import game.mediators.PauseMediator;
 import game.rules.MarginTimeManager;
@@ -36,10 +36,14 @@ import game.randomizers.Randomizer;
 import kha.math.Random;
 import game.states.GameState;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(EndlessGameStateBuilder))
+class EndlessGameStateBuilderOptions {}
+
 class EndlessGameStateBuilder {
-	final gameMode: EndlessGameMode;
-	final transformMediator: TransformationMediator;
-	final inputDevice: IInputDevice;
+	@inject final gameMode: EndlessGameMode;
+	@inject final transformMediator: TransformationMediator;
+	@inject final inputDevice: IInputDevice;
 
 	var rng: Random;
 	var randomizer: Randomizer;
@@ -70,9 +74,7 @@ class EndlessGameStateBuilder {
 	var gameState: GameState;
 
 	public function new(opts: EndlessGameStateBuilderOptions) {
-		gameMode = opts.gameMode;
-		transformMediator = opts.transformMediator;
-		inputDevice = opts.inputDevice;
+		game.Macros.initFromOpts();
 	}
 
 	inline function buildRNG() {
@@ -222,9 +224,10 @@ class EndlessGameStateBuilder {
 
 	inline function buildBoard() {
 		board = new EndlessBoard({
-			actionBuffer: actionBuffer,
+			playActionBuffer: actionBuffer,
 			pauseMediator: pauseMediator,
 			inputDevice: inputDevice,
+			state: boardState,
 			endlessState: boardState
 		});
 	}

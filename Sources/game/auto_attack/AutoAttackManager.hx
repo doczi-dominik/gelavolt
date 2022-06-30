@@ -21,18 +21,22 @@ private enum abstract InnerState(Int) {
 	final SENDING;
 }
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(AutoAttackManager))
+class AutoAttackManagerOptions {}
+
 class AutoAttackManager {
 	static inline final EFFECT_Y = 800;
 
-	final rule: Rule;
-	final rng: Random;
-	final geometries: BoardGeometries;
-	final trainingSettings: TrainingSettings;
-	final prefsSettings: PrefsSettings;
-	final linkBuilder: ILinkInfoBuilder;
-	final garbageManager: IGarbageManager;
-	final chainCounter: ChainCounter;
-	final particleManager: ParticleManager;
+	@inject final rule: Rule;
+	@inject final rng: Random;
+	@inject final geometries: BoardGeometries;
+	@inject final trainingSettings: TrainingSettings;
+	@inject final prefsSettings: PrefsSettings;
+	@inject final linkBuilder: ILinkInfoBuilder;
+	@inject final garbageManager: IGarbageManager;
+	@inject final chainCounter: ChainCounter;
+	@inject final particleManager: ParticleManager;
 
 	final links: Array<LinkInfo>;
 
@@ -49,15 +53,7 @@ class AutoAttackManager {
 	public var type: AutoAttackType;
 
 	public function new(opts: AutoAttackManagerOptions) {
-		rule = opts.rule;
-		rng = opts.rng;
-		geometries = opts.geometries;
-		trainingSettings = opts.trainingSettings;
-		prefsSettings = opts.prefsSettings;
-		linkBuilder = opts.linkBuilder;
-		garbageManager = opts.garbageManager;
-		chainCounter = opts.chainCounter;
-		particleManager = opts.particleManager;
+		game.Macros.initFromOpts();
 
 		links = [];
 

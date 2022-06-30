@@ -6,17 +6,18 @@ import game.boardstates.IBoardState;
 import game.actionbuffers.IActionBuffer;
 import kha.graphics2.Graphics;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(SingleStateBoard))
+class SingleStateBoardOptions {}
+
 class SingleStateBoard implements IBoard {
-	final pauseMediator: PauseMediator;
-	final inputDevice: IInputDevice;
-	final actionBuffer: IActionBuffer;
-	final state: IBoardState;
+	@inject final pauseMediator: PauseMediator;
+	@inject final inputDevice: IInputDevice;
+	@inject final playActionBuffer: IActionBuffer;
+	@inject final state: IBoardState;
 
 	public function new(opts: SingleStateBoardOptions) {
-		pauseMediator = opts.pauseMediator;
-		inputDevice = opts.inputDevice;
-		actionBuffer = opts.actionBuffer;
-		state = opts.state;
+		game.Macros.initFromOpts();
 	}
 
 	public function update() {
@@ -24,7 +25,7 @@ class SingleStateBoard implements IBoard {
 			pauseMediator.pause(inputDevice);
 		}
 
-		actionBuffer.update();
+		playActionBuffer.update();
 		state.update();
 	}
 

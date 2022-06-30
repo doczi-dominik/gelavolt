@@ -6,15 +6,17 @@ import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import game.boards.IBoard;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(SingleBoardManager))
+class SingleBoardManagerOptions {}
+
 class SingleBoardManager implements IBoardManager {
-	final transformMediator: TransformationMediator;
-	final geometries: BoardGeometries;
-	final board: IBoard;
+	@inject final transformMediator: TransformationMediator;
+	@inject final geometries: BoardGeometries;
+	@inject final board: IBoard;
 
 	public function new(opts: SingleBoardManagerOptions) {
-		transformMediator = opts.transformMediator;
-		geometries = opts.geometries;
-		board = opts.board;
+		game.Macros.initFromOpts();
 	}
 
 	public function update() {

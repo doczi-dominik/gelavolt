@@ -4,29 +4,31 @@ import kha.Assets;
 import kha.Font;
 import kha.graphics2.Graphics;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(ButtonWidget))
+class ButtonWidgetOptions {}
+
 class ButtonWidget implements IListWidget {
 	static inline final FONT_SIZE = 60;
 
+	@inject final callback: Void->Void;
+
+	@inject public var title: String;
+	@inject public var description: Array<String>;
+
 	final font: Font;
 
-	final callback: Void->Void;
-
 	var fontSize: Int;
-
 	var menu: Menu;
 
-	public var title: String;
-	public var description: Array<String>;
 	public var controlDisplays(default, null): Array<ControlDisplay>;
 	public var height(default, null): Float;
 
 	public function new(opts: ButtonWidgetOptions) {
+		game.Macros.initFromOpts();
+
 		font = Assets.fonts.Pixellari;
 
-		callback = opts.callback;
-
-		title = opts.title;
-		description = opts.description;
 		controlDisplays = [{actions: [CONFIRM], description: "Confirm"}];
 	}
 

@@ -10,7 +10,7 @@ interface IBoard {
 
 	// ActionBuffers must be updated in Boards to allow calling a BoardState's
 	// update() method without affecting the actionbuffer e.g. for rollbacks
-	private final actionBuffer: IActionBuffer;
+	private final playActionBuffer: IActionBuffer;
 
 	public function update(): Void;
 	public function renderScissored(g: Graphics, g4: Graphics4, alpha: Float): Void;

@@ -12,6 +12,10 @@ import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 import game.boardstates.IBoardState;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(TrainingBoard))
+class TrainingBoardOptions {}
+
 class TrainingBoard implements IBoard {
 	static final GAME_CONTROL_DISPLAY: Array<ControlDisplay> = [
 		{actions: [TOGGLE_EDIT_MODE], description: "Edit Mode"},
@@ -29,26 +33,19 @@ class TrainingBoard implements IBoard {
 		{actions: [TOGGLE_MARKERS], description: "Toggle Gelos / Markers"},
 	];
 
-	final pauseMediator: PauseMediator;
-	final inputDevice: IInputDevice;
-	final actionBuffer: IActionBuffer;
-	final infoState: TrainingInfoBoardState;
-	final controlDisplayContainer: ControlDisplayContainer;
+	@inject final pauseMediator: PauseMediator;
+	@inject final inputDevice: IInputDevice;
+	@inject final playActionBuffer: IActionBuffer;
+	@inject final infoState: TrainingInfoBoardState;
+	@inject final controlDisplayContainer: ControlDisplayContainer;
 
-	final playState: TrainingBoardState;
-	final editState: EditingBoardState;
+	@inject final playState: TrainingBoardState;
+	@inject final editState: EditingBoardState;
 
 	var activeState: IBoardState;
 
 	public function new(opts: TrainingBoardOptions) {
-		pauseMediator = opts.pauseMediator;
-		inputDevice = opts.inputDevice;
-		actionBuffer = opts.playActionBuffer;
-		infoState = opts.infoState;
-		controlDisplayContainer = opts.controlDisplayContainer;
-
-		playState = opts.playState;
-		editState = opts.editState;
+		game.Macros.initFromOpts();
 
 		changeToGame();
 	}
@@ -125,7 +122,7 @@ class TrainingBoard implements IBoard {
 			}
 		}
 
-		actionBuffer.update();
+		playActionBuffer.update();
 		activeState.update();
 	}
 

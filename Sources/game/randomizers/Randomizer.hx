@@ -1,7 +1,7 @@
 package game.randomizers;
 
 import save_data.PrefsSettings;
-import game.gelos.OtherGeloOptions;
+import game.gelos.OtherGelo.OtherGeloOptions;
 import game.gelogroups.GeloGroupData;
 import game.gelogroups.GeloGroupType;
 import kha.math.Random;
@@ -12,17 +12,20 @@ import game.gelos.GeloColor;
 import haxe.ds.Vector;
 import game.randomizers.RandomizerPool;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(Randomizer))
+class RandomizerOptions {}
+
 class Randomizer {
-	final rng: Random;
-	final prefsSettings: PrefsSettings;
+	@inject final rng: Random;
+	@inject final prefsSettings: PrefsSettings;
 
 	var pools: Map<RandomizerPool, Vector<GeloColor>>;
 
 	public var currentPool: RandomizerPool;
 
 	public function new(opts: RandomizerOptions) {
-		rng = opts.rng;
-		prefsSettings = opts.prefsSettings;
+		game.Macros.initFromOpts();
 	}
 
 	function tsu() {

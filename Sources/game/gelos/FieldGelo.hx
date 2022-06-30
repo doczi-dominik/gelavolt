@@ -1,5 +1,6 @@
 package game.gelos;
 
+import game.gelos.Gelo.GeloOptions;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 import utils.IntPoint;
@@ -16,6 +17,10 @@ enum FieldGeloState {
 class FieldGeloPoint extends IntPoint {
 	public final gelo: FieldGelo;
 }
+
+@:structInit
+@:build(game.Macros.buildOptionsClass(FieldGelo))
+class FieldGeloOptions extends GeloOptions {}
 
 @:allow(game.gelos.FieldGeloBuilder)
 class FieldGelo extends Gelo {
@@ -49,8 +54,8 @@ class FieldGelo extends Gelo {
 		dest.state = src.state;
 	}
 
-	public var x: Float;
-	public var y: Float;
+	@inject public var x: Float;
+	@inject public var y: Float;
 
 	public var distanceCounter: Float;
 	public var velocity: Float;

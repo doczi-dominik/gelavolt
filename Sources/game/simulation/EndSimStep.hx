@@ -1,11 +1,17 @@
 package game.simulation;
 
+import game.simulation.SimulationStep.SimulationStepOptions;
 import kha.graphics2.Graphics;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(EndSimStep))
+class EndSimStepOptions extends SimulationStepOptions {}
+
 class EndSimStep extends SimulationStep {
-	public final links: Array<LinkInfo>;
+	@inject public final links: Array<LinkInfo>;
+	@inject public final endsInAllClear: Bool;
+
 	public final totalGarbage: Int;
-	public final endsInAllClear: Bool;
 	public final isLastLinkPowerful: Bool;
 
 	public function new(opts: EndSimStepOptions) {

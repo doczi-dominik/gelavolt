@@ -6,6 +6,10 @@ import kha.graphics2.Graphics;
 
 using kha.graphics2.GraphicsExtension;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(PixelFloatParticle))
+class PixelFloatParticleOptions {}
+
 class PixelFloatParticle implements IParticle {
 	public static function create(opts: PixelFloatParticleOptions) {
 		final p = new PixelFloatParticle(opts);
@@ -23,28 +27,24 @@ class PixelFloatParticle implements IParticle {
 		return p;
 	}
 
-	final dx: Float;
-	final dy: Float;
-	final maxT: Int;
-	final color: Color;
-	final size: Float;
+	@inject final dx: Float;
+	@inject final dy: Float;
+	@inject final maxT: Int;
+	@inject final color: Color;
+	@inject final size: Float;
+
+	@inject var x: Float;
+	@inject var y: Float;
 
 	var lastX: Float;
 	var lastY: Float;
 	var lastT: Int;
-
-	var x: Float;
-	var y: Float;
 	var t: Int;
 
 	public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: PixelFloatParticleOptions) {
-		dx = opts.dx;
-		dy = opts.dy;
-		maxT = opts.maxT;
-		color = opts.color;
-		size = opts.size;
+		game.Macros.initFromOpts();
 	}
 
 	public function update() {

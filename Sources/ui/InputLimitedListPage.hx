@@ -1,14 +1,19 @@
 package ui;
 
+import ui.ListMenuPage.ListMenuPageOptions;
 import input.IInputDevice;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(InputLimitedListPage))
+class InputLimitedListPageOptions extends ListMenuPageOptions {}
+
 class InputLimitedListPage extends ListMenuPage {
-	final inputDevice: IInputDevice;
+	@inject final inputDevice: IInputDevice;
 
 	public function new(opts: InputLimitedListPageOptions) {
 		super(opts);
 
-		inputDevice = opts.inputDevice;
+		game.Macros.initFromOpts();
 	}
 
 	override function onShow(menu: Menu) {

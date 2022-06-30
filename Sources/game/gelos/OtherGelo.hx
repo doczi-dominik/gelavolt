@@ -1,7 +1,12 @@
 package game.gelos;
 
+import game.gelos.Gelo.GeloOptions;
 import game.gelos.OtherGeloPositions.OTHERGELO_POSITIONS;
 import utils.IntPoint;
+
+@:structInit
+@:build(game.Macros.buildOptionsClass(OtherGelo))
+class OtherGeloOptions extends GeloOptions {}
 
 class OtherGelo extends Gelo {
 	public static function create(opts: OtherGeloOptions) {
@@ -25,7 +30,7 @@ class OtherGelo extends Gelo {
 		dest.relY = src.relY;
 	}
 
-	final positionID: Int;
+	@inject final positionID: Int;
 
 	public var relX: Int;
 	public var relY: Int;
@@ -49,7 +54,7 @@ class OtherGelo extends Gelo {
 	function new(opts: OtherGeloOptions) {
 		super(opts);
 
-		positionID = opts.positionID;
+		game.Macros.initFromOpts();
 	}
 
 	public function changeRotation(rotationID: Int) {

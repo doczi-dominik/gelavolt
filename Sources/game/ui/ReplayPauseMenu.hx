@@ -1,15 +1,20 @@
 package game.ui;
 
+import game.ui.PauseMenu.PauseMenuOptions;
 import ui.ButtonWidget;
 import ui.Menu;
 import ui.IListWidget;
 import game.actionbuffers.ReplayActionBuffer;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(ReplayPauseMenu))
+class ReplayPauseMenuOptions extends PauseMenuOptions {}
+
 class ReplayPauseMenu extends PauseMenu {
-	final actionBuffer: ReplayActionBuffer;
+	@inject final actionBuffer: ReplayActionBuffer;
 
 	public function new(opts: ReplayPauseMenuOptions) {
-		actionBuffer = opts.actionBuffer;
+		game.Macros.initFromOpts();
 
 		super(opts);
 	}

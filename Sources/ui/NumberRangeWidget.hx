@@ -5,38 +5,38 @@ import kha.Assets;
 import kha.graphics2.Graphics;
 import utils.Utils.limitDecimals;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(NumberRangeWidget))
+class NumberRangeWidgetOptions {}
+
 class NumberRangeWidget implements IListWidget {
 	static inline final FONT_SIZE = 60;
 
-	final font: Font;
+	@inject final title: String;
+	@inject final minValue: Float;
+	@inject final maxValue: Float;
+	@inject final delta: Float;
+	@inject final startValue: Float;
+	@inject final onChange: Float->Void;
 
-	final title: String;
-	final minValue: Float;
-	final maxValue: Float;
-	final delta: Float;
-	final onChange: Float->Void;
+	@inject public var description(default, null): Array<String>;
+
+	final font: Font;
 
 	var fontSize: Int;
 
 	var menu: Menu;
 	var value: Float;
 
-	public var description(default, null): Array<String>;
 	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
 	public var height(default, null): Float;
 
-	public function new(opts: NumericalRangeWidgetOptions) {
+	public function new(opts: NumberRangeWidgetOptions) {
+		game.Macros.initFromOpts();
+
 		font = Assets.fonts.Pixellari;
 
-		title = opts.title;
-		minValue = opts.minValue;
-		maxValue = opts.maxValue;
-		delta = opts.delta;
-		onChange = opts.onChange;
-
-		value = limitDecimals(opts.startValue, 2);
-
-		description = opts.description;
+		value = limitDecimals(startValue, 2);
 	}
 
 	inline function setValue(v: Float) {

@@ -10,11 +10,15 @@ import kha.graphics2.Graphics;
 import ui.IMenuPage;
 import utils.Utils.negativeMod;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(QueueEditorPage))
+class QueueEditorPageOptions {}
+
 class QueueEditorPage implements IMenuPage {
 	static inline final FONT_SIZE = 72;
 
-	final queue: Queue;
-	final groupEditor: GroupEditorPage;
+	@inject final queue: Queue;
+	@inject final groupEditor: GroupEditorPage;
 
 	var menu: Menu;
 
@@ -35,8 +39,7 @@ class QueueEditorPage implements IMenuPage {
 	];
 
 	public function new(opts: QueueEditorPageOptions) {
-		queue = opts.queue;
-		groupEditor = opts.groupEditor;
+		game.Macros.initFromOpts();
 
 		selectionX = 0;
 		selectionY = 0;

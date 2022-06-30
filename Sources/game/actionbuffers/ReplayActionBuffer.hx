@@ -1,5 +1,6 @@
 package game.actionbuffers;
 
+import game.actionbuffers.LocalActionBuffer.LocalActionBufferOptions;
 import game.mediators.FrameCounter;
 
 private enum abstract Mode(Int) {
@@ -7,8 +8,12 @@ private enum abstract Mode(Int) {
 	final TAKE_CONTROL;
 }
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(ReplayActionBuffer))
+class ReplayActionBufferOptions extends LocalActionBufferOptions {}
+
 class ReplayActionBuffer extends LocalActionBuffer {
-	final replayData: ReplayData;
+	@inject final replayData: ReplayData;
 
 	public var mode: Mode;
 
