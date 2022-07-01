@@ -21,7 +21,6 @@ class KeyboardConfirmWrapper implements IMenuPage {
 
 	var menu: Menu;
 	var fontSize: Int;
-	var fontHeight: Float;
 
 	public final header: String;
 
@@ -39,7 +38,6 @@ class KeyboardConfirmWrapper implements IMenuPage {
 
 	public function onResize() {
 		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
-		fontHeight = font.height(fontSize);
 	}
 
 	public function onShow(menu: Menu) {
