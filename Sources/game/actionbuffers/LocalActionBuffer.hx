@@ -29,6 +29,12 @@ class LocalActionBuffer implements IActionBuffer {
 		};
 	}
 
+	function setLatestAction(frame: Int, action: ActionSnapshot) {
+		actions[frame] = action;
+
+		latestAction = action;
+	}
+
 	public function update() {
 		final currentAction: ActionSnapshot = {
 			shiftLeft: inputDevice.getAction(SHIFT_LEFT),
@@ -40,9 +46,7 @@ class LocalActionBuffer implements IActionBuffer {
 		};
 
 		if (latestAction.isNotEqual(currentAction)) {
-			actions[frameCounter.value] = currentAction;
-
-			latestAction = currentAction;
+			setLatestAction(frameCounter.value, currentAction);
 		}
 	}
 

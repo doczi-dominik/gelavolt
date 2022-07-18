@@ -1,5 +1,6 @@
 package game.net;
 
+import game.net.packets.InputPacket;
 import game.mediators.FrameCounter;
 import game.net.packets.SyncResponsePacket;
 import game.net.packets.SyncRequestPacket;
@@ -46,6 +47,8 @@ class SessionManager {
 
 	public var averageRTT(default, null): Null<Int>;
 	public var state(default, null): SessionState;
+
+	public var onInput(null, default): InputPacket->Void;
 
 	public function new(opts: SessionManagerOptions) {
 		Macros.initFromOpts();
@@ -114,6 +117,8 @@ class SessionManager {
 		listen(requestRecvID, function(packet) switch packet.type {
 			case SYNC_REQ:
 				onSyncRequest(cast(packet, SyncRequestPacket));
+			case INPUT:
+				onInput(cast(packet, InputPacket));
 			default:
 		});
 	}
@@ -258,5 +263,9 @@ class SessionManager {
 		sleepFrames = 0;
 
 		return v;
+	}
+
+	public inline function sendInput(frame: Int, actions: Int) {
+		sendRequest(new InputPacket(magic, frame, actions));
 	}
 }
