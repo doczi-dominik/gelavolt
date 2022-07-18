@@ -1,5 +1,7 @@
 package utils;
 
+import kha.System;
+import kha.math.Random;
 import kha.graphics2.Graphics;
 import kha.Color;
 
@@ -83,5 +85,25 @@ class Utils {
 
 		g.color = fgColor;
 		g.drawCharacters(charArray, 0, 1, x, y);
+	}
+
+	public static function randomString(length: Int) {
+		final rng = new Random(Std.int(System.time * 1000000));
+
+		final numbers = [for (x in 48...58) x];
+		final uppercase = [for (x in 65...91) x];
+		final lowercase = [for (x in 97...123) x];
+
+		final ascii = numbers.concat(uppercase).concat(lowercase);
+
+		var result = "";
+
+		for (_ in 0...length) {
+			final i = rng.GetUpTo(ascii.length - 1);
+
+			result += String.fromCharCode(ascii[i]);
+		}
+
+		return result;
 	}
 }
