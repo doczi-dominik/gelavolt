@@ -1,5 +1,7 @@
 package game.gelogroups;
 
+import game.rules.AnimationsType;
+import game.rules.PhysicsType;
 import game.gelogroups.GeloGroup.GeloGroupOptions;
 import game.gelos.GeloColor;
 import kha.graphics2.Graphics;

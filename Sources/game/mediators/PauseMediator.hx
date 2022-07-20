@@ -1,18 +1,9 @@
 package game.mediators;
 
 import input.IInputDevice;
-import game.states.GameState;
 
+@:structInit
 class PauseMediator {
-	public var gameState(null, default): GameState;
-
-	public function new() {}
-
-	public function pause(inputDevice: IInputDevice) {
-		gameState.pause(inputDevice);
-	}
-
-	public function resume() {
-		gameState.resume();
-	}
+	public final pause: IInputDevice->Void;
+	public final resume: Void->Void;
 }

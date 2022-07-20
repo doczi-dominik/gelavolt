@@ -1,5 +1,6 @@
 package game;
 
+import game.gamestatebuilders.GameStateBuilderType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
@@ -7,7 +8,7 @@ import haxe.macro.Type;
 class Macros {
 	public static macro function buildOptionsClass(classes: Array<Expr>): Array<Field> {
 		final pos = Context.currentPos();
-		final fields: Array<Field> = [];
+		final fields = Context.getBuildFields();
 
 		for (c in classes) {
 			var classType: ClassType;
@@ -43,6 +44,37 @@ class Macros {
 				});
 			}
 		}
+
+		return fields;
+	}
+
+	public static macro function addGameStateBuilderType(type: Expr): Array<Field> {
+		final pos = Context.currentPos();
+
+		var value: String;
+
+		switch (type.expr) {
+			case EConst(CIdent(name)):
+				value = name;
+
+			default:
+				Context.fatalError('The provided expression "${type.expr}" is not an identifier', pos);
+		}
+
+		final fields = Context.getBuildFields();
+
+		final fun: Function = {
+			expr: macro return $i{value},
+			ret: (macro:GameStateBuilderType),
+			args: []
+		};
+
+		fields.push({
+			name: "getType",
+			access: [APublic, AInline],
+			kind: FFun(fun),
+			pos: pos
+		});
 
 		return fields;
 	}
@@ -91,14 +123,12 @@ class Macros {
 			Context.fatalError("Not called in a class", pos);
 
 		final fields = Context.getBuildFields();
-		final methods = fields.filter((f) -> f.name != "new" && !f.kind.match(FVar(_, _)));
+		final methods = fields.filter((f) -> f.name != "new" && !f.kind.match(FVar(_, _)) && !f.kind.match(FProp(_, _, _, _)));
 
 		final exprs = new Array<Expr>();
 
 		for (m in methods)
 			exprs.push(macro $i{m.name}());
-
-		exprs.push(macro return gameState);
 
 		fields.push({
 			pos: pos,

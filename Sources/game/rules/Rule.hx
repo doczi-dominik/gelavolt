@@ -7,33 +7,33 @@ import game.rules.AnimationsType;
 import game.rules.PhysicsType;
 
 @:structInit
-class Rule {
-	public var animations = AnimationsType.TSU;
-	public var physics = PhysicsType.TSU;
+class Rule implements hxbit.Serializable {
+	@:s public var animations = AnimationsType.TSU;
+	@:s public var physics = PhysicsType.TSU;
 
 	// Misc.
-	public var randomizerType = RandomizerType.TSU;
-	public var popCount = 4;
-	public var minimumChain = 1;
-	public var softDropBonus = 0.5;
-	public var dropSpeed = 2.6;
-	public var vanishHiddenRows = false;
-	public var randomizeGarbage = true;
+	@:s public var randomizerType = RandomizerType.TSU;
+	@:s public var popCount = 4;
+	@:s public var minimumChain = 1;
+	@:s public var softDropBonus = 0.5;
+	@:s public var dropSpeed = 2.6;
+	@:s public var vanishHiddenRows = false;
+	@:s public var randomizeGarbage = true;
 
 	// Scoring
-	public var powerTableType = PowerTableType.TSU;
-	public var colorBonusTableType = ColorBonusTableType.TSU;
-	public var groupBonusTableType = GroupBonusTableType.TSU;
+	@:s public var powerTableType = PowerTableType.TSU;
+	@:s public var colorBonusTableType = ColorBonusTableType.TSU;
+	@:s public var groupBonusTableType = GroupBonusTableType.TSU;
 
 	// Garbage
-	public var marginTime = 96;
-	public var startTargetPoints = 70;
-	public var garbageColor = GeloColor.GARBAGE;
-	public var offsetMode = OffsetMode.TSU;
-	public var countering = true;
-	public var dropBonusGarbage = true;
-	public var allClearReward = 30;
-	public var baseChainOnAllClear = false;
-	public var garbageDropLimit = 30;
-	public var garbageConfirmGracePeriod = 30;
+	@:s public var marginTime = 96;
+	@:s public var startTargetPoints = 70;
+	@:s public var garbageColor = GeloColor.GARBAGE;
+	@:s public var offsetMode = OffsetMode.TSU;
+	@:s public var countering = true;
+	@:s public var dropBonusGarbage = true;
+	@:s public var allClearReward = 30;
+	@:s public var baseChainOnAllClear = false;
+	@:s public var garbageDropLimit = 30;
+	@:s public var garbageConfirmGracePeriod = 30;
 }

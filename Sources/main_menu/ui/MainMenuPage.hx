@@ -1,10 +1,11 @@
 package main_menu.ui;
 
+import game.gamestatebuilders.TrainingGameStateBuilder;
+import input.AnyInputDevice;
+import game.gamestatebuilders.EndlessGameStateBuilder;
 import save_data.PrefsSettings;
 import ui.SubPageWidget;
-import game.gamemodes.EndlessGameMode;
 import kha.System;
-import game.gamemodes.TrainingGameMode;
 import game.screens.GameScreen;
 import Screen.GlobalScreenSwitcher;
 import ui.ButtonWidget;
@@ -32,20 +33,22 @@ class MainMenuPage extends ListMenuPage {
 					title: "Training Mode",
 					description: ["Practice In GelaVolt's", "Signature Training Mode!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(new GameScreen(({
-							rngSeed: Std.int(System.time * 1000000),
+						GlobalScreenSwitcher.switchScreen(new GameScreen(new TrainingGameStateBuilder({
 							rule: {},
-						} : TrainingGameMode)));
+							rngSeed: Std.int(System.time * 1000000),
+						})));
 					}
 				}),
 				new ButtonWidget({
 					title: "Endless Mode",
 					description: ["Play For As Long As You", "Can In Endless Mode And", "Share Your Replays!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(new GameScreen(({
-							rngSeed: Std.int(System.time * 1000000),
+						GlobalScreenSwitcher.switchScreen(new GameScreen(new EndlessGameStateBuilder({
 							rule: {},
-						} : EndlessGameMode)));
+							rngSeed: Std.int(System.time * 1000000),
+							inputDevice: AnyInputDevice.instance,
+							replayData: null
+						})));
 					}
 				}),
 				new SubPageWidget({

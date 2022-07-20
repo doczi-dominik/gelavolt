@@ -51,7 +51,10 @@ class NetplaySyncPage implements IMenuPage {
 		session = new SessionManager({
 			serverUrl: "192.168.1.200:8080",
 			roomCode: "test12345",
-			frameCounter: frameCounter
+			frameCounter: frameCounter,
+			rule: {},
+			rngSeed: 0,
+			localInputDevice: menu.inputDevice
 		});
 
 		final r = new Random(Std.int(System.time * 1000000));

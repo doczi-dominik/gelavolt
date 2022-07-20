@@ -1,6 +1,5 @@
 package game.boardmanagers;
 
-import game.mediators.TransformationMediator;
 import game.geometries.BoardGeometries;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
@@ -11,7 +10,6 @@ import game.boards.IBoard;
 class SingleBoardManagerOptions {}
 
 class SingleBoardManager implements IBoardManager {
-	@inject final transformMediator: TransformationMediator;
 	@inject final geometries: BoardGeometries;
 	@inject final board: IBoard;
 
@@ -30,11 +28,12 @@ class SingleBoardManager implements IBoardManager {
 
 		final scale = geometries.scale;
 
+		ScaleManager.transformedScissor(g, absX, absY, BoardGeometries.WIDTH * scale, BoardGeometries.HEIGHT * scale);
+
 		final transform = FastMatrix3.translation(absX, absY).multmat(FastMatrix3.scale(scale, scale));
 
 		g.pushTransformation(g.transformation.multmat(transform));
 
-		transformMediator.setTransformedScissor(g, absX, absY, BoardGeometries.WIDTH * scale, BoardGeometries.HEIGHT * scale);
 		board.renderScissored(g, g4, alpha);
 		g.disableScissor();
 

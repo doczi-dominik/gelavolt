@@ -1,9 +1,7 @@
 package game.states;
 
-import input.IInputDevice;
 import game.mediators.FrameCounter;
 import game.rules.MarginTimeManager;
-import game.ui.PauseMenu;
 import kha.graphics4.ConstantLocation;
 import game.particles.ParticleManager;
 import game.boardmanagers.IBoardManager;
@@ -18,13 +16,9 @@ class GameState {
 	@inject final particleManager: ParticleManager;
 	@inject final boardManager: IBoardManager;
 	@inject final marginManager: MarginTimeManager;
-	@inject final pauseMenu: PauseMenu;
 	@inject final frameCounter: FrameCounter;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
-
-	var isPaused: Bool;
-	var pausingInputs: Null<IInputDevice>;
 
 	public function new(opts: GameStateOptions) {
 		game.Macros.initFromOpts();
@@ -32,21 +26,7 @@ class GameState {
 		FADE_TO_WHITELocation = Pipelines.FADE_TO_WHITE.getConstantLocation("comp");
 	}
 
-	public function pause(inputDevice: IInputDevice) {
-		pauseMenu.onShow(inputDevice);
-		isPaused = true;
-	}
-
-	public function resume() {
-		isPaused = false;
-	}
-
 	public function update() {
-		if (isPaused) {
-			pauseMenu.update();
-			return;
-		}
-
 		boardManager.update();
 		particleManager.update();
 		marginManager.update();
@@ -65,8 +45,5 @@ class GameState {
 		particleManager.renderForeground(g, alpha);
 	}
 
-	public function render(g: Graphics, g4: kha.graphics4.Graphics, alpha: Float) {
-		if (isPaused)
-			pauseMenu.render(g, alpha);
-	}
+	public function render(g: Graphics, g4: kha.graphics4.Graphics, alpha: Float) {}
 }

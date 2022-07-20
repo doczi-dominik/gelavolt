@@ -1,6 +1,6 @@
 package game.boardstates;
 
-import game.mediators.TransformationMediator;
+import game.rules.AnimationsType;
 import game.rules.Rule;
 import utils.Utils;
 import game.simulation.SimulationStepType;
@@ -46,7 +46,6 @@ class StandardBoardState implements IBoardState {
 	@inject final rule: Rule;
 	@inject final prefsSettings: PrefsSettings;
 
-	@inject final transformMediator: TransformationMediator;
 	@inject final rng: Random;
 	@inject final geometries: BoardGeometries;
 	@inject final particleManager: ParticleManager;
@@ -415,7 +414,7 @@ class StandardBoardState implements IBoardState {
 			final column = columnPositions[columnIndex];
 			final accel = accels[fallInBulk ? column : accelCenterIndex];
 
-			field.newGarbage(column, row, rule.garbageColor).startGarbageFalling(accel);
+			field.newGarbage(column, row, GARBAGE).startGarbageFalling(accel);
 
 			columnPositions.remove(column);
 		}
@@ -495,9 +494,8 @@ class StandardBoardState implements IBoardState {
 		chainCounter.render(g, alpha);
 
 		final previewPos = geometries.preview;
-		final absPreviewPos = geometries.absolutePosition.add(previewPos);
 
-		transformMediator.setTransformedScissor(g, absPreviewPos.x - Gelo.HALFSIZE, absPreviewPos.y - Gelo.HALFSIZE, Gelo.SIZE, Gelo.SIZE * 4.5);
+		ScaleManager.transformedScissor(g, previewPos.x - Gelo.HALFSIZE, previewPos.y - Gelo.HALFSIZE, Gelo.SIZE, Gelo.SIZE * 4.5);
 
 		preview.render(g, previewPos.x, previewPos.y);
 

@@ -1,5 +1,13 @@
 package game.net;
 
+import game.gamestatebuilders.IGameStateBuilderOptions;
+import game.actionbuffers.ReceiveActionBuffer;
+import game.actionbuffers.SenderActionBuffer;
+import input.IInputDevice;
+import game.rules.Rule;
+import game.gamestatebuilders.VersusGameStateBuilder.VersusGameStateBuilderOptions;
+import game.net.packets.BeginResponsePacket;
+import game.net.packets.BeginRequestPacket;
 import game.net.packets.InputPacket;
 import game.mediators.FrameCounter;
 import game.net.packets.SyncResponsePacket;
@@ -7,7 +15,6 @@ import game.net.packets.SyncRequestPacket;
 import game.net.packets.PacketBase;
 import tink.http.Client.fetch;
 import tink.http.Fetch.CompleteResponse;
-import tink.core.Outcome;
 import tink.core.Error;
 import utils.Utils.randomString;
 import kha.Scheduler;
@@ -22,6 +29,9 @@ class SessionManager {
 	@inject final serverUrl: String;
 	@inject final roomCode: String;
 	@inject final frameCounter: FrameCounter;
+	@inject final rngSeed: Int;
+	@inject final rule: Rule;
+	@inject final localInputDevice: IInputDevice;
 
 	final serializer: Serializer;
 	final roundTrips: RingBuffer<Int>;
@@ -37,18 +47,25 @@ class SessionManager {
 	var magic: String;
 	var remoteMagic: String;
 
+	var isHost: Bool;
+
 	var syncTimeTaskID: Int;
 
 	var lastSyncRequestTimestamp: Float;
 	var roundTripCounter: Int;
 	var advantageExchangeCounter: Int;
+	var successfulSleepChecks: Int;
+
+	var beginFrame: Null<Int>;
+	var netplayOptions: NetplayOptions;
 
 	var sleepFrames: Int;
 
+	public var onInput(null, default): InputPacket->Void;
+	public var onBegin(null, default): NetplayOptions->Void;
+
 	public var averageRTT(default, null): Null<Int>;
 	public var state(default, null): SessionState;
-
-	public var onInput(null, default): InputPacket->Void;
 
 	public function new(opts: SessionManagerOptions) {
 		Macros.initFromOpts();
@@ -119,6 +136,8 @@ class SessionManager {
 				onSyncRequest(cast(packet, SyncRequestPacket));
 			case INPUT:
 				onInput(cast(packet, InputPacket));
+			case BEGIN_REQ:
+				onBeginRequest(cast(packet, BeginRequestPacket));
 			default:
 		});
 	}
@@ -127,6 +146,8 @@ class SessionManager {
 		listen(responseRecvID, function(packet) switch packet.type {
 			case SYNC_RESP:
 				onSyncResponse(cast(packet, SyncResponsePacket));
+			case BEGIN_RESP:
+				onBeginResponse(cast(packet, BeginResponsePacket));
 			default:
 		});
 	}
@@ -146,6 +167,18 @@ class SessionManager {
 						requestRecvID = parts[0];
 						responseRecvID = parts[1];
 						remoteMagic = parts[2];
+
+						for (i in 0...8) {
+							if (magic.charCodeAt(i) < remoteMagic.charCodeAt(i)) {
+								isHost = true;
+								break;
+							}
+
+							if (magic.charCodeAt(i) > remoteMagic.charCodeAt(i)) {
+								isHost = false;
+								break;
+							}
+						}
 
 						listenForRequest();
 						listenForResponse();
@@ -182,6 +215,26 @@ class SessionManager {
 		sendRequest(new SyncRequestPacket(magic, prediction));
 	}
 
+	function confirmNoSleepFrames() {
+		sleepFrames = 0;
+
+		if (state != SYNCING)
+			return;
+
+		if (!isHost)
+			return;
+
+		if (successfulSleepChecks++ < 3)
+			return;
+
+		sendRequest(new BeginRequestPacket(magic, {
+			rule: rule,
+			rngSeed: rngSeed,
+			isOnLeftSide: true,
+			builderType: VERSUS
+		}));
+	}
+
 	function onSyncRequest(packet: SyncRequestPacket) {
 		final prediction = packet.framePrediction;
 
@@ -201,6 +254,8 @@ class SessionManager {
 		roundTrips.add(rtt);
 
 		if (roundTripCounter++ == 10) {
+			roundTripCounter = 0;
+
 			var sum = 0;
 
 			for (rtt in roundTrips.values) {
@@ -208,14 +263,14 @@ class SessionManager {
 			}
 
 			averageRTT = Math.round(sum / roundTrips.size);
-
-			roundTripCounter = 0;
 		}
 
 		if (packet.frameAdvantage != null) {
 			remoteAdvantages.add(packet.frameAdvantage);
 
 			if (advantageExchangeCounter++ == 5) {
+				advantageExchangeCounter = 0;
+
 				var sum = 0;
 
 				for (adv in localAdvantages.values) {
@@ -245,10 +300,20 @@ class SessionManager {
 				}
 
 				sleepFrames = s;
-
-				advantageExchangeCounter = 0;
 			}
 		}
+	}
+
+	function onBeginRequest(packet: BeginRequestPacket) {
+		netplayOptions = packet.options;
+
+		beginFrame = frameCounter.value + Std.int(averageRTT * 1.5);
+
+		sendResponse(new BeginResponsePacket(magic, beginFrame));
+	}
+
+	function onBeginResponse(packet: BeginResponsePacket) {
+		beginFrame = packet.beginFrame;
 	}
 
 	public function setSyncInterval(interval: Int) {
@@ -267,5 +332,15 @@ class SessionManager {
 
 	public inline function sendInput(frame: Int, actions: Int) {
 		sendRequest(new InputPacket(magic, frame, actions));
+	}
+
+	public function waitForRunning() {
+		if (state == BEGINNING && frameCounter.value == beginFrame) {
+			setSyncInterval(1000);
+
+			onBegin(netplayOptions);
+
+			state = RUNNING;
+		}
 	}
 }

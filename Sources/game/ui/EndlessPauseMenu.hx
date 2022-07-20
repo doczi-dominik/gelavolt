@@ -4,8 +4,6 @@ import game.ui.PauseMenu.PauseMenuOptions;
 import game.mediators.ControlDisplayContainer;
 import ui.YesNoWidget;
 import save_data.EndlessSettings;
-import game.gamemodes.EndlessGameMode;
-import haxe.Serializer;
 import game.actionbuffers.IActionBuffer;
 import ui.ButtonWidget;
 import save_data.SaveManager;
@@ -29,7 +27,6 @@ using DateTools;
 class EndlessPauseMenuOptions extends PauseMenuOptions {}
 
 class EndlessPauseMenu extends PauseMenu {
-	@inject final gameMode: EndlessGameMode;
 	@inject final endlessSettings: EndlessSettings;
 	@inject final controlDisplayContainer: ControlDisplayContainer;
 	@inject final actionBuffer: IActionBuffer;
@@ -91,22 +88,30 @@ class EndlessPauseMenu extends PauseMenu {
 						"On The GelaVolt Window",
 					],
 					callback: () -> {
-						final data = gameMode.copyWithReplay(actionBuffer.exportReplayData());
-						final serialized = Serializer.run(data);
-						final filename = 'replay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvr';
+						/*
+							final ser = new Serializer();
 
-						#if js
-						final file = new File([Serializer.run(data)], "replay.gvr");
-						final uri = URL.createObjectURL(file);
+							ser.serialize(rule);
 
-						final el = Browser.document.createAnchorElement();
+							final replayData: Map<Int, Int> = actionBuffer.exportReplayData();
 
-						el.href = uri;
-						el.setAttribute("download", filename);
-						el.click();
-						#else
-						File.saveContent(filename, serialized);
-						#end
+							final data = gameMode.copyWithReplay(actionBuffer.exportReplayData());
+							final serialized = Serializer.run(data);
+							final filename = 'replay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvr';
+
+							#if js
+							final file = new File([Serializer.run(data)], "replay.gvr");
+							final uri = URL.createObjectURL(file);
+
+							final el = Browser.document.createAnchorElement();
+
+							el.href = uri;
+							el.setAttribute("download", filename);
+							el.click();
+							#else
+							File.saveContent(filename, serialized);
+							#end
+						 */
 					}
 				})
 			]

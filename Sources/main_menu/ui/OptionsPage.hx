@@ -39,6 +39,8 @@ class OptionsPage extends ListMenuPage {
 						var middle: Array<IListWidget>;
 
 						switch (inputDevice.type) {
+							case NULL:
+								middle = [];
 							case KEYBOARD | GAMEPAD:
 								middle = buildControls(inputDevice);
 							case ANY:
