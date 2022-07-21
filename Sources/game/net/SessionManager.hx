@@ -1,11 +1,10 @@
 package game.net;
 
-import game.gamestatebuilders.IGameStateBuilderOptions;
-import game.actionbuffers.ReceiveActionBuffer;
-import game.actionbuffers.SenderActionBuffer;
+import kha.System;
+import kha.math.Random;
+import tink.http.Header.HeaderField;
 import input.IInputDevice;
 import game.rules.Rule;
-import game.gamestatebuilders.VersusGameStateBuilder.VersusGameStateBuilderOptions;
 import game.net.packets.BeginResponsePacket;
 import game.net.packets.BeginRequestPacket;
 import game.net.packets.InputPacket;
@@ -34,9 +33,6 @@ class SessionManager {
 	@inject final localInputDevice: IInputDevice;
 
 	final serializer: Serializer;
-	final roundTrips: RingBuffer<Int>;
-	final localAdvantages: RingBuffer<Int>;
-	final remoteAdvantages: RingBuffer<Int>;
 
 	var requestSendID: String;
 	var responseSendID: String;
@@ -53,7 +49,10 @@ class SessionManager {
 
 	var lastSyncRequestTimestamp: Float;
 	var roundTripCounter: Int;
-	var advantageExchangeCounter: Int;
+	var averageLocalAdvantage: Int;
+	var localAdvantageCounter: Int;
+	var averageRemoteAdvantage: Int;
+	var remoteAdvantageCounter: Int;
 	var successfulSleepChecks: Int;
 
 	var beginFrame: Null<Int>;
@@ -71,9 +70,6 @@ class SessionManager {
 		Macros.initFromOpts();
 
 		serializer = new Serializer();
-		roundTrips = new RingBuffer(10, 0);
-		localAdvantages = new RingBuffer(5, 0);
-		remoteAdvantages = new RingBuffer(5, 0);
 
 		initConnectingState();
 	}
@@ -83,8 +79,9 @@ class SessionManager {
 	}
 
 	function sendMcast(channel: String, packet: PacketBase, ?onError: Error->Void, ?onSuccess: CompleteResponse->Void) {
-		fetch('http://$serverUrl/mcast/$channel?wsecret=$magic', {
+		fetch('https://$serverUrl/mcast/$channel?wsecret=$magic', {
 			method: POST,
+			headers: [new HeaderField("ngrok-skip-browser-warning", "true")],
 			body: serializer.serialize(packet)
 		}).all().handle(function(o) switch o {
 			case Success(data):
@@ -112,11 +109,20 @@ class SessionManager {
 		sendMcast(responseSendID, packet, onError, onSuccess);
 	}
 
-	function listen(channel: String, dispatch: PacketBase->Void) {
-		fetch('http://$serverUrl/mcast/$channel').all().handle(function(o) {
+	function listen(channel: String, seqID: Int, dispatch: PacketBase->Void) {
+		fetch('https://$serverUrl/mcast/$channel', {
+			headers: [
+				new HeaderField("httprelay-seqid", seqID),
+				new HeaderField("ngrok-skip-browser-warning", "true")
+			]
+		}).all().handle(function(o) {
 			switch o {
 				case Success(data):
-					final packet = serializer.unserialize(data.body.toBytes(), PacketBase);
+					final bytes = data.body.toBytes();
+
+					trace('Received ${bytes.length} bytes');
+
+					final packet = serializer.unserialize(bytes, PacketBase);
 
 					if (packet.magic != remoteMagic)
 						return;
@@ -126,12 +132,12 @@ class SessionManager {
 					trace('Failed to get packet: $failure');
 			}
 
-			listen(channel, dispatch);
+			listen(channel, seqID + 1, dispatch);
 		});
 	}
 
 	function listenForRequest() {
-		listen(requestRecvID, function(packet) switch packet.type {
+		listen(requestRecvID, 1, function(packet) switch packet.type {
 			case SYNC_REQ:
 				onSyncRequest(cast(packet, SyncRequestPacket));
 			case INPUT:
@@ -143,7 +149,7 @@ class SessionManager {
 	}
 
 	function listenForResponse() {
-		listen(responseRecvID, function(packet) switch packet.type {
+		listen(responseRecvID, 1, function(packet) switch packet.type {
 			case SYNC_RESP:
 				onSyncResponse(cast(packet, SyncResponsePacket));
 			case BEGIN_RESP:
@@ -158,8 +164,11 @@ class SessionManager {
 
 		magic = randomString(8);
 
-		fetch('http://$serverUrl/sync/$roomCode?c=$requestSendID-$responseSendID-$magic').all().handle(function(o) switch o {
+		fetch('https://$serverUrl/sync/$roomCode?c=$requestSendID-$responseSendID-$magic', {
+			headers: [new HeaderField("ngrok-skip-browser-warning", "true")]
+		}).all().handle(function(o) switch o {
 			case Success(data):
+				trace('Sync response: $data');
 				switch (data.header.byName("httprelay-query")) {
 					case Success(header):
 						final parts = (header : String).substring(2).split("-");
@@ -168,17 +177,7 @@ class SessionManager {
 						responseRecvID = parts[1];
 						remoteMagic = parts[2];
 
-						for (i in 0...8) {
-							if (magic.charCodeAt(i) < remoteMagic.charCodeAt(i)) {
-								isHost = true;
-								break;
-							}
-
-							if (magic.charCodeAt(i) > remoteMagic.charCodeAt(i)) {
-								isHost = false;
-								break;
-							}
-						}
+						isHost = magic < remoteMagic;
 
 						listenForRequest();
 						listenForResponse();
@@ -196,7 +195,8 @@ class SessionManager {
 
 	function initSyncingState() {
 		roundTripCounter = 0;
-		advantageExchangeCounter = 0;
+		localAdvantageCounter = 0;
+		remoteAdvantageCounter = 0;
 
 		setSyncInterval(100);
 
@@ -204,13 +204,13 @@ class SessionManager {
 	}
 
 	function sendSyncRequest() {
-		lastSyncRequestTimestamp = Scheduler.realTime();
-
 		var prediction: Null<Int> = null;
 
 		if (averageRTT != null) {
 			prediction = frameCounter.value + Std.int(averageRTT * 60 / 1000);
 		}
+
+		lastSyncRequestTimestamp = Scheduler.realTime();
 
 		sendRequest(new SyncRequestPacket(magic, prediction));
 	}
@@ -243,56 +243,28 @@ class SessionManager {
 		if (prediction != null) {
 			adv = frameCounter.value - packet.framePrediction;
 
-			localAdvantages.add(adv);
+			averageLocalAdvantage = Math.round((averageLocalAdvantage * localAdvantageCounter + adv) / ++localAdvantageCounter);
 		}
 
 		sendResponse(new SyncResponsePacket(magic, adv));
 	}
 
 	function onSyncResponse(packet: SyncResponsePacket) {
-		final rtt = Std.int((Scheduler.realTime() - lastSyncRequestTimestamp) * 1000);
-		roundTrips.add(rtt);
+		final d = Scheduler.realTime() - lastSyncRequestTimestamp;
+		final rtt = Std.int(d * 1000);
 
-		if (roundTripCounter++ == 10) {
-			roundTripCounter = 0;
-
-			var sum = 0;
-
-			for (rtt in roundTrips.values) {
-				sum += rtt;
-			}
-
-			averageRTT = Math.round(sum / roundTrips.size);
-		}
+		averageRTT = Math.round((averageRTT * roundTripCounter + rtt) / ++roundTripCounter);
 
 		if (packet.frameAdvantage != null) {
-			remoteAdvantages.add(packet.frameAdvantage);
+			averageRemoteAdvantage = Math.round((averageRemoteAdvantage * remoteAdvantageCounter + packet.frameAdvantage) / ++remoteAdvantageCounter);
 
-			if (advantageExchangeCounter++ == 5) {
-				advantageExchangeCounter = 0;
-
-				var sum = 0;
-
-				for (adv in localAdvantages.values) {
-					sum += adv;
-				}
-
-				final localAvg = Std.int(sum / localAdvantages.size);
-
-				sum = 0;
-
-				for (adv in remoteAdvantages.values) {
-					sum += adv;
-				}
-
-				final remoteAvg = Std.int(sum / remoteAdvantages.size);
-
-				if (advantageSign(localAvg) == advantageSign(remoteAvg)) {
+			if (remoteAdvantageCounter % 5 == 0) {
+				if (advantageSign(averageLocalAdvantage) == advantageSign(averageRemoteAdvantage)) {
 					sleepFrames = 0;
 					return;
 				}
 
-				final s = Std.int(Math.min((localAvg - remoteAvg) / 2, 9));
+				final s = Std.int(Math.min((averageLocalAdvantage - averageRemoteAdvantage) / 2, 9));
 
 				if (s < 2) {
 					sleepFrames = 0;
