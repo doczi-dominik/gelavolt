@@ -2,10 +2,8 @@ package game.net.packets;
 
 class PacketBase implements hxbit.Serializable {
 	@:s public var type: PacketType;
-	@:s public var magic: String;
 
-	function new(type: PacketType, magic: String) {
+	function new(type: PacketType) {
 		this.type = type;
-		this.magic = magic;
 	}
 }

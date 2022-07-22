@@ -4,8 +4,8 @@ class InputPacket extends PacketBase {
 	@:s public var frame: Int;
 	@:s public var actions: Int;
 
-	public function new(magic: String, frame: Int, actions: Int) {
-		super(INPUT, magic);
+	public function new(frame: Int, actions: Int) {
+		super(INPUT);
 
 		this.frame = frame;
 		this.actions = actions;

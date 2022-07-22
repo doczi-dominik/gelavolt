@@ -1,8 +1,8 @@
 package game.net;
 
-import kha.System;
-import kha.math.Random;
-import tink.http.Header.HeaderField;
+import game.randomizers.Randomizer;
+import haxe.Timer;
+import haxe.io.Bytes;
 import input.IInputDevice;
 import game.rules.Rule;
 import game.net.packets.BeginResponsePacket;
@@ -12,13 +12,9 @@ import game.mediators.FrameCounter;
 import game.net.packets.SyncResponsePacket;
 import game.net.packets.SyncRequestPacket;
 import game.net.packets.PacketBase;
-import tink.http.Client.fetch;
-import tink.http.Fetch.CompleteResponse;
-import tink.core.Error;
-import utils.Utils.randomString;
 import kha.Scheduler;
-import utils.RingBuffer;
 import hxbit.Serializer;
+import haxe.net.WebSocket;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(SessionManager))
@@ -34,14 +30,7 @@ class SessionManager {
 
 	final serializer: Serializer;
 
-	var requestSendID: String;
-	var responseSendID: String;
-
-	var requestRecvID: String;
-	var responseRecvID: String;
-
-	var magic: String;
-	var remoteMagic: String;
+	var ws: WebSocket;
 
 	var isHost: Bool;
 
@@ -78,119 +67,66 @@ class SessionManager {
 		return x < 0 ? -1 : 1;
 	}
 
-	function sendMcast(channel: String, packet: PacketBase, ?onError: Error->Void, ?onSuccess: CompleteResponse->Void) {
-		fetch('https://$serverUrl/mcast/$channel?wsecret=$magic', {
-			method: POST,
-			headers: [new HeaderField("ngrok-skip-browser-warning", "true")],
-			body: serializer.serialize(packet)
-		}).all().handle(function(o) switch o {
-			case Success(data):
-				if (onSuccess != null)
-					onSuccess(data);
-			case Failure(failure):
-				if (onError == null)
-					onError(failure);
-		});
+	inline function sendPacket(packet: PacketBase) {
+		trace('Before ws.send: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
+		ws.sendBytes(serializer.serialize(packet));
+		trace('After ws.send: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
 	}
 
-	function sendRequest(packet: PacketBase, ?onError: Error->Void, ?onSuccess: CompleteResponse->Void) {
-		if (onError == null) {
-			onError = function(e) trace('Failed to send request $packet: $e');
-		}
-
-		sendMcast(requestSendID, packet, onError, onSuccess);
+	function onClose(?e: Null<Dynamic>) {
+		trace('WS Closed: $e');
 	}
 
-	function sendResponse(packet: PacketBase, ?onError: Error->Void, ?onSuccess: CompleteResponse->Void) {
-		if (onError == null) {
-			onError = function(e) trace('Failed to send response $packet: $e');
-		}
+	function onMessage(msg: Bytes) {
+		trace('onMessage: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
+		final packet = serializer.unserialize(msg, PacketBase);
+		trace('After unserialize (${packet.type}): ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
 
-		sendMcast(responseSendID, packet, onError, onSuccess);
-	}
-
-	function listen(channel: String, seqID: Int, dispatch: PacketBase->Void) {
-		fetch('https://$serverUrl/mcast/$channel', {
-			headers: [
-				new HeaderField("httprelay-seqid", seqID),
-				new HeaderField("ngrok-skip-browser-warning", "true")
-			]
-		}).all().handle(function(o) {
-			switch o {
-				case Success(data):
-					final bytes = data.body.toBytes();
-
-					trace('Received ${bytes.length} bytes');
-
-					final packet = serializer.unserialize(bytes, PacketBase);
-
-					if (packet.magic != remoteMagic)
-						return;
-
-					dispatch(packet);
-				case Failure(failure):
-					trace('Failed to get packet: $failure');
-			}
-
-			listen(channel, seqID + 1, dispatch);
-		});
-	}
-
-	function listenForRequest() {
-		listen(requestRecvID, 1, function(packet) switch packet.type {
-			case SYNC_REQ:
-				onSyncRequest(cast(packet, SyncRequestPacket));
-			case INPUT:
-				onInput(cast(packet, InputPacket));
+		switch (packet.type) {
 			case BEGIN_REQ:
-				onBeginRequest(cast(packet, BeginRequestPacket));
+				onBeginRequest(untyped packet);
+			case BEGIN_RESP:
+				onBeginResponse(untyped packet);
+			case SYNC_REQ:
+				onSyncRequest(untyped packet);
+			case SYNC_RESP:
+				onSyncResponse(untyped packet);
+			case INPUT:
+				onInput(untyped packet);
 			default:
-		});
+		}
 	}
 
-	function listenForResponse() {
-		listen(responseRecvID, 1, function(packet) switch packet.type {
-			case SYNC_RESP:
-				onSyncResponse(cast(packet, SyncResponsePacket));
-			case BEGIN_RESP:
-				onBeginResponse(cast(packet, BeginResponsePacket));
+	function onServerMessage(msg: String) {
+		switch ((msg : ServerMessageType)) {
+			case BEGIN_SYNC:
+				initSyncingState();
 			default:
-		});
+		}
+	}
+
+	function onError(msg: String) {
+		trace('WS Error: $msg');
 	}
 
 	function initConnectingState() {
-		requestSendID = randomString(8);
-		responseSendID = randomString(8);
+		ws = WebSocket.create("ws://" + serverUrl + "/" + roomCode);
 
-		magic = randomString(8);
+		ws.onopen = initWaitingState;
+		ws.onclose = onClose;
+		ws.onmessageBytes = onMessage;
+		ws.onmessageString = onServerMessage;
+		ws.onerror = onError;
 
-		fetch('https://$serverUrl/sync/$roomCode?c=$requestSendID-$responseSendID-$magic', {
-			headers: [new HeaderField("ngrok-skip-browser-warning", "true")]
-		}).all().handle(function(o) switch o {
-			case Success(data):
-				trace('Sync response: $data');
-				switch (data.header.byName("httprelay-query")) {
-					case Success(header):
-						final parts = (header : String).substring(2).split("-");
-
-						requestRecvID = parts[0];
-						responseRecvID = parts[1];
-						remoteMagic = parts[2];
-
-						isHost = magic < remoteMagic;
-
-						listenForRequest();
-						listenForResponse();
-
-						initSyncingState();
-					case Failure(failure):
-						trace('No channels in connect response: $failure');
-				}
-			case Failure(failure):
-				trace('Failed to send connect request: $failure');
-		});
+		#if sys
+		Scheduler.addTimeTask(ws.process, 0, 0.001);
+		#end
 
 		state = CONNECTING;
+	}
+
+	function initWaitingState() {
+		state = WAITING;
 	}
 
 	function initSyncingState() {
@@ -198,7 +134,7 @@ class SessionManager {
 		localAdvantageCounter = 0;
 		remoteAdvantageCounter = 0;
 
-		setSyncInterval(100);
+		setSyncInterval(2000);
 
 		state = SYNCING;
 	}
@@ -210,9 +146,7 @@ class SessionManager {
 			prediction = frameCounter.value + Std.int(averageRTT * 60 / 1000);
 		}
 
-		lastSyncRequestTimestamp = Scheduler.realTime();
-
-		sendRequest(new SyncRequestPacket(magic, prediction));
+		lastSyncRequestTimestamp = Timer.stamp();
 	}
 
 	function confirmNoSleepFrames() {
@@ -227,7 +161,7 @@ class SessionManager {
 		if (successfulSleepChecks++ < 3)
 			return;
 
-		sendRequest(new BeginRequestPacket(magic, {
+		sendPacket(new BeginRequestPacket({
 			rule: rule,
 			rngSeed: rngSeed,
 			isOnLeftSide: true,
@@ -246,19 +180,22 @@ class SessionManager {
 			averageLocalAdvantage = Math.round((averageLocalAdvantage * localAdvantageCounter + adv) / ++localAdvantageCounter);
 		}
 
-		sendResponse(new SyncResponsePacket(magic, adv));
+		sendPacket(new SyncResponsePacket(adv));
 	}
 
 	function onSyncResponse(packet: SyncResponsePacket) {
-		final d = Scheduler.realTime() - lastSyncRequestTimestamp;
+		trace('onSyncResponse: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
+		final d = Timer.stamp() - lastSyncRequestTimestamp;
 		final rtt = Std.int(d * 1000);
+
+		trace('RTT: $rtt');
 
 		averageRTT = Math.round((averageRTT * roundTripCounter + rtt) / ++roundTripCounter);
 
 		if (packet.frameAdvantage != null) {
 			averageRemoteAdvantage = Math.round((averageRemoteAdvantage * remoteAdvantageCounter + packet.frameAdvantage) / ++remoteAdvantageCounter);
 
-			if (remoteAdvantageCounter % 5 == 0) {
+			if (sleepFrames == 0) {
 				if (advantageSign(averageLocalAdvantage) == advantageSign(averageRemoteAdvantage)) {
 					sleepFrames = 0;
 					return;
@@ -281,7 +218,7 @@ class SessionManager {
 
 		beginFrame = frameCounter.value + Std.int(averageRTT * 1.5);
 
-		sendResponse(new BeginResponsePacket(magic, beginFrame));
+		sendPacket(new BeginResponsePacket(beginFrame));
 	}
 
 	function onBeginResponse(packet: BeginResponsePacket) {
@@ -303,7 +240,7 @@ class SessionManager {
 	}
 
 	public inline function sendInput(frame: Int, actions: Int) {
-		sendRequest(new InputPacket(magic, frame, actions));
+		sendPacket(new InputPacket(frame, actions));
 	}
 
 	public function waitForRunning() {

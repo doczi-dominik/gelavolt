@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import kha.Scheduler;
 import kha.System;
 import kha.math.Random;
 import game.mediators.FrameCounter;
@@ -49,7 +50,7 @@ class NetplaySyncPage implements IMenuPage {
 
 		frameCounter = new FrameCounter();
 		session = new SessionManager({
-			serverUrl: "192.168.1.200:8080",
+			serverUrl: "localhost:2424",
 			roomCode: "test12345",
 			frameCounter: frameCounter,
 			rule: {},
@@ -78,7 +79,7 @@ class NetplaySyncPage implements IMenuPage {
 			return;
 		}
 
-		if (session.state != CONNECTING) {
+		if (session.state == SYNCING) {
 			frameCounter.update();
 		}
 

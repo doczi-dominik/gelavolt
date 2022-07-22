@@ -3,8 +3,8 @@ package game.net.packets;
 class SyncRequestPacket extends PacketBase {
 	@:s public var framePrediction: Null<Int>;
 
-	public function new(magic: String, framePrediction: Null<Int>) {
-		super(SYNC_REQ, magic);
+	public function new(framePrediction: Null<Int>) {
+		super(SYNC_REQ);
 
 		this.framePrediction = framePrediction;
 	}
