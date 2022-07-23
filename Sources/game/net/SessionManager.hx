@@ -1,19 +1,13 @@
 package game.net;
 
-import game.randomizers.Randomizer;
+import game.net.PacketType;
+import game.net.ServerMessageType;
+import game.mediators.FrameCounter;
 import haxe.Timer;
 import haxe.io.Bytes;
 import input.IInputDevice;
 import game.rules.Rule;
-import game.net.packets.BeginResponsePacket;
-import game.net.packets.BeginRequestPacket;
-import game.net.packets.InputPacket;
-import game.mediators.FrameCounter;
-import game.net.packets.SyncResponsePacket;
-import game.net.packets.SyncRequestPacket;
-import game.net.packets.PacketBase;
 import kha.Scheduler;
-import hxbit.Serializer;
 import haxe.net.WebSocket;
 
 @:structInit
@@ -24,15 +18,8 @@ class SessionManager {
 	@inject final serverUrl: String;
 	@inject final roomCode: String;
 	@inject final frameCounter: FrameCounter;
-	@inject final rngSeed: Int;
-	@inject final rule: Rule;
-	@inject final localInputDevice: IInputDevice;
-
-	final serializer: Serializer;
 
 	var ws: WebSocket;
-
-	var isHost: Bool;
 
 	var syncTimeTaskID: Int;
 
@@ -44,21 +31,27 @@ class SessionManager {
 	var remoteAdvantageCounter: Int;
 	var successfulSleepChecks: Int;
 
-	var beginFrame: Null<Int>;
+	// var beginFrame: Null<Int>;
 	var netplayOptions: NetplayOptions;
 
 	var sleepFrames: Int;
 
-	public var onInput(null, default): InputPacket->Void;
+	public var onInput(null, default): (Int, Int) -> Void;
 	public var onBegin(null, default): NetplayOptions->Void;
 
 	public var averageRTT(default, null): Null<Int>;
 	public var state(default, null): SessionState;
+	public var beginFrame(default, null): Null<Int>;
 
 	public function new(opts: SessionManagerOptions) {
 		Macros.initFromOpts();
 
-		serializer = new Serializer();
+		netplayOptions = {
+			builderType: VERSUS,
+			rule: {},
+			rngSeed: 24,
+			isOnLeftSide: true
+		};
 
 		initConnectingState();
 	}
@@ -67,41 +60,33 @@ class SessionManager {
 		return x < 0 ? -1 : 1;
 	}
 
-	inline function sendPacket(packet: PacketBase) {
-		trace('Before ws.send: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
-		ws.sendBytes(serializer.serialize(packet));
-		trace('After ws.send: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
-	}
-
 	function onClose(?e: Null<Dynamic>) {
 		trace('WS Closed: $e');
 	}
 
-	function onMessage(msg: Bytes) {
-		trace('onMessage: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
-		final packet = serializer.unserialize(msg, PacketBase);
-		trace('After unserialize (${packet.type}): ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
-
-		switch (packet.type) {
-			case BEGIN_REQ:
-				onBeginRequest(untyped packet);
-			case BEGIN_RESP:
-				onBeginResponse(untyped packet);
-			case SYNC_REQ:
-				onSyncRequest(untyped packet);
-			case SYNC_RESP:
-				onSyncResponse(untyped packet);
-			case INPUT:
-				onInput(untyped packet);
-			default:
+	function onServerMessage(msg: Bytes) {
+		switch ((msg.get(0) : ServerMessageType)) {
+			case BEGIN_SYNC:
+				initSyncingState();
 		}
 	}
 
-	function onServerMessage(msg: String) {
-		switch ((msg : ServerMessageType)) {
-			case BEGIN_SYNC:
-				initSyncingState();
-			default:
+	function onMessage(msg: String) {
+		final parts = msg.split(";");
+
+		final type: PacketType = Std.parseInt(parts[0]);
+
+		switch (type) {
+			case SYNC_REQ:
+				onSyncRequest(parts);
+			case SYNC_RESP:
+				onSyncResponse(parts);
+			case INPUT:
+				onInputPacket(parts);
+			case BEGIN_REQ:
+				onBeginRequest(parts);
+			case BEGIN_RESP:
+				onBeginResponse(parts);
 		}
 	}
 
@@ -114,8 +99,8 @@ class SessionManager {
 
 		ws.onopen = initWaitingState;
 		ws.onclose = onClose;
-		ws.onmessageBytes = onMessage;
-		ws.onmessageString = onServerMessage;
+		ws.onmessageBytes = onServerMessage;
+		ws.onmessageString = onMessage;
 		ws.onerror = onError;
 
 		#if sys
@@ -134,7 +119,7 @@ class SessionManager {
 		localAdvantageCounter = 0;
 		remoteAdvantageCounter = 0;
 
-		setSyncInterval(2000);
+		setSyncInterval(100);
 
 		state = SYNCING;
 	}
@@ -147,61 +132,53 @@ class SessionManager {
 		}
 
 		lastSyncRequestTimestamp = Timer.stamp();
+
+		ws.sendString('$SYNC_REQ;$prediction');
 	}
 
-	function confirmNoSleepFrames() {
-		sleepFrames = 0;
-
-		if (state != SYNCING)
-			return;
-
-		if (!isHost)
-			return;
-
-		if (successfulSleepChecks++ < 3)
-			return;
-
-		sendPacket(new BeginRequestPacket({
-			rule: rule,
-			rngSeed: rngSeed,
-			isOnLeftSide: true,
-			builderType: VERSUS
-		}));
-	}
-
-	function onSyncRequest(packet: SyncRequestPacket) {
-		final prediction = packet.framePrediction;
+	function onSyncRequest(parts: Array<String>) {
+		final prediction = Std.parseInt(parts[1]);
 
 		var adv: Null<Int> = null;
 
 		if (prediction != null) {
-			adv = frameCounter.value - packet.framePrediction;
+			adv = frameCounter.value - prediction;
 
-			averageLocalAdvantage = Math.round((averageLocalAdvantage * localAdvantageCounter + adv) / ++localAdvantageCounter);
+			averageLocalAdvantage = Math.round(0.4 * adv + 0.6 * averageLocalAdvantage);
 		}
 
-		sendPacket(new SyncResponsePacket(adv));
+		ws.sendString('$SYNC_RESP;$adv');
 	}
 
-	function onSyncResponse(packet: SyncResponsePacket) {
-		trace('onSyncResponse: ${(Scheduler.realTime() - lastSyncRequestTimestamp) * 1000}');
+	function onSyncResponse(parts: Array<String>) {
 		final d = Timer.stamp() - lastSyncRequestTimestamp;
 		final rtt = Std.int(d * 1000);
 
-		trace('RTT: $rtt');
+		averageRTT = Math.round((0.4 * rtt) + (0.6) * averageRTT);
 
-		averageRTT = Math.round((averageRTT * roundTripCounter + rtt) / ++roundTripCounter);
+		final adv = Std.parseInt(parts[1]);
 
-		if (packet.frameAdvantage != null) {
-			averageRemoteAdvantage = Math.round((averageRemoteAdvantage * remoteAdvantageCounter + packet.frameAdvantage) / ++remoteAdvantageCounter);
+		if (adv != null) {
+			averageRemoteAdvantage = Math.round(0.4 * adv + 0.6 * averageRemoteAdvantage);
 
-			if (sleepFrames == 0) {
-				if (advantageSign(averageLocalAdvantage) == advantageSign(averageRemoteAdvantage)) {
+			trace('L: $averageLocalAdvantage -- R: $averageRemoteAdvantage');
+
+			if (sleepFrames == 0 && ++remoteAdvantageCounter % 5 == 0) {
+				final diff = averageLocalAdvantage - averageRemoteAdvantage;
+
+				if (Math.abs(diff) < 3 && ++successfulSleepChecks > 10) {
+					initBeginningState();
+					return;
+				}
+
+				if (averageLocalAdvantage < averageRemoteAdvantage) {
 					sleepFrames = 0;
 					return;
 				}
 
-				final s = Std.int(Math.min((averageLocalAdvantage - averageRemoteAdvantage) / 2, 9));
+				final s = Std.int(Math.min(diff / 2, 9));
+
+				trace('S: $s');
 
 				if (s < 2) {
 					sleepFrames = 0;
@@ -209,20 +186,34 @@ class SessionManager {
 				}
 
 				sleepFrames = s;
+				successfulSleepChecks = 0;
 			}
 		}
 	}
 
-	function onBeginRequest(packet: BeginRequestPacket) {
-		netplayOptions = packet.options;
+	function initBeginningState() {
+		ws.sendString('$BEGIN_REQ');
 
-		beginFrame = frameCounter.value + Std.int(averageRTT * 1.5);
-
-		sendPacket(new BeginResponsePacket(beginFrame));
+		state = BEGINNING;
 	}
 
-	function onBeginResponse(packet: BeginResponsePacket) {
-		beginFrame = packet.beginFrame;
+	function onBeginRequest(parts: Array<String>) {
+		ws.sendString('$BEGIN_RESP;$beginFrame');
+	}
+
+	function onBeginResponse(parts: Array<String>) {
+		beginFrame = Std.parseInt(parts[1]);
+
+		if (beginFrame == null) {
+			beginFrame = frameCounter.value + Std.int(averageRTT * 10);
+		}
+	}
+
+	function onInputPacket(parts: Array<String>) {
+		final frame = Std.parseInt(parts[1]);
+		final actions = Std.parseInt(parts[2]);
+
+		onInput(frame, actions);
 	}
 
 	public function setSyncInterval(interval: Int) {
@@ -240,7 +231,7 @@ class SessionManager {
 	}
 
 	public inline function sendInput(frame: Int, actions: Int) {
-		sendPacket(new InputPacket(frame, actions));
+		ws.sendString('$INPUT;$frame;$actions');
 	}
 
 	public function waitForRunning() {

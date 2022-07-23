@@ -1,6 +1,6 @@
-package game.net.packets;
+package game.net;
 
-enum abstract PacketType(Int) {
+enum abstract PacketType(Int) from Int {
 	final SYNC_REQ;
 	final SYNC_RESP;
 	final INPUT;

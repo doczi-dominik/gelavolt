@@ -311,7 +311,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildRightBoardState() {
-		leftState = new StandardBoardState({
+		rightState = new StandardBoardState({
 			rule: rule,
 			prefsSettings: Profile.primary.prefs,
 			rng: rng,
@@ -371,5 +371,13 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			}),
 			frameCounter: frameCounter
 		});
+	}
+
+	inline function wireMediators() {
+		leftBorderColorMediator.boardState = leftState;
+		leftTargetMediator.garbageManager = rightGarbageManager;
+
+		rightBorderColorMediator.boardState = rightState;
+		rightTargetMediator.garbageManager = leftGarbageManager;
 	}
 }

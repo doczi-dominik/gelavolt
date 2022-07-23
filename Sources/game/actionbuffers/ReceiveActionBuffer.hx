@@ -1,6 +1,5 @@
 package game.actionbuffers;
 
-import game.net.packets.InputPacket;
 import game.net.SessionManager;
 
 @:structInit
@@ -30,10 +29,10 @@ class ReceiveActionBuffer implements IActionBuffer {
 		session.onInput = onInput;
 	}
 
-	function onInput(packet: InputPacket) {
-		final snapshot = ActionSnapshot.fromBitField(packet.actions);
+	function onInput(frame: Int, actions: Int) {
+		final snapshot = ActionSnapshot.fromBitField(actions);
 
-		actions[packet.frame] = snapshot;
+		this.actions[frame] = snapshot;
 		latestAction = snapshot;
 	}
 

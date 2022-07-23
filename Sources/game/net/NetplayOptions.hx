@@ -4,7 +4,7 @@ import game.gamestatebuilders.GameStateBuilderType;
 import game.rules.Rule;
 
 @:structInit
-class NetplayOptions implements hxbit.Serializable {
+class NetplayOptions {
 	public final rngSeed: Int;
 	public final rule: Rule;
 	public final builderType: GameStateBuilderType;

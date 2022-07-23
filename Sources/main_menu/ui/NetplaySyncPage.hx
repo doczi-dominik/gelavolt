@@ -1,6 +1,10 @@
 package main_menu.ui;
 
-import kha.Scheduler;
+import game.actionbuffers.ReceiveActionBuffer;
+import game.actionbuffers.SenderActionBuffer;
+import game.gamestatebuilders.VersusGameStateBuilder;
+import game.screens.GameScreen;
+import Screen.GlobalScreenSwitcher;
 import kha.System;
 import kha.math.Random;
 import game.mediators.FrameCounter;
@@ -50,18 +54,29 @@ class NetplaySyncPage implements IMenuPage {
 
 		frameCounter = new FrameCounter();
 		session = new SessionManager({
-			serverUrl: "localhost:2424",
+			serverUrl: "192.168.1.161:2424",
 			roomCode: "test12345",
 			frameCounter: frameCounter,
-			rule: {},
-			rngSeed: 0,
-			localInputDevice: menu.inputDevice
 		});
 
-		final r = new Random(Std.int(System.time * 1000000));
-
-		for (_ in 0...r.GetIn(0, 3) * 10) {
-			frameCounter.update();
+		session.onBegin = function(options) {
+			switch (options.builderType) {
+				case VERSUS:
+					GlobalScreenSwitcher.switchScreen(new GameScreen(new VersusGameStateBuilder({
+						frameCounter: frameCounter,
+						rule: options.rule,
+						rngSeed: options.rngSeed,
+						leftActionBuffer: new SenderActionBuffer({
+							session: session,
+							frameCounter: frameCounter,
+							inputDevice: menu.inputDevice
+						}),
+						rightActionBuffer: new ReceiveActionBuffer({
+							session: session
+						})
+					})));
+				default:
+			}
 		}
 	}
 
@@ -74,13 +89,17 @@ class NetplaySyncPage implements IMenuPage {
 			return;
 		}
 
+		session.waitForRunning();
+
 		if (sleepCounter > 0) {
 			sleepCounter--;
 			return;
 		}
 
-		if (session.state == SYNCING) {
-			frameCounter.update();
+		switch (session.state) {
+			case SYNCING | BEGINNING:
+				frameCounter.update();
+			default:
 		}
 
 		sleepCounter = session.getSleepFrames();
@@ -99,6 +118,7 @@ class NetplaySyncPage implements IMenuPage {
 
 		g.drawString('T: $t', x, y + fontHeight * 2);
 		g.drawString('Last sleep frames: $lastSleepFrames', x, y + fontHeight * 3);
+		g.drawString('Beginning on: ${session.beginFrame}', x, y + fontHeight * 4);
 
 		if (t % 500 == 0 && t > 0) {
 			g.color = Red;
