@@ -13,7 +13,7 @@ class ListMenuPage implements IMenuPage {
 	static inline final DESC_FONT_SIZE = 48;
 	static inline final MAX_WIDGETS_PER_VIEW = 7;
 	static inline final WIDGET_BOTTOM_PADDING = 16;
-	static final DEFAULT_CONTROL_DISPLAYS: Array<ControlDisplay> = [
+	static final DEFAULT_CONTROL_DISPLAYS: Array<ControlHint> = [
 		{actions: [MENU_UP, MENU_DOWN], description: "Select"},
 		{actions: [BACK], description: "Back"},
 	];
@@ -36,7 +36,7 @@ class ListMenuPage implements IMenuPage {
 	var widgetIndex: Int;
 	var minIndex: Int;
 
-	public var controlDisplays(default, null): Array<ControlDisplay>;
+	public var controlDisplays(default, null): Array<ControlHint>;
 
 	public function new(opts: ListMenuPageOptions) {
 		game.Macros.initFromOpts();
@@ -48,13 +48,13 @@ class ListMenuPage implements IMenuPage {
 		minIndex = 0;
 	}
 
-	inline function setControlDisplays() {
+	inline function setControlHints() {
 		controlDisplays = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlDisplays);
 	}
 
 	function onSelect() {
 		widgetIndex = Utils.intClamp(0, widgetIndex, widgets.length - 1);
-		setControlDisplays();
+		setControlHints();
 	}
 
 	function popPage() {
@@ -123,7 +123,7 @@ class ListMenuPage implements IMenuPage {
 			minIndex = 0;
 		}
 
-		setControlDisplays();
+		setControlHints();
 	}
 
 	public function update() {

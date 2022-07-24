@@ -2,7 +2,7 @@ package game.gamestatebuilders;
 
 import game.actionbuffers.ReplayData;
 import game.rules.Rule;
-import game.mediators.ControlDisplayContainer;
+import game.mediators.ControlHintContainer;
 import game.boards.EndlessBoard;
 import input.IInputDevice;
 import game.ui.PauseMenu;
@@ -70,7 +70,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	var board: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlDisplayContainer(null, default): ControlDisplayContainer;
+	public var controlDisplayContainer(null, default): ControlHintContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
@@ -105,7 +105,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 		frameCounter = new FrameCounter();
 	}
 
-	inline function initControlDisplayContainer() {
+	inline function initControlHintContainer() {
 		controlDisplayContainer.isVisible = Profile.primary.endlessSettings.showControlHints;
 		controlDisplayContainer.value = [{actions: [QUICK_RESTART], description: "Quick Restart"}];
 	}

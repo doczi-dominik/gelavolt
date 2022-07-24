@@ -4,7 +4,7 @@ import utils.Utils;
 import game.actions.ActionData.ACTION_DATA;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
 import kha.graphics2.Graphics;
-import ui.ControlDisplay;
+import ui.ControlHint;
 import game.actions.Action;
 import kha.input.KeyCode;
 import save_data.InputSettings;
@@ -154,7 +154,7 @@ class KeyboardInputDevice extends InputDevice {
 		g.drawString('$title: $binding', x, y);
 	}
 
-	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>) {
+	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>) {
 		var str = "";
 
 		for (d in controls) {

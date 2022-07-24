@@ -4,7 +4,7 @@ import kha.graphics2.Graphics;
 
 interface IListWidget {
 	public var description(default, null): Array<String>;
-	public var controlDisplays(default, null): Array<ControlDisplay>;
+	public var controlDisplays(default, null): Array<ControlHint>;
 	public var height(default, null): Float;
 
 	public function onShow(menu: Menu): Void;

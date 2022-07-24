@@ -3,7 +3,7 @@ package ui;
 import game.actions.Action;
 
 @:structInit
-class ControlDisplay {
+class ControlHint {
 	public final actions: Array<Action>;
 	public final description: String;
 }

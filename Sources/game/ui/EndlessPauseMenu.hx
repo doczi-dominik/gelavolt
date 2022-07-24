@@ -1,7 +1,7 @@
 package game.ui;
 
 import game.ui.PauseMenu.PauseMenuOptions;
-import game.mediators.ControlDisplayContainer;
+import game.mediators.ControlHintContainer;
 import ui.YesNoWidget;
 import save_data.EndlessSettings;
 import game.actionbuffers.IActionBuffer;
@@ -28,7 +28,7 @@ class EndlessPauseMenuOptions extends PauseMenuOptions {}
 
 class EndlessPauseMenu extends PauseMenu {
 	@inject final endlessSettings: EndlessSettings;
-	@inject final controlDisplayContainer: ControlDisplayContainer;
+	@inject final controlDisplayContainer: ControlHintContainer;
 	@inject final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {

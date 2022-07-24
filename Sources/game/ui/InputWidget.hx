@@ -3,7 +3,7 @@ package game.ui;
 import kha.Assets;
 import kha.Font;
 import game.actions.ActionData.ACTION_DATA;
-import ui.ControlDisplay;
+import ui.ControlHint;
 import game.actions.Action;
 import kha.graphics2.Graphics;
 import ui.Menu;
@@ -23,7 +23,7 @@ class InputWidget implements IListWidget {
 	var isUnbindable: Bool;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays: Array<ControlDisplay> = [
+	public var controlDisplays: Array<ControlHint> = [
 		{actions: [CONFIRM], description: "Rebind"},
 		{actions: [MENU_RIGHT], description: "Default (HOLD)"},
 	];

@@ -1,6 +1,6 @@
 package game.gamestatebuilders;
 
-import game.mediators.ControlDisplayContainer;
+import game.mediators.ControlHintContainer;
 import game.rules.Rule;
 import game.boardmanagers.SingleBoardManager;
 import game.boardmanagers.DualBoardManager;
@@ -83,7 +83,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	var rightBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlDisplayContainer(null, default): ControlDisplayContainer;
+	public var controlDisplayContainer(null, default): ControlHintContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;

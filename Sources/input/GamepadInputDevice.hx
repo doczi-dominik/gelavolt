@@ -8,7 +8,7 @@ import haxe.ds.HashMap;
 import kha.Assets;
 import utils.Geometry;
 import kha.graphics2.Graphics;
-import ui.ControlDisplay;
+import ui.ControlHint;
 import game.actions.Action;
 import save_data.InputSettings;
 import kha.input.Gamepad;
@@ -284,7 +284,7 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>) {
+	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>) {
 		final fontHeight = g.font.height(g.fontSize);
 		final y = ScaleManager.screen.height - padding - fontHeight;
 		final paddedScreenWidth = width - padding * 2;

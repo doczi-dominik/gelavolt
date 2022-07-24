@@ -5,7 +5,7 @@ import game.auto_attack.AutoAttackManager;
 import game.simulation.LinkInfoBuilder;
 import ui.ListMenuPage;
 import game.auto_attack.AutoAttackType;
-import game.mediators.ControlDisplayContainer;
+import game.mediators.ControlHintContainer;
 import game.rules.ColorBonusTableType;
 import game.rules.PowerTableType;
 import ui.NumberRangeWidget;
@@ -45,7 +45,7 @@ class TrainingPauseMenu extends PauseMenu {
 	@inject final trainingSettings: TrainingSettings;
 	@inject final playerGarbageManager: GarbageManager;
 	@inject final infoGarbageManager: GarbageManager;
-	@inject final controlDisplayContainer: ControlDisplayContainer;
+	@inject final controlDisplayContainer: ControlHintContainer;
 	@inject final autoAttackManager: AutoAttackManager;
 
 	public function new(opts: TrainingPauseMenuOptions) {

@@ -1,6 +1,6 @@
 package input;
 
-import ui.ControlDisplay;
+import ui.ControlHint;
 import kha.graphics2.Graphics;
 import game.actions.Action;
 import save_data.InputSettings;
@@ -16,5 +16,5 @@ interface IInputDevice {
 	public function getAction(action: Action): Bool;
 	public function getRawAction(action: Action): Bool;
 	public function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action): Void;
-	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>): Void;
+	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>): Void;
 }

@@ -12,7 +12,7 @@ import game.net.SessionManager;
 import kha.graphics2.Graphics;
 import input.AnyInputDevice;
 import kha.Assets;
-import ui.ControlDisplay;
+import ui.ControlHint;
 import ui.Menu;
 import kha.Font;
 import ui.IMenuPage;
@@ -34,7 +34,7 @@ class NetplaySyncPage implements IMenuPage {
 
 	public final header: String;
 
-	public var controlDisplays(default, null): Array<ControlDisplay>;
+	public var controlDisplays(default, null): Array<ControlHint>;
 
 	public function new() {
 		font = Assets.fonts.Pixellari;

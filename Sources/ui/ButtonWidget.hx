@@ -21,7 +21,7 @@ class ButtonWidget implements IListWidget {
 	var fontSize: Int;
 	var menu: Menu;
 
-	public var controlDisplays(default, null): Array<ControlDisplay>;
+	public var controlDisplays(default, null): Array<ControlHint>;
 	public var height(default, null): Float;
 
 	public function new(opts: ButtonWidgetOptions) {

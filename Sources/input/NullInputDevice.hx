@@ -1,7 +1,7 @@
 package input;
 
 import game.actions.Action;
-import ui.ControlDisplay;
+import ui.ControlHint;
 import kha.graphics2.Graphics;
 import save_data.Profile;
 import save_data.InputSettings;
@@ -35,5 +35,5 @@ class NullInputDevice implements IInputDevice {
 
 	public function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action) {}
 
-	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlDisplay>) {}
+	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>) {}
 }

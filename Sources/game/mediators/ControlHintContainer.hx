@@ -1,10 +1,10 @@
 package game.mediators;
 
-import ui.ControlDisplay;
+import ui.ControlHint;
 
-class ControlDisplayContainer {
+class ControlHintContainer {
 	public var isVisible: Bool;
-	public var value: Array<ControlDisplay>;
+	public var value: Array<ControlHint>;
 
 	public function new() {
 		isVisible = false;

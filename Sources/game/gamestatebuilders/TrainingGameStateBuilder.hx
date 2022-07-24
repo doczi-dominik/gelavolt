@@ -3,7 +3,7 @@ package game.gamestatebuilders;
 import game.rules.Rule;
 import game.auto_attack.AutoAttackManager;
 import game.gelogroups.TrainingGeloGroup;
-import game.mediators.ControlDisplayContainer;
+import game.mediators.ControlHintContainer;
 import input.AnyInputDevice;
 import input.IInputDevice;
 import game.mediators.FrameCounter;
@@ -89,7 +89,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	var infoBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlDisplayContainer(null, default): ControlDisplayContainer;
+	public var controlDisplayContainer(null, default): ControlHintContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
@@ -124,7 +124,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		frameCounter = new FrameCounter();
 	}
 
-	inline function initControlDisplayContainer() {
+	inline function initControlHintContainer() {
 		controlDisplayContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
 	}
 

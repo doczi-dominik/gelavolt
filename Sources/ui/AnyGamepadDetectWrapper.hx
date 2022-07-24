@@ -26,7 +26,7 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 
 	public final header: String;
 
-	public var controlDisplays(default, null): Array<ControlDisplay>;
+	public var controlDisplays(default, null): Array<ControlHint>;
 
 	public function new(opts: AnyGamepadDetectWrapperOptions) {
 		game.Macros.initFromOpts();

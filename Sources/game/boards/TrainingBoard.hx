@@ -1,7 +1,7 @@
 package game.boards;
 
-import ui.ControlDisplay;
-import game.mediators.ControlDisplayContainer;
+import ui.ControlHint;
+import game.mediators.ControlHintContainer;
 import input.IInputDevice;
 import game.mediators.PauseMediator;
 import game.boardstates.TrainingBoardState;
@@ -17,14 +17,14 @@ import game.boardstates.IBoardState;
 class TrainingBoardOptions {}
 
 class TrainingBoard implements IBoard {
-	static final GAME_CONTROL_DISPLAY: Array<ControlDisplay> = [
+	static final GAME_CONTROL_HINTS: Array<ControlHint> = [
 		{actions: [TOGGLE_EDIT_MODE], description: "Edit Mode"},
 		{actions: [PREVIOUS_GROUP], description: "Undo"},
 		{actions: [NEXT_GROUP], description: "Redo / Get Next Group"},
 		{actions: [QUICK_RESTART], description: "Quick Restart"}
 	];
 
-	static final EDIT_CONTROL_DISPLAY: Array<ControlDisplay> = [
+	static final EDIT_CONTROL_HINTS: Array<ControlHint> = [
 		{actions: [TOGGLE_EDIT_MODE], description: "Play Mode"},
 		{actions: [EDIT_SET], description: "Set"},
 		{actions: [EDIT_CLEAR], description: "Clear"},
@@ -37,7 +37,7 @@ class TrainingBoard implements IBoard {
 	@inject final inputDevice: IInputDevice;
 	@inject final playActionBuffer: IActionBuffer;
 	@inject final infoState: TrainingInfoBoardState;
-	@inject final controlDisplayContainer: ControlDisplayContainer;
+	@inject final controlDisplayContainer: ControlHintContainer;
 
 	@inject final playState: TrainingBoardState;
 	@inject final editState: EditingBoardState;
@@ -55,7 +55,7 @@ class TrainingBoard implements IBoard {
 
 		infoState.showChainSteps();
 
-		controlDisplayContainer.value = EDIT_CONTROL_DISPLAY;
+		controlDisplayContainer.value = EDIT_CONTROL_HINTS;
 
 		activeState = editState;
 	}
@@ -65,7 +65,7 @@ class TrainingBoard implements IBoard {
 
 		infoState.hideChainSteps();
 
-		controlDisplayContainer.value = GAME_CONTROL_DISPLAY;
+		controlDisplayContainer.value = GAME_CONTROL_HINTS;
 
 		activeState = playState;
 	}

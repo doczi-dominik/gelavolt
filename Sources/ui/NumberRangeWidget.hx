@@ -28,7 +28,7 @@ class NumberRangeWidget implements IListWidget {
 	var menu: Menu;
 	var value: Float;
 
-	public var controlDisplays(default, null): Array<ControlDisplay> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
+	public var controlDisplays(default, null): Array<ControlHint> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
 	public var height(default, null): Float;
 
 	public function new(opts: NumberRangeWidgetOptions) {

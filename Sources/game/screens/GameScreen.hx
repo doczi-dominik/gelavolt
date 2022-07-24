@@ -3,7 +3,7 @@ package game.screens;
 import input.AnyInputDevice;
 import kha.Assets;
 import kha.Font;
-import game.mediators.ControlDisplayContainer;
+import game.mediators.ControlHintContainer;
 import kha.math.FastMatrix3;
 import input.IInputDevice;
 import game.ui.PauseMenu;
@@ -28,7 +28,7 @@ class GameScreen implements IScreen {
 	final background: NestBackground;
 	final gameState: GameState;
 	final pauseMenu: PauseMenu;
-	final controlDisplayContainer: ControlDisplayContainer;
+	final controlDisplayContainer: ControlHintContainer;
 
 	var fontSize: Int;
 	var transform: FastMatrix3;
@@ -39,7 +39,7 @@ class GameScreen implements IScreen {
 		font = Assets.fonts.Pixellari;
 
 		background = new NestBackground(new Random(Std.int(System.time * 1000000)));
-		controlDisplayContainer = new ControlDisplayContainer();
+		controlDisplayContainer = new ControlHintContainer();
 
 		gameStateBuilder.pauseMediator = {
 			pause: pause,

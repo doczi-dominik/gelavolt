@@ -16,7 +16,7 @@ class AreYouSurePage implements IMenuPage {
 
 	public final header: String;
 
-	public var controlDisplays(default, null): Array<ControlDisplay>;
+	public var controlDisplays(default, null): Array<ControlHint>;
 
 	public function new(content: String, callback: Void->Void) {
 		font = Assets.fonts.Pixellari;

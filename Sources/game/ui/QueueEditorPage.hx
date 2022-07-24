@@ -1,6 +1,6 @@
 package game.ui;
 
-import ui.ControlDisplay;
+import ui.ControlHint;
 import utils.Point;
 import kha.math.FastMatrix3;
 import game.gelos.Gelo;
@@ -32,7 +32,7 @@ class QueueEditorPage implements IMenuPage {
 
 	public final header = "Edit Queue";
 
-	public final controlDisplays: Array<ControlDisplay> = [
+	public final controlDisplays: Array<ControlHint> = [
 		{actions: [MENU_LEFT, MENU_UP, MENU_DOWN, MENU_RIGHT], description: "Select"},
 		{actions: [BACK], description: "Back"},
 		{actions: [CONFIRM], description: "Edit"}
