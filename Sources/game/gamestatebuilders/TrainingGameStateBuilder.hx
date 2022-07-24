@@ -3,7 +3,6 @@ package game.gamestatebuilders;
 import game.rules.Rule;
 import game.auto_attack.AutoAttackManager;
 import game.gelogroups.TrainingGeloGroup;
-import game.states.ControlDisplayGameState;
 import game.mediators.ControlDisplayContainer;
 import input.AnyInputDevice;
 import input.IInputDevice;
@@ -63,7 +62,6 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	var particleManager: ParticleManager;
 	var marginManager: MarginTimeManager;
 	var frameCounter: FrameCounter;
-	var controlDisplayContainer: ControlDisplayContainer;
 
 	var playerBorderColorMediator: BorderColorMediator;
 	var playerTargetMediator: GarbageTargetMediator;
@@ -91,6 +89,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	var infoBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
+	public var controlDisplayContainer(null, default): ControlDisplayContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
@@ -125,8 +124,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		frameCounter = new FrameCounter();
 	}
 
-	inline function buildControlDisplayContainer() {
-		controlDisplayContainer = new ControlDisplayContainer();
+	inline function initControlDisplayContainer() {
 		controlDisplayContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
 	}
 
@@ -369,7 +367,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildGameState() {
-		gameState = new ControlDisplayGameState({
+		gameState = new GameState({
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
@@ -383,7 +381,6 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 				})
 			}),
 			frameCounter: frameCounter,
-			controlDisplayContainer: controlDisplayContainer
 		});
 	}
 

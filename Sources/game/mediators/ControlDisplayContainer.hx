@@ -7,7 +7,7 @@ class ControlDisplayContainer {
 	public var value: Array<ControlDisplay>;
 
 	public function new() {
-		isVisible = true;
+		isVisible = false;
 		value = [];
 	}
 }
