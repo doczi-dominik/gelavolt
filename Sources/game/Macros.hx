@@ -146,4 +146,133 @@ class Macros {
 
 		return fields;
 	}
+
+	public static macro function addCopyFrom(): Array<Field> {
+		final pos = Context.currentPos();
+		final fields = Context.getBuildFields();
+		final localClassType = Context.getLocalType();
+
+		final exprs = new Array<Expr>();
+
+		final copyFromKind: Function = {
+			args: [{name: "other", type: macro:Dynamic}],
+			ret: macro:Void
+		};
+
+		final copyFromAccess = [APublic];
+
+		switch (localClassType) {
+			case TInst(t, params):
+				final ct = t.get();
+
+				if (ct.isInterface) {
+					fields.push({
+						name: "copyFrom",
+						pos: pos,
+						kind: FFun(copyFromKind),
+						access: copyFromAccess,
+					});
+
+					return fields;
+				}
+
+				var shouldOverride = false;
+
+				function checkForOverride(ct: ClassType) {
+					if (ct.superClass == null)
+						return;
+
+					final sc = ct.superClass.t.get();
+
+					for (f in sc.fields.get()) {
+						if (f.name == "copyFrom") {
+							shouldOverride = true;
+							break;
+						}
+					}
+
+					checkForOverride(sc);
+				};
+
+				checkForOverride(ct);
+
+				if (shouldOverride) {
+					exprs.push(macro super.copyFrom(other));
+					copyFromAccess.push(AOverride);
+				}
+
+			default:
+		}
+
+		for (f in fields) {
+			if (f.name == "copyFrom") {
+				return fields;
+			}
+		}
+
+		for (f in fields) {
+			final fieldName = f.name;
+
+			if (f.meta == null)
+				continue;
+
+			var hasCopyMeta = false;
+
+			for (m in f.meta) {
+				if (m.name == "copy") {
+					hasCopyMeta = true;
+					break;
+				}
+			}
+
+			if (!hasCopyMeta)
+				continue;
+
+			var fieldComplexType: ComplexType;
+
+			switch (f.kind) {
+				case FVar(t, _) | FProp(_, _, t, _):
+					fieldComplexType = t;
+
+					switch (t) {
+						case TPath(p):
+							switch (Context.getType(p.name)) {
+								case TInst(t, params):
+									final ct = t.get();
+
+									var hasICopyFrom = false;
+
+									for (i in ct.interfaces) {
+										if (i.t.get().name == "ICopyFrom") {
+											hasICopyFrom = true;
+											break;
+										}
+									}
+
+									if (hasICopyFrom) {
+										exprs.push(macro $i{fieldName}.copyFrom(untyped other.$fieldName));
+									} else {
+										exprs.push(macro $i{fieldName} = other.$fieldName);
+									}
+								case TAbstract(t, params):
+									exprs.push(macro $i{fieldName} = other.$fieldName);
+								default:
+							}
+						default:
+					}
+				default:
+			}
+		}
+
+		copyFromKind.expr = macro $b{exprs};
+
+		fields.push({
+			name: "copyFrom",
+			pos: pos,
+			kind: FFun(copyFromKind),
+			access: copyFromAccess
+		});
+
+		return fields;
+	}
 }

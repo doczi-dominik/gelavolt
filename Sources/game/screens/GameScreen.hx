@@ -27,6 +27,7 @@ class GameScreen implements IScreen {
 
 	final background: NestBackground;
 	final gameState: GameState;
+	final lastConfirmedGameState: GameState;
 	final pauseMenu: PauseMenu;
 	final controlDisplayContainer: ControlHintContainer;
 
@@ -49,12 +50,27 @@ class GameScreen implements IScreen {
 		gameStateBuilder.controlDisplayContainer = controlDisplayContainer;
 
 		gameStateBuilder.build();
-
 		gameState = gameStateBuilder.gameState;
 		pauseMenu = gameStateBuilder.pauseMenu;
 
+		gameStateBuilder.build();
+		lastConfirmedGameState = gameStateBuilder.gameState;
+
 		ScaleManager.addOnResizeCallback(onResize);
 	}
+
+	function pause(inputDevice: IInputDevice) {
+		pauseMenu.onShow(inputDevice);
+		isPaused = true;
+	}
+
+	function resume() {
+		isPaused = false;
+	}
+
+	function rollback(resimulate: Int) {}
+
+	function confirmFrame() {}
 
 	function onResize() {
 		final scr = ScaleManager.screen;
@@ -64,15 +80,6 @@ class GameScreen implements IScreen {
 
 		fontSize = Std.int(CONTROLS_FONT_SIZE * scale);
 		transform = FastMatrix3.translation(tlX, tlY).multmat(FastMatrix3.scale(scale, scale));
-	}
-
-	public function pause(inputDevice: IInputDevice) {
-		pauseMenu.onShow(inputDevice);
-		isPaused = true;
-	}
-
-	public function resume() {
-		isPaused = false;
 	}
 
 	public function update() {

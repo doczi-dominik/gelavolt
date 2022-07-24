@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.copying.CopyableRandom.CopyableRNG;
 import game.actionbuffers.ReplayData;
 import game.rules.Rule;
 import game.mediators.ControlHintContainer;
@@ -47,7 +48,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	@inject final inputDevice: IInputDevice;
 	@inject final replayData: Null<ReplayData>;
 
-	var rng: Random;
+	var rng: CopyableRNG;
 	var randomizer: Randomizer;
 
 	var particleManager: ParticleManager;
@@ -80,7 +81,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildRNG() {
-		rng = new Random(rngSeed);
+		rng = new CopyableRNG(rngSeed);
 	}
 
 	inline function buildRandomizer() {

@@ -1,13 +1,10 @@
 package game.randomizers;
 
+import game.copying.CopyableRandom.CopyableRNG;
 import save_data.PrefsSettings;
 import game.gelos.OtherGelo.OtherGeloOptions;
 import game.gelogroups.GeloGroupData;
 import game.gelogroups.GeloGroupType;
-import kha.math.Random;
-
-using game.RollbackableRandom;
-
 import game.gelos.GeloColor;
 import haxe.ds.Vector;
 import game.randomizers.RandomizerPool;
@@ -17,7 +14,7 @@ import game.randomizers.RandomizerPool;
 class RandomizerOptions {}
 
 class Randomizer {
-	@inject final rng: Random;
+	@inject final rng: CopyableRNG;
 	@inject final prefsSettings: PrefsSettings;
 
 	var pools: Map<RandomizerPool, Vector<GeloColor>>;

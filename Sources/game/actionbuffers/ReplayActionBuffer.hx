@@ -39,4 +39,6 @@ class ReplayActionBuffer extends LocalActionBuffer {
 
 		super.update();
 	}
+
+	override function copyFrom(other: Dynamic) {}
 }

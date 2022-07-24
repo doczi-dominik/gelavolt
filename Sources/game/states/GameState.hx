@@ -1,5 +1,6 @@
 package game.states;
 
+import game.copying.ICopyFrom;
 import game.mediators.FrameCounter;
 import game.rules.MarginTimeManager;
 import kha.graphics4.ConstantLocation;
@@ -12,11 +13,11 @@ import kha.graphics4.Graphics as Graphics4;
 @:build(game.Macros.buildOptionsClass(GameState))
 class GameStateOptions {}
 
-class GameState {
-	@inject final particleManager: ParticleManager;
-	@inject final boardManager: IBoardManager;
-	@inject final marginManager: MarginTimeManager;
-	@inject final frameCounter: FrameCounter;
+class GameState implements ICopyFrom {
+	@inject @copy final particleManager: ParticleManager;
+	@inject @copy final boardManager: IBoardManager;
+	@inject @copy final marginManager: MarginTimeManager;
+	@inject @copy final frameCounter: FrameCounter;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
 
@@ -34,7 +35,7 @@ class GameState {
 		frameCounter.update();
 	}
 
-	public function render(g: Graphics, g4: kha.graphics4.Graphics, alpha: Float) {
+	public function render(g: Graphics, g4: Graphics4, alpha: Float) {
 		g.pipeline = Pipelines.FADE_TO_WHITE;
 		g4.setPipeline(g.pipeline);
 		g4.setFloat(FADE_TO_WHITELocation, 0.5 + Math.cos(frameCounter.value / 4) / 2);

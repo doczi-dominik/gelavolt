@@ -46,20 +46,20 @@ class StandardBoardState implements IBoardState {
 	@inject final rule: Rule;
 	@inject final prefsSettings: PrefsSettings;
 
-	@inject final rng: Random;
+	@inject @copy final rng: Random;
 	@inject final geometries: BoardGeometries;
-	@inject final particleManager: ParticleManager;
+	@inject @copy final particleManager: ParticleManager;
 
-	@inject final geloGroup: GeloGroup;
-	@inject final queue: Queue;
-	@inject final preview: IPreview;
-	@inject final allClearManager: AllClearManager;
-	@inject final scoreManager: ScoreManager;
-	@inject final actionBuffer: IActionBuffer;
-	@inject final chainCounter: ChainCounter;
-	@inject final field: Field;
-	@inject final chainSim: ChainSimulator;
-	@inject final garbageManager: IGarbageManager;
+	@inject @copy final geloGroup: GeloGroup;
+	@inject @copy final queue: Queue;
+	@inject @copy final preview: IPreview;
+	@inject @copy final allClearManager: AllClearManager;
+	@inject @copy final scoreManager: ScoreManager;
+	@inject @copy final actionBuffer: IActionBuffer;
+	@inject @copy final chainCounter: ChainCounter;
+	@inject @copy final field: Field;
+	@inject @copy final chainSim: ChainSimulator;
+	@inject @copy final garbageManager: IGarbageManager;
 
 	var popPauseMaxT: Int;
 

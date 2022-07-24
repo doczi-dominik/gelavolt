@@ -1,16 +1,18 @@
 package game.rules;
 
-class MarginTimeManager {
+import game.copying.ICopyFrom;
+
+class MarginTimeManager implements ICopyFrom {
 	final rule: Rule;
 
-	var changeCounter: Int;
+	@copy var changeCounter: Int;
 
-	public var marginTime(default, null): Int;
+	@copy public var marginTime(default, null): Int;
 
-	public var startMarginTime: Int;
-	public var startTargetPoints: Int;
-	public var isEnabled: Bool;
-	public var targetPoints: Int;
+	@copy public var startMarginTime: Int;
+	@copy public var startTargetPoints: Int;
+	@copy public var isEnabled: Bool;
+	@copy public var targetPoints: Int;
 
 	public function new(rule: Rule) {
 		this.rule = rule;

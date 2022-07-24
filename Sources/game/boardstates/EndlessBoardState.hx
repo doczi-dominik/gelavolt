@@ -11,8 +11,8 @@ class EndlessBoardStateOptions extends StandardBoardStateOptions {}
 
 class EndlessBoardState extends StandardBoardState {
 	@inject final clearOnXModeContainer: IClearOnXModeContainer;
-	@inject final randomizer: Randomizer;
-	@inject final marginManager: MarginTimeManager;
+	@inject @copy final randomizer: Randomizer;
+	@inject @copy final marginManager: MarginTimeManager;
 
 	public function new(opts: EndlessBoardStateOptions) {
 		super(opts);

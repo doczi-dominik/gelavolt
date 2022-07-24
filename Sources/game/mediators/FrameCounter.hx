@@ -1,7 +1,9 @@
 package game.mediators;
 
-class FrameCounter {
-	public var value(default, null): Int;
+import game.copying.ICopyFrom;
+
+class FrameCounter implements ICopyFrom {
+	@copy public var value(default, null): Int;
 
 	public function new() {
 		value = 0;

@@ -21,4 +21,6 @@ class SenderActionBuffer extends LocalActionBuffer {
 
 		session.sendInput(frame, action.toBitField());
 	}
+
+	override function copyFrom(other: Dynamic) {}
 }
