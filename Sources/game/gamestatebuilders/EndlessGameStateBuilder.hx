@@ -147,7 +147,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildField() {
-		field = Field.create({
+		field = new Field({
 			prefsSettings: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,

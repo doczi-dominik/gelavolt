@@ -1,8 +1,8 @@
 package game.fields;
 
-import game.copying.ICopyFrom;
 import save_data.PrefsSettings;
-import game.rules.Rule;
+import game.copying.CopyableMatrix;
+import game.copying.ICopyFrom;
 import utils.Utils;
 import game.gelos.GarbageGelo;
 import game.copying.CopyableRNG;
@@ -25,87 +25,48 @@ class Field implements ICopyFrom {
 	static final ORIGINAL_GARBAGE_ACCELERATIONS = [0.5625, 0.59375, 0.5, 0.5625, 0.53125, 0.625];
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
 
-	public static function create(opts: FieldOptions) {
-		final f = new Field(opts.prefsSettings);
-
-		init(f, opts);
-
-		return f;
-	}
-
-	public static function init(f: Field, opts: FieldOptions) {
-		f.columns = opts.columns;
-		f.playAreaRows = opts.playAreaRows;
-		f.hiddenRows = opts.hiddenRows;
-		f.garbageRows = opts.garbageRows;
-
-		f.createData();
-	}
-
-	public static function copyTo(src: Field, dest: Field) {
-		dest.columns = src.columns;
-		dest.playAreaRows = src.playAreaRows;
-		dest.hiddenRows = src.hiddenRows;
-		dest.garbageRows = src.garbageRows;
-
-		dest.createData();
-
-		for (y in 0...dest.totalRows) {
-			for (x in 0...dest.columns) {
-				if (src.isEmpty(x, y)) {
-					dest.clear(x, y);
-				} else {
-					dest.rawSet(x, y, src.get(x, y).copy());
-				}
-
-				if (src.isMarkerEmpty(x, y)) {
-					dest.clearMarker(x, y);
-				} else {
-					dest.rawSetMarker(x, y, src.getMarker(x, y).copy());
-				}
-			}
-		}
-	}
-
 	@inject final prefsSettings: PrefsSettings;
+
+	@copy final gelos: CopyableMatrix<FieldGelo>;
+	@copy final markers: CopyableMatrix<IFieldMarker>;
 
 	@inject public var columns(default, null): Int;
 	@inject public var playAreaRows(default, null): Int;
 	@inject public var garbageRows(default, null): Int;
 	@inject public var hiddenRows: Int;
 
-	var data: Vector<Vector<FieldGelo>>;
-	var markers: Vector<Vector<IFieldMarker>>;
+	@copy public var outerRows(default, null): Int;
+	@copy public var totalRows(default, null): Int;
+	@copy public var centerColumnIndex(default, null): Int;
 
-	public var outerRows(default, null): Int;
-	public var totalRows(default, null): Int;
-	public var centerColumnIndex(default, null): Int;
-
-	public var garbageAccelerations(default, null): ReadOnlyArray<Float>;
-	public var garbageColumns(default, null): ReadOnlyArray<Int>;
-
-	public function copyFrom(src: Field) {
-		copyTo(src, this);
-	}
+	@copy public var garbageAccelerations(default, null): ReadOnlyArray<Float>;
+	@copy public var garbageColumns(default, null): ReadOnlyArray<Int>;
 
 	public function copy() {
-		final copy = new Field(prefsSettings);
-
-		copy.copyFrom(this);
-
-		return copy;
+		return new Field({
+			prefsSettings: prefsSettings,
+			columns: columns,
+			playAreaRows: playAreaRows,
+			hiddenRows: hiddenRows,
+			garbageRows: garbageRows
+		}).copyFrom(this);
 	}
 
-	function new(prefsSettings: PrefsSettings) {
-		this.prefsSettings = prefsSettings;
+	public function new(opts: FieldOptions) {
+		Macros.initFromOpts();
+
+		gelos = new CopyableMatrix(totalRows);
+		markers = new CopyableMatrix(totalRows);
+
+		createData();
 	}
 
 	inline function rawSet(x: Int, y: Int, gelo: FieldGelo) {
-		data[y][x] = gelo;
+		gelos.data[y][x] = gelo;
 	}
 
 	inline function rawSetMarker(x: Int, y: Int, marker: IFieldMarker) {
-		markers[y][x] = marker;
+		markers.data[y][x] = marker;
 	}
 
 	public function createData() {
@@ -114,12 +75,12 @@ class Field implements ICopyFrom {
 
 		centerColumnIndex = Std.int(columns / 2) - 1;
 
-		data = new Vector(totalRows);
-		markers = new Vector(totalRows);
+		gelos.data.resize(0);
+		markers.data.resize(0);
 
 		for (y in 0...totalRows) {
-			data[y] = new Vector(columns);
-			markers[y] = new Vector(columns);
+			gelos.data[y] = [];
+			markers.data[y] = [];
 
 			for (x in 0...columns) {
 				rawSetMarker(x, y, NullFieldMarker.instance);
@@ -153,11 +114,11 @@ class Field implements ICopyFrom {
 	}
 
 	public function get(x: Int, y: Int): Null<FieldGelo> {
-		return data[y][x];
+		return gelos.data[y][x];
 	}
 
 	public function getMarker(x: Int, y: Int): Null<IFieldMarker> {
-		return markers[y][x];
+		return markers.data[y][x];
 	}
 
 	public inline function getAtPoint(p: IntPoint) {
@@ -218,7 +179,7 @@ class Field implements ICopyFrom {
 	}
 
 	public function clear(x: Int, y: Int) {
-		data[y][x] = null;
+		gelos.data[y][x] = null;
 	}
 
 	public function clearMarker(x: Int, y: Int) {

@@ -187,7 +187,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildPlayerField() {
-		playerField = Field.create({
+		playerField = new Field({
 			prefsSettings: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,
@@ -319,7 +319,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		editState = new EditingBoardState({
 			geometries: BoardGeometries.LEFT,
 			inputDevice: playerInputDevice,
-			field: Field.create({
+			field: new Field({
 				prefsSettings: Profile.primary.prefs,
 				columns: 6,
 				playAreaRows: 12,

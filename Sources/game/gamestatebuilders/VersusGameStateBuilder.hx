@@ -180,7 +180,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildLeftField() {
-		leftField = Field.create({
+		leftField = new Field({
 			prefsSettings: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,
@@ -259,7 +259,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildRightField() {
-		rightField = Field.create({
+		rightField = new Field({
 			prefsSettings: Profile.primary.prefs,
 			columns: 6,
 			playAreaRows: 12,
