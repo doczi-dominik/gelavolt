@@ -1,5 +1,6 @@
 package game.simulation;
 
+import game.copying.ConstantCopyableArray;
 import game.copying.CopyableArray;
 import game.copying.ICopyFrom;
 import game.gelogroups.GeloGroupData;
@@ -58,7 +59,7 @@ class ChainSimulator implements ICopyFrom {
 
 				final firstInGroup = connected[0];
 
-				popInfo.beginners.push({
+				popInfo.beginners.data.push({
 					color: firstInGroup.gelo.color,
 					x: firstInGroup.x,
 					y: firstInGroup.y
@@ -131,7 +132,7 @@ class ChainSimulator implements ICopyFrom {
 				break;
 
 			final linkInfo = linkBuilder.build({
-				clearsByColor: popInfo.clearsByColor,
+				clearsByColor: popInfo.clearsByColor.data,
 				chain: ++latestChainCounter,
 				dropBonus: currentDropBonus,
 				garbageRemainder: lastRemainder,
@@ -185,7 +186,7 @@ class ChainSimulator implements ICopyFrom {
 		pushStep(new EndSimStep({
 			chain: latestChainCounter,
 			fieldSnapshot: field.copy(),
-			links: links,
+			links: new ConstantCopyableArray(links),
 			endsInAllClear: allClear
 		}));
 	}

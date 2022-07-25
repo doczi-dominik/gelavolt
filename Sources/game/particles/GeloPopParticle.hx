@@ -33,18 +33,30 @@ class GeloPopParticle implements IParticle {
 	@inject final color: Color;
 	@inject final maxT: Int;
 
-	@inject var x: Float;
-	@inject var y: Float;
-	@inject var dy: Float;
+	@inject @copy var x: Float;
+	@inject @copy var y: Float;
+	@inject @copy var dy: Float;
 
-	var lastX: Float;
-	var lastY: Float;
-	var t: Int;
+	@copy var lastX: Float;
+	@copy var lastY: Float;
+	@copy var t: Int;
 
-	public var isAnimationFinished(default, null): Bool;
+	@copy public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GeloPopParticleOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function copy() {
+		return new GeloPopParticle({
+			dx: dx,
+			dyIncrement: dyIncrement,
+			color: color,
+			maxT: maxT,
+			x: x,
+			y: y,
+			dy: dy
+		}).copyFrom(this);
 	}
 
 	public function init() {

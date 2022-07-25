@@ -6,7 +6,7 @@ import kha.Color;
 
 class AllClearFieldMarker {
 	public static function create(prefsSettings: PrefsSettings, defaultColor: GeloColor) {
-		return MultiColorFieldMarker.create({
+		return new MultiColorFieldMarker({
 			prefsSettings: prefsSettings,
 			type: AllClear,
 			spriteCoordinates: {x: 834, y: 455},

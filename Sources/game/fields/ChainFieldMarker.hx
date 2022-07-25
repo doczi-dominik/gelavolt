@@ -5,6 +5,14 @@ import kha.Assets;
 import kha.graphics2.Graphics;
 
 class ChainFieldMarker implements IFieldMarker {
+	public static function create() {
+		final m = new ChainFieldMarker();
+
+		m.modifyChain(1);
+
+		return m;
+	}
+
 	static inline final SPRITE_X = 770;
 	static inline final SPRITE_Y = 455;
 	static inline final FONTSIZE = 30;
@@ -12,35 +20,27 @@ class ChainFieldMarker implements IFieldMarker {
 	final font: Font;
 	final fontHeight: Float;
 
-	var chain: Int;
-	var chainString: String;
-	var fontWidth: Float;
+	@copy var chain: Int;
+	@copy var chainString: String;
+	@copy var fontWidth: Float;
 
 	public final type: FieldMarkerType;
 
-	public function new() {
+	function new() {
 		font = Assets.fonts.ka1;
 		fontHeight = font.height(FONTSIZE);
 
-		modifyChain(1);
-
 		type = Chain;
+	}
+
+	public function copy() {
+		return new ChainFieldMarker().copyFrom(this);
 	}
 
 	function modifyChain(value: Int) {
 		chain = value;
 		chainString = '$chain';
 		fontWidth = font.width(FONTSIZE, chainString);
-	}
-
-	public function copy() {
-		final c = new ChainFieldMarker();
-
-		c.chain = chain;
-		c.chainString = chainString;
-		c.fontWidth = fontWidth;
-
-		return c;
 	}
 
 	public function onSet(value: IFieldMarker) {

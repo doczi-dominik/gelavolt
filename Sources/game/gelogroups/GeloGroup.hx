@@ -224,7 +224,7 @@ class GeloGroup implements ICopyFrom {
 
 		final popStep = cast(chainSim.getViewedStep(), PopSimStep);
 
-		for (c in popStep.popInfo.clears) {
+		for (c in popStep.popInfo.clears.data) {
 			// The clear might refer to the Gelo that is still dropping,
 			// so it might be empty on the "real" field.
 			if (field.isEmptyAtPoint(c))
@@ -323,7 +323,7 @@ class GeloGroup implements ICopyFrom {
 
 		others.data.resize(0);
 
-		for (o in opts.others) {
+		for (o in opts.others.data) {
 			if (o.color == EMPTY)
 				continue;
 

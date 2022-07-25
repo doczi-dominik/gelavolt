@@ -22,6 +22,17 @@ class BeginSimStep extends SimulationStep {
 		game.Macros.initFromOpts();
 	}
 
+	override function copy(): SimulationStep {
+		return new BeginSimStep({
+			chain: chain,
+			fieldSnapshot: fieldSnapshot,
+			groupData: groupData,
+			sendsAllClearBonus: sendsAllClearBonus,
+			dropBonus: dropBonus,
+			groupIndex: groupIndex
+		});
+	}
+
 	override function renderLabel(g: Graphics, y: Float, alpha: Float) {
 		renderBackground(g, y, Green, SimulationStep.LABEL_SIZE);
 		renderTitle(g, y, "Begin");

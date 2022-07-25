@@ -1,5 +1,6 @@
 package game.simulation;
 
+import game.copying.ConstantCopyableArray;
 import game.simulation.SimulationStep.SimulationStepOptions;
 import kha.graphics2.Graphics;
 
@@ -8,7 +9,7 @@ import kha.graphics2.Graphics;
 class EndSimStepOptions extends SimulationStepOptions {}
 
 class EndSimStep extends SimulationStep {
-	@inject public final links: Array<LinkInfo>;
+	@inject public final links: ConstantCopyableArray<LinkInfo>;
 	@inject public final endsInAllClear: Bool;
 
 	public final totalGarbage: Int;
@@ -19,7 +20,9 @@ class EndSimStep extends SimulationStep {
 
 		links = opts.links;
 
-		if (links.length == 0) {
+		final linkData = links.data;
+
+		if (linkData.length == 0) {
 			totalGarbage = 0;
 			endsInAllClear = false;
 			isLastLinkPowerful = false;
@@ -27,11 +30,20 @@ class EndSimStep extends SimulationStep {
 			return;
 		}
 
-		final lastLink = links[links.length - 1];
+		final lastLink = linkData[linkData.length - 1];
 
 		totalGarbage = lastLink.accumulatedGarbage;
 		endsInAllClear = opts.endsInAllClear;
 		isLastLinkPowerful = lastLink.isPowerful;
+	}
+
+	override function copy(): SimulationStep {
+		return new EndSimStep({
+			chain: chain,
+			fieldSnapshot: fieldSnapshot,
+			links: links.copy(),
+			endsInAllClear: endsInAllClear
+		});
 	}
 
 	override function renderLabel(g: Graphics, y: Float, alpha: Float) {

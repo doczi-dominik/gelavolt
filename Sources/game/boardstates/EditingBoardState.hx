@@ -58,7 +58,7 @@ class EditingBoardState implements IBoardState {
 		game.Macros.initFromOpts();
 
 		markers = [
-			new ChainFieldMarker(),
+			ChainFieldMarker.create(),
 			AllClearFieldMarker.create(prefsSettings, COLOR1),
 			AllClearFieldMarker.create(prefsSettings, COLOR2),
 			AllClearFieldMarker.create(prefsSettings, COLOR3),

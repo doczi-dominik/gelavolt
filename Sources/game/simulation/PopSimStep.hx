@@ -24,6 +24,17 @@ class PopSimStep extends SimulationStep {
 		game.Macros.initFromOpts();
 	}
 
+	override function copy(): SimulationStep {
+		return new PopSimStep({
+			chain: chain,
+			fieldSnapshot: fieldSnapshot.copy(),
+			garbageDisplay: garbageDisplay.copy(),
+			accumulatedDisplay: accumulatedDisplay.copy(),
+			popInfo: popInfo.copy(),
+			linkInfo: linkInfo
+		});
+	}
+
 	override function renderLabel(g: Graphics, y: Float, alpha: Float) {
 		renderBackground(g, y, Yellow, SimulationStep.LABEL_SIZE);
 		renderTitle(g, y, "Pop");

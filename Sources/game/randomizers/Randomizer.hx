@@ -91,18 +91,18 @@ class Randomizer implements ICopyFrom {
 
 		var index = 0;
 		var mainColor: Null<GeloColor>;
-		var otherOptions: Vector<OtherGeloOptions>;
+		var otherOptions: Array<OtherGeloOptions>;
 
 		while (index < 256) {
 			for (type in dropset) {
-				otherOptions = new Vector<OtherGeloOptions>(8);
+				otherOptions = [];
 
 				for (i in 0...8) {
-					otherOptions.set(i, {
+					otherOptions[i] = {
 						prefsSettings: prefsSettings,
 						color: EMPTY,
 						positionID: i
-					});
+					}
 				}
 
 				switch (type) {
@@ -117,10 +117,7 @@ class Randomizer implements ICopyFrom {
 						otherOptions[1].color = otherColor;
 				}
 
-				groups.push({
-					mainColor: mainColor,
-					others: otherOptions
-				});
+				groups.push(new GeloGroupData(mainColor, otherOptions));
 			}
 		}
 

@@ -1,11 +1,10 @@
 package game.fields;
 
+import game.copying.ICopy;
 import kha.graphics2.Graphics;
 
-interface IFieldMarker {
+interface IFieldMarker extends ICopy {
 	public final type: FieldMarkerType;
-
-	public function copy(): IFieldMarker;
 
 	public function onSet(value: IFieldMarker): IFieldMarker;
 

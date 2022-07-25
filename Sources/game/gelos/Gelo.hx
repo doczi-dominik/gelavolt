@@ -1,11 +1,11 @@
 package game.gelos;
 
+import game.copying.ICopy;
 import save_data.PrefsSettings;
 import utils.Point;
 import utils.Utils.lerp;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
-import kha.Color;
 import kha.Assets;
 import game.gelos.GeloSpriteCoordinates;
 import game.gelos.GeloBounceTables;
@@ -14,7 +14,7 @@ import game.gelos.GeloBounceTables;
 @:build(game.Macros.buildOptionsClass(Gelo))
 class GeloOptions {}
 
-class Gelo {
+class Gelo implements ICopy {
 	public inline static final SIZE = 64;
 	public inline static final HALFSIZE = 32;
 
@@ -55,68 +55,37 @@ class Gelo {
 		p.willTriggerChain = false;
 	}
 
-	public static function copyTo(src: Gelo, dest: Gelo) {
-		dest.spriteVariation = src.spriteVariation;
-		dest.subImageCoords = src.subImageCoords;
-
-		dest.bounceT = src.bounceT;
-		dest.bounceType = src.bounceType;
-
-		dest.bounceT = src.bounceT;
-		dest.bounceType = src.bounceType;
-
-		dest.popT = src.popT;
-		dest.popType = src.popType;
-
-		dest.isVisible = src.isVisible;
-
-		dest.prevScaleX = src.prevScaleX;
-		dest.prevScaleY = src.prevScaleY;
-
-		dest.scaleX = src.scaleX;
-		dest.scaleY = src.scaleY;
-		dest.willTriggerChain = src.willTriggerChain;
-	}
-
 	@inject final prefsSettings: PrefsSettings;
 
 	@inject public final color: GeloColor;
 
-	var spriteVariation: GeloSpriteVariation;
-	var subImageCoords: Point;
+	@copy var spriteVariation: GeloSpriteVariation;
+	@copy var subImageCoords: Point;
 
-	var bounceT: Int;
-	var bounceType: GeloBounceType;
+	@copy var bounceT: Int;
+	@copy var bounceType: GeloBounceType;
 
-	var popT: Int;
-	var popType: GeloPopType;
+	@copy var popT: Int;
+	@copy var popType: GeloPopType;
 
-	var isVisible: Bool;
+	@copy var isVisible: Bool;
 
-	var prevScaleX: Float;
-	var prevScaleY: Float;
+	@copy var prevScaleX: Float;
+	@copy var prevScaleY: Float;
 
-	public var scaleX(default, null): Float;
-	public var scaleY(default, null): Float;
-	public var willTriggerChain: Bool;
+	@copy public var scaleX(default, null): Float;
+	@copy public var scaleY(default, null): Float;
+	@copy public var willTriggerChain: Bool;
 
 	function new(opts: GeloOptions) {
 		game.Macros.initFromOpts();
 	}
 
-	public function copyFrom(src: Gelo) {
-		copyTo(src, this);
-	}
-
 	public function copy() {
-		final p = new Gelo({
+		return new Gelo({
 			prefsSettings: prefsSettings,
 			color: color,
-		});
-
-		p.copyFrom(this);
-
-		return p;
+		}).copyFrom(this);
 	}
 
 	function updateSubImageCoords() {

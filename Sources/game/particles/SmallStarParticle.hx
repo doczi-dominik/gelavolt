@@ -24,16 +24,20 @@ class SmallStarParticle implements IParticle {
 	@inject final y: Float;
 	@inject final color: Color;
 
-	var t: Int;
+	@copy var t: Int;
 
-	public var isAnimationFinished(default, null): Bool;
+	@copy public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: SmallStarParticleOptions) {
 		game.Macros.initFromOpts();
+	}
 
-		t = 0;
-
-		isAnimationFinished = false;
+	public function copy() {
+		return new SmallStarParticle({
+			x: x,
+			y: y,
+			color: color
+		}).copyFrom(this);
 	}
 
 	public function update() {

@@ -102,7 +102,7 @@ class Macros {
 		if (localClass == null)
 			Context.fatalError("Not called in a class", pos);
 
-		final classFields = localClass.get().fields.get().map(f -> f.name);
+		final classFields = localClass.get().fields.get().filter(f -> f.kind.match(FVar(_, _))).map(f -> f.name);
 		final optsFields = optsClass.fields.get().map(f -> f.name);
 
 		final exprs = new Array<Expr>();
@@ -254,7 +254,7 @@ class Macros {
 									} else {
 										exprs.push(macro $i{fieldName} = other.$fieldName);
 									}
-								case TAbstract(t, params):
+								case TAbstract(_, _) | TEnum(_, _):
 									exprs.push(macro $i{fieldName} = other.$fieldName);
 								default:
 							}

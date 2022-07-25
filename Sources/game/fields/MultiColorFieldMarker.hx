@@ -1,63 +1,50 @@
 package game.fields;
 
+import game.copying.ConstantCopyableArray;
 import game.gelos.GeloColor;
 import save_data.PrefsSettings;
 import kha.Assets;
 import kha.graphics2.Graphics;
-import kha.Color;
 import utils.Point;
 
+@:structInit
+@:build(game.Macros.buildOptionsClass(MultiColorFieldMarker))
+class MultiColorFieldMarkerOptions {}
+
 class MultiColorFieldMarker implements IFieldMarker {
-	public static function init(m: MultiColorFieldMarker) {
-		m.colors = [m.defaultColor];
-	}
+	@inject final prefsSettings: PrefsSettings;
+	@inject final spriteCoordinates: Point;
+	@inject final defaultColor: GeloColor;
+	@copy final colors: ConstantCopyableArray<GeloColor>;
 
-	public static function create(opts: ConstructorOptions) {
-		final m = new MultiColorFieldMarker(opts);
+	@inject public final type: FieldMarkerType;
 
-		init(m);
+	public function new(opts: MultiColorFieldMarkerOptions) {
+		Macros.initFromOpts();
 
-		return m;
-	}
-
-	final prefsSettings: PrefsSettings;
-	final spriteCoordinates: Point;
-	final defaultColor: GeloColor;
-
-	var colors: Array<GeloColor>;
-
-	public final type: FieldMarkerType;
-
-	function new(opts: ConstructorOptions) {
-		prefsSettings = opts.prefsSettings;
-		spriteCoordinates = opts.spriteCoordinates;
-		defaultColor = opts.defaultColor;
-
-		type = opts.type;
+		colors = new ConstantCopyableArray([defaultColor]);
 	}
 
 	public function copy() {
-		final c = new MultiColorFieldMarker({
+		return new MultiColorFieldMarker({
 			prefsSettings: prefsSettings,
 			spriteCoordinates: spriteCoordinates,
 			defaultColor: defaultColor,
 			type: type
-		});
-
-		c.colors = colors.copy();
-
-		return c;
+		}).copyFrom(this);
 	}
 
 	public function onSet(value: IFieldMarker) {
+		final colorData = colors.data;
+
 		if (value.type == type) {
 			final marker = cast(value, MultiColorFieldMarker);
 
-			for (c in marker.colors) {
-				if (colors.contains(c)) {
-					colors.remove(c);
+			for (c in marker.colors.data) {
+				if (colorData.contains(c)) {
+					colorData.remove(c);
 				} else {
-					colors.push(c);
+					colorData.push(c);
 				}
 			}
 
@@ -68,23 +55,15 @@ class MultiColorFieldMarker implements IFieldMarker {
 	}
 
 	public function render(g: Graphics, x: Float, y: Float) {
-		final colorCount = colors.length;
+		final colorCount = colors.data.length;
 		final width = 64 / colorCount;
 
 		for (i in 0...colorCount) {
-			g.color = prefsSettings.primaryColors[colors[i]];
+			g.color = prefsSettings.primaryColors[colors.data[i]];
 
 			g.drawSubImage(Assets.images.pixel, x + i * width, y, spriteCoordinates.x + i * width, spriteCoordinates.y, width, 64);
 		}
 
 		g.color = White;
 	}
-}
-
-@:structInit
-class ConstructorOptions {
-	public final prefsSettings: PrefsSettings;
-	public final type: FieldMarkerType;
-	public final spriteCoordinates: Point;
-	public final defaultColor: GeloColor;
 }

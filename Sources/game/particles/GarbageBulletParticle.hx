@@ -42,17 +42,32 @@ class GarbageBulletParticle implements IParticle {
 	@inject final color: Color;
 	@inject final onFinish: Void->Void;
 
-	var prevX: Float;
-	var prevY: Float;
+	@copy var prevX: Float;
+	@copy var prevY: Float;
 
-	var currentX: Float;
-	var currentY: Float;
-	var t: Float;
+	@copy var currentX: Float;
+	@copy var currentY: Float;
+	@copy var t: Float;
 
-	public var isAnimationFinished(default, null): Bool;
+	@copy public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GarbageBulletParticleOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function copy() {
+		return new GarbageBulletParticle({
+			particleManager: particleManager,
+			layer: layer,
+			begin: begin,
+			control: control,
+			target: target,
+			beginScale: beginScale,
+			targetScale: targetScale,
+			duration: duration,
+			color: color,
+			onFinish: onFinish
+		}).copyFrom(this);
 	}
 
 	public function update() {

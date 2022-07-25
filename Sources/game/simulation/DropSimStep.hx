@@ -2,11 +2,17 @@ package game.simulation;
 
 import game.simulation.SimulationStep.SimulationStepOptions;
 import kha.graphics2.Graphics;
-import game.fields.Field;
 
 class DropSimStep extends SimulationStep {
 	public function new(opts: SimulationStepOptions) {
 		super(DROP, opts);
+	}
+
+	override function copy(): SimulationStep {
+		return new DropSimStep({
+			chain: chain,
+			fieldSnapshot: fieldSnapshot,
+		});
 	}
 
 	override function renderLabel(g: Graphics, y: Float, alpha: Float) {

@@ -33,18 +33,30 @@ class PixelFloatParticle implements IParticle {
 	@inject final color: Color;
 	@inject final size: Float;
 
-	@inject var x: Float;
-	@inject var y: Float;
+	@inject @copy var x: Float;
+	@inject @copy var y: Float;
 
-	var lastX: Float;
-	var lastY: Float;
-	var lastT: Int;
-	var t: Int;
+	@copy var lastX: Float;
+	@copy var lastY: Float;
+	@copy var lastT: Int;
+	@copy var t: Int;
 
-	public var isAnimationFinished(default, null): Bool;
+	@copy public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: PixelFloatParticleOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function copy() {
+		return new PixelFloatParticle({
+			dx: dx,
+			dy: dy,
+			maxT: maxT,
+			color: color,
+			size: size,
+			x: x,
+			y: y,
+		}).copyFrom(this);
 	}
 
 	public function update() {

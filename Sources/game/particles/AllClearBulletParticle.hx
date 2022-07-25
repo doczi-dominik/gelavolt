@@ -1,5 +1,6 @@
 package game.particles;
 
+import game.particles.GarbageBulletParticle.GarbageBulletParticleOptions;
 import kha.Font;
 import kha.Assets;
 import kha.graphics2.Graphics;
@@ -26,9 +27,24 @@ class AllClearBulletParticle extends GarbageBulletParticle {
 		return p;
 	}
 
-	var font: Font;
-	var halfWidth: Float;
-	var halfHeight: Float;
+	@copy var font: Font;
+	@copy var halfWidth: Float;
+	@copy var halfHeight: Float;
+
+	override function copy() {
+		return new AllClearBulletParticle({
+			particleManager: particleManager,
+			layer: layer,
+			begin: begin,
+			control: control,
+			target: target,
+			beginScale: beginScale,
+			targetScale: targetScale,
+			duration: duration,
+			color: color,
+			onFinish: onFinish
+		}).copyFrom(this);
+	}
 
 	override function render(g: Graphics, alpha: Float) {
 		g.font = font;

@@ -1,12 +1,16 @@
 package game.gelos;
 
+import game.copying.ICopy;
 import game.gelos.Gelo.GeloOptions;
 import game.gelos.OtherGeloPositions.OTHERGELO_POSITIONS;
-import utils.IntPoint;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(OtherGelo))
-class OtherGeloOptions extends GeloOptions {}
+class OtherGeloOptions extends GeloOptions implements ICopy {
+	public function copy() {
+		return this;
+	}
+}
 
 class OtherGelo extends Gelo {
 	public static function create(opts: OtherGeloOptions) {
@@ -23,32 +27,17 @@ class OtherGelo extends Gelo {
 		p.changeRotation(0);
 	}
 
-	public static function copyTo(src: OtherGelo, dest: OtherGelo) {
-		Gelo.copyTo(src, dest);
-
-		dest.relX = src.relX;
-		dest.relY = src.relY;
-	}
-
 	@inject final positionID: Int;
 
-	public var relX: Int;
-	public var relY: Int;
+	@copy public var relX: Int;
+	@copy public var relY: Int;
 
-	override function copyFrom(src: Gelo) {
-		copyTo(cast(src, OtherGelo), this);
-	}
-
-	override function copy(): Gelo {
-		final p = new OtherGelo({
+	override function copy() {
+		return new OtherGelo({
 			prefsSettings: prefsSettings,
 			color: color,
 			positionID: positionID
-		});
-
-		p.copyFrom(this);
-
-		return p;
+		}).copyFrom(this);
 	}
 
 	function new(opts: OtherGeloOptions) {

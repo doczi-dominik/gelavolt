@@ -1,6 +1,6 @@
 package game.copying;
 
-class CopyableMatrix<T> implements ICopyFrom {
+class CopyableMatrix<T:ICopy> implements ICopyFrom {
 	public final data: Array<Array<T>>;
 
 	public function new(height: Int) {
@@ -13,8 +13,15 @@ class CopyableMatrix<T> implements ICopyFrom {
 		data.resize(0);
 
 		for (y in 0...o.data.length) {
+			data[y] = [];
 			for (x in 0...o.data[y].length) {
-				// data[y][x] = o.data[y][x].copy();
+				final obj = o.data[y][x];
+
+				if (obj == null) {
+					data[y][x] = null;
+				} else {
+					data[y][x] = obj.copy();
+				}
 			}
 		}
 

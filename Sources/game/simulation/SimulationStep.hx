@@ -1,5 +1,6 @@
 package game.simulation;
 
+import game.copying.ICopy;
 import kha.Assets;
 import game.geometries.BoardGeometries;
 import kha.Color;
@@ -10,7 +11,7 @@ import game.fields.Field;
 @:build(game.Macros.buildOptionsClass(SimulationStep))
 class SimulationStepOptions {}
 
-class SimulationStep {
+class SimulationStep implements ICopy {
 	public static inline final LABEL_SIZE = 64;
 	public static inline final CARD_SIZE = 512;
 	public static inline final TITLE_FONT_SIZE = 40;
@@ -24,6 +25,13 @@ class SimulationStep {
 		game.Macros.initFromOpts();
 
 		this.type = type;
+	}
+
+	public function copy() {
+		return new SimulationStep(type, {
+			chain: chain,
+			fieldSnapshot: fieldSnapshot
+		});
 	}
 
 	final function cardRow(row: Int) {

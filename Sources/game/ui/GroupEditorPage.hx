@@ -84,7 +84,7 @@ class GroupEditorPage implements IMenuPage {
 				if (positionID > 3)
 					positionID--;
 
-				group.others[positionID].color = Std.int(negativeMod(group.others[positionID].color + 1, 6));
+				group.others.data[positionID].color = Std.int(negativeMod(group.others.data[positionID].color + 1, 6));
 			}
 		}
 	}

@@ -41,41 +41,20 @@ class FieldGelo extends Gelo {
 		p.state = IDLE;
 	}
 
-	public static function copyTo(src: FieldGelo, dest: FieldGelo) {
-		Gelo.copyTo(src, dest);
+	@inject @copy public var x: Float;
+	@inject @copy public var y: Float;
 
-		dest.x = src.x;
-		dest.y = src.y;
-
-		dest.distanceCounter = src.distanceCounter;
-		dest.velocity = src.velocity;
-		dest.velocityLimit = src.velocityLimit;
-		dest.accel = src.accel;
-		dest.state = src.state;
-	}
-
-	@inject public var x: Float;
-	@inject public var y: Float;
-
-	public var distanceCounter: Float;
-	public var velocity: Float;
-	public var velocityLimit(default, null): Float;
-	public var accel(default, null): Float;
-	public var state: FieldGeloState;
-
-	override function copyFrom(src: Gelo) {
-		copyTo(cast(src, FieldGelo), this);
-	}
+	@copy public var distanceCounter: Float;
+	@copy public var velocity: Float;
+	@copy public var velocityLimit(default, null): Float;
+	@copy public var accel(default, null): Float;
+	@copy public var state: FieldGeloState;
 
 	override function copy() {
-		final p = new FieldGelo({
+		return new FieldGelo({
 			prefsSettings: prefsSettings,
 			color: color
-		});
-
-		p.copyFrom(this);
-
-		return p;
+		}).copyFrom(this);
 	}
 
 	override function startBouncing(type: GeloBounceType) {

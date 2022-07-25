@@ -254,7 +254,7 @@ class StandardBoardState implements IBoardState {
 		// happen easily when continuing from a PopSimStep because field
 		// snapshots show the field state AFTER the Gelos have popped.
 		try {
-			for (c in currentPopStep.popInfo.clears) {
+			for (c in currentPopStep.popInfo.clears.data) {
 				field.getAtPoint(c).startPopping(TSU);
 			}
 		} catch (_) {
@@ -270,12 +270,12 @@ class StandardBoardState implements IBoardState {
 		final clears = currentPopStep.popInfo.clears;
 
 		// Wait for Gelos to finish popping animation
-		for (c in clears) {
+		for (c in clears.data) {
 			if (field.getAtPoint(c).state == POPPING)
 				return;
 		}
 
-		for (c in clears) {
+		for (c in clears.data) {
 			field.clear(c.x, c.y);
 		}
 
@@ -291,7 +291,7 @@ class StandardBoardState implements IBoardState {
 		final popInfo = currentPopStep.popInfo;
 		final beginnerScreenCoords: Array<GeloPoint> = [];
 
-		for (b in popInfo.beginners) {
+		for (b in popInfo.beginners.data) {
 			final screenCoords = field.cellToScreen(b.x, b.y);
 
 			beginnerScreenCoords.push({
@@ -305,7 +305,7 @@ class StandardBoardState implements IBoardState {
 
 		chainCounter.startAnimation(currentPopStep.chain, {x: firstPop.x, y: firstPop.y}, currentPopStep.linkInfo.isPowerful);
 
-		for (c in popInfo.clears) {
+		for (c in popInfo.clears.data) {
 			if (c.color.isGarbage())
 				continue;
 

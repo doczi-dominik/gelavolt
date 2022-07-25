@@ -27,13 +27,21 @@ class GarbageBulletTrailParticle implements IParticle {
 	@inject final y: Float;
 	@inject final color: Color;
 
-	var lastT: Int;
-	var t: Int;
+	@copy var lastT: Int;
+	@copy var t: Int;
 
-	public var isAnimationFinished(default, null): Bool;
+	@copy public var isAnimationFinished(default, null): Bool;
 
 	function new(opts: GarbageBulletTrailParticleOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function copy() {
+		return new GarbageBulletTrailParticle({
+			x: x,
+			y: y,
+			color: color
+		}).copyFrom(this);
 	}
 
 	public function update() {
