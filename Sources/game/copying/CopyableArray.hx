@@ -1,6 +1,6 @@
 package game.copying;
 
-class CopyFromArray<T> implements ICopyFrom {
+class CopyableArray<T> implements ICopyFrom {
 	public final data: Array<T>;
 
 	public function new(data: Array<T>) {
@@ -8,7 +8,7 @@ class CopyFromArray<T> implements ICopyFrom {
 	}
 
 	public function copyFrom(other: Dynamic) {
-		final o = (other : CopyFromArray<T>);
+		final o = (other : CopyableArray<T>);
 
 		data.resize(0);
 
@@ -20,6 +20,6 @@ class CopyFromArray<T> implements ICopyFrom {
 	}
 
 	public function copy() {
-		return new CopyFromArray<T>([]).copyFrom(this);
+		return new CopyableArray<T>([]).copyFrom(this);
 	}
 }

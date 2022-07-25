@@ -1,12 +1,12 @@
 package game;
 
 import game.copying.ICopyFrom;
-import game.copying.CopyFromArray;
+import game.copying.CopyableArray;
 import game.gelogroups.GeloGroupData;
 import utils.Utils;
 
 class Queue implements ICopyFrom {
-	public var groups(default, null): CopyFromArray<GeloGroupData>;
+	public var groups(default, null): CopyableArray<GeloGroupData>;
 	@copy public var currentIndex(default, null): Int;
 
 	public function new(groups: Array<GeloGroupData>) {
@@ -14,7 +14,7 @@ class Queue implements ICopyFrom {
 	}
 
 	public inline function load(groups: Array<GeloGroupData>) {
-		this.groups = new CopyFromArray(groups);
+		this.groups = new CopyableArray(groups);
 
 		currentIndex = 0;
 	}

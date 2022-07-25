@@ -1,6 +1,6 @@
 package game.gelogroups;
 
-import game.copying.CopyFromArray;
+import game.copying.CopyableArray;
 import game.copying.ICopyFrom;
 import game.gelos.GeloColor;
 import game.gelos.OtherGelo;
@@ -36,8 +36,8 @@ class GeloGroup implements ICopyFrom {
 	@inject final field: Field;
 	@inject final chainSim: ChainSimulator;
 
-	@copy final others: CopyFromArray<OtherGelo>;
-	@copy final otherShadows: CopyFromArray<GeloPoint>;
+	@copy final others: CopyableArray<OtherGelo>;
+	@copy final otherShadows: CopyableArray<GeloPoint>;
 
 	@copy var main: Gelo;
 
@@ -78,8 +78,8 @@ class GeloGroup implements ICopyFrom {
 	public function new(opts: GeloGroupOptions) {
 		game.Macros.initFromOpts();
 
-		others = new CopyFromArray([]);
-		otherShadows = new CopyFromArray([]);
+		others = new CopyableArray([]);
+		otherShadows = new CopyableArray([]);
 
 		isVisible = false;
 		isShadowVisible = false;

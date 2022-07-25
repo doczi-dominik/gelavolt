@@ -1,6 +1,6 @@
 package game.simulation;
 
-import game.copying.CopyFromArray;
+import game.copying.CopyableArray;
 import game.copying.ICopyFrom;
 import game.gelogroups.GeloGroupData;
 import game.rules.Rule;
@@ -28,7 +28,7 @@ class ChainSimulator implements ICopyFrom {
 	@inject final garbageDisplay: GarbageTray;
 	@inject final accumulatedDisplay: GarbageTray;
 
-	public final steps: CopyFromArray<SimulationStep>;
+	public final steps: CopyableArray<SimulationStep>;
 
 	@copy public var latestChainCounter(default, null): Int;
 	@copy public var latestGarbageCounter(default, null): Int;
@@ -38,7 +38,7 @@ class ChainSimulator implements ICopyFrom {
 	public function new(opts: ChainSimulatorOptions) {
 		game.Macros.initFromOpts();
 
-		steps = new CopyFromArray([]);
+		steps = new CopyableArray([]);
 
 		latestGarbageCounter = 0;
 		viewIndex = -1;
