@@ -2,7 +2,7 @@ package game.garbage;
 
 import game.screens.GameScreen;
 import kha.Color;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.particles.PixelFloatParticle;
 import utils.Utils;
 import game.mediators.GarbageTargetMediator;
@@ -23,7 +23,7 @@ class GarbageManagerOptions {}
 
 class GarbageManager implements IGarbageManager {
 	@inject final rule: Rule;
-	@inject final rng: Random;
+	@inject final rng: CopyableRNG;
 	@inject final prefsSettings: PrefsSettings;
 	@inject final particleManager: ParticleManager;
 	@inject final geometries: BoardGeometries;
@@ -68,11 +68,11 @@ class GarbageManager implements IGarbageManager {
 			particleManager.add(FRONT, PixelFloatParticle.create({
 				x: absTrayCenter.x,
 				y: absTrayCenter.y,
-				maxT: rng.GetIn(20, 30),
+				maxT: rng.data.GetIn(20, 30),
 				color: color,
-				dx: Math.cos(i / 4) * rng.GetIn(8, 12),
-				dy: Math.sin(i / 4) * rng.GetIn(8, 12),
-				size: Gelo.HALFSIZE * rng.GetFloatIn(0.25, 1.75)
+				dx: Math.cos(i / 4) * rng.data.GetIn(8, 12),
+				dy: Math.sin(i / 4) * rng.data.GetIn(8, 12),
+				size: Gelo.HALFSIZE * rng.data.GetFloatIn(0.25, 1.75)
 			}));
 		}
 	}

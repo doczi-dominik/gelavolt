@@ -123,7 +123,7 @@ class Macros {
 			Context.fatalError("Not called in a class", pos);
 
 		final fields = Context.getBuildFields();
-		final methods = fields.filter((f) -> f.name != "new" && !f.kind.match(FVar(_, _)) && !f.kind.match(FProp(_, _, _, _)));
+		final methods = fields.filter((f) -> ~/(?:build.+)|wireMediators/.match(f.name));
 
 		final exprs = new Array<Expr>();
 
@@ -156,7 +156,7 @@ class Macros {
 
 		final copyFromKind: Function = {
 			args: [{name: "other", type: macro:Dynamic}],
-			ret: macro:Void
+			ret: macro:Dynamic
 		};
 
 		final copyFromAccess = [APublic];
@@ -263,6 +263,8 @@ class Macros {
 				default:
 			}
 		}
+
+		exprs.push(macro return this);
 
 		copyFromKind.expr = macro $b{exprs};
 

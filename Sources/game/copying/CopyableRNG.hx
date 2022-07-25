@@ -4,18 +4,18 @@ import kha.math.Random;
 
 @:access(kha.math.Random)
 class CopyableRNG implements ICopyFrom {
-	public final rng: Random;
+	public final data: Random;
 
 	public function new(seed: Int) {
-		rng = new Random(seed);
+		data = new Random(seed);
 	}
 
 	public function copyFrom(other: Dynamic) {
-		final orng = other.rng;
+		final odata = other.data;
 
-		rng.a = orng.a;
-		rng.b = orng.b;
-		rng.c = orng.c;
-		rng.d = orng.d;
+		data.a = odata.a;
+		data.b = odata.b;
+		data.c = odata.c;
+		data.d = odata.d;
 	}
 }

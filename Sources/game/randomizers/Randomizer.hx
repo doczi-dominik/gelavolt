@@ -1,6 +1,7 @@
 package game.randomizers;
 
-import game.copying.CopyableRandom.CopyableRNG;
+import game.copying.ICopyFrom;
+import game.copying.CopyableRNG;
 import save_data.PrefsSettings;
 import game.gelos.OtherGelo.OtherGeloOptions;
 import game.gelogroups.GeloGroupData;
@@ -13,13 +14,13 @@ import game.randomizers.RandomizerPool;
 @:build(game.Macros.buildOptionsClass(Randomizer))
 class RandomizerOptions {}
 
-class Randomizer {
+class Randomizer implements ICopyFrom {
 	@inject final rng: CopyableRNG;
 	@inject final prefsSettings: PrefsSettings;
 
 	var pools: Map<RandomizerPool, Vector<GeloColor>>;
 
-	public var currentPool: RandomizerPool;
+	@copy public var currentPool: RandomizerPool;
 
 	public function new(opts: RandomizerOptions) {
 		game.Macros.initFromOpts();
@@ -35,7 +36,7 @@ class Randomizer {
 		// Shuffle color set
 		for (_ in 0...5) {
 			while (--index >= 0) {
-				swapWith = rng.GetUpTo(index);
+				swapWith = rng.data.GetUpTo(index);
 
 				temp = colorSet[index];
 				colorSet[index] = colorSet[swapWith];
@@ -56,7 +57,7 @@ class Randomizer {
 			index = 256;
 
 			while (--index >= 0) {
-				swapWith = rng.GetUpTo(255);
+				swapWith = rng.data.GetUpTo(255);
 
 				temp = pool[index];
 				pool[index] = pool[swapWith];

@@ -1,13 +1,13 @@
 package game.backgrounds;
 
 import utils.Utils;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import kha.graphics2.Graphics;
 
 using kha.graphics2.GraphicsExtension;
 
 private class BackgroundParticle {
-	final rng: Random;
+	final rng: CopyableRNG;
 
 	var lastY: Float;
 
@@ -16,7 +16,7 @@ private class BackgroundParticle {
 	var dy: Float;
 	var t: Int;
 
-	public function new(rng: Random) {
+	public function new(rng: CopyableRNG) {
 		this.rng = rng;
 
 		randomizeData();
@@ -25,10 +25,10 @@ private class BackgroundParticle {
 	}
 
 	function randomizeData() {
-		x = rng.GetFloatIn(0, ScaleManager.screen.width);
-		y = ScaleManager.screen.height * rng.GetFloatIn(1, 1.25);
-		dy = rng.GetFloatIn(0.5, 2);
-		t = rng.GetIn(0, 12);
+		x = rng.data.GetFloatIn(0, ScaleManager.screen.width);
+		y = ScaleManager.screen.height * rng.data.GetFloatIn(1, 1.25);
+		dy = rng.data.GetFloatIn(0.5, 2);
+		t = rng.data.GetIn(0, 12);
 
 		lastY = y;
 	}
@@ -61,10 +61,10 @@ private class BackgroundParticle {
 }
 
 class NestBackground {
-	final rng: Random;
+	final rng: CopyableRNG;
 	final particles: Array<BackgroundParticle>;
 
-	public function new(rng: Random) {
+	public function new(rng: CopyableRNG) {
 		this.rng = rng;
 		particles = [];
 

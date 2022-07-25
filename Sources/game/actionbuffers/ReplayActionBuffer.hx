@@ -1,7 +1,6 @@
 package game.actionbuffers;
 
 import game.actionbuffers.LocalActionBuffer.LocalActionBufferOptions;
-import game.mediators.FrameCounter;
 
 private enum abstract Mode(Int) {
 	final REPLAY;
@@ -39,6 +38,4 @@ class ReplayActionBuffer extends LocalActionBuffer {
 
 		super.update();
 	}
-
-	override function copyFrom(other: Dynamic) {}
 }

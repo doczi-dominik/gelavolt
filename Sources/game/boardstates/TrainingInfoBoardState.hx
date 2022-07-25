@@ -233,7 +233,7 @@ class TrainingInfoBoardState implements IBoardState {
 		for (i in 0...4) {
 			final stepIndex = viewMin + i;
 			final localIndex = viewIndex - viewMin;
-			final step = steps[stepIndex];
+			final step = steps.data[stepIndex];
 
 			if (step == null)
 				break;
@@ -249,7 +249,7 @@ class TrainingInfoBoardState implements IBoardState {
 		}
 
 		g.fontSize = CARD_FONT_SIZE;
-		shadowDrawString(g, 3, Black, White, '${viewIndex + 1} / ${steps.length}', 0, BoardGeometries.HEIGHT);
+		shadowDrawString(g, 3, Black, White, '${viewIndex + 1} / ${steps.data.length}', 0, BoardGeometries.HEIGHT);
 	}
 
 	public function resetCurrentSplitStatistics() {

@@ -42,7 +42,7 @@ class TrainingBoard implements IBoard {
 	@inject final playState: TrainingBoardState;
 	@inject final editState: EditingBoardState;
 
-	var activeState: IBoardState;
+	@copy var activeState: IBoardState;
 
 	public function new(opts: TrainingBoardOptions) {
 		game.Macros.initFromOpts();

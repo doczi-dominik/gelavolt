@@ -10,7 +10,7 @@ import game.ChainCounter;
 import utils.Point;
 import game.simulation.ILinkInfoBuilder;
 import save_data.TrainingSettings;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.rules.Rule;
 import game.garbage.IGarbageManager;
 import game.simulation.LinkInfo;
@@ -29,7 +29,7 @@ class AutoAttackManager {
 	static inline final EFFECT_Y = 800;
 
 	@inject final rule: Rule;
-	@inject final rng: Random;
+	@inject final rng: CopyableRNG;
 	@inject final geometries: BoardGeometries;
 	@inject final trainingSettings: TrainingSettings;
 	@inject final prefsSettings: PrefsSettings;
@@ -71,13 +71,13 @@ class AutoAttackManager {
 
 		var remainder = 0.0;
 
-		for (_ in 0...rng.GetIn(trainingSettings.minAttackChain, trainingSettings.maxAttackChain)) {
+		for (_ in 0...rng.data.GetIn(trainingSettings.minAttackChain, trainingSettings.maxAttackChain)) {
 			final clearsByColor = [COLOR1 => 0, COLOR2 => 0, COLOR3 => 0, COLOR4 => 0, COLOR5 => 0];
 
-			final colorCount = rng.GetIn(trainingSettings.minAttackColors, trainingSettings.maxAttackColors);
+			final colorCount = rng.data.GetIn(trainingSettings.minAttackColors, trainingSettings.maxAttackColors);
 
 			for (i in 0...colorCount) {
-				clearsByColor[i] = rule.popCount + rng.GetIn(trainingSettings.minAttackGroupDiff, trainingSettings.maxAttackGroupDiff);
+				clearsByColor[i] = rule.popCount + rng.data.GetIn(trainingSettings.minAttackGroupDiff, trainingSettings.maxAttackGroupDiff);
 			}
 
 			final link = linkBuilder.build({
@@ -126,12 +126,12 @@ class AutoAttackManager {
 
 		for (i in 0...48) {
 			particleManager.add(FRONT, GeloPopParticle.create({
-				x: absCoords.x + Gelo.HALFSIZE * rng.GetFloatIn(-1, 1),
-				y: absCoords.y + Gelo.HALFSIZE * rng.GetFloatIn(-1, 1),
-				dx: ((i % 2 == 0) ? -8 : 8) * rng.GetFloatIn(0.5, 1.5),
-				dy: -10 * rng.GetFloatIn(0.5, 1.5),
-				dyIncrement: 0.75 * rng.GetFloatIn(0.5, 1.5),
-				maxT: Std.int((30 + i * 6) * rng.GetFloatIn(0.5, 1.5)),
+				x: absCoords.x + Gelo.HALFSIZE * rng.data.GetFloatIn(-1, 1),
+				y: absCoords.y + Gelo.HALFSIZE * rng.data.GetFloatIn(-1, 1),
+				dx: ((i % 2 == 0) ? -8 : 8) * rng.data.GetFloatIn(0.5, 1.5),
+				dy: -10 * rng.data.GetFloatIn(0.5, 1.5),
+				dyIncrement: 0.75 * rng.data.GetFloatIn(0.5, 1.5),
+				maxT: Std.int((30 + i * 6) * rng.data.GetFloatIn(0.5, 1.5)),
 				color: color
 			}));
 		}
@@ -146,7 +146,7 @@ class AutoAttackManager {
 	}
 
 	public function reset() {
-		timer = rng.GetIn(trainingSettings.minAttackTime, trainingSettings.maxAttackTime) * 60;
+		timer = rng.data.GetIn(trainingSettings.minAttackTime, trainingSettings.maxAttackTime) * 60;
 		state = WAITING;
 	}
 

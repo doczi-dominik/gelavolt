@@ -1,12 +1,12 @@
 package game.particles;
 
-import game.copying.CopyFromArray;
 import game.copying.ICopyFrom;
+import game.copying.CopyFromArray;
 import kha.graphics2.Graphics;
 
 class ParticleManager implements ICopyFrom {
-	final backParticles = new CopyFromArray<IParticle>([]);
-	final frontParticles = new CopyFromArray<IParticle>([]);
+	@copy final backParticles = new CopyFromArray<IParticle>([]);
+	@copy final frontParticles = new CopyFromArray<IParticle>([]);
 
 	public function new() {}
 

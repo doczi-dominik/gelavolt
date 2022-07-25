@@ -59,7 +59,7 @@ class QueueEditorPage implements IMenuPage {
 	}
 
 	function selectHorizontal(delta: Int) {
-		final groupCount = queue.groups.length;
+		final groupCount = queue.groups.data.length;
 
 		final d = selectionY * -7 + groupCount;
 		final mod = Std.int(Math.min(d, 7));
@@ -68,7 +68,7 @@ class QueueEditorPage implements IMenuPage {
 	}
 
 	function selectVertical(delta: Int) {
-		selectionY = Std.int(negativeMod(selectionY + delta, Std.int(queue.groups.length / 7) + 1));
+		selectionY = Std.int(negativeMod(selectionY + delta, Std.int(queue.groups.data.length / 7) + 1));
 	}
 
 	public function onResize() {
@@ -89,7 +89,7 @@ class QueueEditorPage implements IMenuPage {
 			selectHorizontal(1);
 		}
 
-		final groupCount = queue.groups.length;
+		final groupCount = queue.groups.data.length;
 		final maxRows = Std.int(groupCount / 7);
 		final currentRow = Std.int(minView / 7);
 
@@ -140,7 +140,7 @@ class QueueEditorPage implements IMenuPage {
 
 		for (i in 0...14) {
 			final index = minView + i;
-			final group = groups[index];
+			final group = groups.data[index];
 
 			if (group == null)
 				break;

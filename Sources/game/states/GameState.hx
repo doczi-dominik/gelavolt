@@ -13,11 +13,11 @@ import kha.graphics4.Graphics as Graphics4;
 @:build(game.Macros.buildOptionsClass(GameState))
 class GameStateOptions {}
 
-class GameState implements ICopyFrom {
-	@inject @copy final particleManager: ParticleManager;
-	@inject @copy final boardManager: IBoardManager;
-	@inject @copy final marginManager: MarginTimeManager;
-	@inject @copy final frameCounter: FrameCounter;
+class GameState {
+	@inject final particleManager: ParticleManager;
+	@inject final boardManager: IBoardManager;
+	@inject final marginManager: MarginTimeManager;
+	@inject final frameCounter: FrameCounter;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
 

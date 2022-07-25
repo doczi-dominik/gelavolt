@@ -19,8 +19,6 @@ class TrainingBoardState extends EndlessBoardState {
 		game.Macros.initFromOpts();
 	}
 
-	override function copyFrom(other: Dynamic) {}
-
 	override function lockGroup() {
 		super.lockGroup();
 

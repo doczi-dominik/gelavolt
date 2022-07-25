@@ -26,7 +26,7 @@ import game.actionbuffers.ActionSnapshot;
 import game.previews.IPreview;
 import game.Queue;
 import game.gelogroups.GeloGroup;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.garbage.IGarbageManager;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
@@ -46,42 +46,42 @@ class StandardBoardState implements IBoardState {
 	@inject final rule: Rule;
 	@inject final prefsSettings: PrefsSettings;
 
-	@inject @copy final rng: Random;
+	@inject final rng: CopyableRNG;
 	@inject final geometries: BoardGeometries;
-	@inject @copy final particleManager: ParticleManager;
+	@inject final particleManager: ParticleManager;
 
-	@inject @copy final geloGroup: GeloGroup;
-	@inject @copy final queue: Queue;
-	@inject @copy final preview: IPreview;
-	@inject @copy final allClearManager: AllClearManager;
-	@inject @copy final scoreManager: ScoreManager;
-	@inject @copy final actionBuffer: IActionBuffer;
-	@inject @copy final chainCounter: ChainCounter;
-	@inject @copy final field: Field;
-	@inject @copy final chainSim: ChainSimulator;
-	@inject @copy final garbageManager: IGarbageManager;
+	@inject final geloGroup: GeloGroup;
+	@inject final queue: Queue;
+	@inject final preview: IPreview;
+	@inject final allClearManager: AllClearManager;
+	@inject final scoreManager: ScoreManager;
+	@inject final actionBuffer: IActionBuffer;
+	@inject final chainCounter: ChainCounter;
+	@inject final field: Field;
+	@inject final chainSim: ChainSimulator;
+	@inject final garbageManager: IGarbageManager;
 
-	var popPauseMaxT: Int;
+	@copy var popPauseMaxT: Int;
 
-	var currentActions: ActionSnapshot;
+	@copy var currentActions: ActionSnapshot;
 
-	var popPauseT: Int;
+	@copy var popPauseT: Int;
 
-	var firstDropFrame: Bool;
+	@copy var firstDropFrame: Bool;
 
-	var borderColor: Color;
-	var beginBorderColor: Color;
-	var targetBorderColor: Color;
-	var borderColorT: Int;
+	@copy var borderColor: Color;
+	@copy var beginBorderColor: Color;
+	@copy var targetBorderColor: Color;
+	@copy var borderColorT: Int;
 
-	var currentBeginStep: Null<BeginSimStep>;
-	var currentDropStep: Null<DropSimStep>;
-	var currentPopStep: Null<PopSimStep>;
-	var currentEndStep: Null<EndSimStep>;
+	@copy var currentBeginStep: Null<BeginSimStep>;
+	@copy var currentDropStep: Null<DropSimStep>;
+	@copy var currentPopStep: Null<PopSimStep>;
+	@copy var currentEndStep: Null<EndSimStep>;
 
-	var canDropGarbage: Bool;
+	@copy var canDropGarbage: Bool;
 
-	var state: InnerState;
+	@copy var state: InnerState;
 
 	public function new(opts: StandardBoardStateOptions) {
 		game.Macros.initFromOpts();
@@ -314,12 +314,12 @@ class StandardBoardState implements IBoardState {
 
 			for (i in 0...8) {
 				particleManager.add(FRONT, GeloPopParticle.create({
-					x: absCoords.x + Gelo.HALFSIZE * rng.GetFloatIn(-1, 1),
-					y: absCoords.y + Gelo.HALFSIZE * rng.GetFloatIn(-1, 1),
-					dx: ((i % 2 == 0) ? -8 : 8) * rng.GetFloatIn(0.5, 1.5),
-					dy: -10 * rng.GetFloatIn(0.5, 1.5),
-					dyIncrement: 0.75 * rng.GetFloatIn(0.5, 1.5),
-					maxT: Std.int((30 + i * 6) * rng.GetFloatIn(0.5, 1.5)),
+					x: absCoords.x + Gelo.HALFSIZE * rng.data.GetFloatIn(-1, 1),
+					y: absCoords.y + Gelo.HALFSIZE * rng.data.GetFloatIn(-1, 1),
+					dx: ((i % 2 == 0) ? -8 : 8) * rng.data.GetFloatIn(0.5, 1.5),
+					dy: -10 * rng.data.GetFloatIn(0.5, 1.5),
+					dyIncrement: 0.75 * rng.data.GetFloatIn(0.5, 1.5),
+					maxT: Std.int((30 + i * 6) * rng.data.GetFloatIn(0.5, 1.5)),
 					color: prefsSettings.primaryColors[c.color]
 				}));
 			}
@@ -405,7 +405,7 @@ class StandardBoardState implements IBoardState {
 			var columnIndex: Int;
 
 			if (rule.randomizeGarbage) {
-				columnIndex = rng.GetUpTo(columnPositions.length - 1);
+				columnIndex = rng.data.GetUpTo(columnPositions.length - 1);
 			} else {
 				columnIndex = 0;
 			}

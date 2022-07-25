@@ -1,7 +1,7 @@
 package utils;
 
 import kha.System;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import kha.graphics2.Graphics;
 import kha.Color;
 
@@ -88,7 +88,7 @@ class Utils {
 	}
 
 	public static function randomString(length: Int) {
-		final rng = new Random(Std.int(System.time * 1000000));
+		final rng = new CopyableRNG(Std.int(System.time * 1000000));
 
 		final numbers = [for (x in 48...58) x];
 		final uppercase = [for (x in 65...91) x];
@@ -99,7 +99,7 @@ class Utils {
 		var result = "";
 
 		for (_ in 0...length) {
-			final i = rng.GetUpTo(ascii.length - 1);
+			final i = rng.data.GetUpTo(ascii.length - 1);
 
 			result += String.fromCharCode(ascii[i]);
 		}

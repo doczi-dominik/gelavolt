@@ -1,10 +1,11 @@
 package game;
 
+import game.copying.ICopyFrom;
 import game.mediators.BorderColorMediator;
 import game.particles.PixelFloatParticle;
 import game.particles.SmallStarParticle;
 import game.geometries.BoardGeometries;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.particles.ParticleManager;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
@@ -16,30 +17,32 @@ import utils.Utils;
 @:build(game.Macros.buildOptionsClass(AllClearManager))
 class AllClearManagerOptions {}
 
-class AllClearManager {
+class AllClearManager implements ICopyFrom {
 	static final SHORT_STR = "AC!";
 
-	@inject final rng: Random;
+	@inject final rng: CopyableRNG;
 	@inject final geometries: BoardGeometries;
 	@inject final particleManager: ParticleManager;
 	@inject final borderColorMediator: BorderColorMediator;
 
-	var targetY: Float;
-	var boardCenterX: Float;
-	var font: Font;
-	var fontSize: Int;
-	var fontHeight: Float;
-	var line1: String;
-	var line2: String;
-	var line1HalfWidth: Float;
-	var line2HalfWidth: Float;
-	var shortStrHalfWidth: Float;
+	final font: Font;
+	final fontSize: Int;
+	final fontHeight: Float;
 
-	var t: Int;
-	var y: Float;
-	var scaleX: Float;
-	var showAnimation: Bool;
-	var acCounter: Int;
+	@copy var targetY: Float;
+	@copy var boardCenterX: Float;
+
+	@copy var line1: String;
+	@copy var line2: String;
+	@copy var line1HalfWidth: Float;
+	@copy var line2HalfWidth: Float;
+	@copy var shortStrHalfWidth: Float;
+
+	@copy var t: Int;
+	@copy var y: Float;
+	@copy var scaleX: Float;
+	@copy var showAnimation: Bool;
+	@copy var acCounter: Int;
 
 	public var sendAllClearBonus(default, null): Bool;
 
@@ -73,7 +76,7 @@ class AllClearManager {
 		sendAllClearBonus = true;
 		borderColorMediator.changeColor(Orange);
 
-		if (rng.GetUpTo(Std.int(Math.max(20 / acCounter, 1))) == 1) {
+		if (rng.data.GetUpTo(Std.int(Math.max(20 / acCounter, 1))) == 1) {
 			setACText("RINTO", "MOMENT");
 		} else {
 			setACText("ALL", "CLEAR");
@@ -105,10 +108,10 @@ class AllClearManager {
 			y: targetY + fontHeight / 2
 		});
 
-		final randomX1 = rng.GetIn(-192, 192);
-		final randomY1 = rng.GetIn(-192, 192);
-		final randomX2 = rng.GetIn(-192, 192);
-		final randomY2 = rng.GetIn(-192, 192);
+		final randomX1 = rng.data.GetIn(-192, 192);
+		final randomY1 = rng.data.GetIn(-192, 192);
+		final randomX2 = rng.data.GetIn(-192, 192);
+		final randomY2 = rng.data.GetIn(-192, 192);
 
 		final absPos1 = absText.add({x: randomX1, y: randomY1});
 		final absPos2 = absText.add({x: randomX2, y: randomY2});
@@ -127,8 +130,8 @@ class AllClearManager {
 	}
 
 	function updatePixelFloatPhase() {
-		final x = BoardGeometries.WIDTH * rng.GetFloatIn(-0.75, 0.75);
-		final y = BoardGeometries.HEIGHT * rng.GetFloatIn(-0.75, 0.75);
+		final x = BoardGeometries.WIDTH * rng.data.GetFloatIn(-0.75, 0.75);
+		final y = BoardGeometries.HEIGHT * rng.data.GetFloatIn(-0.75, 0.75);
 
 		final absPos = geometries.absolutePosition.add(BoardGeometries.CENTER.add({x: x, y: y}));
 
@@ -136,8 +139,8 @@ class AllClearManager {
 			x: absPos.x,
 			y: absPos.y,
 			dx: 0,
-			dy: rng.GetFloatIn(-12, -5),
-			maxT: rng.GetIn(20, 35),
+			dy: rng.data.GetFloatIn(-12, -5),
+			maxT: rng.data.GetIn(20, 35),
 			color: Orange,
 			size: 12
 		}));

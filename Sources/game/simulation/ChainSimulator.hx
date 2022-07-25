@@ -1,5 +1,7 @@
 package game.simulation;
 
+import game.copying.CopyFromArray;
+import game.copying.ICopyFrom;
 import game.gelogroups.GeloGroupData;
 import game.rules.Rule;
 import game.garbage.trays.GarbageTray;
@@ -20,31 +22,31 @@ private class SimOptions {
 @:build(game.Macros.buildOptionsClass(ChainSimulator))
 class ChainSimulatorOptions {}
 
-class ChainSimulator {
+class ChainSimulator implements ICopyFrom {
 	@inject final rule: Rule;
 	@inject final linkBuilder: ILinkInfoBuilder;
 	@inject final garbageDisplay: GarbageTray;
 	@inject final accumulatedDisplay: GarbageTray;
 
-	public var stepIndex: Int;
+	public final steps: CopyFromArray<SimulationStep>;
 
-	public final steps: Array<SimulationStep> = [];
-
-	public var latestChainCounter(default, null): Int;
-	public var latestGarbageCounter(default, null): Int;
-	public var viewIndex(default, null): Int;
+	@copy public var latestChainCounter(default, null): Int;
+	@copy public var latestGarbageCounter(default, null): Int;
+	@copy public var viewIndex(default, null): Int;
+	@copy public var stepIndex: Int;
 
 	public function new(opts: ChainSimulatorOptions) {
 		game.Macros.initFromOpts();
 
-		stepIndex = 0;
-		latestGarbageCounter = 0;
+		steps = new CopyFromArray([]);
 
+		latestGarbageCounter = 0;
 		viewIndex = -1;
+		stepIndex = 0;
 	}
 
 	inline function pushStep(step: SimulationStep) {
-		steps[stepIndex++] = step;
+		steps.data[stepIndex++] = step;
 	}
 
 	function pop(field: Field) {
@@ -189,7 +191,7 @@ class ChainSimulator {
 	}
 
 	function view(delta: Int) {
-		viewIndex = intClamp(0, viewIndex + delta, steps.length - 1);
+		viewIndex = intClamp(0, viewIndex + delta, steps.data.length - 1);
 	}
 
 	public function simulate(opts: SimOptions) {
@@ -200,7 +202,7 @@ class ChainSimulator {
 	}
 
 	public function clear() {
-		steps.resize(0);
+		steps.data.resize(0);
 		stepIndex = 0;
 		viewIndex = -1;
 	}
@@ -230,8 +232,8 @@ class ChainSimulator {
 	public function jumpToBeginStep() {
 		var i = viewIndex;
 
-		while (++i < steps.length) {
-			if (steps[i].type == BEGIN) {
+		while (++i < steps.data.length) {
+			if (steps.data[i].type == BEGIN) {
 				viewIndex = i;
 				editViewed();
 
@@ -244,7 +246,7 @@ class ChainSimulator {
 		var i = viewIndex;
 
 		while (true) {
-			final step = steps[i];
+			final step = steps.data[i];
 
 			if (step.type == BEGIN)
 				return cast(step, BeginSimStep);
@@ -285,7 +287,7 @@ class ChainSimulator {
 	}
 
 	inline public function getViewedStep() {
-		return steps[viewIndex];
+		return steps.data[viewIndex];
 	}
 
 	public inline function viewNext() {
@@ -305,10 +307,10 @@ class ChainSimulator {
 	}
 
 	public function viewLast() {
-		viewIndex = steps.length - 1;
+		viewIndex = steps.data.length - 1;
 	}
 
 	public function reset() {
-		steps.resize(0);
+		steps.data.resize(0);
 	}
 }

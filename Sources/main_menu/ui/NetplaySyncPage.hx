@@ -6,7 +6,7 @@ import game.gamestatebuilders.VersusGameStateBuilder;
 import game.screens.GameScreen;
 import Screen.GlobalScreenSwitcher;
 import kha.System;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.mediators.FrameCounter;
 import game.net.SessionManager;
 import kha.graphics2.Graphics;

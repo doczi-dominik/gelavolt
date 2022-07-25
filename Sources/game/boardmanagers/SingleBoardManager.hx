@@ -11,7 +11,7 @@ class SingleBoardManagerOptions {}
 
 class SingleBoardManager implements IBoardManager {
 	@inject final geometries: BoardGeometries;
-	@inject @copy final board: IBoard;
+	@inject final board: IBoard;
 
 	public function new(opts: SingleBoardManagerOptions) {
 		game.Macros.initFromOpts();

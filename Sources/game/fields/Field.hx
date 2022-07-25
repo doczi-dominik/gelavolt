@@ -1,10 +1,11 @@
 package game.fields;
 
+import game.copying.ICopyFrom;
 import save_data.PrefsSettings;
 import game.rules.Rule;
 import utils.Utils;
 import game.gelos.GarbageGelo;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.gelos.GeloColor;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
@@ -20,7 +21,7 @@ import haxe.ds.ReadOnlyArray;
 @:build(game.Macros.buildOptionsClass(Field))
 class FieldOptions {}
 
-class Field {
+class Field implements ICopyFrom {
 	static final ORIGINAL_GARBAGE_ACCELERATIONS = [0.5625, 0.59375, 0.5, 0.5625, 0.53125, 0.625];
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
 
@@ -138,10 +139,10 @@ class Field {
 		} else {
 			final pool = [for (x in 0...columns) x];
 			final garbageCols = [];
-			final rng = new Random(columns);
+			final rng = new CopyableRNG(columns);
 
 			while (pool.length > 0) {
-				final item = pool[rng.GetUpTo(pool.length - 1)];
+				final item = pool[rng.data.GetUpTo(pool.length - 1)];
 
 				garbageCols.push(item);
 				pool.remove(item);

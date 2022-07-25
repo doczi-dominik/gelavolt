@@ -1,5 +1,6 @@
 package game;
 
+import game.copying.ICopyFrom;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 import kha.Assets;
@@ -14,7 +15,7 @@ private enum abstract InnerState(Int) {
 	final ANIMATING;
 }
 
-class ChainCounter {
+class ChainCounter implements ICopyFrom {
 	static final NUMBER_FONTSIZE = 96;
 
 	static final TEXT = "-CHAIN!";
@@ -22,24 +23,24 @@ class ChainCounter {
 
 	static final POWERED_COLOR = Color.fromValue(0xFFFF1744);
 
-	var numberFont: Font;
-	var numberHeight: Float;
+	final numberFont: Font;
+	final numberHeight: Float;
 
-	var textFont: Font;
-	var textWidth: Float;
+	final textFont: Font;
+	final textWidth: Float;
 
-	var x: Float;
-	var y: Float;
+	@copy var x: Float;
+	@copy var y: Float;
 
-	var number: String;
-	var numberColor: Color;
+	@copy var number: String;
+	@copy var numberColor: Color;
 
-	var numberWidth: Float;
-	var totalHalfWidth: Float;
+	@copy var numberWidth: Float;
+	@copy var totalHalfWidth: Float;
 
-	var t: Int;
+	@copy var t: Int;
 
-	var state: InnerState;
+	@copy var state: InnerState;
 
 	public function new() {
 		numberFont = Assets.fonts.superstar_memesbruh03;

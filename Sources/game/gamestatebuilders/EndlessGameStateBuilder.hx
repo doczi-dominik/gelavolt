@@ -1,6 +1,5 @@
 package game.gamestatebuilders;
 
-import game.copying.CopyableRandom.CopyableRNG;
 import game.actionbuffers.ReplayData;
 import game.rules.Rule;
 import game.mediators.ControlHintContainer;
@@ -33,7 +32,7 @@ import game.mediators.PauseMediator;
 import game.rules.MarginTimeManager;
 import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.states.GameState;
 
 @:structInit
@@ -48,36 +47,45 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	@inject final inputDevice: IInputDevice;
 	@inject final replayData: Null<ReplayData>;
 
-	var rng: CopyableRNG;
-	var randomizer: Randomizer;
+	@copy var rng: CopyableRNG;
+	@copy var randomizer: Randomizer;
 
-	var particleManager: ParticleManager;
-	var marginManager: MarginTimeManager;
-	var frameCounter: FrameCounter;
+	@copy var particleManager: ParticleManager;
+	@copy var marginManager: MarginTimeManager;
+	@copy var frameCounter: FrameCounter;
 
 	var borderColorMediator: BorderColorMediator;
 
-	var scoreManager: ScoreManager;
-	var chainSim: ChainSimulator;
-	var chainCounter: ChainCounter;
-	var field: Field;
-	var queue: Queue;
-	var actionBuffer: IActionBuffer;
-	var geloGroup: GeloGroup;
-	var allClearManager: AllClearManager;
+	@copy var scoreManager: ScoreManager;
+	@copy var chainSim: ChainSimulator;
+	@copy var chainCounter: ChainCounter;
+	@copy var field: Field;
+	@copy var queue: Queue;
+	@copy var actionBuffer: IActionBuffer;
+	@copy var geloGroup: GeloGroup;
+	@copy var allClearManager: AllClearManager;
 
-	var boardState: EndlessBoardState;
+	@copy var boardState: EndlessBoardState;
 
-	var board: SingleStateBoard;
+	@copy var board: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlDisplayContainer(null, default): ControlHintContainer;
+	@copy public var controlDisplayContainer(null, default): ControlHintContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
 
 	public function new(opts: EndlessGameStateBuilderOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function copy() {
+		return new EndlessGameStateBuilder({
+			inputDevice: inputDevice,
+			rule: rule,
+			rngSeed: rngSeed,
+			replayData: replayData
+		});
 	}
 
 	inline function buildRNG() {

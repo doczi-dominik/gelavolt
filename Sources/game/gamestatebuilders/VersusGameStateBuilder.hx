@@ -29,7 +29,7 @@ import game.mediators.PauseMediator;
 import game.rules.MarginTimeManager;
 import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.mediators.FrameCounter;
 
 @:structInit
@@ -45,7 +45,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	@inject final leftActionBuffer: IActionBuffer;
 	@inject final rightActionBuffer: IActionBuffer;
 
-	var rng: Random;
+	var rng: CopyableRNG;
 	var randomizer: Randomizer;
 
 	var particleManager: ParticleManager;
@@ -92,8 +92,18 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		Macros.initFromOpts();
 	}
 
+	public function copy() {
+		return new VersusGameStateBuilder({
+			rngSeed: rngSeed,
+			rule: rule,
+			frameCounter: new FrameCounter().copyFrom(frameCounter),
+			leftActionBuffer: null,
+			rightActionBuffer: null
+		});
+	}
+
 	inline function buildRNG() {
-		rng = new Random(rngSeed);
+		rng = new CopyableRNG(rngSeed);
 	}
 
 	inline function buildRandomizer() {

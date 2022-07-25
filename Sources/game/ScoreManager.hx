@@ -1,5 +1,6 @@
 package game;
 
+import game.copying.ICopyFrom;
 import kha.Color;
 import game.rules.Rule;
 import game.geometries.BoardGeometries;
@@ -18,39 +19,39 @@ using StringTools;
 @:build(game.Macros.buildOptionsClass(ScoreManager))
 class ScoreManagerOptions {}
 
-class ScoreManager {
+class ScoreManager implements ICopyFrom {
 	@inject final rule: Rule;
 	@inject final orientation: BoardOrientation;
 
-	var scoreFont: Font;
-	var scoreFontSize: Int;
-	var scoreTextWidth: Float;
-	var scoreTextHeight: Float;
+	final scoreFont: Font;
+	final scoreFontSize: Int;
+	final scoreTextWidth: Float;
+	final scoreTextHeight: Float;
 
-	var formulaFontSize: Int;
-	var formulaTextHeight: Float;
-	var formulaTextY: Float;
+	final formulaFontSize: Int;
+	final formulaTextHeight: Float;
+	final formulaTextY: Float;
 
-	var actionFont: Font;
-	var actionFontSize: Int;
-	var actionTextHeight: Float;
-	var actionTextColor: Color;
+	final actionFont: Font;
+	final actionFontSize: Int;
+	final actionTextHeight: Float;
+	@copy var actionTextColor: Color;
 
 	var scoreScaleY: Float;
 
-	var formulaText: String;
-	var formulaTextWidth: Float;
-	var lastFormulaT: Int;
-	var formulaT: Int;
-	var showChainFormula: Bool;
+	@copy var formulaText: String;
+	@copy var formulaTextWidth: Float;
+	@copy var lastFormulaT: Int;
+	@copy var formulaT: Int;
+	@copy var showChainFormula: Bool;
 
-	var actionText: String;
-	var actionTextT: Int;
-	var actionTextCharacters: Int;
-	var showActionText: Bool;
+	@copy var actionText: String;
+	@copy var actionTextT: Int;
+	@copy var actionTextCharacters: Int;
+	@copy var showActionText: Bool;
 
-	public var score(default, null): Float;
-	public var dropBonus(default, null): Float;
+	@copy public var score(default, null): Float;
+	@copy public var dropBonus(default, null): Float;
 
 	public function new(opts: ScoreManagerOptions) {
 		game.Macros.initFromOpts();

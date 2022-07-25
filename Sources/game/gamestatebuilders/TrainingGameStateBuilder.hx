@@ -25,7 +25,7 @@ import game.simulation.NullLinkInfoBuilder;
 import game.actionbuffers.LocalActionBuffer;
 import game.boardstates.TrainingBoardState;
 import game.boards.TrainingBoard;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.randomizers.Randomizer;
 import game.Queue;
 import game.actionbuffers.NullActionBuffer;
@@ -56,50 +56,57 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@inject final rngSeed: Int;
 	@inject final rule: Rule;
 
-	var rng: Random;
-	var randomizer: Randomizer;
+	@copy var rng: CopyableRNG;
+	@copy var randomizer: Randomizer;
 
-	var particleManager: ParticleManager;
-	var marginManager: MarginTimeManager;
-	var frameCounter: FrameCounter;
+	@copy var particleManager: ParticleManager;
+	@copy var marginManager: MarginTimeManager;
+	@copy var frameCounter: FrameCounter;
 
-	var playerBorderColorMediator: BorderColorMediator;
-	var playerTargetMediator: GarbageTargetMediator;
-	var infoTargetMediator: GarbageTargetMediator;
+	@copy var playerBorderColorMediator: BorderColorMediator;
+	@copy var playerTargetMediator: GarbageTargetMediator;
+	@copy var infoTargetMediator: GarbageTargetMediator;
 
-	var playerGarbageManager: GarbageManager;
-	var playerScoreManager: ScoreManager;
-	var playerChainSim: ChainSimulator;
-	var playerChainCounter: ChainCounter;
-	var playerField: Field;
-	var playerQueue: Queue;
-	var playerInputDevice: IInputDevice;
-	var playerActionBuffer: LocalActionBuffer;
-	var playerGeloGroup: GeloGroup;
-	var playerAllClearManager: AllClearManager;
+	@copy var playerGarbageManager: GarbageManager;
+	@copy var playerScoreManager: ScoreManager;
+	@copy var playerChainSim: ChainSimulator;
+	@copy var playerChainCounter: ChainCounter;
+	@copy var playerField: Field;
+	@copy var playerQueue: Queue;
+	@copy var playerInputDevice: IInputDevice;
+	@copy var playerActionBuffer: LocalActionBuffer;
+	@copy var playerGeloGroup: GeloGroup;
+	@copy var playerAllClearManager: AllClearManager;
 
-	var infoGarbageManager: GarbageManager;
-	var autoAttackManager: AutoAttackManager;
+	@copy var infoGarbageManager: GarbageManager;
+	@copy var autoAttackManager: AutoAttackManager;
 
-	var infoState: TrainingInfoBoardState;
-	var playState: TrainingBoardState;
-	var editState: EditingBoardState;
+	@copy var infoState: TrainingInfoBoardState;
+	@copy var playState: TrainingBoardState;
+	@copy var editState: EditingBoardState;
 
-	var playerBoard: TrainingBoard;
-	var infoBoard: SingleStateBoard;
+	@copy var playerBoard: TrainingBoard;
+	@copy var infoBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlDisplayContainer(null, default): ControlHintContainer;
+	@copy public var controlDisplayContainer(null, default): ControlHintContainer;
 
-	public var gameState(default, null): GameState;
+	@copy public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
 
 	public function new(opts: TrainingGameStateBuilderOptions) {
 		game.Macros.initFromOpts();
 	}
 
+	public function copy() {
+		return new TrainingGameStateBuilder({
+			rngSeed: rngSeed,
+			rule: rule
+		});
+	}
+
 	inline function buildRNG() {
-		rng = new Random(rngSeed);
+		rng = new CopyableRNG(rngSeed);
 	}
 
 	inline function buildRandomizer() {

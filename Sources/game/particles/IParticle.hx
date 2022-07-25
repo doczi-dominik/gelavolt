@@ -1,9 +1,8 @@
 package game.particles;
 
-import game.copying.ICopy;
 import kha.graphics2.Graphics;
 
-interface IParticle extends ICopy {
+interface IParticle /* extends ICopyFrom */ {
 	public var isAnimationFinished(default, null): Bool;
 
 	public function update(): Void;

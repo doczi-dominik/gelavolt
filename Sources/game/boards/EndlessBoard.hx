@@ -7,7 +7,7 @@ import game.boardstates.EndlessBoardState;
 class EndlessBoardOptions {}
 
 class EndlessBoard extends SingleStateBoard {
-	@inject @copy final endlessState: EndlessBoardState;
+	@inject final endlessState: EndlessBoardState;
 
 	public function new(opts: EndlessBoardOptions) {
 		super({

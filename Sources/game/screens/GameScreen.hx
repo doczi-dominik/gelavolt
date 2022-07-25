@@ -9,7 +9,7 @@ import input.IInputDevice;
 import game.ui.PauseMenu;
 import game.gamestatebuilders.IGameStateBuilder;
 import kha.System;
-import kha.math.Random;
+import game.copying.CopyableRNG;
 import game.backgrounds.NestBackground;
 import game.states.GameState;
 import kha.graphics2.Graphics;
@@ -28,6 +28,8 @@ class GameScreen implements IScreen {
 	final background: NestBackground;
 	final gameState: GameState;
 	final lastConfirmedGameState: GameState;
+	final gameStateBuilder: IGameStateBuilder;
+	final lastConfirmedGameStateBuilder: IGameStateBuilder;
 	final pauseMenu: PauseMenu;
 	final controlDisplayContainer: ControlHintContainer;
 
@@ -39,8 +41,9 @@ class GameScreen implements IScreen {
 	public function new(gameStateBuilder: IGameStateBuilder) {
 		font = Assets.fonts.Pixellari;
 
-		background = new NestBackground(new Random(Std.int(System.time * 1000000)));
+		background = new NestBackground(new CopyableRNG(Std.int(System.time * 1000000)));
 		controlDisplayContainer = new ControlHintContainer();
+		this.gameStateBuilder = gameStateBuilder;
 
 		gameStateBuilder.pauseMediator = {
 			pause: pause,
@@ -53,7 +56,16 @@ class GameScreen implements IScreen {
 		gameState = gameStateBuilder.gameState;
 		pauseMenu = gameStateBuilder.pauseMenu;
 
-		gameStateBuilder.build();
+		lastConfirmedGameStateBuilder = gameStateBuilder.copy();
+
+		lastConfirmedGameStateBuilder.pauseMediator = {
+			pause: (_) -> {},
+			resume: () -> {},
+		}
+
+		lastConfirmedGameStateBuilder.controlDisplayContainer = new ControlHintContainer();
+
+		lastConfirmedGameStateBuilder.build();
 		lastConfirmedGameState = gameStateBuilder.gameState;
 
 		ScaleManager.addOnResizeCallback(onResize);
@@ -70,7 +82,9 @@ class GameScreen implements IScreen {
 
 	function rollback(resimulate: Int) {}
 
-	function confirmFrame() {}
+	function confirmFrame() {
+		lastConfirmedGameStateBuilder.copyFrom(gameStateBuilder);
+	}
 
 	function onResize() {
 		final scr = ScaleManager.screen;
