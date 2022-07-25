@@ -174,7 +174,7 @@ class Menu {
 		g.color = White;
 
 		g.fontSize = controlsFontSize;
-		inputDevice.renderControls(g, renderX, width, padding, currentPage.controlDisplays);
+		inputDevice.renderControls(g, renderX, width, padding, currentPage.controlHints);
 
 		g.disableScissor();
 	}

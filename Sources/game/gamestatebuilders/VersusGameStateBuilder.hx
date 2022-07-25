@@ -83,7 +83,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	var rightBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlDisplayContainer(null, default): ControlHintContainer;
+	public var controlHintContainer(null, default): ControlHintContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
@@ -129,9 +129,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildLeftTargetMediator() {
-		leftTargetMediator = {
-			geometries: BoardGeometries.RIGHT
-		};
+		leftTargetMediator = new GarbageTargetMediator(BoardGeometries.RIGHT);
 	}
 
 	inline function buildRightBorderColorMediator() {
@@ -139,9 +137,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildRightTargetMediator() {
-		rightTargetMediator = {
-			geometries: BoardGeometries.LEFT
-		};
+		leftTargetMediator = new GarbageTargetMediator(BoardGeometries.LEFT);
 	}
 
 	inline function buildLeftGarbageManager() {
@@ -386,10 +382,10 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function wireMediators() {
-		leftBorderColorMediator.boardState = leftState;
+		leftBorderColorMediator.changeColor = leftState.changeBorderColor;
 		leftTargetMediator.garbageManager = rightGarbageManager;
 
-		rightBorderColorMediator.boardState = rightState;
+		rightBorderColorMediator.changeColor = rightState.changeBorderColor;
 		rightTargetMediator.garbageManager = leftGarbageManager;
 	}
 }

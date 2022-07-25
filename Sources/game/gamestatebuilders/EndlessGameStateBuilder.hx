@@ -70,7 +70,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	@copy var board: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	@copy public var controlDisplayContainer(null, default): ControlHintContainer;
+	@copy public var controlHintContainer(null, default): ControlHintContainer;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
@@ -115,8 +115,8 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function initControlHintContainer() {
-		controlDisplayContainer.isVisible = Profile.primary.endlessSettings.showControlHints;
-		controlDisplayContainer.value = [{actions: [QUICK_RESTART], description: "Quick Restart"}];
+		controlHintContainer.isVisible = Profile.primary.endlessSettings.showControlHints;
+		controlHintContainer.value.data.push({actions: [QUICK_RESTART], description: "Quick Restart"});
 	}
 
 	inline function buildBorderColorMediator() {
@@ -242,7 +242,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 				pauseMediator: pauseMediator,
 				prefsSettings: Profile.primary.prefs,
 				endlessSettings: Profile.primary.endlessSettings,
-				controlDisplayContainer: controlDisplayContainer,
+				controlHintContainer: controlHintContainer,
 				actionBuffer: actionBuffer,
 			});
 
@@ -269,6 +269,6 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function wireMediators() {
-		borderColorMediator.boardState = boardState;
+		borderColorMediator.changeColor = boardState.changeBorderColor;
 	}
 }

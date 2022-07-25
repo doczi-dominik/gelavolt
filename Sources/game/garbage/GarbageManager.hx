@@ -30,12 +30,13 @@ class GarbageManager implements IGarbageManager {
 	@inject final tray: GarbageTray;
 	@inject final target: GarbageTargetMediator;
 
-	var currentGarbage: Int;
-	var confirmedGarbage: Int;
-	var graceT: Int;
+	@copy var currentGarbage: Int;
+	@copy var confirmedGarbage: Int;
+	@copy var graceT: Int;
 
-	public var canReceiveGarbage: Bool;
 	public var droppableGarbage(get, never): Int;
+
+	@copy public var canReceiveGarbage: Bool;
 
 	public function new(opts: GarbageManagerOptions) {
 		game.Macros.initFromOpts();
@@ -55,8 +56,6 @@ class GarbageManager implements IGarbageManager {
 
 		return Std.int(Math.min(confirmedGarbage, rule.garbageDropLimit));
 	}
-
-	final function updateNothing() {}
 
 	function reduceGarbage(amount: Int) {
 		currentGarbage = Std.int(Math.max(0, currentGarbage - amount));

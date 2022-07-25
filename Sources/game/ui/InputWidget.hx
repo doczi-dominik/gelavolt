@@ -23,7 +23,7 @@ class InputWidget implements IListWidget {
 	var isUnbindable: Bool;
 
 	public var description(default, null): Array<String>;
-	public var controlDisplays: Array<ControlHint> = [
+	public var controlHints: Array<ControlHint> = [
 		{actions: [CONFIRM], description: "Rebind"},
 		{actions: [MENU_RIGHT], description: "Default (HOLD)"},
 	];
@@ -38,7 +38,7 @@ class InputWidget implements IListWidget {
 		isUnbindable = data.isUnbindable;
 
 		if (isUnbindable)
-			controlDisplays.push({actions: [MENU_LEFT], description: "Unbind (HOLD)"});
+			controlHints.push({actions: [MENU_LEFT], description: "Unbind (HOLD)"});
 
 		description = data.description;
 	}

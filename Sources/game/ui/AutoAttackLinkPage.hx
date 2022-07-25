@@ -77,7 +77,7 @@ class AutoAttackLinkPage extends ListMenuPage {
 					}),
 				];
 
-				if (data == autoAttackManager.linkData[0]) {
+				if (data == autoAttackManager.linkData.data[0]) {
 					widgets.push(new YesNoWidget({
 						title: "Send All Clear Bonus",
 						description: ["Whether To Send All Clear Bonus On This Link"],

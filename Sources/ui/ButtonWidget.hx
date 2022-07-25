@@ -21,7 +21,7 @@ class ButtonWidget implements IListWidget {
 	var fontSize: Int;
 	var menu: Menu;
 
-	public var controlDisplays(default, null): Array<ControlHint>;
+	public var controlHints(default, null): Array<ControlHint>;
 	public var height(default, null): Float;
 
 	public function new(opts: ButtonWidgetOptions) {
@@ -29,7 +29,7 @@ class ButtonWidget implements IListWidget {
 
 		font = Assets.fonts.Pixellari;
 
-		controlDisplays = [{actions: [CONFIRM], description: "Confirm"}];
+		controlHints = [{actions: [CONFIRM], description: "Confirm"}];
 	}
 
 	public function onShow(menu: Menu) {

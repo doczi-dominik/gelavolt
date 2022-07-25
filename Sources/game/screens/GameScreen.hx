@@ -31,7 +31,7 @@ class GameScreen implements IScreen {
 	final gameStateBuilder: IGameStateBuilder;
 	final lastConfirmedGameStateBuilder: IGameStateBuilder;
 	final pauseMenu: PauseMenu;
-	final controlDisplayContainer: ControlHintContainer;
+	final controlHintContainer: ControlHintContainer;
 
 	var fontSize: Int;
 	var transform: FastMatrix3;
@@ -42,7 +42,7 @@ class GameScreen implements IScreen {
 		font = Assets.fonts.Pixellari;
 
 		background = new NestBackground(new CopyableRNG(Std.int(System.time * 1000000)));
-		controlDisplayContainer = new ControlHintContainer();
+		controlHintContainer = new ControlHintContainer();
 		this.gameStateBuilder = gameStateBuilder;
 
 		gameStateBuilder.pauseMediator = {
@@ -50,7 +50,7 @@ class GameScreen implements IScreen {
 			resume: resume
 		};
 
-		gameStateBuilder.controlDisplayContainer = controlDisplayContainer;
+		gameStateBuilder.controlHintContainer = controlHintContainer;
 
 		gameStateBuilder.build();
 		gameState = gameStateBuilder.gameState;
@@ -63,7 +63,7 @@ class GameScreen implements IScreen {
 			resume: () -> {},
 		}
 
-		lastConfirmedGameStateBuilder.controlDisplayContainer = new ControlHintContainer();
+		lastConfirmedGameStateBuilder.controlHintContainer = new ControlHintContainer();
 
 		lastConfirmedGameStateBuilder.build();
 		lastConfirmedGameState = gameStateBuilder.gameState;
@@ -113,10 +113,10 @@ class GameScreen implements IScreen {
 		gameState.render(g, g4, alpha);
 		g.popTransformation();
 
-		if (controlDisplayContainer.isVisible) {
+		if (controlHintContainer.isVisible) {
 			g.font = font;
 			g.fontSize = fontSize;
-			AnyInputDevice.instance.renderControls(g, 0, ScaleManager.screen.width, 0, controlDisplayContainer.value);
+			AnyInputDevice.instance.renderControls(g, 0, ScaleManager.screen.width, 0, controlHintContainer.value.data);
 		}
 
 		if (isPaused) {

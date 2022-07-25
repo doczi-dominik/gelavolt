@@ -1,13 +1,16 @@
 package game.mediators;
 
+import game.copying.ICopyFrom;
+import game.copying.ConstantCopyableArray;
 import ui.ControlHint;
 
-class ControlHintContainer {
-	public var isVisible: Bool;
-	public var value: Array<ControlHint>;
+class ControlHintContainer implements ICopyFrom {
+	@copy public final value: ConstantCopyableArray<ControlHint>;
+
+	@copy public var isVisible: Bool;
 
 	public function new() {
 		isVisible = false;
-		value = [];
+		value = new ConstantCopyableArray([]);
 	}
 }

@@ -27,7 +27,7 @@ class OptionListWidget implements IListWidget {
 	var index: Int;
 	var value: String;
 
-	public var controlDisplays(default, null): Array<ControlHint> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
+	public var controlHints(default, null): Array<ControlHint> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
 	public var height(default, null): Float;
 
 	public function new(opts: OptionListWidgetOptions) {

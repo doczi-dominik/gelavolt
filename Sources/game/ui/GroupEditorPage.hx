@@ -24,7 +24,7 @@ class GroupEditorPage implements IMenuPage {
 
 	public final header = "Edit Gelo Group";
 
-	public final controlDisplays: Array<ControlHint> = [
+	public final controlHints: Array<ControlHint> = [
 		{actions: [MENU_LEFT, MENU_UP, MENU_DOWN, MENU_RIGHT], description: "Select"},
 		{actions: [BACK], description: "Back"},
 		{actions: [CONFIRM], description: "Cycle Colors"}

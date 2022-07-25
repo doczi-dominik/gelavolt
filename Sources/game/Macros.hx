@@ -123,7 +123,7 @@ class Macros {
 			Context.fatalError("Not called in a class", pos);
 
 		final fields = Context.getBuildFields();
-		final methods = fields.filter((f) -> ~/(?:build.+)|wireMediators/.match(f.name));
+		final methods = fields.filter((f) -> ~/(?:build.+)|(?:wireMediators)|init.+/.match(f.name));
 
 		final exprs = new Array<Expr>();
 

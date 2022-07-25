@@ -42,15 +42,15 @@ class EditingBoardState implements IBoardState {
 
 	final markers: Array<IFieldMarker>;
 
-	var cursorX: Int;
-	var cursorY: Int;
+	@copy var cursorX: Int;
+	@copy var cursorY: Int;
 
-	var cursorDisplayX: Float;
-	var cursorDisplayY: Float;
+	@copy var cursorDisplayX: Float;
+	@copy var cursorDisplayY: Float;
 
-	var selectedIndex: Int;
+	@copy var selectedIndex: Int;
 
-	var mode: Mode;
+	@copy var mode: Mode;
 
 	@inject public final field: Field;
 

@@ -26,7 +26,7 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 
 	public final header: String;
 
-	public var controlDisplays(default, null): Array<ControlHint>;
+	public var controlHints(default, null): Array<ControlHint>;
 
 	public function new(opts: AnyGamepadDetectWrapperOptions) {
 		game.Macros.initFromOpts();
@@ -35,7 +35,7 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 
 		header = "Select Gamepad";
 
-		controlDisplays = [{actions: [BACK], description: "Back"}];
+		controlHints = [{actions: [BACK], description: "Back"}];
 	}
 
 	inline function popPage() {

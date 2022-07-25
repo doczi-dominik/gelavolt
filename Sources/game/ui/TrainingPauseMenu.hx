@@ -45,7 +45,7 @@ class TrainingPauseMenu extends PauseMenu {
 	@inject final trainingSettings: TrainingSettings;
 	@inject final playerGarbageManager: GarbageManager;
 	@inject final infoGarbageManager: GarbageManager;
-	@inject final controlDisplayContainer: ControlHintContainer;
+	@inject final controlHintContainer: ControlHintContainer;
 	@inject final autoAttackManager: AutoAttackManager;
 
 	public function new(opts: TrainingPauseMenuOptions) {
@@ -69,7 +69,7 @@ class TrainingPauseMenu extends PauseMenu {
 							defaultValue: trainingSettings.showControlHints,
 							onChange: (value) -> {
 								trainingSettings.showControlHints = value;
-								controlDisplayContainer.isVisible = value;
+								controlHintContainer.isVisible = value;
 
 								SaveManager.saveProfiles();
 							}

@@ -1,9 +1,10 @@
 package game.garbage;
 
+import game.copying.ICopyFrom;
 import game.gelos.GeloPoint;
 import kha.graphics2.Graphics;
 
-interface IGarbageManager {
+interface IGarbageManager extends ICopyFrom {
 	public var canReceiveGarbage: Bool;
 	public var droppableGarbage(get, never): Int;
 

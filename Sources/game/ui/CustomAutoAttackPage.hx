@@ -19,7 +19,7 @@ class CustomAutoAttackPage extends ListMenuPage {
 		super({
 			header: "Configure",
 			widgetBuilder: (_) -> {
-				final data = autoAttackManager.linkData;
+				final data = autoAttackManager.linkData.data;
 
 				final widgets: Array<IListWidget> = [
 					new ButtonWidget({

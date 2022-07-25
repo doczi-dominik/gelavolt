@@ -13,11 +13,7 @@ import game.boardstates.StandardBoardState;
  * the pause menu.
  */
 class BorderColorMediator {
-	public var boardState(null, default): StandardBoardState;
+	public var changeColor: Color->Void;
 
 	public function new() {}
-
-	public inline function changeColor(target: Color) {
-		boardState.changeBorderColor(target);
-	}
 }

@@ -37,7 +37,7 @@ class TrainingBoard implements IBoard {
 	@inject final inputDevice: IInputDevice;
 	@inject final playActionBuffer: IActionBuffer;
 	@inject final infoState: TrainingInfoBoardState;
-	@inject final controlDisplayContainer: ControlHintContainer;
+	@inject final controlHintContainer: ControlHintContainer;
 
 	@inject final playState: TrainingBoardState;
 	@inject final editState: EditingBoardState;
@@ -50,12 +50,22 @@ class TrainingBoard implements IBoard {
 		changeToGame();
 	}
 
+	function setControlHints(hints: Array<ControlHint>) {
+		final d = controlHintContainer.value.data;
+
+		d.resize(0);
+
+		for (h in hints) {
+			d.push(h);
+		}
+	}
+
 	function changeToEdit() {
 		editState.loadStep();
 
 		infoState.showChainSteps();
 
-		controlDisplayContainer.value = EDIT_CONTROL_HINTS;
+		setControlHints(EDIT_CONTROL_HINTS);
 
 		activeState = editState;
 	}
@@ -65,7 +75,7 @@ class TrainingBoard implements IBoard {
 
 		infoState.hideChainSteps();
 
-		controlDisplayContainer.value = GAME_CONTROL_HINTS;
+		setControlHints(GAME_CONTROL_HINTS);
 
 		activeState = playState;
 	}

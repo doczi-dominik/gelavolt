@@ -89,9 +89,9 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@copy var infoBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	@copy public var controlDisplayContainer(null, default): ControlHintContainer;
+	@copy public var controlHintContainer(null, default): ControlHintContainer;
 
-	@copy public var gameState(default, null): GameState;
+	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
 
 	public function new(opts: TrainingGameStateBuilderOptions) {
@@ -132,7 +132,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function initControlHintContainer() {
-		controlDisplayContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
+		controlHintContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
 	}
 
 	inline function buildPlayerBorderColorMediator() {
@@ -140,15 +140,11 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildPlayerTargetMediator() {
-		playerTargetMediator = {
-			geometries: BoardGeometries.INFO
-		};
+		playerTargetMediator = new GarbageTargetMediator(BoardGeometries.INFO);
 	}
 
 	inline function buildInfoTargetMediator() {
-		infoTargetMediator = {
-			geometries: BoardGeometries.LEFT
-		};
+		infoTargetMediator = new GarbageTargetMediator(BoardGeometries.LEFT);
 	}
 
 	inline function buildPlayerGarbageManager() {
@@ -337,7 +333,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			pauseMediator: pauseMediator,
 			inputDevice: playerInputDevice,
 			playActionBuffer: playerActionBuffer,
-			controlDisplayContainer: controlDisplayContainer,
+			controlHintContainer: controlHintContainer,
 			playState: playState,
 			editState: editState,
 			infoState: infoState,
@@ -368,7 +364,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			trainingSettings: Profile.primary.trainingSettings,
 			playerGarbageManager: playerGarbageManager,
 			infoGarbageManager: infoGarbageManager,
-			controlDisplayContainer: controlDisplayContainer,
+			controlHintContainer: controlHintContainer,
 			autoAttackManager: autoAttackManager
 		});
 	}
@@ -392,7 +388,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function wireMediators() {
-		playerBorderColorMediator.boardState = playState;
+		playerBorderColorMediator.changeColor = playState.changeBorderColor;
 		playerTargetMediator.garbageManager = infoGarbageManager;
 		infoTargetMediator.garbageManager = playerGarbageManager;
 	}

@@ -34,14 +34,14 @@ class NetplaySyncPage implements IMenuPage {
 
 	public final header: String;
 
-	public var controlDisplays(default, null): Array<ControlHint>;
+	public var controlHints(default, null): Array<ControlHint>;
 
 	public function new() {
 		font = Assets.fonts.Pixellari;
 
 		header = "Sync Test";
 
-		controlDisplays = [{actions: [BACK], description: "Back"}];
+		controlHints = [{actions: [BACK], description: "Back"}];
 	}
 
 	public function onResize() {

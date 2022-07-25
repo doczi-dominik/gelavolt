@@ -36,7 +36,7 @@ class ListMenuPage implements IMenuPage {
 	var widgetIndex: Int;
 	var minIndex: Int;
 
-	public var controlDisplays(default, null): Array<ControlHint>;
+	public var controlHints(default, null): Array<ControlHint>;
 
 	public function new(opts: ListMenuPageOptions) {
 		game.Macros.initFromOpts();
@@ -49,7 +49,7 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	inline function setControlHints() {
-		controlDisplays = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlDisplays);
+		controlHints = DEFAULT_CONTROL_DISPLAYS.concat(widgets[widgetIndex].controlHints);
 	}
 
 	function onSelect() {

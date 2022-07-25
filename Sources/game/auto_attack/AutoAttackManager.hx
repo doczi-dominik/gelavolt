@@ -1,5 +1,7 @@
 package game.auto_attack;
 
+import game.copying.ConstantCopyableArray;
+import game.copying.ICopyFrom;
 import kha.graphics2.Graphics;
 import game.gelos.Gelo;
 import game.particles.GeloPopParticle;
@@ -25,7 +27,7 @@ private enum abstract InnerState(Int) {
 @:build(game.Macros.buildOptionsClass(AutoAttackManager))
 class AutoAttackManagerOptions {}
 
-class AutoAttackManager {
+class AutoAttackManager implements ICopyFrom {
 	static inline final EFFECT_Y = 800;
 
 	@inject final rule: Rule;
@@ -38,33 +40,33 @@ class AutoAttackManager {
 	@inject final chainCounter: ChainCounter;
 	@inject final particleManager: ParticleManager;
 
-	final links: Array<LinkInfo>;
+	final links: ConstantCopyableArray<LinkInfo>;
 
-	var accumGarbage: Int;
-	var linkIndex: Int;
+	@copy var accumGarbage: Int;
+	@copy var linkIndex: Int;
 
-	public final linkData: Array<AutoAttackLinkData>;
+	@copy public final linkData: ConstantCopyableArray<AutoAttackLinkData>;
 
-	public var timer(default, null): Int;
-	public var chain(default, null): Int;
-	public var state(default, null): InnerState;
+	@copy public var timer(default, null): Int;
+	@copy public var chain(default, null): Int;
+	@copy public var state(default, null): InnerState;
 
-	public var isPaused: Bool;
-	public var type: AutoAttackType;
+	@copy public var isPaused: Bool;
+	@copy public var type: AutoAttackType;
 
 	public function new(opts: AutoAttackManagerOptions) {
 		game.Macros.initFromOpts();
 
-		links = [];
+		links = new ConstantCopyableArray([]);
 
-		linkData = [];
+		linkData = new ConstantCopyableArray([]);
 
 		isPaused = true;
 		type = RANDOM;
 	}
 
 	function constructRandomLinks() {
-		links.resize(0);
+		links.data.resize(0);
 
 		accumGarbage = 0;
 		chain = 0;
@@ -92,7 +94,7 @@ class AutoAttackManager {
 			remainder = link.garbageRemainder;
 			accumGarbage = link.accumulatedGarbage;
 
-			links.push(link);
+			links.data.push(link);
 		}
 	}
 
@@ -104,14 +106,14 @@ class AutoAttackManager {
 		if (type == RANDOM)
 			constructRandomLinks();
 
-		if (links.length > 0)
+		if (links.data.length > 0)
 			state = SENDING;
 		else
 			reset();
 	}
 
 	function onSendingEnd() {
-		final link = links[linkIndex];
+		final link = links.data[linkIndex];
 
 		linkIndex++;
 
@@ -136,7 +138,7 @@ class AutoAttackManager {
 			}));
 		}
 
-		if (linkIndex == links.length) {
+		if (linkIndex == links.data.length) {
 			garbageManager.confirmGarbage(accumGarbage);
 
 			reset();
@@ -151,14 +153,14 @@ class AutoAttackManager {
 	}
 
 	public function constructLinks() {
-		links.resize(0);
+		links.data.resize(0);
 
 		accumGarbage = 0;
 		chain = 0;
 
 		var remainder = 0.0;
 
-		for (d in linkData) {
+		for (d in linkData.data) {
 			final link = linkBuilder.build({
 				chain: ++chain,
 				clearsByColor: d.clearsByColor,
@@ -171,7 +173,7 @@ class AutoAttackManager {
 			remainder = link.garbageRemainder;
 			accumGarbage = link.accumulatedGarbage;
 
-			links.push(link);
+			links.data.push(link);
 		}
 	}
 

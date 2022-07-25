@@ -19,6 +19,7 @@ import kha.Font;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 import utils.Utils.shadowDrawString;
+import game.copying.ConstantCopyableArray;
 
 using StringTools;
 
@@ -53,41 +54,42 @@ class TrainingInfoBoardState implements IBoardState {
 	final cardFontHeight: Float;
 	final splitPercentageWidth: Float;
 
-	var chain: Int;
-	var chainLength: Int;
+	@copy final linkStandardDamages: ConstantCopyableArray<Int>;
 
-	var linkDamage: Int;
-	var linkRemainder: Float;
-	var linkStandardDamages: Array<Int>;
+	@copy var chain: Int;
+	@copy var chainLength: Int;
 
-	var chainDamage: Int;
-	var totalDamage: Int;
+	@copy var linkDamage: Int;
+	@copy var linkRemainder: Float;
 
-	var chainAdvantage: Int;
-	var toCounterChain: Int;
-	var counterDifference: Int;
+	@copy var chainDamage: Int;
+	@copy var totalDamage: Int;
 
-	var groupCounter: Int;
-	var ppsT: Int;
+	@copy var chainAdvantage: Int;
+	@copy var toCounterChain: Int;
+	@copy var counterDifference: Int;
 
-	var splitT: Int;
+	@copy var groupCounter: Int;
+	@copy var ppsT: Int;
 
-	var currentGreatSplits: Int;
-	var currentOkaySplits: Int;
-	var currentSlowSplits: Int;
-	var currentSplitCounter: Int;
+	@copy var splitT: Int;
 
-	var overallGreatSplits: Int;
-	var overallOkaySplits: Int;
-	var overallSlowSplits: Int;
-	var overallSplitCounter: Int;
+	@copy var currentGreatSplits: Int;
+	@copy var currentOkaySplits: Int;
+	@copy var currentSlowSplits: Int;
+	@copy var currentSplitCounter: Int;
 
-	var updateSplitT: Bool;
-	var showSteps: Bool;
+	@copy var overallGreatSplits: Int;
+	@copy var overallOkaySplits: Int;
+	@copy var overallSlowSplits: Int;
+	@copy var overallSplitCounter: Int;
 
-	var viewMin: Int;
+	@copy var updateSplitT: Bool;
+	@copy var showSteps: Bool;
 
-	public var shouldUpdatePPST: Bool;
+	@copy var viewMin: Int;
+
+	@copy public var shouldUpdatePPST: Bool;
 
 	public function new(opts: TrainingInfoBoardStateOptions) {
 		game.Macros.initFromOpts();
@@ -96,6 +98,8 @@ class TrainingInfoBoardState implements IBoardState {
 		titleFontHeight = font.height(TITLE_FONT_SIZE);
 		cardFontHeight = font.height(CARD_FONT_SIZE);
 		splitPercentageWidth = font.width(TITLE_FONT_SIZE, "000% ");
+
+		linkStandardDamages = new ConstantCopyableArray([]);
 
 		chain = 0;
 		chainLength = 0;
@@ -305,7 +309,7 @@ class TrainingInfoBoardState implements IBoardState {
 		chainLength = latestChain;
 
 		linkDamage = 0;
-		linkStandardDamages = [];
+		linkStandardDamages.data.resize(0);
 
 		chainDamage = 0;
 		totalDamage = playerChainSim.latestGarbageCounter;
@@ -328,7 +332,7 @@ class TrainingInfoBoardState implements IBoardState {
 			garbageCounter = link.accumulatedGarbage;
 			remainder = link.garbageRemainder;
 
-			linkStandardDamages.push(link.garbage);
+			linkStandardDamages.data.push(link.garbage);
 
 			if (toCounterChain == chainLength) {
 				chainAdvantage = totalDamage - garbageCounter;

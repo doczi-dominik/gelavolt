@@ -24,7 +24,7 @@ class KeyboardConfirmWrapper implements IMenuPage {
 
 	public final header: String;
 
-	public var controlDisplays(default, null): Array<ControlHint>;
+	public var controlHints(default, null): Array<ControlHint>;
 
 	public function new(opts: KeyboardConfirmWrapperOptions) {
 		game.Macros.initFromOpts();
@@ -33,7 +33,7 @@ class KeyboardConfirmWrapper implements IMenuPage {
 
 		header = "Confirm Keyboard";
 
-		controlDisplays = [{actions: [BACK], description: "Back"}];
+		controlHints = [{actions: [BACK], description: "Back"}];
 	}
 
 	public function onResize() {

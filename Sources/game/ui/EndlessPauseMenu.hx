@@ -28,7 +28,7 @@ class EndlessPauseMenuOptions extends PauseMenuOptions {}
 
 class EndlessPauseMenu extends PauseMenu {
 	@inject final endlessSettings: EndlessSettings;
-	@inject final controlDisplayContainer: ControlHintContainer;
+	@inject final controlHintContainer: ControlHintContainer;
 	@inject final actionBuffer: IActionBuffer;
 
 	public function new(opts: EndlessPauseMenuOptions) {
@@ -48,7 +48,7 @@ class EndlessPauseMenu extends PauseMenu {
 					defaultValue: endlessSettings.showControlHints,
 					onChange: (value) -> {
 						endlessSettings.showControlHints = value;
-						controlDisplayContainer.isVisible = value;
+						controlHintContainer.isVisible = value;
 
 						SaveManager.saveProfiles();
 					}
