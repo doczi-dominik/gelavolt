@@ -6,6 +6,40 @@ import haxe.macro.Expr;
 import haxe.macro.Type;
 
 class Macros {
+	static function checkForOverride(ct: ClassType) {
+		if (ct.superClass == null)
+			return false;
+
+		final sc = ct.superClass.t.get();
+
+		for (f in sc.fields.get()) {
+			if (f.name == "copyFrom") {
+				return true;
+			}
+		}
+
+		return checkForOverride(sc);
+	}
+
+	static function checkInterfaces(ct: ClassType) {
+		for (i in ct.interfaces) {
+			final it = i.t.get();
+
+			if (it.name == "ICopyFrom") {
+				return true;
+			}
+
+			if (checkInterfaces(it)) {
+				return true;
+			}
+		}
+
+		if (ct.superClass == null)
+			return false;
+
+		return checkInterfaces(ct.superClass.t.get());
+	}
+
 	public static macro function buildOptionsClass(classes: Array<Expr>): Array<Field> {
 		final pos = Context.currentPos();
 		final fields = Context.getBuildFields();
@@ -176,27 +210,7 @@ class Macros {
 					return fields;
 				}
 
-				var shouldOverride = false;
-
-				function checkForOverride(ct: ClassType) {
-					if (ct.superClass == null)
-						return;
-
-					final sc = ct.superClass.t.get();
-
-					for (f in sc.fields.get()) {
-						if (f.name == "copyFrom") {
-							shouldOverride = true;
-							break;
-						}
-					}
-
-					checkForOverride(sc);
-				};
-
-				checkForOverride(ct);
-
-				if (shouldOverride) {
+				if (checkForOverride(ct)) {
 					exprs.push(macro super.copyFrom(other));
 					copyFromAccess.push(AOverride);
 				}
@@ -240,16 +254,7 @@ class Macros {
 								case TInst(t, params):
 									final ct = t.get();
 
-									var hasICopyFrom = false;
-
-									for (i in ct.interfaces) {
-										if (i.t.get().name == "ICopyFrom") {
-											hasICopyFrom = true;
-											break;
-										}
-									}
-
-									if (hasICopyFrom) {
+									if (checkInterfaces(ct) || checkForOverride(ct)) {
 										exprs.push(macro $i{fieldName}.copyFrom(untyped other.$fieldName));
 									} else {
 										exprs.push(macro $i{fieldName} = other.$fieldName);
