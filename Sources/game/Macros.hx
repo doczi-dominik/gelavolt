@@ -262,9 +262,6 @@ class Macros {
 								case TInst(t, params):
 									final ct = t.get();
 
-									trace('${ct.name}');
-									trace(checkInterfaces(ct));
-
 									switch (checkInterfaces(ct)) {
 										case NONE:
 											exprs.push(macro $i{fieldName} = other.$fieldName);
