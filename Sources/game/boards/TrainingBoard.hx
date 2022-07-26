@@ -11,6 +11,7 @@ import game.actionbuffers.IActionBuffer;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 import game.boardstates.IBoardState;
+import game.mediators.SaveGameStateMediator;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(TrainingBoard))
@@ -21,7 +22,9 @@ class TrainingBoard implements IBoard {
 		{actions: [TOGGLE_EDIT_MODE], description: "Edit Mode"},
 		{actions: [PREVIOUS_GROUP], description: "Undo"},
 		{actions: [NEXT_GROUP], description: "Redo / Get Next Group"},
-		{actions: [QUICK_RESTART], description: "Quick Restart"}
+		{actions: [QUICK_RESTART], description: "Quick Restart"},
+		{actions: [SAVE_STATE], description: "Save State"},
+		{actions: [LOAD_STATE], description: "Load State"}
 	];
 
 	static final EDIT_CONTROL_HINTS: Array<ControlHint> = [
@@ -38,6 +41,7 @@ class TrainingBoard implements IBoard {
 	@inject final playActionBuffer: IActionBuffer;
 	@inject final infoState: TrainingInfoBoardState;
 	@inject final controlHintContainer: ControlHintContainer;
+	@inject final saveGameStateMediator: SaveGameStateMediator;
 
 	@inject final playState: TrainingBoardState;
 	@inject final editState: EditingBoardState;
@@ -121,6 +125,12 @@ class TrainingBoard implements IBoard {
 
 			if (inputDevice.getAction(QUICK_RESTART)) {
 				playState.onLose();
+			}
+
+			if (inputDevice.getAction(SAVE_STATE)) {
+				saveGameStateMediator.saveState();
+			} else if (inputDevice.getAction(LOAD_STATE)) {
+				saveGameStateMediator.loadState(0);
 			}
 		} else {
 			if (inputDevice.getAction(PREVIOUS_STEP)) {

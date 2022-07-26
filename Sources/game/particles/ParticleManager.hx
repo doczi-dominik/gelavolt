@@ -5,10 +5,13 @@ import game.copying.CopyableArray;
 import kha.graphics2.Graphics;
 
 class ParticleManager implements ICopyFrom {
-	@copy final backParticles = new CopyableArray<IParticle>([]);
-	@copy final frontParticles = new CopyableArray<IParticle>([]);
+	@copy final backParticles: CopyableArray<IParticle>;
+	@copy final frontParticles: CopyableArray<IParticle>;
 
-	public function new() {}
+	public function new() {
+		backParticles = new CopyableArray([]);
+		frontParticles = new CopyableArray([]);
+	}
 
 	function updateArray(arr: Array<IParticle>) {
 		// Reverse-iterate to remove elements mid-iteration

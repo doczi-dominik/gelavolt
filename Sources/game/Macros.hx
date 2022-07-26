@@ -1,9 +1,14 @@
 package game;
 
-import game.gamestatebuilders.GameStateBuilderType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
+
+private enum abstract CopyInterface(Int) {
+	final NONE;
+	final COPY;
+	final COPY_FROM;
+}
 
 class Macros {
 	static function checkForOverride(ct: ClassType) {
@@ -11,12 +16,10 @@ class Macros {
 			return false;
 
 		final sc = ct.superClass.t.get();
+		final fields = sc.fields.get().map(f -> f.name);
 
-		for (f in sc.fields.get()) {
-			if (f.name == "copyFrom") {
-				return true;
-			}
-		}
+		if (fields.contains("copyFrom"))
+			return true;
 
 		return checkForOverride(sc);
 	}
@@ -25,17 +28,22 @@ class Macros {
 		for (i in ct.interfaces) {
 			final it = i.t.get();
 
-			if (it.name == "ICopyFrom") {
-				return true;
+			if (it.name == "ICopy") {
+				return COPY;
 			}
 
-			if (checkInterfaces(it)) {
-				return true;
+			if (it.name == "ICopyFrom") {
+				return COPY_FROM;
 			}
+
+			final sup = checkInterfaces(it);
+
+			if (sup != NONE)
+				return sup;
 		}
 
 		if (ct.superClass == null)
-			return false;
+			return NONE;
 
 		return checkInterfaces(ct.superClass.t.get());
 	}
@@ -254,10 +262,16 @@ class Macros {
 								case TInst(t, params):
 									final ct = t.get();
 
-									if (checkInterfaces(ct) || checkForOverride(ct)) {
-										exprs.push(macro $i{fieldName}.copyFrom(untyped other.$fieldName));
-									} else {
-										exprs.push(macro $i{fieldName} = other.$fieldName);
+									trace('${ct.name}');
+									trace(checkInterfaces(ct));
+
+									switch (checkInterfaces(ct)) {
+										case NONE:
+											exprs.push(macro $i{fieldName} = other.$fieldName);
+										case COPY:
+											exprs.push(macro $i{fieldName} = other.$fieldName.copy());
+										case COPY_FROM:
+											exprs.push(macro $i{fieldName}.copyFrom(other.$fieldName));
 									}
 								case TAbstract(_, _) | TEnum(_, _):
 									exprs.push(macro $i{fieldName} = other.$fieldName);

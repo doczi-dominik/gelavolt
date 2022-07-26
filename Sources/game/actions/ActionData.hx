@@ -181,5 +181,17 @@ final ACTION_DATA: Map<Action, ActionDataEntry> = [
 		],
 		inputType: REPEAT,
 		isUnbindable: true
+	},
+	SAVE_STATE => {
+		title: "Save State",
+		description: ["Create A 'Rewind Point' That", "You Can Return To Using", "Load State"],
+		inputType: PRESS,
+		isUnbindable: true,
+	},
+	LOAD_STATE => {
+		title: "Load State",
+		description: ["Return To The 'Rewind Point'", "Previously Saved Using", "Save State"],
+		inputType: PRESS,
+		isUnbindable: true
 	}
 ];

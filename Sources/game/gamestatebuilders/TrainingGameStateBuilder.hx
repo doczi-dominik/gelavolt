@@ -40,6 +40,7 @@ import game.geometries.BoardGeometries;
 import game.boardstates.TrainingInfoBoardState;
 import game.simulation.LinkInfoBuilder;
 import game.simulation.ChainSimulator;
+import game.mediators.SaveGameStateMediator;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(TrainingGameStateBuilder))
@@ -50,6 +51,9 @@ class TrainingGameStateBuilderOptions {
 		return type;
 	}
 }
+
+// TODO: Do NOT create components in other's build methods.
+// Save it to variables so they can be copied
 
 @:build(game.Macros.addGameStateBuildMethod())
 class TrainingGameStateBuilder implements IGameStateBuilder {
@@ -63,9 +67,9 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@copy var marginManager: MarginTimeManager;
 	@copy var frameCounter: FrameCounter;
 
-	@copy var playerBorderColorMediator: BorderColorMediator;
-	@copy var playerTargetMediator: GarbageTargetMediator;
-	@copy var infoTargetMediator: GarbageTargetMediator;
+	var playerBorderColorMediator: BorderColorMediator;
+	var playerTargetMediator: GarbageTargetMediator;
+	var infoTargetMediator: GarbageTargetMediator;
 
 	@copy var playerGarbageManager: GarbageManager;
 	@copy var playerScoreManager: ScoreManager;
@@ -73,6 +77,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@copy var playerChainCounter: ChainCounter;
 	@copy var playerField: Field;
 	@copy var playerQueue: Queue;
+	@copy var playerPreview: VerticalPreview;
 	@copy var playerInputDevice: IInputDevice;
 	@copy var playerActionBuffer: LocalActionBuffer;
 	@copy var playerGeloGroup: GeloGroup;
@@ -90,6 +95,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 
 	public var pauseMediator(null, default): PauseMediator;
 	@copy public var controlHintContainer(null, default): ControlHintContainer;
+	public var saveGameStateMediator(null, default): SaveGameStateMediator;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
@@ -196,6 +202,10 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		playerQueue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
 	}
 
+	inline function buildPlayerPreview() {
+		playerPreview = new VerticalPreview(playerQueue);
+	}
+
 	inline function buildPlayerInputDevice() {
 		playerInputDevice = AnyInputDevice.instance;
 	}
@@ -297,7 +307,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			field: playerField,
 			garbageManager: playerGarbageManager,
 			queue: playerQueue,
-			preview: new VerticalPreview(playerQueue),
+			preview: playerPreview,
 			allClearManager: playerAllClearManager,
 			scoreManager: playerScoreManager,
 			actionBuffer: playerActionBuffer,
@@ -334,6 +344,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			inputDevice: playerInputDevice,
 			playActionBuffer: playerActionBuffer,
 			controlHintContainer: controlHintContainer,
+			saveGameStateMediator: saveGameStateMediator,
 			playState: playState,
 			editState: editState,
 			infoState: infoState,

@@ -1,6 +1,7 @@
 package game.gelogroups;
 
 import game.copying.CopyableArray;
+import game.copying.ConstantCopyableArray;
 import game.copying.ICopyFrom;
 import game.gelos.GeloColor;
 import game.gelos.OtherGelo;
@@ -37,7 +38,7 @@ class GeloGroup implements ICopyFrom {
 	@inject final chainSim: ChainSimulator;
 
 	@copy final others: CopyableArray<OtherGelo>;
-	@copy final otherShadows: CopyableArray<GeloPoint>;
+	@copy final otherShadows: ConstantCopyableArray<GeloPoint>;
 
 	@copy var main: Gelo;
 
@@ -70,7 +71,7 @@ class GeloGroup implements ICopyFrom {
 
 	@copy var willTriggerChain: Bool;
 	@copy var shouldLock: Bool;
-	@copy var willTriggerChainT = 0;
+	@copy var willTriggerChainT: Int;
 
 	@copy public var isVisible: Bool;
 	@copy public var isShadowVisible: Bool;
@@ -79,7 +80,7 @@ class GeloGroup implements ICopyFrom {
 		game.Macros.initFromOpts();
 
 		others = new CopyableArray([]);
-		otherShadows = new CopyableArray([]);
+		otherShadows = new ConstantCopyableArray([]);
 
 		isVisible = false;
 		isShadowVisible = false;

@@ -1,8 +1,9 @@
 package game.previews;
 
+import game.copying.ICopyFrom;
 import kha.graphics2.Graphics;
 
-interface IPreview {
+interface IPreview extends ICopyFrom {
 	public var isAnimationFinished(default, null): Bool;
 
 	public function startAnimation(index: Int): Void;

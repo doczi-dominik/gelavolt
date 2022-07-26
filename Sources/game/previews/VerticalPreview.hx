@@ -8,12 +8,12 @@ import kha.graphics2.Graphics;
 class VerticalPreview implements IPreview {
 	final queue: Queue;
 
-	var t: Int;
-	var queueY: Float;
-	var beginY: Float;
-	var targetY: Float;
+	@copy var t: Int;
+	@copy var queueY: Float;
+	@copy var beginY: Float;
+	@copy var targetY: Float;
 
-	public var isAnimationFinished(default, null): Bool;
+	@copy public var isAnimationFinished(default, null): Bool;
 
 	public function new(queue: Queue) {
 		this.queue = queue;

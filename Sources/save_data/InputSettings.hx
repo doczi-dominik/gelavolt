@@ -214,6 +214,22 @@ class InputSettings {
 				axis: null,
 				direction: null
 			}
+		},
+		SAVE_STATE => {
+			keyboardInput: O,
+			gamepadButton: R1,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
+		},
+		LOAD_STATE => {
+			keyboardInput: P,
+			gamepadButton: R2,
+			gamepadAxis: {
+				axis: null,
+				direction: null
+			}
 		}
 	];
 

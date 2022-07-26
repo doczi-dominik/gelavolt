@@ -6,15 +6,20 @@ import game.gelogroups.GeloGroupData;
 import utils.Utils;
 
 class Queue implements ICopyFrom {
-	public var groups(default, null): CopyableArray<GeloGroupData>;
+	@copy public final groups: CopyableArray<GeloGroupData>;
+
 	@copy public var currentIndex(default, null): Int;
 
 	public function new(groups: Array<GeloGroupData>) {
+		this.groups = new CopyableArray([]);
+
 		load(groups);
 	}
 
 	public inline function load(groups: Array<GeloGroupData>) {
-		this.groups = new CopyableArray(groups);
+		for (g in groups) {
+			this.groups.data.push(g);
+		}
 
 		currentIndex = 0;
 	}

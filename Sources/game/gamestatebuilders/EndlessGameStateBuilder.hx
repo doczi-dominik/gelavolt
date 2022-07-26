@@ -34,6 +34,7 @@ import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
 import game.copying.CopyableRNG;
 import game.states.GameState;
+import game.mediators.SaveGameStateMediator;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(EndlessGameStateBuilder))
@@ -71,6 +72,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 
 	public var pauseMediator(null, default): PauseMediator;
 	@copy public var controlHintContainer(null, default): ControlHintContainer;
+	public var saveGameStateMediator(null, default): SaveGameStateMediator;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;

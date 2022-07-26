@@ -5,6 +5,7 @@ import kha.graphics2.Graphics;
 import kha.Color;
 import utils.Point;
 import utils.Utils.lerp;
+import game.copying.CopyableArray;
 
 using kha.graphics2.GraphicsExtension;
 
@@ -30,9 +31,6 @@ class GarbageBulletParticle implements IParticle {
 		return p;
 	}
 
-	@inject final particleManager: ParticleManager;
-	@inject final layer: ParticleLayer;
-
 	@inject final begin: Point;
 	@inject final control: Point;
 	@inject final target: Point;
@@ -41,6 +39,8 @@ class GarbageBulletParticle implements IParticle {
 	@inject final duration: Int;
 	@inject final color: Color;
 	@inject final onFinish: Void->Void;
+
+	@copy final trailParts: CopyableArray<GarbageBulletTrailParticle>;
 
 	@copy var prevX: Float;
 	@copy var prevY: Float;
@@ -53,12 +53,12 @@ class GarbageBulletParticle implements IParticle {
 
 	function new(opts: GarbageBulletParticleOptions) {
 		game.Macros.initFromOpts();
+
+		trailParts = new CopyableArray([]);
 	}
 
 	public function copy() {
 		return new GarbageBulletParticle({
-			particleManager: particleManager,
-			layer: layer,
 			begin: begin,
 			control: control,
 			target: target,
@@ -81,11 +81,15 @@ class GarbageBulletParticle implements IParticle {
 		currentX = current.x;
 		currentY = current.y;
 
-		particleManager.add(layer, GarbageBulletTrailParticle.create({
+		trailParts.data.push(GarbageBulletTrailParticle.create({
 			x: currentX,
 			y: currentY,
 			color: color
 		}));
+
+		for (p in trailParts.data) {
+			p.update();
+		}
 
 		t += 1 / duration;
 
@@ -100,6 +104,10 @@ class GarbageBulletParticle implements IParticle {
 
 		final lerpX = lerp(prevX, currentX, alpha);
 		final lerpY = lerp(prevY, currentY, alpha);
+
+		for (p in trailParts.data) {
+			p.render(g, alpha);
+		}
 
 		g.color = color;
 		g.fillCircle(lerpX, lerpY, 32 * scale);

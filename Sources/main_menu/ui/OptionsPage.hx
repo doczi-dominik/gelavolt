@@ -288,7 +288,7 @@ class OptionsPage extends ListMenuPage {
 					new ControlsPageWidget({
 						title: "Play Mode Controls",
 						description: ["Change Controls That Are Only", "Available In Play Mode"],
-						actions: [PREVIOUS_GROUP, NEXT_GROUP],
+						actions: [PREVIOUS_GROUP, NEXT_GROUP, SAVE_STATE, LOAD_STATE],
 						inputDevice: inputDevice
 					}),
 					new ControlsPageWidget({

@@ -27,9 +27,9 @@ class GameScreen implements IScreen {
 
 	final background: NestBackground;
 	final gameState: GameState;
-	final lastConfirmedGameState: GameState;
+	final savedGameState: GameState;
 	final gameStateBuilder: IGameStateBuilder;
-	final lastConfirmedGameStateBuilder: IGameStateBuilder;
+	final savedGameStateBuilder: IGameStateBuilder;
 	final pauseMenu: PauseMenu;
 	final controlHintContainer: ControlHintContainer;
 
@@ -52,21 +52,31 @@ class GameScreen implements IScreen {
 
 		gameStateBuilder.controlHintContainer = controlHintContainer;
 
+		gameStateBuilder.saveGameStateMediator = {
+			loadState: loadState,
+			saveState: saveState,
+		};
+
 		gameStateBuilder.build();
 		gameState = gameStateBuilder.gameState;
 		pauseMenu = gameStateBuilder.pauseMenu;
 
-		lastConfirmedGameStateBuilder = gameStateBuilder.copy();
+		savedGameStateBuilder = gameStateBuilder.copy();
 
-		lastConfirmedGameStateBuilder.pauseMediator = {
+		savedGameStateBuilder.pauseMediator = {
 			pause: (_) -> {},
 			resume: () -> {},
 		}
 
-		lastConfirmedGameStateBuilder.controlHintContainer = new ControlHintContainer();
+		savedGameStateBuilder.controlHintContainer = new ControlHintContainer();
 
-		lastConfirmedGameStateBuilder.build();
-		lastConfirmedGameState = gameStateBuilder.gameState;
+		savedGameStateBuilder.saveGameStateMediator = {
+			loadState: (_) -> {},
+			saveState: () -> {},
+		};
+
+		savedGameStateBuilder.build();
+		savedGameState = gameStateBuilder.gameState;
 
 		ScaleManager.addOnResizeCallback(onResize);
 	}
@@ -80,10 +90,12 @@ class GameScreen implements IScreen {
 		isPaused = false;
 	}
 
-	function rollback(resimulate: Int) {}
+	function loadState(resimulate: Int) {
+		gameStateBuilder.copyFrom(savedGameStateBuilder);
+	}
 
-	function confirmFrame() {
-		lastConfirmedGameStateBuilder.copyFrom(gameStateBuilder);
+	function saveState() {
+		savedGameStateBuilder.copyFrom(gameStateBuilder);
 	}
 
 	function onResize() {

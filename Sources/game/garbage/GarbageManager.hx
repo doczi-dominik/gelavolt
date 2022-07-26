@@ -94,8 +94,6 @@ class GarbageManager implements IGarbageManager {
 			final primaryColor = prefsSettings.primaryColors[b.color];
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
-				particleManager: particleManager,
-				layer: FRONT,
 				begin: absPos.add({x: b.x, y: b.y}),
 				beginScale: 1, // TODO
 				control: absPos.add(control),
@@ -125,8 +123,6 @@ class GarbageManager implements IGarbageManager {
 			final primaryColor = prefsSettings.primaryColors[b.color];
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
-				particleManager: particleManager,
-				layer: FRONT,
 				begin: absBegin,
 				beginScale: scale,
 				control: absCenter,
@@ -164,8 +160,6 @@ class GarbageManager implements IGarbageManager {
 			final absBegin = absPos.add({x: b.x, y: b.y});
 
 			particleManager.add(FRONT, GarbageBulletParticle.create({
-				particleManager: particleManager,
-				layer: FRONT,
 				begin: absBegin,
 				beginScale: scale,
 				control: absCenter,
@@ -179,8 +173,6 @@ class GarbageManager implements IGarbageManager {
 					addCollisionParticle(absTrayCenter, primaryColor);
 
 					particleManager.add(FRONT, GarbageBulletParticle.create({
-						particleManager: particleManager,
-						layer: FRONT,
 						begin: absTrayCenter,
 						beginScale: scale,
 						control: attackControl,
