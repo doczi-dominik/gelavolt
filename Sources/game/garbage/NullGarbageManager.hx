@@ -1,6 +1,6 @@
 package game.garbage;
 
-import game.gelos.GeloPoint;
+import game.gelos.ScreenGeloPoint;
 import kha.graphics2.Graphics;
 
 class NullGarbageManager implements IGarbageManager {
@@ -24,7 +24,7 @@ class NullGarbageManager implements IGarbageManager {
 
 	public function init() {}
 
-	public function sendGarbage(amount: Int, beginners: Array<GeloPoint>) {}
+	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>) {}
 
 	public function dropGarbage(amount: Int) {}
 

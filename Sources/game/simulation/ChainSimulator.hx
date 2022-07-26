@@ -60,13 +60,14 @@ class ChainSimulator implements ICopyFrom {
 				final firstInGroup = connected[0];
 
 				popInfo.beginners.data.push({
-					color: firstInGroup.gelo.color,
+					color: firstInGroup.color,
 					x: firstInGroup.x,
 					y: firstInGroup.y
 				});
 
 				for (c in connected) {
-					final gelo = c.gelo;
+					final gelo = field.getAtPoint(c);
+
 					if (!gelo.damage())
 						continue;
 

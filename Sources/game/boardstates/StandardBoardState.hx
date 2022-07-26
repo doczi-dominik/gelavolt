@@ -6,7 +6,7 @@ import utils.Utils;
 import game.simulation.SimulationStepType;
 import save_data.PrefsSettings;
 import game.fields.Field;
-import game.gelos.GeloPoint;
+import game.gelos.ScreenGeloPoint;
 import game.gelos.Gelo;
 import kha.Color;
 import game.particles.GeloPopParticle;
@@ -289,14 +289,14 @@ class StandardBoardState implements IBoardState {
 
 		final absPos = geometries.absolutePosition;
 		final popInfo = currentPopStep.popInfo;
-		final beginnerScreenCoords: Array<GeloPoint> = [];
+		final beginnerScreenCoords = new Array<ScreenGeloPoint>();
 
 		for (b in popInfo.beginners.data) {
 			final screenCoords = field.cellToScreen(b.x, b.y);
 
 			beginnerScreenCoords.push({
-				x: Std.int(screenCoords.x),
-				y: Std.int(screenCoords.y),
+				x: screenCoords.x,
+				y: screenCoords.y,
 				color: b.color
 			});
 		}

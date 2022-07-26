@@ -14,11 +14,6 @@ enum FieldGeloState {
 }
 
 @:structInit
-class FieldGeloPoint extends IntPoint {
-	public final gelo: FieldGelo;
-}
-
-@:structInit
 @:build(game.Macros.buildOptionsClass(FieldGelo))
 class FieldGeloOptions extends GeloOptions {}
 

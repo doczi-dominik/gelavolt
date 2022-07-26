@@ -14,7 +14,7 @@ import utils.Point;
 import game.particles.GarbageBulletParticle;
 import game.particles.ParticleManager;
 import kha.graphics2.Graphics;
-import game.gelos.GeloPoint;
+import game.gelos.ScreenGeloPoint;
 import game.rules.Rule;
 
 @:structInit
@@ -76,9 +76,7 @@ class GarbageManager implements IGarbageManager {
 		}
 	}
 
-	// Note: GeloPoint are screen coordinates not field
-	// TODO: Make FieldGeloPoint and ScreenGeloPoint that extend IntPoint/Point
-	function sendAttackBullet(beginners: Array<GeloPoint>) {
+	function sendAttackBullet(beginners: Array<ScreenGeloPoint>) {
 		final absPos = geometries.absolutePosition;
 
 		final control: Point = switch (geometries.orientation) {
@@ -109,7 +107,7 @@ class GarbageManager implements IGarbageManager {
 		}
 	}
 
-	function sendOffsetBullet(beginners: Array<GeloPoint>) {
+	function sendOffsetBullet(beginners: Array<ScreenGeloPoint>) {
 		final absPos = geometries.absolutePosition;
 		final scale = geometries.scale;
 
@@ -138,7 +136,7 @@ class GarbageManager implements IGarbageManager {
 		}
 	}
 
-	function sendCounterBullet(beginners: Array<GeloPoint>) {
+	function sendCounterBullet(beginners: Array<ScreenGeloPoint>) {
 		final absPos = geometries.absolutePosition;
 		final scale = geometries.scale;
 
@@ -203,7 +201,7 @@ class GarbageManager implements IGarbageManager {
 		tray.startAnimation(currentGarbage);
 	}
 
-	public function sendGarbage(amount: Int, beginners: Array<GeloPoint>) {
+	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>) {
 		if (amount == 0)
 			return;
 

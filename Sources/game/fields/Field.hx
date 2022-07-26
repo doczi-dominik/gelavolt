@@ -1,5 +1,6 @@
 package game.fields;
 
+import game.gelos.FieldGeloPoint;
 import save_data.PrefsSettings;
 import game.copying.CopyableMatrix;
 import game.copying.ICopyFrom;
@@ -271,10 +272,11 @@ class Field implements ICopyFrom {
 				return;
 
 			final color = gelo.color;
+
 			if (color.isGarbage())
 				return;
 
-			final connected: Array<FieldGeloPoint> = [{gelo: gelo, x: x, y: y}];
+			final connected: Array<FieldGeloPoint> = [{color: color, x: x, y: y}];
 			var checkedCount = 1;
 
 			checkedCells[y][x] = true;
@@ -287,7 +289,7 @@ class Field implements ICopyFrom {
 						onCheck(checkedGelo, i);
 
 						if (!checkedCells[checkedY][checkedX]) {
-							connected.push({gelo: checkedGelo, x: checkedX, y: checkedY});
+							connected.push({color: color, x: checkedX, y: checkedY});
 							checkedCells[checkedY][checkedX] = true;
 						}
 					}

@@ -10,7 +10,7 @@ import save_data.PrefsSettings;
 import game.fields.Field;
 import game.simulation.PopSimStep;
 import game.simulation.ChainSimulator;
-import game.gelos.GeloPoint;
+import game.gelos.ScreenGeloPoint;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 import game.ScoreManager;
@@ -38,7 +38,7 @@ class GeloGroup implements ICopyFrom {
 	@inject final chainSim: ChainSimulator;
 
 	@copy final others: CopyableArray<OtherGelo>;
-	@copy final otherShadows: ConstantCopyableArray<GeloPoint>;
+	@copy final otherShadows: ConstantCopyableArray<ScreenGeloPoint>;
 
 	@copy var main: Gelo;
 
@@ -67,7 +67,7 @@ class GeloGroup implements ICopyFrom {
 	@copy var dasDirection: Int;
 	@copy var arr: Int;
 
-	@copy var mainShadow: GeloPoint;
+	@copy var mainShadow: ScreenGeloPoint;
 
 	@copy var willTriggerChain: Bool;
 	@copy var shouldLock: Bool;
@@ -186,8 +186,8 @@ class GeloGroup implements ICopyFrom {
 		workField.drop();
 
 		mainShadow = {
-			x: Std.int(mainGelo.x),
-			y: Std.int(mainGelo.y),
+			x: mainGelo.x,
+			y: mainGelo.y,
 			color: mainGelo.color
 		};
 
@@ -195,8 +195,8 @@ class GeloGroup implements ICopyFrom {
 
 		for (o in otherGelos) {
 			otherShadowsData.push({
-				x: Std.int(o.x),
-				y: Std.int(o.y),
+				x: o.x,
+				y: o.y,
 				color: o.color
 			});
 		}

@@ -3,6 +3,6 @@ package game.gelos;
 import utils.IntPoint;
 
 @:structInit
-class GeloPoint extends IntPoint {
+class FieldGeloPoint extends IntPoint {
 	public final color: GeloColor;
 }

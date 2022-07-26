@@ -1,14 +1,14 @@
 package game.fields;
 
+import game.gelos.FieldGeloPoint;
 import game.copying.ConstantCopyableMap;
 import game.copying.ConstantCopyableArray;
 import game.copying.ICopy;
-import game.gelos.GeloPoint;
 import game.gelos.GeloColor;
 
 class FieldPopInfo implements ICopy {
-	@copy public final beginners: ConstantCopyableArray<GeloPoint>;
-	@copy public final clears: ConstantCopyableArray<GeloPoint>;
+	@copy public final beginners: ConstantCopyableArray<FieldGeloPoint>;
+	@copy public final clears: ConstantCopyableArray<FieldGeloPoint>;
 	@copy public final clearsByColor: ConstantCopyableMap<GeloColor, Int>;
 
 	@copy public var hasPops: Bool;
