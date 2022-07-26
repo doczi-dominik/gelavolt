@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.garbage.trays.NullGarbageTray;
 import game.rules.Rule;
 import game.auto_attack.AutoAttackManager;
 import game.gelogroups.TrainingGeloGroup;
@@ -52,9 +53,6 @@ class TrainingGameStateBuilderOptions {
 	}
 }
 
-// TODO: Do NOT create components in other's build methods.
-// Save it to variables so they can be copied
-
 @:build(game.Macros.addGameStateBuildMethod())
 class TrainingGameStateBuilder implements IGameStateBuilder {
 	@inject final rngSeed: Int;
@@ -71,8 +69,11 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	var playerTargetMediator: GarbageTargetMediator;
 	var infoTargetMediator: GarbageTargetMediator;
 
+	@copy var playerGarbageTray: CenterGarbageTray;
 	@copy var playerGarbageManager: GarbageManager;
 	@copy var playerScoreManager: ScoreManager;
+	@copy var playerChainSimDisplay: GarbageTray;
+	@copy var playerChainSimAccumDisplay: GarbageTray;
 	@copy var playerChainSim: ChainSimulator;
 	@copy var playerChainCounter: ChainCounter;
 	@copy var playerField: Field;
@@ -80,11 +81,18 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@copy var playerPreview: VerticalPreview;
 	@copy var playerInputDevice: IInputDevice;
 	@copy var playerActionBuffer: LocalActionBuffer;
+	@copy var playerGeloGroupChainSim: ChainSimulator;
 	@copy var playerGeloGroup: GeloGroup;
 	@copy var playerAllClearManager: AllClearManager;
 
+	@copy var infoGarbageTray: CenterGarbageTray;
 	@copy var infoGarbageManager: GarbageManager;
+	@copy var autoAttackChainCounter: ChainCounter;
 	@copy var autoAttackManager: AutoAttackManager;
+	@copy var infoChainAdvantageDisplay: GarbageTray;
+	@copy var infoAfterCounterDisplay: GarbageTray;
+
+	@copy var editField: Field;
 
 	@copy var infoState: TrainingInfoBoardState;
 	@copy var playState: TrainingBoardState;
@@ -153,6 +161,10 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		infoTargetMediator = new GarbageTargetMediator(BoardGeometries.LEFT);
 	}
 
+	inline function buildPlayerGarbageTray() {
+		playerGarbageTray = CenterGarbageTray.create(Profile.primary.prefs);
+	}
+
 	inline function buildPlayerGarbageManager() {
 		playerGarbageManager = new GarbageManager({
 			rule: rule,
@@ -160,7 +172,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.LEFT,
-			tray: CenterGarbageTray.create(Profile.primary.prefs),
+			tray: playerGarbageTray,
 			target: playerTargetMediator
 		});
 	}
@@ -172,6 +184,14 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildPlayerChainSimDisplay() {
+		playerChainSimDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
+	inline function buildPlayerChainSimAccumDisplay() {
+		playerChainSimAccumDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
 	inline function buildPlayerChainSim() {
 		playerChainSim = new ChainSimulator({
 			rule: rule,
@@ -179,8 +199,8 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 				rule: rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
+			garbageDisplay: playerChainSimDisplay,
+			accumulatedDisplay: playerChainSimAccumDisplay
 		});
 	}
 
@@ -217,20 +237,22 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
-	inline function buildPlayerGeloGroup() {
-		final prefsSettings = Profile.primary.prefs;
+	inline function buildPlayerGeloGroupChainSim() {
+		playerGeloGroupChainSim = new ChainSimulator({
+			rule: rule,
+			linkBuilder: NullLinkInfoBuilder.instance,
+			garbageDisplay: NullGarbageTray.instance,
+			accumulatedDisplay: NullGarbageTray.instance
+		});
+	}
 
+	inline function buildPlayerGeloGroup() {
 		playerGeloGroup = new TrainingGeloGroup({
 			field: playerField,
 			rule: rule,
-			prefsSettings: prefsSettings,
+			prefsSettings: Profile.primary.prefs,
 			scoreManager: playerScoreManager,
-			chainSim: new ChainSimulator({
-				rule: rule,
-				linkBuilder: NullLinkInfoBuilder.instance,
-				garbageDisplay: GarbageTray.create(prefsSettings),
-				accumulatedDisplay: GarbageTray.create(prefsSettings)
-			}),
+			chainSim: playerGeloGroupChainSim,
 			trainingSettings: Profile.primary.trainingSettings
 		});
 	}
@@ -244,6 +266,10 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildInfoGarbageTray() {
+		infoGarbageTray = CenterGarbageTray.create(Profile.primary.prefs);
+	}
+
 	inline function buildInfoGarbageManager() {
 		infoGarbageManager = new GarbageManager({
 			rule: rule,
@@ -251,9 +277,13 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.INFO,
-			tray: CenterGarbageTray.create(Profile.primary.prefs),
+			tray: infoGarbageTray,
 			target: infoTargetMediator
 		});
+	}
+
+	inline function buildAutoAttackChainCounter() {
+		autoAttackChainCounter = new ChainCounter();
 	}
 
 	inline function buildAutoAttackManager() {
@@ -268,14 +298,20 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 				marginManager: marginManager
 			}),
 			garbageManager: infoGarbageManager,
-			chainCounter: new ChainCounter(),
+			chainCounter: autoAttackChainCounter,
 			particleManager: particleManager
 		});
 	}
 
-	inline function buildInfoState() {
-		final prefsSettings = Profile.primary.prefs;
+	inline function buildInfoChainAdvantageDisplay() {
+		infoChainAdvantageDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
 
+	inline function buildInfoAfterCounterDisplay() {
+		infoAfterCounterDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
+	inline function buildInfoState() {
 		infoState = new TrainingInfoBoardState({
 			geometries: BoardGeometries.INFO,
 			marginManager: marginManager,
@@ -285,9 +321,9 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 				marginManager: marginManager
 			}),
 			trainingSettings: Profile.primary.trainingSettings,
-			chainAdvantageDisplay: GarbageTray.create(prefsSettings),
-			afterCounterDisplay: GarbageTray.create(prefsSettings),
-			prefsSettings: prefsSettings,
+			chainAdvantageDisplay: infoChainAdvantageDisplay,
+			afterCounterDisplay: infoAfterCounterDisplay,
+			prefsSettings: Profile.primary.prefs,
 			autoAttackManager: autoAttackManager,
 			playerScoreManager: playerScoreManager,
 			playerChainSim: playerChainSim,
@@ -321,17 +357,21 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildEditField() {
+		editField = new Field({
+			prefsSettings: Profile.primary.prefs,
+			columns: 6,
+			playAreaRows: 12,
+			hiddenRows: 1,
+			garbageRows: 5
+		});
+	}
+
 	inline function buildEditState() {
 		editState = new EditingBoardState({
 			geometries: BoardGeometries.LEFT,
 			inputDevice: playerInputDevice,
-			field: new Field({
-				prefsSettings: Profile.primary.prefs,
-				columns: 6,
-				playAreaRows: 12,
-				hiddenRows: 1,
-				garbageRows: 5
-			}),
+			field: editField,
 			chainSim: playerChainSim,
 			chainCounter: playerChainCounter,
 			prefsSettings: Profile.primary.prefs

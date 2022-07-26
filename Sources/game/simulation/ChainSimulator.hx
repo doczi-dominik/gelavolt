@@ -1,11 +1,11 @@
 package game.simulation;
 
+import game.garbage.trays.IGarbageTray;
 import game.copying.ConstantCopyableArray;
 import game.copying.CopyableArray;
 import game.copying.ICopyFrom;
 import game.gelogroups.GeloGroupData;
 import game.rules.Rule;
-import game.garbage.trays.GarbageTray;
 import game.fields.Field;
 import game.fields.FieldPopInfo;
 import utils.Utils.intClamp;
@@ -26,8 +26,8 @@ class ChainSimulatorOptions {}
 class ChainSimulator implements ICopyFrom {
 	@inject final rule: Rule;
 	@inject final linkBuilder: ILinkInfoBuilder;
-	@inject final garbageDisplay: GarbageTray;
-	@inject final accumulatedDisplay: GarbageTray;
+	@inject final garbageDisplay: IGarbageTray;
+	@inject final accumulatedDisplay: IGarbageTray;
 
 	public final steps: CopyableArray<SimulationStep>;
 

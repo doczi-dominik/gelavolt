@@ -26,28 +26,12 @@ class CenterGarbageTray extends GarbageTray {
 		a.state = OPENING;
 	}
 
-	public static function copyTo(src: CenterGarbageTray, dest: CenterGarbageTray) {
-		GarbageTray.copyTo(src, dest);
-
-		dest.lastScaleX = src.lastScaleX;
-		dest.scaleX = src.scaleX;
-		dest.garbage = src.garbage;
-	}
-
-	var lastScaleX: Float;
-	var scaleX: Float;
-	var garbage: Int;
-
-	override function copyFrom(src: GarbageTray) {
-		copyTo(cast(src, CenterGarbageTray), this);
-	}
+	@copy var lastScaleX: Float;
+	@copy var scaleX: Float;
+	@copy var garbage: Int;
 
 	override function copy(): GarbageTray {
-		final a = new CenterGarbageTray(prefsSettings);
-
-		a.copyFrom(this);
-
-		return a;
+		return new CenterGarbageTray(prefsSettings).copyFrom(this);
 	}
 
 	function new(prefsSettings: PrefsSettings) {
@@ -86,8 +70,8 @@ class CenterGarbageTray extends GarbageTray {
 	override function render(g: Graphics, x: Float, y: Float, alpha: Float) {
 		final lerpScaleX = Utils.lerp(lastScaleX, scaleX, alpha);
 
-		for (i in 0...display.length) {
-			final icon = GARBAGE_ICON_GEOMETRIES[display[i]];
+		for (i in 0...display.data.length) {
+			final icon = GARBAGE_ICON_GEOMETRIES[display.data[i]];
 			final iconX = BoardGeometries.CENTER.x + (i - 3) * 64 * lerpScaleX;
 
 			g.drawSubImage(Assets.images.pixel, x + iconX, y, icon.x, icon.y, icon.width, icon.height);
