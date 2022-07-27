@@ -41,6 +41,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: gv
+        submodules: recursive
     - name: Compile
       working-directory: gv
       run: node ../kha/make -t linux -g opengl --compile
@@ -66,6 +67,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: gv
+        submodules: recursive
     - name: Compile
       working-directory: gv
       run: node ../kha/make -v vs2022 -g direct3d11 --compile
@@ -91,6 +93,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: gv
+        submodules: recursive
     - name: Compile
       working-directory: gv
       run: node ../kha/make -t osx -g opengl --compile
