@@ -1,0 +1,6 @@
+[submodule "Libraries/colyseus-websocket-hx"]
+	path = Libraries/colyseus-websocket-hx
+	url = https://github.com/colyseus/colyseus-websocket-hx
+[submodule "Libraries/hxbit"]
+	path = Libraries/hxbit
+	url = https://github.com/HeapsIO/hxbit
