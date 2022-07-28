@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.garbage.trays.NullGarbageTray;
 import game.mediators.ControlHintContainer;
 import game.rules.Rule;
 import game.boardmanagers.SingleBoardManager;
@@ -46,45 +47,53 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	@inject final leftActionBuffer: IActionBuffer;
 	@inject final rightActionBuffer: IActionBuffer;
 
-	var rng: CopyableRNG;
-	var randomizer: Randomizer;
+	@copy var rng: CopyableRNG;
+	@copy var randomizer: Randomizer;
 
-	var particleManager: ParticleManager;
-	var marginManager: MarginTimeManager;
+	@copy var particleManager: ParticleManager;
+	@copy var marginManager: MarginTimeManager;
 
-	var leftBorderColorMediator: BorderColorMediator;
-	var leftTargetMediator: GarbageTargetMediator;
-	var rightBorderColorMediator: BorderColorMediator;
-	var rightTargetMediator: GarbageTargetMediator;
+	@copy var leftBorderColorMediator: BorderColorMediator;
+	@copy var leftTargetMediator: GarbageTargetMediator;
+	@copy var rightBorderColorMediator: BorderColorMediator;
+	@copy var rightTargetMediator: GarbageTargetMediator;
 
-	var leftGarbageManager: GarbageManager;
-	var leftScoreManager: ScoreManager;
-	var leftChainSim: ChainSimulator;
-	var leftChainCounter: ChainCounter;
-	var leftField: Field;
-	var leftQueue: Queue;
+	@copy var leftGarbageTray: CenterGarbageTray;
+	@copy var leftGarbageManager: GarbageManager;
+	@copy var leftScoreManager: ScoreManager;
+	@copy var leftChainSimDisplay: GarbageTray;
+	@copy var leftChainSimAccumDisplay: GarbageTray;
+	@copy var leftChainSim: ChainSimulator;
+	@copy var leftChainCounter: ChainCounter;
+	@copy var leftField: Field;
+	@copy var leftQueue: Queue;
 	var leftInputDevice: IInputDevice;
-	var leftGeloGroup: GeloGroup;
-	var leftAllClearManager: AllClearManager;
+	@copy var leftGeloGroup: GeloGroup;
+	@copy var leftAllClearManager: AllClearManager;
+	@copy var leftPreview: VerticalPreview;
 
-	var rightGarbageManager: GarbageManager;
-	var rightScoreManager: ScoreManager;
-	var rightChainSim: ChainSimulator;
-	var rightChainCounter: ChainCounter;
-	var rightField: Field;
-	var rightQueue: Queue;
-	var rightInputDevice: IInputDevice;
-	var rightGeloGroup: GeloGroup;
-	var rightAllClearManager: AllClearManager;
+	@copy var rightGarbageTray: CenterGarbageTray;
+	@copy var rightGarbageManager: GarbageManager;
+	@copy var rightScoreManager: ScoreManager;
+	@copy var rightChainSimDisplay: GarbageTray;
+	@copy var rightChainSimAccumDisplay: GarbageTray;
+	@copy var rightChainSim: ChainSimulator;
+	@copy var rightChainCounter: ChainCounter;
+	@copy var rightField: Field;
+	@copy var rightQueue: Queue;
+	@copy var rightInputDevice: IInputDevice;
+	@copy var rightGeloGroup: GeloGroup;
+	@copy var rightAllClearManager: AllClearManager;
+	@copy var rightPreview: VerticalPreview;
 
-	var leftState: StandardBoardState;
-	var rightState: StandardBoardState;
+	@copy var leftState: StandardBoardState;
+	@copy var rightState: StandardBoardState;
 
 	var leftBoard: SingleStateBoard;
 	var rightBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): PauseMediator;
-	public var controlHintContainer(null, default): ControlHintContainer;
+	@copy public var controlHintContainer(null, default): ControlHintContainer;
 	public var saveGameStateMediator(null, default): SaveGameStateMediator;
 
 	public var gameState(default, null): GameState;
@@ -139,7 +148,11 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildRightTargetMediator() {
-		leftTargetMediator = new GarbageTargetMediator(BoardGeometries.LEFT);
+		rightTargetMediator = new GarbageTargetMediator(BoardGeometries.LEFT);
+	}
+
+	inline function buildLeftGarbageTray() {
+		leftGarbageTray = CenterGarbageTray.create(Profile.primary.prefs);
 	}
 
 	inline function buildLeftGarbageManager() {
@@ -149,7 +162,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.LEFT,
-			tray: CenterGarbageTray.create(Profile.primary.prefs),
+			tray: leftGarbageTray,
 			target: leftTargetMediator
 		});
 	}
@@ -161,6 +174,14 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildLeftChainSimDisplay() {
+		leftChainSimDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
+	inline function buildLeftChainSimAccumDisplay() {
+		leftChainSimAccumDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
 	inline function buildLeftChainSim() {
 		leftChainSim = new ChainSimulator({
 			rule: rule,
@@ -168,8 +189,8 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 				rule: rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
+			garbageDisplay: leftChainSimDisplay,
+			accumulatedDisplay: leftChainSimAccumDisplay
 		});
 	}
 
@@ -206,8 +227,8 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			chainSim: new ChainSimulator({
 				rule: rule,
 				linkBuilder: NullLinkInfoBuilder.instance,
-				garbageDisplay: GarbageTray.create(prefsSettings),
-				accumulatedDisplay: GarbageTray.create(prefsSettings)
+				garbageDisplay: NullGarbageTray.instance,
+				accumulatedDisplay: NullGarbageTray.instance
 			}),
 		});
 	}
@@ -221,6 +242,14 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildLeftPreview() {
+		leftPreview = new VerticalPreview(leftQueue);
+	}
+
+	inline function buildRightGarbageTray() {
+		rightGarbageTray = CenterGarbageTray.create(Profile.primary.prefs);
+	}
+
 	inline function buildRightGarbageManager() {
 		rightGarbageManager = new GarbageManager({
 			rule: rule,
@@ -228,7 +257,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
 			geometries: BoardGeometries.RIGHT,
-			tray: CenterGarbageTray.create(Profile.primary.prefs),
+			tray: rightGarbageTray,
 			target: rightTargetMediator
 		});
 	}
@@ -240,6 +269,14 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildRightChainSimDisplay() {
+		rightChainSimDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
+	inline function buildRightChainSimAccumDisplay() {
+		rightChainSimAccumDisplay = GarbageTray.create(Profile.primary.prefs);
+	}
+
 	inline function buildRightChainSim() {
 		rightChainSim = new ChainSimulator({
 			rule: rule,
@@ -247,8 +284,8 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 				rule: rule,
 				marginManager: marginManager
 			}),
-			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
-			accumulatedDisplay: GarbageTray.create(Profile.primary.prefs)
+			garbageDisplay: rightChainSimDisplay,
+			accumulatedDisplay: rightChainSimAccumDisplay
 		});
 	}
 
@@ -285,8 +322,8 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			chainSim: new ChainSimulator({
 				rule: rule,
 				linkBuilder: NullLinkInfoBuilder.instance,
-				garbageDisplay: GarbageTray.create(prefsSettings),
-				accumulatedDisplay: GarbageTray.create(prefsSettings)
+				garbageDisplay: NullGarbageTray.instance,
+				accumulatedDisplay: NullGarbageTray.instance
 			}),
 		});
 	}
@@ -300,6 +337,10 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		});
 	}
 
+	inline function buildRightPreview() {
+		rightPreview = new VerticalPreview(rightQueue);
+	}
+
 	inline function buildLeftBoardState() {
 		leftState = new StandardBoardState({
 			rule: rule,
@@ -311,7 +352,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			field: leftField,
 			garbageManager: leftGarbageManager,
 			queue: leftQueue,
-			preview: new VerticalPreview(leftQueue),
+			preview: leftPreview,
 			allClearManager: leftAllClearManager,
 			scoreManager: leftScoreManager,
 			actionBuffer: leftActionBuffer,
@@ -331,7 +372,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			field: rightField,
 			garbageManager: rightGarbageManager,
 			queue: rightQueue,
-			preview: new VerticalPreview(rightQueue),
+			preview: rightPreview,
 			allClearManager: rightAllClearManager,
 			scoreManager: rightScoreManager,
 			actionBuffer: rightActionBuffer,

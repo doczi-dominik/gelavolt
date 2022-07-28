@@ -80,7 +80,7 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@copy var playerQueue: Queue;
 	@copy var playerPreview: VerticalPreview;
 	@copy var playerInputDevice: IInputDevice;
-	@copy var playerActionBuffer: LocalActionBuffer;
+	var playerActionBuffer: LocalActionBuffer;
 	@copy var playerGeloGroupChainSim: ChainSimulator;
 	@copy var playerGeloGroup: GeloGroup;
 	@copy var playerAllClearManager: AllClearManager;
