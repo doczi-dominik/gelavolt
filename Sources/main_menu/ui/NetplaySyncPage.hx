@@ -69,7 +69,8 @@ class NetplaySyncPage implements IMenuPage {
 						leftActionBuffer: new SenderActionBuffer({
 							session: session,
 							frameCounter: frameCounter,
-							inputDevice: menu.inputDevice
+							inputDevice: menu.inputDevice,
+							frameDelay: 2
 						}),
 						rightActionBuffer: new ReceiveActionBuffer({
 							session: session,

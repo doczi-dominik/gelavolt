@@ -19,6 +19,6 @@ class SenderActionBuffer extends LocalActionBuffer {
 	override function addAction(frame: Int, action: ActionSnapshot) {
 		super.addAction(frame, action);
 
-		session.sendInput(frame, action.toBitField());
+		session.sendInput(frame + frameDelay, action.toBitField());
 	}
 }

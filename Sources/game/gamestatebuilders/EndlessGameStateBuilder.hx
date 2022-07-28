@@ -166,7 +166,8 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 		if (replayData == null) {
 			actionBuffer = new LocalActionBuffer({
 				frameCounter: frameCounter,
-				inputDevice: inputDevice
+				inputDevice: inputDevice,
+				frameDelay: 0
 			});
 
 			return;
@@ -175,7 +176,8 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 		actionBuffer = new ReplayActionBuffer({
 			frameCounter: frameCounter,
 			inputDevice: inputDevice,
-			replayData: replayData
+			replayData: replayData,
+			frameDelay: 0
 		});
 	}
 

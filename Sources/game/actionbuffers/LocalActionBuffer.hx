@@ -10,6 +10,8 @@ class LocalActionBufferOptions {}
 class LocalActionBuffer implements IActionBuffer {
 	@inject final frameCounter: FrameCounter;
 	@inject final inputDevice: IInputDevice;
+	@inject final frameDelay: Int;
+
 	final actions: Map<Int, ActionSnapshot>;
 
 	public function new(opts: LocalActionBufferOptions) {
@@ -37,7 +39,7 @@ class LocalActionBuffer implements IActionBuffer {
 	}
 
 	function addAction(frame: Int, action: ActionSnapshot) {
-		actions[frame] = action;
+		actions[frame + frameDelay] = action;
 	}
 
 	public function update() {

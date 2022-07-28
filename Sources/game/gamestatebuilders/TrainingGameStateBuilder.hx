@@ -233,7 +233,8 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	inline function buildPlayerActionBuffer() {
 		playerActionBuffer = new LocalActionBuffer({
 			frameCounter: frameCounter,
-			inputDevice: playerInputDevice
+			inputDevice: playerInputDevice,
+			frameDelay: 0
 		});
 	}
 
