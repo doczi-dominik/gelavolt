@@ -5,8 +5,6 @@ import game.net.ServerMessageType;
 import game.mediators.FrameCounter;
 import haxe.Timer;
 import haxe.io.Bytes;
-import input.IInputDevice;
-import game.rules.Rule;
 import kha.Scheduler;
 import haxe.net.WebSocket;
 
@@ -161,8 +159,6 @@ class SessionManager {
 		if (adv != null) {
 			averageRemoteAdvantage = Math.round(0.4 * adv + 0.6 * averageRemoteAdvantage);
 
-			trace('L: $averageLocalAdvantage -- R: $averageRemoteAdvantage');
-
 			if (sleepFrames == 0 && ++remoteAdvantageCounter % 5 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
@@ -177,8 +173,6 @@ class SessionManager {
 				}
 
 				final s = Std.int(Math.min(diff / 2, 9));
-
-				trace('S: $s');
 
 				if (s < 2) {
 					sleepFrames = 0;
