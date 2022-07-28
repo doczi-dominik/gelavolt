@@ -54,7 +54,7 @@ class NetplaySyncPage implements IMenuPage {
 
 		frameCounter = new FrameCounter();
 		session = new SessionManager({
-			serverUrl: "192.168.1.161:2424",
+			serverUrl: "192.168.1.159:2424",
 			roomCode: "test12345",
 			frameCounter: frameCounter,
 		});
@@ -72,7 +72,8 @@ class NetplaySyncPage implements IMenuPage {
 							inputDevice: menu.inputDevice
 						}),
 						rightActionBuffer: new ReceiveActionBuffer({
-							session: session
+							session: session,
+							frameCounter: frameCounter
 						})
 					})));
 				default:

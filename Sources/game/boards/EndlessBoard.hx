@@ -13,7 +13,6 @@ class EndlessBoard extends SingleStateBoard {
 		super({
 			pauseMediator: opts.pauseMediator,
 			inputDevice: opts.inputDevice,
-			playActionBuffer: opts.playActionBuffer,
 			state: opts.endlessState
 		});
 

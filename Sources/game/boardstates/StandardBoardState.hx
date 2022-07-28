@@ -443,7 +443,7 @@ class StandardBoardState implements IBoardState {
 	}
 
 	public function update() {
-		currentActions = actionBuffer.latestAction;
+		currentActions = actionBuffer.update();
 		geloGroup.update();
 		field.update();
 		preview.update();

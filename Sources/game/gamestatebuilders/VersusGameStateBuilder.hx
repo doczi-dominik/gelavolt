@@ -386,7 +386,6 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			pauseMediator: pauseMediator,
 			inputDevice: leftInputDevice,
 			state: leftState,
-			playActionBuffer: leftActionBuffer
 		});
 	}
 
@@ -395,7 +394,6 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 			pauseMediator: pauseMediator,
 			inputDevice: rightInputDevice,
 			state: rightState,
-			playActionBuffer: rightActionBuffer
 		});
 	}
 

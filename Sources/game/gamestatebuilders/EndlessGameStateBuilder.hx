@@ -230,7 +230,6 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 
 	inline function buildBoard() {
 		board = new EndlessBoard({
-			playActionBuffer: actionBuffer,
 			pauseMediator: pauseMediator,
 			inputDevice: inputDevice,
 			state: boardState,

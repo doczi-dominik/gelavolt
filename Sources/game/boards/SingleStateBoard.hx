@@ -3,7 +3,6 @@ package game.boards;
 import input.IInputDevice;
 import game.mediators.PauseMediator;
 import game.boardstates.IBoardState;
-import game.actionbuffers.IActionBuffer;
 import kha.graphics2.Graphics;
 
 @:structInit
@@ -13,7 +12,6 @@ class SingleStateBoardOptions {}
 class SingleStateBoard implements IBoard {
 	@inject final pauseMediator: PauseMediator;
 	@inject final inputDevice: IInputDevice;
-	@inject final playActionBuffer: IActionBuffer;
 	@inject final state: IBoardState;
 
 	public function new(opts: SingleStateBoardOptions) {
@@ -25,7 +23,6 @@ class SingleStateBoard implements IBoard {
 			pauseMediator.pause(inputDevice);
 		}
 
-		playActionBuffer.update();
 		state.update();
 	}
 

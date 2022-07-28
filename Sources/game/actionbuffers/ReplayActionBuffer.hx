@@ -28,8 +28,8 @@ class ReplayActionBuffer extends LocalActionBuffer {
 
 	override function update() {
 		if (mode == REPLAY)
-			return;
+			return getAction(frameCounter.value);
 
-		super.update();
+		return super.update();
 	}
 }

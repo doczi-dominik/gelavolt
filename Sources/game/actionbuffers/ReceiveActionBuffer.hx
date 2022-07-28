@@ -12,8 +12,6 @@ class ReceiveActionBuffer implements IActionBuffer {
 	@inject final session: SessionManager;
 	final actions: Map<Int, ActionSnapshot>;
 
-	public var latestAction(get, never): ActionSnapshot;
-
 	public function new(opts: ReceiveActionBufferOptions) {
 		Macros.initFromOpts();
 
@@ -31,7 +29,13 @@ class ReceiveActionBuffer implements IActionBuffer {
 		session.onInput = onInput;
 	}
 
-	function get_latestAction() {
+	function onInput(frame: Int, actions: Int) {
+		final snapshot = ActionSnapshot.fromBitField(actions);
+
+		this.actions[frame] = snapshot;
+	}
+
+	public function update() {
 		var frame = frameCounter.value;
 
 		while (frame-- >= 0) {
@@ -41,14 +45,6 @@ class ReceiveActionBuffer implements IActionBuffer {
 
 		return actions[0];
 	}
-
-	function onInput(frame: Int, actions: Int) {
-		final snapshot = ActionSnapshot.fromBitField(actions);
-
-		this.actions[frame] = snapshot;
-	}
-
-	public function update() {}
 
 	public function exportReplayData() {
 		final data: ReplayData = [];

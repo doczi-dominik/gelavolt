@@ -382,7 +382,6 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		playerBoard = new TrainingBoard({
 			pauseMediator: pauseMediator,
 			inputDevice: playerInputDevice,
-			playActionBuffer: playerActionBuffer,
 			controlHintContainer: controlHintContainer,
 			saveGameStateMediator: saveGameStateMediator,
 			playState: playState,
@@ -395,7 +394,6 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 		infoBoard = new SingleStateBoard({
 			pauseMediator: pauseMediator,
 			inputDevice: playerInputDevice,
-			playActionBuffer: NullActionBuffer.instance,
 			state: infoState
 		});
 	}

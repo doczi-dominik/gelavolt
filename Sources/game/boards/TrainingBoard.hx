@@ -38,7 +38,6 @@ class TrainingBoard implements IBoard {
 
 	@inject final pauseMediator: PauseMediator;
 	@inject final inputDevice: IInputDevice;
-	@inject final playActionBuffer: IActionBuffer;
 	@inject final infoState: TrainingInfoBoardState;
 	@inject final controlHintContainer: ControlHintContainer;
 	@inject final saveGameStateMediator: SaveGameStateMediator;
@@ -142,7 +141,6 @@ class TrainingBoard implements IBoard {
 			}
 		}
 
-		playActionBuffer.update();
 		activeState.update();
 	}
 
