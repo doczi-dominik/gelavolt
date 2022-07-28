@@ -9,32 +9,26 @@ private enum abstract Mode(Int) {
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(ReplayActionBuffer))
-class ReplayActionBufferOptions extends LocalActionBufferOptions {}
+class ReplayActionBufferOptions extends LocalActionBufferOptions {
+	public final replayData: ReplayData;
+}
 
 class ReplayActionBuffer extends LocalActionBuffer {
-	@inject final replayData: ReplayData;
-
 	public var mode: Mode;
 
 	public function new(opts: ReplayActionBufferOptions) {
 		super(opts);
 
-		replayData = opts.replayData;
+		for (f => d in opts.replayData) {
+			actions[f] = ActionSnapshot.fromBitField(d);
+		}
 
 		mode = REPLAY;
 	}
 
 	override function update() {
-		if (mode == REPLAY) {
-			final current = replayData[frameCounter.value];
-
-			if (current == null)
-				return;
-
-			latestAction = ActionSnapshot.fromBitField(current);
-
+		if (mode == REPLAY)
 			return;
-		}
 
 		super.update();
 	}

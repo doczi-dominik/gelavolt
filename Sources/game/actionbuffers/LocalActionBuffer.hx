@@ -12,27 +12,36 @@ class LocalActionBuffer implements IActionBuffer {
 	@inject final inputDevice: IInputDevice;
 	final actions: Map<Int, ActionSnapshot>;
 
-	public var latestAction(default, null): ActionSnapshot;
+	public var latestAction(get, never): ActionSnapshot;
 
 	public function new(opts: LocalActionBufferOptions) {
 		game.Macros.initFromOpts();
 
-		actions = [];
-
-		latestAction = {
-			shiftLeft: false,
-			shiftRight: false,
-			rotateLeft: false,
-			rotateRight: false,
-			softDrop: false,
-			hardDrop: false
-		};
+		actions = [
+			0 => {
+				shiftLeft: false,
+				shiftRight: false,
+				rotateLeft: false,
+				rotateRight: false,
+				softDrop: false,
+				hardDrop: false
+			}
+		];
 	}
 
-	function setLatestAction(frame: Int, action: ActionSnapshot) {
-		actions[frame] = action;
+	function get_latestAction() {
+		var frame = frameCounter.value;
 
-		latestAction = action;
+		while (frame-- >= 0) {
+			if (actions.exists(frame))
+				return actions[frame];
+		}
+
+		return actions[0];
+	}
+
+	function addAction(frame: Int, action: ActionSnapshot) {
+		actions[frame] = action;
 	}
 
 	public function update() {
@@ -46,7 +55,7 @@ class LocalActionBuffer implements IActionBuffer {
 		};
 
 		if (latestAction.isNotEqual(currentAction)) {
-			setLatestAction(frameCounter.value, currentAction);
+			addAction(frameCounter.value, currentAction);
 		}
 	}
 

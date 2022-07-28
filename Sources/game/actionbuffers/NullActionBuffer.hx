@@ -10,10 +10,16 @@ class NullActionBuffer implements IActionBuffer {
 		return instance;
 	}
 
-	public var latestAction(default, null): ActionSnapshot;
+	final nullAction: ActionSnapshot;
+
+	public var latestAction(get, never): ActionSnapshot;
 
 	function new() {
-		latestAction = ActionSnapshot.fromBitField(0);
+		nullAction = ActionSnapshot.fromBitField(0);
+	}
+
+	function get_latestAction() {
+		return nullAction;
 	}
 
 	public function copy() {

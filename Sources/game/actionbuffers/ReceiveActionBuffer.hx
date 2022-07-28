@@ -1,5 +1,6 @@
 package game.actionbuffers;
 
+import game.mediators.FrameCounter;
 import game.net.SessionManager;
 
 @:structInit
@@ -7,33 +8,44 @@ import game.net.SessionManager;
 class ReceiveActionBufferOptions {}
 
 class ReceiveActionBuffer implements IActionBuffer {
+	@inject final frameCounter: FrameCounter;
 	@inject final session: SessionManager;
 	final actions: Map<Int, ActionSnapshot>;
 
-	public var latestAction(default, null): ActionSnapshot;
+	public var latestAction(get, never): ActionSnapshot;
 
 	public function new(opts: ReceiveActionBufferOptions) {
 		Macros.initFromOpts();
 
-		actions = [];
-
-		latestAction = {
-			shiftLeft: false,
-			shiftRight: false,
-			rotateLeft: false,
-			rotateRight: false,
-			softDrop: false,
-			hardDrop: false
-		};
+		actions = [
+			0 => {
+				shiftLeft: false,
+				shiftRight: false,
+				rotateLeft: false,
+				rotateRight: false,
+				softDrop: false,
+				hardDrop: false
+			}
+		];
 
 		session.onInput = onInput;
+	}
+
+	function get_latestAction() {
+		var frame = frameCounter.value;
+
+		while (frame-- >= 0) {
+			if (actions.exists(frame))
+				return actions[frame];
+		}
+
+		return actions[0];
 	}
 
 	function onInput(frame: Int, actions: Int) {
 		final snapshot = ActionSnapshot.fromBitField(actions);
 
 		this.actions[frame] = snapshot;
-		latestAction = snapshot;
 	}
 
 	public function update() {}
