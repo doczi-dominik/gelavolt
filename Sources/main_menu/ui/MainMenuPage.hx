@@ -51,11 +51,13 @@ class MainMenuPage extends ListMenuPage {
 						})));
 					}
 				}),
-				new SubPageWidget({
-					title: "Netplay Test",
-					description: [],
-					subPage: new NetplaySyncPage()
-				}),
+				/*
+					new SubPageWidget({
+						title: "Netplay Test",
+						description: [],
+						subPage: new NetplaySyncPage()
+					}),
+				 */
 				new SubPageWidget({
 					title: "Options",
 					description: ["Change Various Options and Settings"],
