@@ -29,7 +29,6 @@ import game.boards.TrainingBoard;
 import game.copying.CopyableRNG;
 import game.randomizers.Randomizer;
 import game.Queue;
-import game.actionbuffers.NullActionBuffer;
 import game.boards.SingleStateBoard;
 import game.garbage.trays.CenterGarbageTray;
 import game.boardmanagers.DualBoardManager;
@@ -54,7 +53,7 @@ class TrainingGameStateBuilderOptions {
 }
 
 @:build(game.Macros.addGameStateBuildMethod())
-class TrainingGameStateBuilder implements IGameStateBuilder {
+class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	@inject final rngSeed: Int;
 	@inject final rule: Rule;
 
@@ -101,9 +100,9 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 	@copy var playerBoard: TrainingBoard;
 	@copy var infoBoard: SingleStateBoard;
 
-	public var pauseMediator(null, default): PauseMediator;
-	@copy public var controlHintContainer(null, default): ControlHintContainer;
-	public var saveGameStateMediator(null, default): SaveGameStateMediator;
+	public var pauseMediator(null, default): Null<PauseMediator>;
+	@copy public var controlHintContainer(null, default): Null<ControlHintContainer>;
+	public var saveGameStateMediator(null, default): Null<SaveGameStateMediator>;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
@@ -117,6 +116,33 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 			rngSeed: rngSeed,
 			rule: rule
 		});
+	}
+
+	inline function initPauseMediator() {
+		if (pauseMediator == null) {
+			pauseMediator = {
+				pause: (_) -> {},
+				resume: () -> {}
+			};
+		}
+	}
+
+	inline function initControlHintContainer() {
+		if (controlHintContainer == null) {
+			controlHintContainer = new ControlHintContainer();
+		}
+
+		controlHintContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
+	}
+
+	inline function initSaveGameStateMediator() {
+		if (saveGameStateMediator == null) {
+			saveGameStateMediator = {
+				loadState: () -> {},
+				saveState: () -> {},
+				rollback: (_) -> {}
+			};
+		}
 	}
 
 	inline function buildRNG() {
@@ -143,10 +169,6 @@ class TrainingGameStateBuilder implements IGameStateBuilder {
 
 	inline function buildFrameCounter() {
 		frameCounter = new FrameCounter();
-	}
-
-	inline function initControlHintContainer() {
-		controlHintContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
 	}
 
 	inline function buildPlayerBorderColorMediator() {

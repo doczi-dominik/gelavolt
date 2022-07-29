@@ -129,7 +129,7 @@ class TrainingBoard implements IBoard {
 			if (inputDevice.getAction(SAVE_STATE)) {
 				saveGameStateMediator.saveState();
 			} else if (inputDevice.getAction(LOAD_STATE)) {
-				saveGameStateMediator.loadState(0);
+				saveGameStateMediator.loadState();
 			}
 		} else {
 			if (inputDevice.getAction(PREVIOUS_STEP)) {

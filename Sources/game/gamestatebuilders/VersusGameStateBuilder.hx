@@ -1,5 +1,10 @@
 package game.gamestatebuilders;
 
+import game.actionbuffers.NullActionBuffer;
+import game.actionbuffers.ReceiveActionBuffer;
+import game.net.SessionManager;
+import game.actionbuffers.SenderActionBuffer;
+import game.actionbuffers.LocalActionBuffer;
 import game.garbage.trays.NullGarbageTray;
 import game.mediators.ControlHintContainer;
 import game.rules.Rule;
@@ -40,18 +45,17 @@ import game.mediators.SaveGameStateMediator;
 class VersusGameStateBuilderOptions implements IGameStateBuilderOptions {}
 
 @:build(game.Macros.addGameStateBuildMethod())
-class VersusGameStateBuilder implements IGameStateBuilder {
+class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	@inject final rngSeed: Int;
 	@inject final rule: Rule;
-	@inject final frameCounter: FrameCounter;
-	@inject final leftActionBuffer: IActionBuffer;
-	@inject final rightActionBuffer: IActionBuffer;
+	@inject final isLocalOnLeft: Bool;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
 
 	@copy var particleManager: ParticleManager;
 	@copy var marginManager: MarginTimeManager;
+	@copy var frameCounter: FrameCounter;
 
 	@copy var leftBorderColorMediator: BorderColorMediator;
 	@copy var leftTargetMediator: GarbageTargetMediator;
@@ -68,6 +72,7 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	@copy var leftField: Field;
 	@copy var leftQueue: Queue;
 	var leftInputDevice: IInputDevice;
+	var leftActionBuffer: IActionBuffer;
 	@copy var leftGeloGroup: GeloGroup;
 	@copy var leftAllClearManager: AllClearManager;
 	@copy var leftPreview: VerticalPreview;
@@ -81,7 +86,8 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	@copy var rightChainCounter: ChainCounter;
 	@copy var rightField: Field;
 	@copy var rightQueue: Queue;
-	@copy var rightInputDevice: IInputDevice;
+	var rightInputDevice: IInputDevice;
+	var rightActionBuffer: IActionBuffer;
 	@copy var rightGeloGroup: GeloGroup;
 	@copy var rightAllClearManager: AllClearManager;
 	@copy var rightPreview: VerticalPreview;
@@ -92,9 +98,10 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 	var leftBoard: SingleStateBoard;
 	var rightBoard: SingleStateBoard;
 
-	public var pauseMediator(null, default): PauseMediator;
-	@copy public var controlHintContainer(null, default): ControlHintContainer;
-	public var saveGameStateMediator(null, default): SaveGameStateMediator;
+	public var pauseMediator(null, default): Null<PauseMediator>;
+	@copy public var controlHintContainer(null, default): Null<ControlHintContainer>;
+	public var saveGameStateMediator(null, default): Null<SaveGameStateMediator>;
+	public var session(null, default): Null<SessionManager>;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
@@ -107,10 +114,35 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		return new VersusGameStateBuilder({
 			rngSeed: rngSeed,
 			rule: rule,
-			frameCounter: new FrameCounter().copyFrom(frameCounter),
-			leftActionBuffer: null,
-			rightActionBuffer: null
+			isLocalOnLeft: isLocalOnLeft
 		});
+	}
+
+	inline function initPauseMediator() {
+		if (pauseMediator == null) {
+			pauseMediator = {
+				pause: (_) -> {},
+				resume: () -> {}
+			};
+		}
+	}
+
+	inline function initControlHintContainer() {
+		if (controlHintContainer == null) {
+			controlHintContainer = new ControlHintContainer();
+		}
+
+		controlHintContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
+	}
+
+	inline function initSaveGameStateMediator() {
+		if (saveGameStateMediator == null) {
+			saveGameStateMediator = {
+				loadState: () -> {},
+				saveState: () -> {},
+				rollback: (_) -> {}
+			};
+		}
 	}
 
 	inline function buildRNG() {
@@ -133,6 +165,10 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 
 	inline function buildMarginManager() {
 		marginManager = new MarginTimeManager(rule);
+	}
+
+	inline function buildFrameCounter() {
+		frameCounter = new FrameCounter();
 	}
 
 	inline function buildLeftBorderColorMediator() {
@@ -212,8 +248,33 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 		leftQueue = new Queue(randomizer.createQueueData(Dropsets.CLASSICAL));
 	}
 
-	inline function buildLeftInputDevice() {
-		leftInputDevice = AnyInputDevice.instance;
+	inline function buildLeftInputHandling() {
+		if (session == null) {
+			leftInputDevice = NullInputDevice.instance;
+			leftActionBuffer = NullActionBuffer.instance;
+
+			return;
+		}
+
+		if (isLocalOnLeft) {
+			leftInputDevice = AnyInputDevice.instance;
+
+			leftActionBuffer = new SenderActionBuffer({
+				session: session,
+				frameCounter: frameCounter,
+				inputDevice: leftInputDevice,
+				frameDelay: 2
+			});
+
+			return;
+		}
+
+		leftInputDevice = NullInputDevice.instance;
+
+		leftActionBuffer = new ReceiveActionBuffer({
+			session: session,
+			frameCounter: frameCounter
+		});
 	}
 
 	inline function buildLeftGeloGroup() {
@@ -309,6 +370,35 @@ class VersusGameStateBuilder implements IGameStateBuilder {
 
 	inline function buildRightInputDevice() {
 		rightInputDevice = NullInputDevice.instance;
+	}
+
+	inline function buildRightInputHandling() {
+		if (session == null) {
+			rightInputDevice = NullInputDevice.instance;
+			rightActionBuffer = NullActionBuffer.instance;
+
+			return;
+		}
+
+		if (isLocalOnLeft) {
+			rightInputDevice = NullInputDevice.instance;
+
+			rightActionBuffer = new ReceiveActionBuffer({
+				session: session,
+				frameCounter: frameCounter
+			});
+
+			return;
+		}
+
+		rightInputDevice = AnyInputDevice.instance;
+
+		rightActionBuffer = new SenderActionBuffer({
+			session: session,
+			frameCounter: frameCounter,
+			inputDevice: rightInputDevice,
+			frameDelay: 2
+		});
 	}
 
 	inline function buildRightGeloGroup() {

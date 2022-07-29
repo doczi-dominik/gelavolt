@@ -1,5 +1,6 @@
 package game.garbage;
 
+import game.screens.GameScreenBase;
 import game.screens.GameScreen;
 import kha.Color;
 import game.copying.CopyableRNG;
@@ -145,7 +146,7 @@ class GarbageManager implements IGarbageManager {
 		final absTrayCenter = absPos.add(trayCenter);
 
 		final attackControl: Point = {
-			x: GameScreen.PLAY_AREA_DESIGN_WIDTH / 2,
+			x: GameScreenBase.PLAY_AREA_DESIGN_WIDTH / 2,
 			y: 0
 		};
 

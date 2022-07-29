@@ -26,7 +26,6 @@ class NetplaySyncPage implements IMenuPage {
 	var fontSize: Int;
 	var fontHeight: Float;
 
-	var frameCounter: FrameCounter;
 	var session: SessionManager;
 
 	var lastSleepFrames: Int;
@@ -52,30 +51,18 @@ class NetplaySyncPage implements IMenuPage {
 	public function onShow(menu: Menu) {
 		this.menu = menu;
 
-		frameCounter = new FrameCounter();
 		session = new SessionManager({
 			serverUrl: "192.168.1.159:2424",
 			roomCode: "test12345",
-			frameCounter: frameCounter,
 		});
 
 		session.onBegin = function(options) {
 			switch (options.builderType) {
 				case VERSUS:
 					GlobalScreenSwitcher.switchScreen(new GameScreen(new VersusGameStateBuilder({
-						frameCounter: frameCounter,
 						rule: options.rule,
 						rngSeed: options.rngSeed,
-						leftActionBuffer: new SenderActionBuffer({
-							session: session,
-							frameCounter: frameCounter,
-							inputDevice: menu.inputDevice,
-							frameDelay: 2
-						}),
-						rightActionBuffer: new ReceiveActionBuffer({
-							session: session,
-							frameCounter: frameCounter
-						})
+						isLocalOnLeft: options.isOnLeftSide,
 					})));
 				default:
 			}
@@ -91,17 +78,11 @@ class NetplaySyncPage implements IMenuPage {
 			return;
 		}
 
-		session.waitForRunning();
+		session.update();
 
 		if (sleepCounter > 0) {
 			sleepCounter--;
 			return;
-		}
-
-		switch (session.state) {
-			case SYNCING | BEGINNING:
-				frameCounter.update();
-			default:
 		}
 
 		sleepCounter = session.getSleepFrames();
@@ -116,7 +97,7 @@ class NetplaySyncPage implements IMenuPage {
 		g.drawString('State: ${session.state}', x, y);
 		g.drawString('Avg RTT: ${session.averageRTT}', x, y + fontHeight);
 
-		final t = frameCounter.value;
+		final t = session.frameCounter.value;
 
 		g.drawString('T: $t', x, y + fontHeight * 2);
 		g.drawString('Last sleep frames: $lastSleepFrames', x, y + fontHeight * 3);

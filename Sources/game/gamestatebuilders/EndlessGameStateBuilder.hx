@@ -62,7 +62,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	@copy var chainCounter: ChainCounter;
 	@copy var field: Field;
 	@copy var queue: Queue;
-	@copy var actionBuffer: IActionBuffer;
+	var actionBuffer: IActionBuffer;
 	@copy var geloGroup: GeloGroup;
 	@copy var allClearManager: AllClearManager;
 

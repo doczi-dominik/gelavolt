@@ -15,7 +15,6 @@ class SessionManagerOptions {}
 class SessionManager {
 	@inject final serverUrl: String;
 	@inject final roomCode: String;
-	@inject final frameCounter: FrameCounter;
 
 	var ws: WebSocket;
 
@@ -29,27 +28,22 @@ class SessionManager {
 	var remoteAdvantageCounter: Int;
 	var successfulSleepChecks: Int;
 
-	// var beginFrame: Null<Int>;
+	var beginFrame: Null<Int>;
 	var netplayOptions: NetplayOptions;
 
 	var sleepFrames: Int;
 
+	public final frameCounter: FrameCounter;
+
 	public var onInput(null, default): (Int, Int) -> Void;
-	public var onBegin(null, default): NetplayOptions->Void;
 
 	public var averageRTT(default, null): Null<Int>;
 	public var state(default, null): SessionState;
-	public var beginFrame(default, null): Null<Int>;
 
 	public function new(opts: SessionManagerOptions) {
 		Macros.initFromOpts();
 
-		netplayOptions = {
-			builderType: VERSUS,
-			rule: {},
-			rngSeed: 24,
-			isOnLeftSide: true
-		};
+		frameCounter = new FrameCounter();
 
 		initConnectingState();
 	}
@@ -228,13 +222,17 @@ class SessionManager {
 		ws.sendString('$INPUT;$frame;$actions');
 	}
 
-	public function waitForRunning() {
+	public function update() {
 		if (state == BEGINNING && frameCounter.value == beginFrame) {
 			setSyncInterval(1000);
 
-			onBegin(netplayOptions);
-
 			state = RUNNING;
+		}
+
+		switch (state) {
+			case CONNECTING | WAITING:
+			default:
+				frameCounter.update();
 		}
 	}
 }

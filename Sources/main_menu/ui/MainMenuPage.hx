@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import game.screens.BackupStateGameScreen;
 import game.gamestatebuilders.TrainingGameStateBuilder;
 import input.AnyInputDevice;
 import game.gamestatebuilders.EndlessGameStateBuilder;
@@ -33,7 +34,7 @@ class MainMenuPage extends ListMenuPage {
 					title: "Training Mode",
 					description: ["Practice In GelaVolt's", "Signature Training Mode!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(new GameScreen(new TrainingGameStateBuilder({
+						GlobalScreenSwitcher.switchScreen(new BackupStateGameScreen(new TrainingGameStateBuilder({
 							rule: {},
 							rngSeed: Std.int(System.time * 1000000),
 						})));
