@@ -1,5 +1,8 @@
 package main_menu.ui;
 
+import game.gamestatebuilders.VersusGameStateBuilder;
+import game.net.SessionManager;
+import game.screens.NetplayGameScreen;
 import game.screens.BackupStateGameScreen;
 import game.gamestatebuilders.TrainingGameStateBuilder;
 import input.AnyInputDevice;
@@ -52,13 +55,26 @@ class MainMenuPage extends ListMenuPage {
 						})));
 					}
 				}),
-				/*
-					new SubPageWidget({
-						title: "Netplay Test",
-						description: [],
-						subPage: new NetplaySyncPage()
-					}),
-				 */
+				new ButtonWidget({
+					title: "Netplay Test",
+					description: [],
+					callback: () -> {
+						final s = new SessionManager({
+							serverUrl: "192.168.1.159:2424",
+							roomCode: "a"
+						});
+
+						GlobalScreenSwitcher.switchScreen(new NetplayGameScreen({
+							session: s,
+							gameStateBuilder: new VersusGameStateBuilder({
+								rule: {},
+								rngSeed: 0,
+								isLocalOnLeft: true,
+								session: s
+							})
+						}));
+					}
+				}),
 				new SubPageWidget({
 					title: "Options",
 					description: ["Change Various Options and Settings"],

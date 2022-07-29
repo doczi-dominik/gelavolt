@@ -45,10 +45,11 @@ import game.mediators.SaveGameStateMediator;
 class VersusGameStateBuilderOptions implements IGameStateBuilderOptions {}
 
 @:build(game.Macros.addGameStateBuildMethod())
-class VersusGameStateBuilder implements INetplayGameStateBuilder {
+class VersusGameStateBuilder implements IBackupGameStateBuilder {
 	@inject final rngSeed: Int;
 	@inject final rule: Rule;
 	@inject final isLocalOnLeft: Bool;
+	@inject final session: Null<SessionManager>;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
@@ -101,7 +102,6 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	public var pauseMediator(null, default): Null<PauseMediator>;
 	@copy public var controlHintContainer(null, default): Null<ControlHintContainer>;
 	public var saveGameStateMediator(null, default): Null<SaveGameStateMediator>;
-	public var session(null, default): Null<SessionManager>;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
@@ -110,11 +110,12 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 		Macros.initFromOpts();
 	}
 
-	public function copy() {
+	public function createBackupBuilder() {
 		return new VersusGameStateBuilder({
 			rngSeed: rngSeed,
 			rule: rule,
-			isLocalOnLeft: isLocalOnLeft
+			isLocalOnLeft: isLocalOnLeft,
+			session: null,
 		});
 	}
 

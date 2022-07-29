@@ -111,7 +111,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 		game.Macros.initFromOpts();
 	}
 
-	public function copy() {
+	public function createBackupBuilder() {
 		return new TrainingGameStateBuilder({
 			rngSeed: rngSeed,
 			rule: rule

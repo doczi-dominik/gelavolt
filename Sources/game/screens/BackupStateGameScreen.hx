@@ -1,7 +1,6 @@
 package game.screens;
 
 import game.gamestatebuilders.IBackupGameStateBuilder;
-import game.mediators.ControlHintContainer;
 import game.states.GameState;
 
 class BackupStateGameScreen extends GameScreenBase {
@@ -33,7 +32,7 @@ class BackupStateGameScreen extends GameScreenBase {
 		gameState = stateBuilder.gameState;
 		pauseMenu = stateBuilder.pauseMenu;
 
-		backupStateBuilder = gameStateBuilder.copy();
+		backupStateBuilder = gameStateBuilder.createBackupBuilder();
 		backupStateBuilder.build();
 
 		backupState = backupStateBuilder.gameState;

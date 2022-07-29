@@ -16,6 +16,8 @@ class SessionManager {
 	@inject final serverUrl: String;
 	@inject final roomCode: String;
 
+	final frameCounter: FrameCounter;
+
 	var ws: WebSocket;
 
 	var syncTimeTaskID: Int;
@@ -32,10 +34,10 @@ class SessionManager {
 	var netplayOptions: NetplayOptions;
 
 	var sleepFrames: Int;
-
-	public final frameCounter: FrameCounter;
+	var internalSleepCounter: Int;
 
 	public var onInput(null, default): (Int, Int) -> Void;
+	public var isInputIdle(null, default): Bool;
 
 	public var averageRTT(default, null): Null<Int>;
 	public var state(default, null): SessionState;
@@ -111,7 +113,12 @@ class SessionManager {
 		localAdvantageCounter = 0;
 		remoteAdvantageCounter = 0;
 
+		sleepFrames = 0;
+		internalSleepCounter = 0;
+
 		setSyncInterval(100);
+
+		isInputIdle = true;
 
 		state = SYNCING;
 	}
@@ -146,14 +153,14 @@ class SessionManager {
 		final d = Timer.stamp() - lastSyncRequestTimestamp;
 		final rtt = Std.int(d * 1000);
 
-		averageRTT = Math.round((0.4 * rtt) + (0.6) * averageRTT);
+		averageRTT = Math.round(0.4 * rtt + 0.6 * averageRTT);
 
 		final adv = Std.parseInt(parts[1]);
 
 		if (adv != null) {
 			averageRemoteAdvantage = Math.round(0.4 * adv + 0.6 * averageRemoteAdvantage);
 
-			if (sleepFrames == 0 && ++remoteAdvantageCounter % 5 == 0) {
+			if (internalSleepCounter == 0 && ++remoteAdvantageCounter % 5 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
 				if (Math.abs(diff) < 3 && ++successfulSleepChecks > 10) {
@@ -163,6 +170,7 @@ class SessionManager {
 
 				if (averageLocalAdvantage < averageRemoteAdvantage) {
 					sleepFrames = 0;
+					internalSleepCounter = 0;
 					return;
 				}
 
@@ -170,10 +178,12 @@ class SessionManager {
 
 				if (s < 2) {
 					sleepFrames = 0;
+					internalSleepCounter = 0;
 					return;
 				}
 
 				sleepFrames = s;
+				internalSleepCounter = s;
 				successfulSleepChecks = 0;
 			}
 		}
@@ -204,18 +214,47 @@ class SessionManager {
 		onInput(frame, actions);
 	}
 
+	function updateSyncingState() {
+		if (internalSleepCounter > 0) {
+			internalSleepCounter--;
+			return 0;
+		}
+
+		frameCounter.update();
+
+		return 0;
+	}
+
+	function updateBeginningState() {
+		if (frameCounter.value == beginFrame) {
+			setSyncInterval(1000);
+
+			state = RUNNING;
+
+			return 0;
+		}
+
+		frameCounter.update();
+
+		return 0;
+	}
+
+	function updateRunningState() {
+		if (isInputIdle) {
+			final s = sleepFrames;
+
+			sleepFrames = 0;
+
+			return s;
+		}
+
+		return 0;
+	}
+
 	public function setSyncInterval(interval: Int) {
 		Scheduler.removeTimeTask(syncTimeTaskID);
 
 		syncTimeTaskID = Scheduler.addTimeTask(sendSyncRequest, 0, interval / 1000);
-	}
-
-	public function getSleepFrames() {
-		final v = sleepFrames;
-
-		sleepFrames = 0;
-
-		return v;
 	}
 
 	public inline function sendInput(frame: Int, actions: Int) {
@@ -223,16 +262,11 @@ class SessionManager {
 	}
 
 	public function update() {
-		if (state == BEGINNING && frameCounter.value == beginFrame) {
-			setSyncInterval(1000);
-
-			state = RUNNING;
-		}
-
-		switch (state) {
-			case CONNECTING | WAITING:
-			default:
-				frameCounter.update();
+		return switch (state) {
+			case SYNCING: updateSyncingState();
+			case BEGINNING: updateBeginningState();
+			case RUNNING: updateRunningState();
+			default: 0;
 		}
 	}
 }
