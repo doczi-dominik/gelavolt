@@ -69,6 +69,9 @@ class StandardBoardState implements IBoardState {
 
 	@copy var firstDropFrame: Bool;
 
+	@copy var canRotateLeft: Bool;
+	@copy var canRotateRight: Bool;
+
 	@copy var borderColor: Color;
 	@copy var beginBorderColor: Color;
 	@copy var targetBorderColor: Color;
@@ -92,6 +95,9 @@ class StandardBoardState implements IBoardState {
 		beginBorderColor = White;
 		targetBorderColor = White;
 		borderColorT = 15;
+
+		canRotateLeft = true;
+		canRotateRight = true;
 
 		canDropGarbage = true;
 
@@ -136,9 +142,21 @@ class StandardBoardState implements IBoardState {
 
 	function controlGroup() {
 		if (currentActions.rotateLeft) {
-			geloGroup.rotateLeft();
-		} else if (currentActions.rotateRight) {
-			geloGroup.rotateRight();
+			if (canRotateLeft) {
+				geloGroup.rotateLeft();
+				canRotateLeft = false;
+			}
+		} else {
+			canRotateLeft = true;
+		}
+
+		if (currentActions.rotateRight) {
+			if (canRotateRight) {
+				geloGroup.rotateRight();
+				canRotateRight = false;
+			}
+		} else {
+			canRotateRight = true;
 		}
 
 		if (currentActions.shiftLeft) {

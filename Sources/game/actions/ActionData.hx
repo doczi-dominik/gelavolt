@@ -68,19 +68,19 @@ final ACTION_DATA: Map<Action, ActionDataEntry> = [
 			"Instantly Fall To The Bottom",
 			"(Only When Enabled In The Ruleset)"
 		],
-		inputType: PRESS,
+		inputType: HOLD,
 		isUnbindable: false
 	},
 	ROTATE_LEFT => {
 		title: "Rotate Left",
 		description: ["Rotate The Gelo Group Counterclockwise"],
-		inputType: PRESS,
+		inputType: HOLD,
 		isUnbindable: false
 	},
 	ROTATE_RIGHT => {
 		title: "Rotate Right",
 		description: ["Rotate The Gelo Group Clockwise"],
-		inputType: PRESS,
+		inputType: HOLD,
 		isUnbindable: false
 	},
 	TOGGLE_EDIT_MODE => {
