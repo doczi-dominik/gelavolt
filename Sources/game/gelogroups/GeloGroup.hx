@@ -84,6 +84,9 @@ class GeloGroup implements ICopyFrom {
 
 		isVisible = false;
 		isShadowVisible = false;
+
+		// Avoids null reference when calling `main.copy()`
+		load(0, 0, new GeloGroupData(GARBAGE, []));
 	}
 
 	function shift(dir: Int) {
