@@ -140,7 +140,6 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 			saveGameStateMediator = {
 				loadState: () -> {},
 				saveState: () -> {},
-				rollback: (_) -> {}
 			};
 		}
 	}

@@ -1,5 +1,6 @@
 package main_menu.ui;
 
+import game.mediators.FrameCounter;
 import game.gamestatebuilders.VersusGameStateBuilder;
 import game.net.SessionManager;
 import game.screens.NetplayGameScreen;
@@ -64,13 +65,17 @@ class MainMenuPage extends ListMenuPage {
 							roomCode: "a"
 						});
 
+						final f = new FrameCounter();
+
 						GlobalScreenSwitcher.switchScreen(new NetplayGameScreen({
 							session: s,
+							frameCounter: f,
 							gameStateBuilder: new VersusGameStateBuilder({
 								rule: {},
 								rngSeed: 0,
 								isLocalOnLeft: true,
-								session: s
+								session: s,
+								frameCounter: f
 							})
 						}));
 					}

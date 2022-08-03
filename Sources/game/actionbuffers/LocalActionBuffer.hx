@@ -30,16 +30,14 @@ class LocalActionBuffer implements IActionBuffer {
 	}
 
 	function getAction(frame: Int) {
-		while (frame-- >= 0) {
+		while (frame > 0) {
 			if (actions.exists(frame))
-				return actions[frame];
+				break;
+
+			frame--;
 		}
 
-		return actions[0];
-	}
-
-	function addAction(frame: Int, action: ActionSnapshot) {
-		actions[frame + frameDelay] = action;
+		return actions[frame];
 	}
 
 	public function update() {
@@ -52,11 +50,10 @@ class LocalActionBuffer implements IActionBuffer {
 			hardDrop: inputDevice.getAction(HARD_DROP)
 		};
 
-		var frame = frameCounter.value;
-		var latestAction = getAction(frame);
+		var latestAction = getAction(frameCounter.value);
 
 		if (latestAction.isNotEqual(currentAction)) {
-			addAction(frameCounter.value, currentAction);
+			actions[frameCounter.value + frameDelay] = currentAction;
 			latestAction = currentAction;
 		}
 

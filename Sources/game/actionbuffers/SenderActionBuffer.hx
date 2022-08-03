@@ -16,9 +16,11 @@ class SenderActionBuffer extends LocalActionBuffer {
 		Macros.initFromOpts();
 	}
 
-	override function addAction(frame: Int, action: ActionSnapshot) {
-		super.addAction(frame, action);
+	override function update(): Null<ActionSnapshot> {
+		final latestAction = super.update();
 
-		session.sendInput(frame + frameDelay, action.toBitField());
+		session.sendInput(frameCounter.value + frameDelay, latestAction.toBitField());
+
+		return latestAction;
 	}
 }

@@ -24,7 +24,6 @@ class BackupStateGameScreen extends GameScreenBase {
 		stateBuilder.saveGameStateMediator = {
 			loadState: loadState,
 			saveState: saveState,
-			rollback: rollback
 		};
 
 		stateBuilder.build();
@@ -44,18 +43,5 @@ class BackupStateGameScreen extends GameScreenBase {
 
 	inline function saveState() {
 		backupStateBuilder.copyFrom(stateBuilder);
-	}
-
-	function rollback(resimulate: Int) {
-		loadState();
-
-		if (resimulate == 0)
-			return;
-
-		for (_ in 0...resimulate) {
-			gameState.update();
-		}
-
-		saveState();
 	}
 }

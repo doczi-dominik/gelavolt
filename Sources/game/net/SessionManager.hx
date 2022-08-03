@@ -21,25 +21,22 @@ class SessionManager {
 	var ws: WebSocket;
 
 	var syncTimeTaskID: Int;
-
-	var lastSyncRequestTimestamp: Float;
 	var roundTripCounter: Int;
-	var averageLocalAdvantage: Int;
 	var localAdvantageCounter: Int;
-	var averageRemoteAdvantage: Int;
 	var remoteAdvantageCounter: Int;
-	var successfulSleepChecks: Int;
-
-	var beginFrame: Null<Int>;
-	var netplayOptions: NetplayOptions;
 
 	var sleepFrames: Int;
 	var internalSleepCounter: Int;
+
+	var beginFrame: Null<Int>;
 
 	public var onInput(null, default): (Int, Int) -> Void;
 	public var isInputIdle(null, default): Bool;
 
 	public var averageRTT(default, null): Null<Int>;
+	public var averageLocalAdvantage(default, null): Null<Int>;
+	public var averageRemoteAdvantage(default, null): Null<Int>;
+	public var successfulSleepChecks(default, null): Null<Int>;
 	public var state(default, null): SessionState;
 
 	public function new(opts: SessionManagerOptions) {
@@ -98,7 +95,7 @@ class SessionManager {
 		ws.onerror = onError;
 
 		#if sys
-		Scheduler.addTimeTask(ws.process, 0, 0.001);
+		Scheduler.addTimeTask(ws.process, 0, 0.0001);
 		#end
 
 		state = CONNECTING;
@@ -124,19 +121,20 @@ class SessionManager {
 	}
 
 	function sendSyncRequest() {
+		final ping = Std.int(Timer.stamp() * 1000);
+
 		var prediction: Null<Int> = null;
 
 		if (averageRTT != null) {
-			prediction = frameCounter.value + Std.int(averageRTT * 60 / 1000);
+			prediction = frameCounter.value + Std.int(averageRTT / 2 * 60 / 1000);
 		}
 
-		lastSyncRequestTimestamp = Timer.stamp();
-
-		ws.sendString('$SYNC_REQ;$prediction');
+		ws.sendString('$SYNC_REQ;$ping;$prediction');
 	}
 
 	function onSyncRequest(parts: Array<String>) {
-		final prediction = Std.parseInt(parts[1]);
+		final pong = parts[1];
+		final prediction = Std.parseInt(parts[2]);
 
 		var adv: Null<Int> = null;
 
@@ -146,16 +144,16 @@ class SessionManager {
 			averageLocalAdvantage = Math.round(0.4 * adv + 0.6 * averageLocalAdvantage);
 		}
 
-		ws.sendString('$SYNC_RESP;$adv');
+		ws.sendString('$SYNC_RESP;$pong;$adv');
 	}
 
 	function onSyncResponse(parts: Array<String>) {
-		final d = Timer.stamp() - lastSyncRequestTimestamp;
-		final rtt = Std.int(d * 1000);
+		final pong = Std.parseInt(parts[1]);
+		final rtt = Std.int(Timer.stamp() * 1000) - pong;
 
-		averageRTT = Math.round(0.4 * rtt + 0.6 * averageRTT);
+		averageRTT = Math.round(0.7 * rtt + 0.3 * averageRTT);
 
-		final adv = Std.parseInt(parts[1]);
+		final adv = Std.parseInt(parts[2]);
 
 		if (adv != null) {
 			averageRemoteAdvantage = Math.round(0.4 * adv + 0.6 * averageRemoteAdvantage);
@@ -163,9 +161,14 @@ class SessionManager {
 			if (internalSleepCounter == 0 && ++remoteAdvantageCounter % 5 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
-				if (Math.abs(diff) < 3 && ++successfulSleepChecks > 10) {
-					initBeginningState();
-					return;
+				if (Math.abs(diff) < 4) {
+					if (++successfulSleepChecks > 10) {
+						initBeginningState();
+
+						return;
+					}
+				} else {
+					successfulSleepChecks = 0;
 				}
 
 				if (averageLocalAdvantage < averageRemoteAdvantage) {
@@ -174,7 +177,8 @@ class SessionManager {
 					return;
 				}
 
-				final s = Std.int(Math.min(diff / 2, 9));
+				final diff = averageLocalAdvantage - averageRemoteAdvantage;
+				final s = Math.round(diff / 2);
 
 				if (s < 2) {
 					sleepFrames = 0;
@@ -184,7 +188,6 @@ class SessionManager {
 
 				sleepFrames = s;
 				internalSleepCounter = s;
-				successfulSleepChecks = 0;
 			}
 		}
 	}
@@ -214,6 +217,12 @@ class SessionManager {
 		onInput(frame, actions);
 	}
 
+	function initRunningState() {
+		setSyncInterval(500);
+
+		state = RUNNING;
+	}
+
 	function updateSyncingState() {
 		if (internalSleepCounter > 0) {
 			internalSleepCounter--;
@@ -241,7 +250,7 @@ class SessionManager {
 
 	function updateRunningState() {
 		if (isInputIdle) {
-			final s = sleepFrames;
+			final s = Std.int(Math.min(sleepFrames, 9));
 
 			sleepFrames = 0;
 

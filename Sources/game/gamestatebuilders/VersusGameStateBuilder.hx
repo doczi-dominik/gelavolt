@@ -1,10 +1,10 @@
 package game.gamestatebuilders;
 
+import game.mediators.RollbackMediator;
 import game.actionbuffers.NullActionBuffer;
 import game.actionbuffers.ReceiveActionBuffer;
 import game.net.SessionManager;
 import game.actionbuffers.SenderActionBuffer;
-import game.actionbuffers.LocalActionBuffer;
 import game.garbage.trays.NullGarbageTray;
 import game.mediators.ControlHintContainer;
 import game.rules.Rule;
@@ -37,7 +37,6 @@ import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
 import game.copying.CopyableRNG;
 import game.mediators.FrameCounter;
-import game.mediators.SaveGameStateMediator;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(VersusGameStateBuilder))
@@ -45,18 +44,19 @@ import game.mediators.SaveGameStateMediator;
 class VersusGameStateBuilderOptions implements IGameStateBuilderOptions {}
 
 @:build(game.Macros.addGameStateBuildMethod())
-class VersusGameStateBuilder implements IBackupGameStateBuilder {
+class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	@inject final rngSeed: Int;
 	@inject final rule: Rule;
 	@inject final isLocalOnLeft: Bool;
 	@inject final session: Null<SessionManager>;
+
+	@inject @copy final frameCounter: FrameCounter;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
 
 	@copy var particleManager: ParticleManager;
 	@copy var marginManager: MarginTimeManager;
-	@copy var frameCounter: FrameCounter;
 
 	@copy var leftBorderColorMediator: BorderColorMediator;
 	@copy var leftTargetMediator: GarbageTargetMediator;
@@ -101,7 +101,7 @@ class VersusGameStateBuilder implements IBackupGameStateBuilder {
 
 	public var pauseMediator(null, default): Null<PauseMediator>;
 	@copy public var controlHintContainer(null, default): Null<ControlHintContainer>;
-	public var saveGameStateMediator(null, default): Null<SaveGameStateMediator>;
+	public var rollbackMediator(null, default): Null<RollbackMediator>;
 
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
@@ -116,6 +116,7 @@ class VersusGameStateBuilder implements IBackupGameStateBuilder {
 			rule: rule,
 			isLocalOnLeft: isLocalOnLeft,
 			session: null,
+			frameCounter: new FrameCounter()
 		});
 	}
 
@@ -136,11 +137,10 @@ class VersusGameStateBuilder implements IBackupGameStateBuilder {
 		controlHintContainer.isVisible = Profile.primary.trainingSettings.showControlHints;
 	}
 
-	inline function initSaveGameStateMediator() {
-		if (saveGameStateMediator == null) {
-			saveGameStateMediator = {
-				loadState: () -> {},
-				saveState: () -> {},
+	inline function initRollbackMediator() {
+		if (rollbackMediator == null) {
+			rollbackMediator = {
+				confirmFrame: () -> {},
 				rollback: (_) -> {}
 			};
 		}
@@ -166,10 +166,6 @@ class VersusGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildMarginManager() {
 		marginManager = new MarginTimeManager(rule);
-	}
-
-	inline function buildFrameCounter() {
-		frameCounter = new FrameCounter();
 	}
 
 	inline function buildLeftBorderColorMediator() {
@@ -272,10 +268,13 @@ class VersusGameStateBuilder implements IBackupGameStateBuilder {
 
 		leftInputDevice = NullInputDevice.instance;
 
-		leftActionBuffer = new ReceiveActionBuffer({
-			session: session,
-			frameCounter: frameCounter
+		final recvAB = new ReceiveActionBuffer({
+			frameCounter: frameCounter,
+			rollbackMediator: rollbackMediator
 		});
+
+		leftActionBuffer = recvAB;
+		session.onInput = recvAB.onInput;
 	}
 
 	inline function buildLeftGeloGroup() {
@@ -384,10 +383,13 @@ class VersusGameStateBuilder implements IBackupGameStateBuilder {
 		if (isLocalOnLeft) {
 			rightInputDevice = NullInputDevice.instance;
 
-			rightActionBuffer = new ReceiveActionBuffer({
-				session: session,
-				frameCounter: frameCounter
+			final recvAB = new ReceiveActionBuffer({
+				frameCounter: frameCounter,
+				rollbackMediator: rollbackMediator
 			});
+
+			rightActionBuffer = recvAB;
+			session.onInput = recvAB.onInput;
 
 			return;
 		}

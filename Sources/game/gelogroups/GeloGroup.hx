@@ -86,6 +86,7 @@ class GeloGroup implements ICopyFrom {
 		isShadowVisible = false;
 
 		// Avoids null reference when calling `main.copy()`
+		// TODO: Make Macro handle Null<T> types
 		load(0, 0, new GeloGroupData(GARBAGE, []));
 	}
 
