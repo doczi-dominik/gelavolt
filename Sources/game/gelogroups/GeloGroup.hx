@@ -1,11 +1,13 @@
 package game.gelogroups;
 
+import game.rules.PhysicsType;
+import game.rules.AnimationsType;
+import utils.ValueBox;
 import game.copying.CopyableArray;
 import game.copying.ConstantCopyableArray;
 import game.copying.ICopyFrom;
 import game.gelos.GeloColor;
 import game.gelos.OtherGelo;
-import game.rules.Rule;
 import save_data.PrefsSettings;
 import game.fields.Field;
 import game.simulation.PopSimStep;
@@ -31,7 +33,9 @@ enum GeloGroupState {
 class GeloGroupOptions {}
 
 class GeloGroup implements ICopyFrom {
-	@inject final rule: Rule;
+	@inject final physics: ValueBox<PhysicsType>;
+	@inject final animations: ValueBox<AnimationsType>;
+	@inject final dropSpeed: ValueBox<Float>;
 	@inject final prefsSettings: PrefsSettings;
 	@inject final scoreManager: ScoreManager;
 	@inject final field: Field;
@@ -272,7 +276,7 @@ class GeloGroup implements ICopyFrom {
 		// Try pushing up, except when using Tsu physics
 		final raisedCellY = cellY - 1;
 
-		if (rule.physics != TSU && checkRotationAndConfirm(cellX, raisedCellY, nextRotationID)) {
+		if (physics != TSU && checkRotationAndConfirm(cellX, raisedCellY, nextRotationID)) {
 			final screenCoords = field.cellToScreen(cellX, raisedCellY);
 
 			x = screenCoords.x;
@@ -397,9 +401,8 @@ class GeloGroup implements ICopyFrom {
 	}
 
 	public function drop(softDrop: Bool) {
-		final dropSpeed = (softDrop) ? Gelo.HALFSIZE : rule.dropSpeed;
-
-		final nextY = y + dropSpeed;
+		final currentDropSpeed: Float = (softDrop) ? Gelo.HALFSIZE : dropSpeed;
+		final nextY = y + currentDropSpeed;
 
 		var collisionOccured = false;
 
@@ -528,7 +531,7 @@ class GeloGroup implements ICopyFrom {
 		if (!isVisible)
 			return;
 
-		final fallChoppyness = rule.animations == TSU ? Gelo.HALFSIZE : 1;
+		final fallChoppyness = animations == TSU ? Gelo.HALFSIZE : 1;
 
 		final prevChoppyY = Math.fround(prevDisplayY / fallChoppyness) * fallChoppyness;
 		final choppyY = Math.fround(displayY / fallChoppyness) * fallChoppyness;

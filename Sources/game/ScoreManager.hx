@@ -1,8 +1,8 @@
 package game;
 
+import utils.ValueBox;
 import game.copying.ICopyFrom;
 import kha.Color;
-import game.rules.Rule;
 import game.geometries.BoardGeometries;
 import game.geometries.BoardOrientation;
 import kha.Assets;
@@ -20,7 +20,7 @@ using StringTools;
 class ScoreManagerOptions {}
 
 class ScoreManager implements ICopyFrom {
-	@inject final rule: Rule;
+	@inject final softDropBonus: ValueBox<Float>;
 	@inject final orientation: BoardOrientation;
 
 	final scoreFont: Font;
@@ -144,8 +144,8 @@ class ScoreManager implements ICopyFrom {
 	}
 
 	public function addDropBonus() {
-		score += rule.softDropBonus;
-		dropBonus += rule.softDropBonus;
+		score += softDropBonus.v;
+		dropBonus += softDropBonus.v;
 	}
 
 	public function resetDropBonus() {

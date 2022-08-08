@@ -1,5 +1,6 @@
 package game.auto_attack;
 
+import utils.ValueBox;
 import game.copying.ConstantCopyableArray;
 import game.copying.ICopyFrom;
 import kha.graphics2.Graphics;
@@ -13,7 +14,6 @@ import utils.Point;
 import game.simulation.ILinkInfoBuilder;
 import save_data.TrainingSettings;
 import game.copying.CopyableRNG;
-import game.rules.Rule;
 import game.garbage.IGarbageManager;
 import game.simulation.LinkInfo;
 import game.gelos.GeloColor;
@@ -30,7 +30,7 @@ class AutoAttackManagerOptions {}
 class AutoAttackManager implements ICopyFrom {
 	static inline final EFFECT_Y = 800;
 
-	@inject final rule: Rule;
+	@inject final popCount: ValueBox<Int>;
 	@inject final rng: CopyableRNG;
 	@inject final geometries: BoardGeometries;
 	@inject final trainingSettings: TrainingSettings;
@@ -79,7 +79,7 @@ class AutoAttackManager implements ICopyFrom {
 			final colorCount = rng.data.GetIn(trainingSettings.minAttackColors, trainingSettings.maxAttackColors);
 
 			for (i in 0...colorCount) {
-				clearsByColor[i] = rule.popCount + rng.data.GetIn(trainingSettings.minAttackGroupDiff, trainingSettings.maxAttackGroupDiff);
+				clearsByColor[i] = popCount.v + rng.data.GetIn(trainingSettings.minAttackGroupDiff, trainingSettings.maxAttackGroupDiff);
 			}
 
 			final link = linkBuilder.build({

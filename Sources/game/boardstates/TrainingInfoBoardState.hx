@@ -1,9 +1,9 @@
 package game.boardstates;
 
+import utils.ValueBox;
 import game.auto_attack.AutoAttackManager;
 import save_data.PrefsSettings;
 import game.garbage.IGarbageManager;
-import game.rules.Rule;
 import utils.Utils;
 import game.rules.MarginTimeManager;
 import save_data.TrainingSettings;
@@ -35,9 +35,9 @@ class TrainingInfoBoardState implements IBoardState {
 
 	public static inline final GAME_INFO_X = -64;
 
+	@inject final popCount: ValueBox<Int>;
 	@inject final geometries: BoardGeometries;
 	@inject final marginManager: MarginTimeManager;
-	@inject final rule: Rule;
 	@inject final linkBuilder: ILinkInfoBuilder;
 	@inject final trainingSettings: TrainingSettings;
 	@inject final chainAdvantageDisplay: GarbageTray;
@@ -326,7 +326,7 @@ class TrainingInfoBoardState implements IBoardState {
 				sendsAllClearBonus: false,
 				garbageRemainder: remainder,
 				dropBonus: 0,
-				clearsByColor: [COLOR1 => rule.popCount, COLOR2 => 0, COLOR3 => 0, COLOR4 => 0, COLOR5 => 0]
+				clearsByColor: [COLOR1 => popCount, COLOR2 => 0, COLOR3 => 0, COLOR4 => 0, COLOR5 => 0]
 			});
 
 			garbageCounter = link.accumulatedGarbage;

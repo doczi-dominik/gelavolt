@@ -1,11 +1,11 @@
 package game.simulation;
 
+import utils.ValueBox;
 import game.garbage.trays.IGarbageTray;
 import game.copying.ConstantCopyableArray;
 import game.copying.CopyableArray;
 import game.copying.ICopyFrom;
 import game.gelogroups.GeloGroupData;
-import game.rules.Rule;
 import game.fields.Field;
 import game.fields.FieldPopInfo;
 import utils.Utils.intClamp;
@@ -24,7 +24,8 @@ private class SimOptions {
 class ChainSimulatorOptions {}
 
 class ChainSimulator implements ICopyFrom {
-	@inject final rule: Rule;
+	@inject final popCount: ValueBox<Int>;
+	@inject final vanishHiddenRows: ValueBox<Bool>;
 	@inject final linkBuilder: ILinkInfoBuilder;
 	@inject final garbageDisplay: IGarbageTray;
 	@inject final accumulatedDisplay: IGarbageTray;
@@ -54,7 +55,7 @@ class ChainSimulator implements ICopyFrom {
 		final popInfo = new FieldPopInfo();
 
 		field.checkConnections((connected) -> {
-			if (connected.length >= rule.popCount) {
+			if (connected.length >= popCount.v) {
 				popInfo.hasPops = true;
 
 				final firstInGroup = connected[0];
@@ -168,7 +169,7 @@ class ChainSimulator implements ICopyFrom {
 			gelo.stopFalling();
 		});
 
-		if (rule.vanishHiddenRows) {
+		if (vanishHiddenRows.v) {
 			field.customForEach(field.garbageRows, field.outerRows, (_, x, y) -> {
 				field.clear(x, y);
 			});

@@ -1,7 +1,12 @@
 package game.gamestatebuilders;
 
+import game.rules.AnimationsType;
+import game.rules.PhysicsType;
+import game.rules.PowerTableType;
+import game.rules.ColorBonusTableType;
+import game.rules.GroupBonusTableType;
+import utils.ValueBox;
 import game.actionbuffers.ReplayData;
-import game.rules.Rule;
 import game.mediators.ControlHintContainer;
 import game.boards.EndlessBoard;
 import input.IInputDevice;
@@ -44,7 +49,20 @@ class EndlessGameStateBuilderOptions implements IGameStateBuilderOptions {}
 @:build(game.Macros.addGameStateBuildMethod())
 class EndlessGameStateBuilder implements IGameStateBuilder {
 	@inject final rngSeed: Int;
-	@inject final rule: Rule;
+	@inject final marginTime: Int;
+	@inject final targetPoints: Int;
+	@inject final softDropBonus: ValueBox<Float>;
+	@inject final popCount: ValueBox<Int>;
+	@inject final vanishHiddenRows: ValueBox<Bool>;
+	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
+	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
+	@inject final powerTableType: ValueBox<PowerTableType>;
+	@inject final dropBonusGarbage: ValueBox<Bool>;
+	@inject final allClearReward: ValueBox<Int>;
+	@inject final physics: ValueBox<PhysicsType>;
+	@inject final animations: ValueBox<AnimationsType>;
+	@inject final dropSpeed: ValueBox<Float>;
+	@inject final randomizeGarbage: ValueBox<Bool>;
 	@inject final inputDevice: IInputDevice;
 	@inject final replayData: Null<ReplayData>;
 
@@ -83,9 +101,22 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 
 	public function copy() {
 		return new EndlessGameStateBuilder({
-			inputDevice: inputDevice,
-			rule: rule,
 			rngSeed: rngSeed,
+			marginTime: marginTime,
+			targetPoints: targetPoints,
+			softDropBonus: softDropBonus,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
+			groupBonusTableType: groupBonusTableType,
+			colorBonusTableType: colorBonusTableType,
+			powerTableType: powerTableType,
+			dropBonusGarbage: dropBonusGarbage,
+			allClearReward: allClearReward,
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
+			randomizeGarbage: randomizeGarbage,
+			inputDevice: inputDevice,
 			replayData: replayData
 		});
 	}
@@ -109,7 +140,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(rule);
+		marginManager = new MarginTimeManager(marginTime, targetPoints);
 	}
 
 	inline function buildFrameCounter() {
@@ -127,16 +158,21 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 
 	inline function buildScoreManager() {
 		scoreManager = new ScoreManager({
-			rule: rule,
+			softDropBonus: softDropBonus,
 			orientation: LEFT
 		});
 	}
 
 	inline function buildChainSim() {
 		chainSim = new ChainSimulator({
-			rule: rule,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				groupBonusTableType: groupBonusTableType,
+				colorBonusTableType: colorBonusTableType,
+				powerTableType: powerTableType,
+				dropBonusGarbage: dropBonusGarbage,
+				allClearReward: allClearReward,
 				marginManager: marginManager
 			}),
 			garbageDisplay: GarbageTray.create(Profile.primary.prefs),
@@ -185,12 +221,15 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 		final prefsSettings = Profile.primary.prefs;
 
 		geloGroup = new GeloGroup({
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
 			field: field,
-			rule: rule,
 			prefsSettings: prefsSettings,
 			scoreManager: scoreManager,
 			chainSim: new ChainSimulator({
-				rule: rule,
+				popCount: popCount,
+				vanishHiddenRows: vanishHiddenRows,
 				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: GarbageTray.create(prefsSettings),
 				accumulatedDisplay: GarbageTray.create(prefsSettings)
@@ -209,7 +248,8 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 
 	inline function buildBoardState() {
 		boardState = new EndlessBoardState({
-			rule: rule,
+			animations: animations,
+			randomizeGarbage: randomizeGarbage,
 			prefsSettings: Profile.primary.prefs,
 			rng: rng,
 			geometries: BoardGeometries.CENTERED,

@@ -1,7 +1,7 @@
 package game.boardstates;
 
+import utils.ValueBox;
 import game.rules.AnimationsType;
-import game.rules.Rule;
 import utils.Utils;
 import game.simulation.SimulationStepType;
 import save_data.PrefsSettings;
@@ -43,7 +43,8 @@ private enum InnerState {
 class StandardBoardStateOptions {}
 
 class StandardBoardState implements IBoardState {
-	@inject final rule: Rule;
+	@inject final animations: ValueBox<AnimationsType>;
+	@inject final randomizeGarbage: ValueBox<Bool>;
 	@inject final prefsSettings: PrefsSettings;
 
 	@inject final rng: CopyableRNG;
@@ -248,7 +249,7 @@ class StandardBoardState implements IBoardState {
 
 	function handleDropStep() {
 		if (field.updateFall(field.totalRows - 1, 0)) {
-			if (rule.animations == TSU) {
+			if (animations == TSU) {
 				field.setSpriteVariations();
 			}
 
@@ -422,7 +423,7 @@ class StandardBoardState implements IBoardState {
 
 			var columnIndex: Int;
 
-			if (rule.randomizeGarbage) {
+			if (randomizeGarbage) {
 				columnIndex = rng.data.GetUpTo(columnPositions.length - 1);
 			} else {
 				columnIndex = 0;

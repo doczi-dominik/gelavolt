@@ -1,5 +1,11 @@
 package game.gamestatebuilders;
 
+import game.rules.AnimationsType;
+import game.rules.PhysicsType;
+import game.rules.PowerTableType;
+import game.rules.ColorBonusTableType;
+import game.rules.GroupBonusTableType;
+import utils.ValueBox;
 import game.mediators.RollbackMediator;
 import game.actionbuffers.NullActionBuffer;
 import game.actionbuffers.ReceiveActionBuffer;
@@ -7,7 +13,6 @@ import game.net.SessionManager;
 import game.actionbuffers.SenderActionBuffer;
 import game.garbage.trays.NullGarbageTray;
 import game.mediators.ControlHintContainer;
-import game.rules.Rule;
 import game.boardmanagers.SingleBoardManager;
 import game.boardmanagers.DualBoardManager;
 import input.NullInputDevice;
@@ -46,7 +51,22 @@ class VersusGameStateBuilderOptions implements IGameStateBuilderOptions {}
 @:build(game.Macros.addGameStateBuildMethod())
 class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	@inject final rngSeed: Int;
-	@inject final rule: Rule;
+	@inject final marginTime: Int;
+	@inject final targetPoints: Int;
+	@inject final garbageDropLimit: ValueBox<Int>;
+	@inject final garbageConfirmGracePeriod: ValueBox<Int>;
+	@inject final softDropBonus: ValueBox<Float>;
+	@inject final popCount: ValueBox<Int>;
+	@inject final vanishHiddenRows: ValueBox<Bool>;
+	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
+	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
+	@inject final powerTableType: ValueBox<PowerTableType>;
+	@inject final dropBonusGarbage: ValueBox<Bool>;
+	@inject final allClearReward: ValueBox<Int>;
+	@inject final physics: ValueBox<PhysicsType>;
+	@inject final animations: ValueBox<AnimationsType>;
+	@inject final dropSpeed: ValueBox<Float>;
+	@inject final randomizeGarbage: ValueBox<Bool>;
 	@inject final isLocalOnLeft: Bool;
 	@inject final session: Null<SessionManager>;
 
@@ -113,7 +133,22 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	public function createBackupBuilder() {
 		return new VersusGameStateBuilder({
 			rngSeed: rngSeed,
-			rule: rule,
+			marginTime: marginTime,
+			targetPoints: targetPoints,
+			garbageDropLimit: garbageDropLimit,
+			garbageConfirmGracePeriod: garbageConfirmGracePeriod,
+			softDropBonus: softDropBonus,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
+			groupBonusTableType: groupBonusTableType,
+			colorBonusTableType: colorBonusTableType,
+			powerTableType: powerTableType,
+			dropBonusGarbage: dropBonusGarbage,
+			allClearReward: allClearReward,
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
+			randomizeGarbage: randomizeGarbage,
 			isLocalOnLeft: isLocalOnLeft,
 			session: null,
 			frameCounter: new FrameCounter()
@@ -165,7 +200,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(rule);
+		marginManager = new MarginTimeManager(marginTime, targetPoints);
 	}
 
 	inline function buildLeftBorderColorMediator() {
@@ -190,7 +225,8 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildLeftGarbageManager() {
 		leftGarbageManager = new GarbageManager({
-			rule: rule,
+			garbageDropLimit: garbageDropLimit,
+			confirmGracePeriod: garbageConfirmGracePeriod,
 			rng: rng,
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
@@ -202,7 +238,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildLeftScoreManager() {
 		leftScoreManager = new ScoreManager({
-			rule: rule,
+			softDropBonus: softDropBonus,
 			orientation: LEFT
 		});
 	}
@@ -217,9 +253,14 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildLeftChainSim() {
 		leftChainSim = new ChainSimulator({
-			rule: rule,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				groupBonusTableType: groupBonusTableType,
+				colorBonusTableType: colorBonusTableType,
+				powerTableType: powerTableType,
+				dropBonusGarbage: dropBonusGarbage,
+				allClearReward: allClearReward,
 				marginManager: marginManager
 			}),
 			garbageDisplay: leftChainSimDisplay,
@@ -281,12 +322,15 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 		final prefsSettings = Profile.primary.prefs;
 
 		leftGeloGroup = new GeloGroup({
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
 			field: leftField,
-			rule: rule,
 			prefsSettings: prefsSettings,
 			scoreManager: leftScoreManager,
 			chainSim: new ChainSimulator({
-				rule: rule,
+				popCount: popCount,
+				vanishHiddenRows: vanishHiddenRows,
 				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: NullGarbageTray.instance,
 				accumulatedDisplay: NullGarbageTray.instance
@@ -313,7 +357,8 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildRightGarbageManager() {
 		rightGarbageManager = new GarbageManager({
-			rule: rule,
+			garbageDropLimit: garbageDropLimit,
+			confirmGracePeriod: garbageConfirmGracePeriod,
 			rng: rng,
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
@@ -325,7 +370,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildRightScoreManager() {
 		rightScoreManager = new ScoreManager({
-			rule: rule,
+			softDropBonus: softDropBonus,
 			orientation: LEFT
 		});
 	}
@@ -340,9 +385,14 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildRightChainSim() {
 		rightChainSim = new ChainSimulator({
-			rule: rule,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				groupBonusTableType: groupBonusTableType,
+				colorBonusTableType: colorBonusTableType,
+				powerTableType: powerTableType,
+				dropBonusGarbage: dropBonusGarbage,
+				allClearReward: allClearReward,
 				marginManager: marginManager
 			}),
 			garbageDisplay: rightChainSimDisplay,
@@ -408,12 +458,15 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 		final prefsSettings = Profile.primary.prefs;
 
 		rightGeloGroup = new GeloGroup({
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
 			field: rightField,
-			rule: rule,
 			prefsSettings: prefsSettings,
 			scoreManager: rightScoreManager,
 			chainSim: new ChainSimulator({
-				rule: rule,
+				popCount: popCount,
+				vanishHiddenRows: vanishHiddenRows,
 				linkBuilder: NullLinkInfoBuilder.instance,
 				garbageDisplay: NullGarbageTray.instance,
 				accumulatedDisplay: NullGarbageTray.instance
@@ -436,7 +489,8 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildLeftBoardState() {
 		leftState = new StandardBoardState({
-			rule: rule,
+			animations: animations,
+			randomizeGarbage: randomizeGarbage,
 			prefsSettings: Profile.primary.prefs,
 			rng: rng,
 			geometries: BoardGeometries.LEFT,
@@ -456,7 +510,8 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 
 	inline function buildRightBoardState() {
 		rightState = new StandardBoardState({
-			rule: rule,
+			animations: animations,
+			randomizeGarbage: randomizeGarbage,
 			prefsSettings: Profile.primary.prefs,
 			rng: rng,
 			geometries: BoardGeometries.RIGHT,

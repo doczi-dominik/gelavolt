@@ -1,7 +1,12 @@
 package game.gamestatebuilders;
 
+import game.rules.AnimationsType;
+import game.rules.PhysicsType;
+import game.rules.PowerTableType;
+import game.rules.ColorBonusTableType;
+import game.rules.GroupBonusTableType;
+import utils.ValueBox;
 import game.garbage.trays.NullGarbageTray;
-import game.rules.Rule;
 import game.auto_attack.AutoAttackManager;
 import game.gelogroups.TrainingGeloGroup;
 import game.mediators.ControlHintContainer;
@@ -55,7 +60,22 @@ class TrainingGameStateBuilderOptions {
 @:build(game.Macros.addGameStateBuildMethod())
 class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	@inject final rngSeed: Int;
-	@inject final rule: Rule;
+	@inject final marginTime: Int;
+	@inject final targetPoints: Int;
+	@inject final garbageDropLimit: ValueBox<Int>;
+	@inject final garbageConfirmGracePeriod: ValueBox<Int>;
+	@inject final softDropBonus: ValueBox<Float>;
+	@inject final popCount: ValueBox<Int>;
+	@inject final vanishHiddenRows: ValueBox<Bool>;
+	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
+	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
+	@inject final powerTableType: ValueBox<PowerTableType>;
+	@inject final dropBonusGarbage: ValueBox<Bool>;
+	@inject final allClearReward: ValueBox<Int>;
+	@inject final physics: ValueBox<PhysicsType>;
+	@inject final animations: ValueBox<AnimationsType>;
+	@inject final dropSpeed: ValueBox<Float>;
+	@inject final randomizeGarbage: ValueBox<Bool>;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
@@ -114,7 +134,22 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	public function createBackupBuilder() {
 		return new TrainingGameStateBuilder({
 			rngSeed: rngSeed,
-			rule: rule
+			marginTime: marginTime,
+			targetPoints: targetPoints,
+			garbageDropLimit: garbageDropLimit,
+			garbageConfirmGracePeriod: garbageConfirmGracePeriod,
+			softDropBonus: softDropBonus,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
+			groupBonusTableType: groupBonusTableType,
+			colorBonusTableType: colorBonusTableType,
+			powerTableType: powerTableType,
+			dropBonusGarbage: dropBonusGarbage,
+			allClearReward: allClearReward,
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
+			randomizeGarbage: randomizeGarbage
 		});
 	}
 
@@ -163,7 +198,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(rule);
+		marginManager = new MarginTimeManager(marginTime, targetPoints);
 	}
 
 	inline function buildFrameCounter() {
@@ -188,7 +223,8 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPlayerGarbageManager() {
 		playerGarbageManager = new GarbageManager({
-			rule: rule,
+			garbageDropLimit: garbageDropLimit,
+			confirmGracePeriod: garbageConfirmGracePeriod,
 			rng: rng,
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
@@ -200,7 +236,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPlayerScoreManager() {
 		playerScoreManager = new ScoreManager({
-			rule: rule,
+			softDropBonus: softDropBonus,
 			orientation: LEFT
 		});
 	}
@@ -215,9 +251,14 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPlayerChainSim() {
 		playerChainSim = new ChainSimulator({
-			rule: rule,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				groupBonusTableType: groupBonusTableType,
+				colorBonusTableType: colorBonusTableType,
+				powerTableType: powerTableType,
+				dropBonusGarbage: dropBonusGarbage,
+				allClearReward: allClearReward,
 				marginManager: marginManager
 			}),
 			garbageDisplay: playerChainSimDisplay,
@@ -261,7 +302,8 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPlayerGeloGroupChainSim() {
 		playerGeloGroupChainSim = new ChainSimulator({
-			rule: rule,
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
 			linkBuilder: NullLinkInfoBuilder.instance,
 			garbageDisplay: NullGarbageTray.instance,
 			accumulatedDisplay: NullGarbageTray.instance
@@ -270,8 +312,10 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPlayerGeloGroup() {
 		playerGeloGroup = new TrainingGeloGroup({
+			physics: physics,
+			animations: animations,
+			dropSpeed: dropSpeed,
 			field: playerField,
-			rule: rule,
 			prefsSettings: Profile.primary.prefs,
 			scoreManager: playerScoreManager,
 			chainSim: playerGeloGroupChainSim,
@@ -294,7 +338,8 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildInfoGarbageManager() {
 		infoGarbageManager = new GarbageManager({
-			rule: rule,
+			garbageDropLimit: garbageDropLimit,
+			confirmGracePeriod: garbageConfirmGracePeriod,
 			rng: rng,
 			prefsSettings: Profile.primary.prefs,
 			particleManager: particleManager,
@@ -310,13 +355,17 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildAutoAttackManager() {
 		autoAttackManager = new AutoAttackManager({
-			rule: rule,
+			popCount: popCount,
 			rng: rng,
 			geometries: BoardGeometries.INFO,
 			trainingSettings: Profile.primary.trainingSettings,
 			prefsSettings: Profile.primary.prefs,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				groupBonusTableType: groupBonusTableType,
+				colorBonusTableType: colorBonusTableType,
+				powerTableType: powerTableType,
+				dropBonusGarbage: dropBonusGarbage,
+				allClearReward: allClearReward,
 				marginManager: marginManager
 			}),
 			garbageManager: infoGarbageManager,
@@ -335,11 +384,15 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildInfoState() {
 		infoState = new TrainingInfoBoardState({
+			popCount: popCount,
 			geometries: BoardGeometries.INFO,
 			marginManager: marginManager,
-			rule: rule,
 			linkBuilder: new LinkInfoBuilder({
-				rule: rule,
+				groupBonusTableType: groupBonusTableType,
+				colorBonusTableType: colorBonusTableType,
+				powerTableType: powerTableType,
+				dropBonusGarbage: dropBonusGarbage,
+				allClearReward: allClearReward,
 				marginManager: marginManager
 			}),
 			trainingSettings: Profile.primary.trainingSettings,
@@ -355,8 +408,9 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPlayState() {
 		playState = new TrainingBoardState({
+			animations: animations,
+			randomizeGarbage: randomizeGarbage,
 			infoState: infoState,
-			rule: rule,
 			prefsSettings: Profile.primary.prefs,
 			rng: rng,
 			geometries: BoardGeometries.LEFT,
@@ -422,8 +476,16 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 
 	inline function buildPauseMenu() {
 		pauseMenu = new TrainingPauseMenu({
+			popCount: popCount,
+			vanishHiddenRows: vanishHiddenRows,
+			dropSpeed: dropSpeed,
+			physics: physics,
+			powerTableType: powerTableType,
+			colorBonusTableType: colorBonusTableType,
+			groupBonusTableType: groupBonusTableType,
+			dropBonusGarbage: dropBonusGarbage,
+			allClearReward: allClearReward,
 			pauseMediator: pauseMediator,
-			rule: rule,
 			prefsSettings: Profile.primary.prefs,
 			randomizer: randomizer,
 			queue: playerQueue,

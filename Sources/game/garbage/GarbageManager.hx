@@ -1,5 +1,6 @@
 package game.garbage;
 
+import utils.ValueBox;
 import game.screens.GameScreenBase;
 import game.screens.GameScreen;
 import kha.Color;
@@ -16,14 +17,14 @@ import game.particles.GarbageBulletParticle;
 import game.particles.ParticleManager;
 import kha.graphics2.Graphics;
 import game.gelos.ScreenGeloPoint;
-import game.rules.Rule;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(GarbageManager))
 class GarbageManagerOptions {}
 
 class GarbageManager implements IGarbageManager {
-	@inject final rule: Rule;
+	@inject final garbageDropLimit: ValueBox<Int>;
+	@inject final confirmGracePeriod: ValueBox<Int>;
 	@inject final rng: CopyableRNG;
 	@inject final prefsSettings: PrefsSettings;
 	@inject final particleManager: ParticleManager;
@@ -55,7 +56,7 @@ class GarbageManager implements IGarbageManager {
 		if (graceT > 0)
 			return 0;
 
-		return Std.int(Math.min(confirmedGarbage, rule.garbageDropLimit));
+		return Std.int(Math.min(confirmedGarbage, garbageDropLimit));
 	}
 
 	function reduceGarbage(amount: Int) {
@@ -195,7 +196,7 @@ class GarbageManager implements IGarbageManager {
 
 	function setConfirmedGarbage(amount: Int) {
 		confirmedGarbage += Std.int(Math.min(amount, currentGarbage));
-		graceT = rule.garbageConfirmGracePeriod;
+		graceT = confirmGracePeriod;
 	}
 
 	function startAnimation() {

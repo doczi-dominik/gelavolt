@@ -39,8 +39,23 @@ class MainMenuPage extends ListMenuPage {
 					description: ["Practice In GelaVolt's", "Signature Training Mode!"],
 					callback: () -> {
 						GlobalScreenSwitcher.switchScreen(new BackupStateGameScreen(new TrainingGameStateBuilder({
-							rule: {},
 							rngSeed: Std.int(System.time * 1000000),
+							marginTime: 96,
+							targetPoints: 70,
+							garbageDropLimit: 30,
+							garbageConfirmGracePeriod: 30,
+							softDropBonus: 0.5,
+							popCount: 4,
+							vanishHiddenRows: false,
+							groupBonusTableType: TSU,
+							colorBonusTableType: TSU,
+							powerTableType: TSU,
+							dropBonusGarbage: true,
+							allClearReward: 30,
+							physics: TSU,
+							animations: TSU,
+							dropSpeed: 2.6,
+							randomizeGarbage: true
 						})));
 					}
 				}),
@@ -49,8 +64,21 @@ class MainMenuPage extends ListMenuPage {
 					description: ["Play For As Long As You", "Can In Endless Mode And", "Share Your Replays!"],
 					callback: () -> {
 						GlobalScreenSwitcher.switchScreen(new GameScreen(new EndlessGameStateBuilder({
-							rule: {},
 							rngSeed: Std.int(System.time * 1000000),
+							marginTime: 96,
+							targetPoints: 70,
+							softDropBonus: 0.5,
+							popCount: 4,
+							vanishHiddenRows: false,
+							groupBonusTableType: TSU,
+							colorBonusTableType: TSU,
+							powerTableType: TSU,
+							dropBonusGarbage: true,
+							allClearReward: 30,
+							physics: TSU,
+							animations: TSU,
+							dropSpeed: 2.6,
+							randomizeGarbage: true,
 							inputDevice: AnyInputDevice.instance,
 							replayData: null
 						})));
@@ -71,8 +99,23 @@ class MainMenuPage extends ListMenuPage {
 							session: s,
 							frameCounter: f,
 							gameStateBuilder: new VersusGameStateBuilder({
-								rule: {},
 								rngSeed: 0,
+								marginTime: 96,
+								targetPoints: 70,
+								garbageDropLimit: 30,
+								garbageConfirmGracePeriod: 30,
+								softDropBonus: 0.5,
+								popCount: 4,
+								vanishHiddenRows: false,
+								groupBonusTableType: TSU,
+								colorBonusTableType: TSU,
+								powerTableType: TSU,
+								dropBonusGarbage: true,
+								allClearReward: 30,
+								physics: TSU,
+								animations: TSU,
+								dropSpeed: 2.6,
+								randomizeGarbage: true,
 								isLocalOnLeft: true,
 								session: s,
 								frameCounter: f

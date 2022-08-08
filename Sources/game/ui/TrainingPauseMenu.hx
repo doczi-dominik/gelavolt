@@ -1,5 +1,8 @@
 package game.ui;
 
+import game.rules.GroupBonusTableType;
+import game.rules.PhysicsType;
+import utils.ValueBox;
 import game.ui.PauseMenu.PauseMenuOptions;
 import game.auto_attack.AutoAttackManager;
 import game.simulation.LinkInfoBuilder;
@@ -19,11 +22,9 @@ import game.rules.MarginTimeManager;
 import game.simulation.ChainSimulator;
 import game.AllClearManager;
 import game.boards.TrainingBoard;
-import game.boardstates.TrainingInfoBoardState;
 import game.boardstates.TrainingBoardState;
 import game.Queue;
 import game.randomizers.Randomizer;
-import game.rules.Rule;
 import ui.OptionListWidget;
 import ui.Menu;
 import ui.IListWidget;
@@ -34,7 +35,15 @@ import ui.SubPageWidget;
 class TrainingPauseMenuOptions extends PauseMenuOptions {}
 
 class TrainingPauseMenu extends PauseMenu {
-	@inject final rule: Rule;
+	@inject final popCount: ValueBox<Int>;
+	@inject final vanishHiddenRows: ValueBox<Bool>;
+	@inject final dropSpeed: ValueBox<Float>;
+	@inject final physics: ValueBox<PhysicsType>;
+	@inject final powerTableType: ValueBox<PowerTableType>;
+	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
+	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
+	@inject final dropBonusGarbage: ValueBox<Bool>;
+	@inject final allClearReward: ValueBox<Int>;
 	@inject final randomizer: Randomizer;
 	@inject final queue: Queue;
 	@inject final playState: TrainingBoardState;
@@ -270,7 +279,11 @@ class TrainingPauseMenu extends PauseMenu {
 												});
 											case CUSTOM:
 												new CustomAutoAttackPage(autoAttackManager, new LinkInfoBuilder({
-													rule: rule,
+													powerTableType: powerTableType,
+													colorBonusTableType: colorBonusTableType,
+													groupBonusTableType: groupBonusTableType,
+													dropBonusGarbage: dropBonusGarbage,
+													allClearReward: allClearReward,
 													marginManager: marginManager
 												}));
 										});
@@ -376,17 +389,17 @@ class TrainingPauseMenu extends PauseMenu {
 							minValue: 2,
 							maxValue: 14,
 							delta: 1,
-							startValue: rule.popCount,
+							startValue: popCount,
 							onChange: (value) -> {
-								rule.popCount = Std.int(value);
+								popCount.v = Std.int(value);
 							}
 						}),
 						new YesNoWidget({
 							title: "Vanish Ghost Row",
 							description: ["Set Whether Gelos That", "Lock In the Ghost Row", "Disappear Or Not"],
-							defaultValue: rule.vanishHiddenRows,
+							defaultValue: vanishHiddenRows,
 							onChange: (value) -> {
-								rule.vanishHiddenRows = value;
+								vanishHiddenRows.v = value;
 							}
 						}),
 						new ListSubPageWidget({
@@ -429,9 +442,9 @@ class TrainingPauseMenu extends PauseMenu {
 							minValue: 0,
 							maxValue: 31,
 							delta: 0.1,
-							startValue: rule.dropSpeed,
+							startValue: dropSpeed,
 							onChange: (value) -> {
-								rule.dropSpeed = value;
+								dropSpeed.v = value;
 							}
 						}),
 						new OptionListWidget({
@@ -443,9 +456,9 @@ class TrainingPauseMenu extends PauseMenu {
 								"Gelos More Freely!"
 							],
 							options: ["TSU", "FEVER"],
-							startIndex: 0,
+							startIndex: physics == TSU ? 0 : 1,
 							onChange: (value) -> {
-								rule.physics = (value == "FEVER") ? FEVER : TSU;
+								physics.v = (value == "FEVER") ? FEVER : TSU;
 							}
 						}),
 						new YesNoWidget({
@@ -472,37 +485,37 @@ class TrainingPauseMenu extends PauseMenu {
 							title: "Power Table",
 							description: ["Choose Between 'OPP', 'TSU' And", "'TSU (Singleplayer)' Chain Power", "Tables"],
 							options: [PowerTableType.OPP, TSU, TSU_SINGLEPLAYER],
-							startIndex: switch (rule.powerTableType) {
+							startIndex: switch (powerTableType.v) {
 								case OPP: 0;
 								case TSU: 1;
 								case TSU_SINGLEPLAYER: 2;
 							},
 							onChange: (value) -> {
-								rule.powerTableType = value;
+								powerTableType.v = value;
 							}
 						}),
 						new OptionListWidget({
 							title: "Color Bonus Table",
 							description: ["Alternate Between 'TSU' And 'FEVER'", "Color Bonus Tables",],
 							options: [ColorBonusTableType.TSU, FEVER],
-							startIndex: switch (rule.colorBonusTableType) {
+							startIndex: switch (colorBonusTableType.v) {
 								case TSU: 0;
 								case FEVER: 1;
 							},
 							onChange: (value) -> {
-								rule.colorBonusTableType = value;
+								colorBonusTableType.v = value;
 							}
 						}),
 						new OptionListWidget({
 							title: "Group Bonus Table",
 							description: ["Alternate Between 'TSU' And 'FEVER'", "Group Bonus Tables",],
 							options: [ColorBonusTableType.TSU, FEVER],
-							startIndex: switch (rule.groupBonusTableType) {
+							startIndex: switch (groupBonusTableType.v) {
 								case TSU: 0;
 								case FEVER: 1;
 							},
 							onChange: (value) -> {
-								rule.groupBonusTableType = value;
+								groupBonusTableType.v = value;
 							}
 						}),
 						new YesNoWidget({
