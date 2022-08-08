@@ -62,7 +62,17 @@ class NetplayGameScreen extends GameScreenBase {
 		}
 	}
 
-	override function updateGameState() {
+	override function updatePaused() {
+		pauseMenu.update();
+		updateGameState();
+	}
+
+	override function updateRunning() {
+		background.update();
+		updateGameState();
+	}
+
+	function updateGameState() {
 		final sleep = session.update();
 
 		if (sleep != 0) {

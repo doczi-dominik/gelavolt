@@ -64,7 +64,12 @@ class GameScreenBase implements IScreen {
 		isPaused = false;
 	}
 
-	function updateGameState() {
+	function updatePaused() {
+		pauseMenu.update();
+	}
+
+	function updateRunning() {
+		background.update();
 		gameState.update();
 	}
 
@@ -74,11 +79,12 @@ class GameScreenBase implements IScreen {
 
 	public function update() {
 		if (isPaused) {
-			pauseMenu.update();
+			updatePaused();
+
+			return;
 		}
 
-		background.update();
-		updateGameState();
+		updateRunning();
 	}
 
 	public function render(g: Graphics, g4: Graphics4, alpha: Float) {
