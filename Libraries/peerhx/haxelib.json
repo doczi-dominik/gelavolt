@@ -1,0 +1,14 @@
+{
+  "name": "peerhx",
+  "url": "http://peerjs.com/",
+  "license": "MIT",
+  "tags": ["peerjs","webrtc","peer","datachannel","mediachannel"],
+  "description": "Haxe peerjs bindings",
+  "version": "0.3.8",
+  "releasenote": "PeerJS wraps the browser's WebRTC implementation to provide a complete, configurable, and easy-to-use peer-to-peer connection API. Equipped with nothing but an ID, a peer can create a P2P data or media stream connection to a remote peer.",
+  "contributors": ["eduardo_costa"],
+  "dependencies": 
+  {
+	  
+  }
+}

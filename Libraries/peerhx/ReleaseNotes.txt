@@ -1,0 +1,6 @@
+  
+=== 0.3.8 ===
+   - PeerJS bindings.
+   - Based on the 0.3.8 snapshot.
+   - free to copy and complete if you are in a hurry :)
+   
