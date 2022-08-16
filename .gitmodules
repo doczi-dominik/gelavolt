@@ -6,7 +6,7 @@
 	url = https://github.com/HeapsIO/hxbit
 [submodule "Libraries/colyseus-haxe"]
 	path = Libraries/colyseus-haxe
-	url = https://github.com/colyseus/colyseus-haxe
+	url = https://github.com/doczi-dominik/colyseus-haxe
 [submodule "Libraries/peerhx"]
 	path = Libraries/peerhx
 	url = https://github.com/haxorplatform/peerhx
