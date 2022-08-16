@@ -1,24 +1,16 @@
 package game.net;
 
+import peerjs.Peer;
 import game.net.PacketType;
-import game.net.ServerMessageType;
 import game.mediators.FrameCounter;
 import haxe.Timer;
-import haxe.io.Bytes;
 import kha.Scheduler;
-import haxe.net.WebSocket;
-
-@:structInit
-@:build(game.Macros.buildOptionsClass(SessionManager))
-class SessionManagerOptions {}
+import peerjs.DataConnection;
 
 class SessionManager {
-	@inject final serverUrl: String;
-	@inject final roomCode: String;
-
 	final frameCounter: FrameCounter;
 
-	var ws: WebSocket;
+	var dc: DataConnection;
 
 	var syncTimeTaskID: Int;
 	var roundTripCounter: Int;
@@ -39,27 +31,38 @@ class SessionManager {
 	public var successfulSleepChecks(default, null): Null<Int>;
 	public var state(default, null): SessionState;
 
-	public function new(opts: SessionManagerOptions) {
-		Macros.initFromOpts();
-
+	public function new(peer: Peer, isHost: Bool, remoteID: String) {
 		frameCounter = new FrameCounter();
 
-		initConnectingState();
+		trace('RemoteID: $remoteID');
+
+		if (isHost) {
+			trace('Hosting');
+			peer.on(PeerEventType.Connection, initDataConnection);
+		} else {
+			trace('Connecting');
+			initDataConnection(peer.connect(remoteID));
+		}
+
+		state = WAITING;
 	}
 
 	inline function advantageSign(x: Int) {
 		return x < 0 ? -1 : 1;
 	}
 
-	function onClose(?e: Null<Dynamic>) {
-		trace('WS Closed: $e');
-	}
+	function initDataConnection(dc: DataConnection) {
+		this.dc = dc;
 
-	function onServerMessage(msg: Bytes) {
-		switch ((msg.get(0) : ServerMessageType)) {
-			case BEGIN_SYNC:
-				initSyncingState();
-		}
+		dc.on(DataConnectionEventType.Open, () -> {
+			initSyncingState();
+		});
+
+		dc.on(DataConnectionEventType.Error, (err: PeerError) -> {
+			trace('DC Error: $err');
+		});
+
+		dc.on(DataConnectionEventType.Data, onMessage);
 	}
 
 	function onMessage(msg: String) {
@@ -83,26 +86,6 @@ class SessionManager {
 
 	function onError(msg: String) {
 		trace('WS Error: $msg');
-	}
-
-	function initConnectingState() {
-		ws = WebSocket.create("ws://" + serverUrl + "/" + roomCode);
-
-		ws.onopen = initWaitingState;
-		ws.onclose = onClose;
-		ws.onmessageBytes = onServerMessage;
-		ws.onmessageString = onMessage;
-		ws.onerror = onError;
-
-		#if sys
-		Scheduler.addTimeTask(ws.process, 0, 0.0001);
-		#end
-
-		state = CONNECTING;
-	}
-
-	function initWaitingState() {
-		state = WAITING;
 	}
 
 	function initSyncingState() {
@@ -129,7 +112,7 @@ class SessionManager {
 			prediction = frameCounter.value + Std.int(averageRTT / 2 * 60 / 1000);
 		}
 
-		ws.sendString('$SYNC_REQ;$ping;$prediction');
+		dc.send('$SYNC_REQ;$ping;$prediction');
 	}
 
 	function onSyncRequest(parts: Array<String>) {
@@ -141,28 +124,28 @@ class SessionManager {
 		if (prediction != null) {
 			adv = frameCounter.value - prediction;
 
-			averageLocalAdvantage = Math.round(0.4 * adv + 0.6 * averageLocalAdvantage);
+			averageLocalAdvantage = Math.round(0.5 * adv + 0.5 * averageLocalAdvantage);
 		}
 
-		ws.sendString('$SYNC_RESP;$pong;$adv');
+		dc.send('$SYNC_RESP;$pong;$adv');
 	}
 
 	function onSyncResponse(parts: Array<String>) {
 		final pong = Std.parseInt(parts[1]);
 		final rtt = Std.int(Timer.stamp() * 1000) - pong;
 
-		averageRTT = Math.round(0.7 * rtt + 0.3 * averageRTT);
+		averageRTT = Math.round(0.5 * rtt + 0.5 * averageRTT);
 
 		final adv = Std.parseInt(parts[2]);
 
 		if (adv != null) {
-			averageRemoteAdvantage = Math.round(0.4 * adv + 0.6 * averageRemoteAdvantage);
+			averageRemoteAdvantage = Math.round(0.5 * adv + 0.5 * averageRemoteAdvantage);
 
 			if (internalSleepCounter == 0 && ++remoteAdvantageCounter % 5 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
 				if (Math.abs(diff) < 4) {
-					if (++successfulSleepChecks > 10) {
+					if (++successfulSleepChecks > 2) {
 						initBeginningState();
 
 						return;
@@ -193,13 +176,13 @@ class SessionManager {
 	}
 
 	function initBeginningState() {
-		ws.sendString('$BEGIN_REQ');
+		dc.send('$BEGIN_REQ');
 
 		state = BEGINNING;
 	}
 
 	function onBeginRequest(parts: Array<String>) {
-		ws.sendString('$BEGIN_RESP;$beginFrame');
+		dc.send('$BEGIN_RESP;$beginFrame');
 	}
 
 	function onBeginResponse(parts: Array<String>) {
@@ -236,7 +219,7 @@ class SessionManager {
 
 	function updateBeginningState() {
 		if (frameCounter.value == beginFrame) {
-			setSyncInterval(1000);
+			setSyncInterval(500);
 
 			state = RUNNING;
 
@@ -267,7 +250,7 @@ class SessionManager {
 	}
 
 	public inline function sendInput(frame: Int, actions: Int) {
-		ws.sendString('$INPUT;$frame;$actions');
+		dc.send('$INPUT;$frame;$actions');
 	}
 
 	public function update() {

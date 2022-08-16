@@ -12,7 +12,7 @@ import Screen.GlobalScreenSwitcher;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
-#if js
+#if kha_html5
 import js.Browser.document;
 import js.Browser.window;
 import js.html.CanvasElement;
@@ -20,6 +20,7 @@ import kha.Macros;
 import js.html.FileReader;
 import js.html.DragEvent;
 import js.Browser;
+import lobby.LobbyPage;
 #else
 import kha.Window;
 import sys.FileSystem;
@@ -99,7 +100,11 @@ class Main {
 
 				ScaleManager.screen.resize(System.windowWidth(), System.windowHeight());
 
+				#if kha_html5
+				LobbyPage.handleURLJoin();
+				#else
 				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+				#end
 
 				#if kha_html5
 				Browser.window.ondrop = (ev: DragEvent) -> {

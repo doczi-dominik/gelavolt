@@ -1,9 +1,6 @@
 package main_menu.ui;
 
-import game.mediators.FrameCounter;
-import game.gamestatebuilders.VersusGameStateBuilder;
-import game.net.SessionManager;
-import game.screens.NetplayGameScreen;
+import lobby.LobbyPage;
 import game.screens.BackupStateGameScreen;
 import game.gamestatebuilders.TrainingGameStateBuilder;
 import input.AnyInputDevice;
@@ -84,44 +81,10 @@ class MainMenuPage extends ListMenuPage {
 						})));
 					}
 				}),
-				new ButtonWidget({
-					title: "Netplay Test",
+				new SubPageWidget({
+					title: "Host Netplay Test (WIP)",
 					description: [],
-					callback: () -> {
-						final s = new SessionManager({
-							serverUrl: "192.168.1.159:2424",
-							roomCode: "a"
-						});
-
-						final f = new FrameCounter();
-
-						GlobalScreenSwitcher.switchScreen(new NetplayGameScreen({
-							session: s,
-							frameCounter: f,
-							gameStateBuilder: new VersusGameStateBuilder({
-								rngSeed: 0,
-								marginTime: 96,
-								targetPoints: 70,
-								garbageDropLimit: 30,
-								garbageConfirmGracePeriod: 30,
-								softDropBonus: 0.5,
-								popCount: 4,
-								vanishHiddenRows: false,
-								groupBonusTableType: TSU,
-								colorBonusTableType: TSU,
-								powerTableType: TSU,
-								dropBonusGarbage: true,
-								allClearReward: 30,
-								physics: TSU,
-								animations: TSU,
-								dropSpeed: 2.6,
-								randomizeGarbage: true,
-								isLocalOnLeft: true,
-								session: s,
-								frameCounter: f
-							})
-						}));
-					}
+					subPage: new LobbyPage()
 				}),
 				new SubPageWidget({
 					title: "Options",
