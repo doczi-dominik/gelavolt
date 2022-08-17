@@ -82,6 +82,10 @@ class ReceiveActionBuffer implements IActionBuffer {
 		return getAction(frameCounter.value);
 	}
 
+	public function activate() {}
+
+	public function deactivate() {}
+
 	public function exportReplayData() {
 		final data: ReplayData = [];
 

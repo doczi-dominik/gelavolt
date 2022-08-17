@@ -32,6 +32,8 @@ class NetplayGameScreen extends GameScreenBase {
 
 	final elapsedFrames: Vector<ElapsedFrame>;
 
+	var sleepCounter: Int;
+
 	public function new(opts: NetplayGameScreenOptions) {
 		super();
 
@@ -60,6 +62,8 @@ class NetplayGameScreen extends GameScreenBase {
 			elapsedFrames[i] = new ElapsedFrame(gameStateBuilder.createBackupBuilder());
 			elapsedFrames[i].builder.build();
 		}
+
+		sleepCounter = 0;
 	}
 
 	override function updatePaused() {
@@ -73,11 +77,12 @@ class NetplayGameScreen extends GameScreenBase {
 	}
 
 	function updateGameState() {
-		final sleep = session.update();
-
-		if (sleep != 0) {
-			trace('Suggested sleep: $sleep');
+		if (sleepCounter > 0) {
+			sleepCounter--;
+			return;
 		}
+
+		sleepCounter = session.update();
 
 		if (session.state == RUNNING) {
 			gameState.update();

@@ -24,6 +24,10 @@ class NullActionBuffer implements IActionBuffer {
 		return nullAction;
 	}
 
+	public function activate() {}
+
+	public function deactivate() {}
+
 	public function exportReplayData() {
 		return new ReplayData();
 	}

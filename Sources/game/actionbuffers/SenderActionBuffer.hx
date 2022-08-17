@@ -23,4 +23,14 @@ class SenderActionBuffer extends LocalActionBuffer {
 
 		return latestAction;
 	}
+
+	override function activate() {
+		super.activate();
+		session.isInputIdle = false;
+	}
+
+	override function deactivate() {
+		super.deactivate();
+		session.isInputIdle = true;
+	}
 }
