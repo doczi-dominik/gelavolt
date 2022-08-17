@@ -1,5 +1,6 @@
 package game.actionbuffers;
 
+import game.net.InputHistoryEntry;
 import game.mediators.RollbackMediator;
 import game.mediators.FrameCounter;
 
@@ -45,33 +46,36 @@ class ReceiveActionBuffer implements IActionBuffer {
 		return actions[frame];
 	}
 
-	public function onInput(frame: Int, actions: Int) {
-		trace('Received input for frame $frame on ${frameCounter.value}');
+	public function onInput(history: Array<InputHistoryEntry>) {
+		trace('Received ${history.length} inputs on ${frameCounter.value}');
 
-		final frameDiff = frameCounter.value - frame;
-		final snapshot = ActionSnapshot.fromBitField(actions);
+		var rollbackTo: Null<Int> = null;
 
-		if (frameDiff < 1) {
-			trace('Input is for the future, saving');
-
-			this.actions[frame] = snapshot;
-
-			return;
-		}
-
-		trace('Input received happened $frameDiff frames ago!!');
-
-		if (getAction(frame).isNotEqual(snapshot)) {
-			trace('Inputs diverge, saving input and rolling back $frameDiff frames!');
+		for (e in history) {
+			final frame = e.frame;
+			final frameDiff = frameCounter.value - frame;
+			final snapshot = ActionSnapshot.fromBitField(e.actions);
 
 			this.actions[frame] = snapshot;
 
-			rollbackMediator.rollback(frame);
+			if (frameDiff < 1) {
+				continue;
+			}
 
-			return;
+			if (rollbackTo != null) {
+				continue;
+			}
+
+			if (getAction(frame).isNotEqual(snapshot)) {
+				trace('Inputs diverge, scheduling $frameDiff frame rollback to $frame!');
+				rollbackTo = frame;
+			}
 		}
 
-		trace('Input are the same, skipping rollback');
+		if (rollbackTo != null) {
+			trace('Executing rollback');
+			rollbackMediator.rollback(rollbackTo);
+		}
 	}
 
 	public function update() {

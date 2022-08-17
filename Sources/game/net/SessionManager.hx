@@ -12,6 +12,8 @@ class SessionManager {
 
 	var dc: DataConnection;
 
+	var localInputHistory: Array<InputHistoryEntry>;
+
 	var syncTimeTaskID: Int;
 	var roundTripCounter: Int;
 	var localAdvantageCounter: Int;
@@ -22,7 +24,7 @@ class SessionManager {
 
 	var beginFrame: Null<Int>;
 
-	public var onInput(null, default): (Int, Int) -> Void;
+	public var onInput(null, default): Array<InputHistoryEntry>->Void;
 	public var isInputIdle(null, default): Bool;
 
 	public var averageRTT(default, null): Null<Int>;
@@ -34,15 +36,13 @@ class SessionManager {
 	public function new(peer: Peer, isHost: Bool, remoteID: String) {
 		frameCounter = new FrameCounter();
 
-		trace('RemoteID: $remoteID');
-
 		if (isHost) {
-			trace('Hosting');
 			peer.on(PeerEventType.Connection, initDataConnection);
 		} else {
-			trace('Connecting');
 			initDataConnection(peer.connect(remoteID));
 		}
+
+		localInputHistory = [];
 
 		state = WAITING;
 	}
@@ -77,6 +77,8 @@ class SessionManager {
 				onSyncResponse(parts);
 			case INPUT:
 				onInputPacket(parts);
+			case INPUT_ACK:
+				onInputAckPacket(parts);
 			case BEGIN_REQ:
 				onBeginRequest(parts);
 			case BEGIN_RESP:
@@ -145,7 +147,7 @@ class SessionManager {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
 				if (Math.abs(diff) < 4) {
-					if (++successfulSleepChecks > 2) {
+					if (++successfulSleepChecks > 5) {
 						initBeginningState();
 
 						return;
@@ -194,10 +196,36 @@ class SessionManager {
 	}
 
 	function onInputPacket(parts: Array<String>) {
-		final frame = Std.parseInt(parts[1]);
-		final actions = Std.parseInt(parts[2]);
+		final history = new Array<InputHistoryEntry>();
 
-		onInput(frame, actions);
+		var i = 1;
+		var lastFrame = -1;
+
+		while (i < parts.length) {
+			final frame = Std.parseInt(parts[i]);
+			final actions = Std.parseInt(parts[i + 1]);
+
+			history.push({
+				frame: frame,
+				actions: actions
+			});
+
+			i += 2;
+
+			lastFrame = frame;
+		}
+
+		dc.send('$INPUT_ACK;$lastFrame');
+
+		onInput(history);
+	}
+
+	function onInputAckPacket(parts: Array<String>) {
+		final frame = Std.parseInt(parts[1]);
+
+		trace('Received INPUT_ACK for frame $frame');
+
+		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 	}
 
 	function initRunningState() {
@@ -219,9 +247,7 @@ class SessionManager {
 
 	function updateBeginningState() {
 		if (frameCounter.value == beginFrame) {
-			setSyncInterval(500);
-
-			state = RUNNING;
+			initRunningState();
 
 			return 0;
 		}
@@ -249,8 +275,16 @@ class SessionManager {
 		syncTimeTaskID = Scheduler.addTimeTask(sendSyncRequest, 0, interval / 1000);
 	}
 
-	public inline function sendInput(frame: Int, actions: Int) {
-		dc.send('$INPUT;$frame;$actions');
+	public function sendInput(frame: Int, actions: Int) {
+		localInputHistory.push({frame: frame, actions: actions});
+
+		var msg = '$INPUT';
+
+		for (e in localInputHistory) {
+			msg += ';${e.frame};${e.actions}';
+		}
+
+		dc.send(msg);
 	}
 
 	public function update() {

@@ -72,8 +72,6 @@ class LobbyPage implements IMenuPage {
 	public static function handleURLJoin() {
 		final roomID = Browser.location.hash.substring(1);
 
-		trace('ID: $roomID');
-
 		if (roomID == "") {
 			GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 			return;
@@ -86,7 +84,6 @@ class LobbyPage implements IMenuPage {
 		});
 
 		peer.on(PeerEventType.Open, peerID -> {
-			trace('Connected to PeerServer, ID: $peerID');
 			new Client('wss://$SERVER_URL').joinById(roomID, ["peerID" => peerID], WaitingRoomState, (err, room) -> {
 				if (err != null) {
 					trace('Join error: $err');
@@ -136,7 +133,6 @@ class LobbyPage implements IMenuPage {
 		});
 
 		peer.on(PeerEventType.Open, id -> {
-			trace('Connected to PeerServer, ID: $id');
 			new Client('wss://$SERVER_URL').create("waiting", ["peerID" => id], WaitingRoomState, (err, room) -> {
 				if (err != null) {
 					trace('Create error: $err');
