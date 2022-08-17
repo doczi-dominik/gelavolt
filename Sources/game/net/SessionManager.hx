@@ -39,7 +39,9 @@ class SessionManager {
 		if (isHost) {
 			peer.on(PeerEventType.Connection, initDataConnection);
 		} else {
-			initDataConnection(peer.connect(remoteID));
+			initDataConnection(peer.connect(remoteID, {
+				serialization: PeerDataSerialization.None
+			}));
 		}
 
 		localInputHistory = [];
