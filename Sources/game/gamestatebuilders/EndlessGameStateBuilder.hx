@@ -203,7 +203,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 			actionBuffer = new LocalActionBuffer({
 				frameCounter: frameCounter,
 				inputDevice: inputDevice,
-				frameDelay: 0
+				frameDelay: Profile.primary.input.localDelay
 			});
 
 			return;

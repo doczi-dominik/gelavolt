@@ -236,6 +236,43 @@ class OptionsPage extends ListMenuPage {
 					SaveManager.saveProfiles();
 				}
 			}),
+			new NumberRangeWidget({
+				title: "Offline Input Delay",
+				description: [
+					"Input Delay For Singleplayer Gamemodes",
+					"",
+					"Setting This To Match",
+					"'Netplay Input Delay' Is Recommended!"
+				],
+				startValue: inputSettings.localDelay,
+				minValue: 0,
+				maxValue: 8,
+				delta: 1,
+				onChange: value -> {
+					inputSettings.localDelay = Std.int(value);
+					SaveManager.saveProfiles();
+				}
+			}),
+			new NumberRangeWidget({
+				title: "Netplay Input Delay",
+				description: [
+					"Input Delay For Online Multiplayer",
+					"",
+					"Lower: More Responsive Inputs,",
+					"More Visual Glitches",
+					"",
+					"Higher: Less Responsive Inputs,",
+					"Less Visual Glitches"
+				],
+				startValue: inputSettings.netplayDelay,
+				minValue: 0,
+				maxValue: 8,
+				delta: 1,
+				onChange: value -> {
+					inputSettings.netplayDelay = Std.int(value);
+					SaveManager.saveProfiles();
+				}
+			})
 		];
 	}
 

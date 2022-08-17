@@ -296,7 +296,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 		playerActionBuffer = new LocalActionBuffer({
 			frameCounter: frameCounter,
 			inputDevice: playerInputDevice,
-			frameDelay: 0
+			frameDelay: Profile.primary.input.localDelay
 		});
 	}
 

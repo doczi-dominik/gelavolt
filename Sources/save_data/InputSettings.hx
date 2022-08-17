@@ -11,6 +11,8 @@ enum abstract InputSettingsKey(String) to String {
 	final MAPPINGS;
 	final DEADZONE;
 	final GAMEPAD_BRAND;
+	final LOCAL_DELAY;
+	final NETPLAY_DELAY;
 }
 
 class InputSettings {
@@ -235,12 +237,16 @@ class InputSettings {
 
 	static inline final DEADZONE_DEFAULT = 0.5;
 	static inline final GAMEPAD_BRAND_DEFAULT = GamepadBrand.DS4;
+	static inline final LOCAL_DELAY_DEFAULT = 0;
+	static inline final NETPLAY_DELAY_DEFAULT = 2;
 
 	final updateListeners: Array<Void->Void>;
 
 	public var mappings(default, null): Map<Action, InputMapping>;
 	public var deadzone: Float;
 	public var gamepadBrand: GamepadBrand;
+	public var localDelay: Int;
+	public var netplayDelay: Int;
 
 	public function new(overrides: Map<InputSettingsKey, Any>) {
 		updateListeners = [];
@@ -259,6 +265,10 @@ class InputSettings {
 							deadzone = cast(v, Float);
 						case GAMEPAD_BRAND:
 							gamepadBrand = cast(v, GamepadBrand);
+						case LOCAL_DELAY:
+							localDelay = cast(v, Int);
+						case NETPLAY_DELAY:
+							netplayDelay = cast(v, Int);
 					}
 				} catch (_) {
 					continue;
@@ -296,6 +306,16 @@ class InputSettings {
 			wereOverrides = true;
 		}
 
+		if (localDelay != LOCAL_DELAY_DEFAULT) {
+			overrides.set(LOCAL_DELAY, localDelay);
+			wereOverrides = true;
+		}
+
+		if (netplayDelay != NETPLAY_DELAY_DEFAULT) {
+			overrides.set(NETPLAY_DELAY, netplayDelay);
+			wereOverrides = true;
+		}
+
 		return wereOverrides ? overrides : null;
 	}
 
@@ -316,6 +336,8 @@ class InputSettings {
 
 		deadzone = DEADZONE_DEFAULT;
 		gamepadBrand = GAMEPAD_BRAND_DEFAULT;
+		localDelay = LOCAL_DELAY_DEFAULT;
+		netplayDelay = NETPLAY_DELAY_DEFAULT;
 
 		notifyListeners();
 	}

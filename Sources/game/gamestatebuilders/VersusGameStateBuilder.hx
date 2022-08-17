@@ -301,7 +301,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 				session: session,
 				frameCounter: frameCounter,
 				inputDevice: leftInputDevice,
-				frameDelay: 2
+				frameDelay: Profile.primary.input.netplayDelay
 			});
 
 			return;
@@ -450,7 +450,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 			session: session,
 			frameCounter: frameCounter,
 			inputDevice: rightInputDevice,
-			frameDelay: 2
+			frameDelay: Profile.primary.input.netplayDelay
 		});
 	}
 
