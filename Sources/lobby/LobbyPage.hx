@@ -80,13 +80,13 @@ class LobbyPage implements IMenuPage {
 		final peer = new Peer();
 
 		peer.on(PeerEventType.Error, (err: PeerError) -> {
-			trace('URL Join PeerError: $err');
+			// trace('URL Join PeerError: $err');
 		});
 
 		peer.on(PeerEventType.Open, peerID -> {
 			new Client('wss://$SERVER_URL').joinById(roomID, ["peerID" => peerID], WaitingRoomState, (err, room) -> {
 				if (err != null) {
-					trace('Join error: $err');
+					// trace('Join error: $err');
 					GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
 					return;
 				}
@@ -129,19 +129,19 @@ class LobbyPage implements IMenuPage {
 		final peer = new Peer();
 
 		peer.on(PeerEventType.Error, (err: PeerError) -> {
-			trace('Create PeerError: $err');
+			// trace('Create PeerError: $err');
 		});
 
 		peer.on(PeerEventType.Open, id -> {
 			new Client('wss://$SERVER_URL').create("waiting", ["peerID" => id], WaitingRoomState, (err, room) -> {
 				if (err != null) {
-					trace('Create error: $err');
+					// trace('Create error: $err');
 					return;
 				}
 
 				this.room = room;
 
-				trace(room.id);
+				// trace(room.id);
 
 				addRoomHandler(peer, room);
 			});

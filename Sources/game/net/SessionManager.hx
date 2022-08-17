@@ -59,7 +59,7 @@ class SessionManager {
 		});
 
 		dc.on(DataConnectionEventType.Error, (err: PeerError) -> {
-			trace('DC Error: $err');
+			// trace('DC Error: $err');
 		});
 
 		dc.on(DataConnectionEventType.Data, onMessage);
@@ -87,7 +87,7 @@ class SessionManager {
 	}
 
 	function onError(msg: String) {
-		trace('WS Error: $msg');
+		// trace('WS Error: $msg');
 	}
 
 	function initSyncingState() {
@@ -223,7 +223,7 @@ class SessionManager {
 	function onInputAckPacket(parts: Array<String>) {
 		final frame = Std.parseInt(parts[1]);
 
-		trace('Received INPUT_ACK for frame $frame');
+		// trace('Received INPUT_ACK for frame $frame');
 
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 	}

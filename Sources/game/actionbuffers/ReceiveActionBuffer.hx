@@ -47,7 +47,7 @@ class ReceiveActionBuffer implements IActionBuffer {
 	}
 
 	public function onInput(history: Array<InputHistoryEntry>) {
-		trace('Received ${history.length} inputs on ${frameCounter.value}');
+		// trace('Received ${history.length} inputs on ${frameCounter.value}');
 
 		var rollbackTo: Null<Int> = null;
 
@@ -67,13 +67,13 @@ class ReceiveActionBuffer implements IActionBuffer {
 			}
 
 			if (getAction(frame).isNotEqual(snapshot)) {
-				trace('Inputs diverge, scheduling $frameDiff frame rollback to $frame!');
+				// trace('Inputs diverge, scheduling $frameDiff frame rollback to $frame!');
 				rollbackTo = frame;
 			}
 		}
 
 		if (rollbackTo != null) {
-			trace('Executing rollback');
+			// trace('Executing rollback');
 			rollbackMediator.rollback(rollbackTo);
 		}
 	}
