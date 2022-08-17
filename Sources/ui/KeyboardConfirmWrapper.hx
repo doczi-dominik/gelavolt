@@ -2,51 +2,35 @@ package ui;
 
 import input.KeyboardInputDevice;
 import input.AnyInputDevice;
-import kha.Assets;
-import kha.Font;
 import kha.graphics2.Graphics;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(KeyboardConfirmWrapper))
 class KeyboardConfirmWrapperOptions {}
 
-class KeyboardConfirmWrapper implements IMenuPage {
-	static inline final FONT_SIZE = 64;
+class KeyboardConfirmWrapper extends MenuPageBase {
 	static final TEXT = "Press any button to continue";
 
 	@inject final keyboardDevice: KeyboardInputDevice;
 	@inject final pageBuilder: Void->IMenuPage;
 
-	final font: Font;
-
-	var menu: Menu;
-	var fontSize: Int;
-
-	public final header: String;
-
-	public var controlHints(default, null): Array<ControlHint>;
-
 	public function new(opts: KeyboardConfirmWrapperOptions) {
+		super({
+			designFontSize: 64,
+			header: "Confirm Keyboard",
+			controlHints: [{actions: [BACK], description: "Back"}]
+		});
+
 		game.Macros.initFromOpts();
-
-		font = Assets.fonts.Pixellari;
-
-		header = "Confirm Keyboard";
-
-		controlHints = [{actions: [BACK], description: "Back"}];
 	}
 
-	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
-	}
-
-	public function onShow(menu: Menu) {
-		this.menu = menu;
+	override function onShow(menu: Menu) {
+		super.onShow(menu);
 
 		keyboardDevice.resetIsAnyKeyDown();
 	}
 
-	public function update() {
+	override function update() {
 		if (AnyInputDevice.instance.getAction(BACK)) {
 			menu.popPage();
 
@@ -59,9 +43,8 @@ class KeyboardConfirmWrapper implements IMenuPage {
 		}
 	}
 
-	public function render(g: Graphics, x: Float, y: Float) {
-		g.font = font;
-		g.fontSize = fontSize;
+	override function render(g: Graphics, x: Float, y: Float) {
+		super.render(g, x, y);
 
 		g.drawString(TEXT, x, y);
 	}

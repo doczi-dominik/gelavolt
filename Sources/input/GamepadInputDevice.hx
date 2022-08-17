@@ -1,5 +1,6 @@
 package input;
 
+import haxe.ds.ReadOnlyArray;
 import utils.Utils;
 import game.actions.ActionData.ACTION_DATA;
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
@@ -284,7 +285,7 @@ class GamepadInputDevice extends InputDevice {
 		}
 	}
 
-	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>) {
+	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: ReadOnlyArray<ControlHint>) {
 		final fontHeight = g.font.height(g.fontSize);
 		final y = ScaleManager.screen.height - padding - fontHeight;
 		final paddedScreenWidth = width - padding * 2;

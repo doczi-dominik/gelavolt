@@ -1,5 +1,6 @@
 package input;
 
+import haxe.ds.ReadOnlyArray;
 import utils.Utils;
 import game.actions.ActionData.ACTION_DATA;
 import input.KeyCodeToString.KEY_CODE_TO_STRING;
@@ -154,7 +155,7 @@ class KeyboardInputDevice extends InputDevice {
 		g.drawString('$title: $binding', x, y);
 	}
 
-	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>) {
+	override function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: ReadOnlyArray<ControlHint>) {
 		var str = "";
 
 		for (d in controls) {

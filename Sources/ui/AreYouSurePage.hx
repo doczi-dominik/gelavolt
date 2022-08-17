@@ -1,46 +1,26 @@
 package ui;
 
 import kha.graphics2.Graphics;
-import kha.Font;
-import kha.Assets;
 
-class AreYouSurePage implements IMenuPage {
-	static inline final FONT_SIZE = 64;
-
-	final font: Font;
+class AreYouSurePage extends MenuPageBase {
 	final content: String;
 	final callback: Void->Void;
 
-	var fontSize: Int;
-	var menu: Menu;
-
-	public final header: String;
-
-	public var controlHints(default, null): Array<ControlHint>;
-
 	public function new(content: String, callback: Void->Void) {
-		font = Assets.fonts.Pixellari;
+		super({
+			designFontSize: 64,
+			header: "Are You Sure?",
+			controlHints: [
+				{actions: [BACK], description: "Back"},
+				{actions: [CONFIRM], description: "Confirm"}
+			]
+		});
+
 		this.content = content;
-
-		header = "Are You Sure?";
-
-		controlHints = [
-			{actions: [BACK], description: "Back"},
-			{actions: [CONFIRM], description: "Confirm"}
-		];
-
 		this.callback = callback;
 	}
 
-	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
-	}
-
-	public function onShow(menu: Menu) {
-		this.menu = menu;
-	}
-
-	public function update() {
+	override function update() {
 		final inputDevice = menu.inputDevice;
 
 		if (inputDevice.getAction(BACK)) {
@@ -55,7 +35,7 @@ class AreYouSurePage implements IMenuPage {
 		}
 	}
 
-	public function render(g: Graphics, x: Float, y: Float) {
+	override function render(g: Graphics, x: Float, y: Float) {
 		g.font = font;
 		g.fontSize = fontSize;
 		g.drawString(content, x, y);

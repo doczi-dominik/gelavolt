@@ -1,27 +1,22 @@
 package lobby;
 
+import ui.MenuPageBase;
 import peerjs.Peer;
-import haxe.net.WebSocket;
 import main_menu.MainMenuScreen;
 import game.gamestatebuilders.VersusGameStateBuilder;
 import game.net.SessionManager;
 import Screen.GlobalScreenSwitcher;
 import game.screens.NetplayGameScreen;
 import game.mediators.FrameCounter;
-import kha.Assets;
-import kha.Font;
 import kha.graphics2.Graphics;
 import ui.Menu;
-import ui.ControlHint;
-import ui.IMenuPage;
 import io.colyseus.Room;
 import io.colyseus.Client;
 #if kha_html5
 import js.Browser;
 #end
 
-class LobbyPage implements IMenuPage {
-	static inline final FONT_SIZE = 56;
+class LobbyPage extends MenuPageBase {
 	static inline final RELAY_PORT_MESSAGE_TYPE = 1;
 	static inline final SERVER_URL = "szi5os.colyseus.de";
 
@@ -97,31 +92,18 @@ class LobbyPage implements IMenuPage {
 	}
 	#end
 
-	final font: Font;
-
-	var menu: Menu;
-	var fontSize: Int;
-	var fontHeight: Float;
-
 	var room: Null<Room<WaitingRoomState>>;
 
-	public final header: String;
-	public final controlHints: Array<ControlHint>;
-
 	public function new() {
-		font = Assets.fonts.Pixellari;
-
-		header = "Lobby";
-		controlHints = [{actions: [BACK], description: "Leave"}];
+		super({
+			designFontSize: 56,
+			header: "Lobby",
+			controlHints: [{actions: [BACK], description: "Leave"}]
+		});
 	}
 
-	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
-		fontHeight = font.height(fontSize);
-	}
-
-	public function onShow(menu: Menu) {
-		this.menu = menu;
+	override function onShow(menu: Menu) {
+		super.onShow(menu);
 
 		if (room != null)
 			return;
@@ -148,11 +130,8 @@ class LobbyPage implements IMenuPage {
 		});
 	}
 
-	public function update() {}
-
-	public function render(g: Graphics, x: Float, y: Float) {
-		g.font = font;
-		g.fontSize = fontSize;
+	override function render(g: Graphics, x: Float, y: Float) {
+		super.render(g, x, y);
 
 		if (room == null) {
 			g.drawString('Connecting...', x, y);

@@ -1,44 +1,37 @@
 package game.ui;
 
-import ui.ControlHint;
+import ui.MenuPageBase;
 import utils.Point;
 import kha.math.FastMatrix3;
 import game.gelos.Gelo;
 import game.Queue;
-import ui.Menu;
 import kha.graphics2.Graphics;
-import ui.IMenuPage;
 import utils.Utils.negativeMod;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(QueueEditorPage))
 class QueueEditorPageOptions {}
 
-class QueueEditorPage implements IMenuPage {
-	static inline final FONT_SIZE = 72;
-
+class QueueEditorPage extends MenuPageBase {
 	@inject final queue: Queue;
 	@inject final groupEditor: GroupEditorPage;
-
-	var menu: Menu;
-
-	var scale: Float;
-	var fontSize: Int;
 
 	var selectionX: Int;
 	var selectionY: Int;
 
 	var minView: Int;
 
-	public final header = "Edit Queue";
-
-	public final controlHints: Array<ControlHint> = [
-		{actions: [MENU_LEFT, MENU_UP, MENU_DOWN, MENU_RIGHT], description: "Select"},
-		{actions: [BACK], description: "Back"},
-		{actions: [CONFIRM], description: "Edit"}
-	];
-
 	public function new(opts: QueueEditorPageOptions) {
+		super({
+			designFontSize: 72,
+			header: "Edit Queue",
+			controlHints: [
+				{actions: [MENU_LEFT, MENU_UP, MENU_DOWN, MENU_RIGHT], description: "Select"},
+				{actions: [BACK], description: "Back"},
+				{actions: [CONFIRM], description: "Edit"}
+			]
+		});
+
 		game.Macros.initFromOpts();
 
 		selectionX = 0;
@@ -71,16 +64,7 @@ class QueueEditorPage implements IMenuPage {
 		selectionY = Std.int(negativeMod(selectionY + delta, Std.int(queue.groups.data.length / 7) + 1));
 	}
 
-	public function onResize() {
-		scale = menu.scaleManager.smallerScale;
-		fontSize = Std.int(FONT_SIZE * scale);
-	}
-
-	public function onShow(menu: Menu) {
-		this.menu = menu;
-	}
-
-	public function update() {
+	override function update() {
 		final inputDevice = menu.inputDevice;
 
 		if (inputDevice.getAction(MENU_LEFT)) {
@@ -128,12 +112,13 @@ class QueueEditorPage implements IMenuPage {
 		}
 	}
 
-	public function render(g: Graphics, x: Float, y: Float) {
-		final groups = queue.groups;
+	override function render(g: Graphics, x: Float, y: Float) {
+		super.render(g, x, y);
 
+		final groups = queue.groups;
+		final scale = menu.scaleManager.smallerScale;
 		final transform = FastMatrix3.translation(x, y).multmat(FastMatrix3.scale(scale, scale));
 
-		g.fontSize = FONT_SIZE;
 		g.pushTransformation(g.transformation.multmat(transform));
 
 		final selectedIndex = selectionToIndex();

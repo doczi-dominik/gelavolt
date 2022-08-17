@@ -3,39 +3,26 @@ package ui;
 import input.KeyboardInputDevice;
 import input.GamepadInputDevice;
 import input.AnyInputDevice;
-import kha.Assets;
-import kha.Font;
 import kha.graphics2.Graphics;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(AnyGamepadDetectWrapper))
 class AnyGamepadDetectWrapperOptions {}
 
-class AnyGamepadDetectWrapper implements IMenuPage {
-	static inline final FONT_SIZE = 64;
+class AnyGamepadDetectWrapper extends MenuPageBase {
 	static final TEXT = ["Press any button on", "the gamepad you wish", "to use"];
 
 	@inject final keyboardDevice: KeyboardInputDevice;
 	@inject final pageBuilder: GamepadInputDevice->IMenuPage;
 
-	final font: Font;
-
-	var menu: Menu;
-	var fontSize: Int;
-	var fontHeight: Float;
-
-	public final header: String;
-
-	public var controlHints(default, null): Array<ControlHint>;
-
 	public function new(opts: AnyGamepadDetectWrapperOptions) {
 		game.Macros.initFromOpts();
 
-		font = Assets.fonts.Pixellari;
-
-		header = "Select Gamepad";
-
-		controlHints = [{actions: [BACK], description: "Back"}];
+		super({
+			designFontSize: 64,
+			header: "Select Gamepad",
+			controlHints: [{actions: [BACK], description: "Back"}]
+		});
 	}
 
 	inline function popPage() {
@@ -43,19 +30,14 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 		menu.popPage();
 	}
 
-	public function onResize() {
-		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
-		fontHeight = font.height(fontSize);
-	}
-
-	public function onShow(menu: Menu) {
-		this.menu = menu;
+	override function onShow(menu: Menu) {
+		super.onShow(menu);
 
 		menu.pushInputDevice(keyboardDevice);
 		AnyInputDevice.instance.resetLastDeviceID();
 	}
 
-	public function update() {
+	override function update() {
 		final anyDevice = AnyInputDevice.instance;
 		final lastID = AnyInputDevice.lastDeviceID;
 
@@ -74,9 +56,8 @@ class AnyGamepadDetectWrapper implements IMenuPage {
 		}
 	}
 
-	public function render(g: Graphics, x: Float, y: Float) {
-		g.font = font;
-		g.fontSize = fontSize;
+	override function render(g: Graphics, x: Float, y: Float) {
+		super.render(g, x, y);
 
 		for (i in 0...TEXT.length) {
 			g.drawString(TEXT[i], x, y + i * fontHeight);

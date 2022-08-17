@@ -1,5 +1,6 @@
 package input;
 
+import haxe.ds.ReadOnlyArray;
 import ui.ControlHint;
 import kha.graphics2.Graphics;
 import game.actions.Action;
@@ -115,7 +116,7 @@ class AnyInputDevice implements IInputDevice {
 	// displaying a rebinding menu.
 	public function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action) {}
 
-	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: Array<ControlHint>) {
+	public function renderControls(g: Graphics, x: Float, width: Float, padding: Float, controls: ReadOnlyArray<ControlHint>) {
 		final lastDevice = devices[lastDeviceID];
 
 		if (lastDevice == null)
