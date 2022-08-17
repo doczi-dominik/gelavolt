@@ -21,7 +21,7 @@ import js.Browser;
 #end
 
 class LobbyPage implements IMenuPage {
-	static inline final FONT_SIZE = 48;
+	static inline final FONT_SIZE = 56;
 	static inline final RELAY_PORT_MESSAGE_TYPE = 1;
 	static inline final SERVER_URL = "szi5os.colyseus.de";
 
