@@ -92,6 +92,7 @@ class Main {
 				Profile.changePrimary(SaveManager.getProfile(0));
 
 				AnyInputDevice.init();
+				ScreenManager.init();
 
 				#if !kha_html5
 				Window.get(0).mode = SaveManager.graphics.fullscreen ? Fullscreen : Windowed;

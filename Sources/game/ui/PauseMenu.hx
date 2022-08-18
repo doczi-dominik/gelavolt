@@ -33,6 +33,7 @@ class PauseMenu extends Menu {
 			prefsSettings: opts.prefsSettings,
 			positionFactor: 0,
 			widthFactor: 1,
+			backgroundOpacity: 0.9,
 			initialPage: new ListMenuPage({
 				header: "Paused",
 				widgetBuilder: generateInitalPage
@@ -94,17 +95,5 @@ class PauseMenu extends Menu {
 		}
 
 		super.update();
-	}
-
-	override function render(g: Graphics, alpha: Float) {
-		final scr = ScaleManager.screen;
-
-		g.pushOpacity(0.90);
-		g.color = Black;
-		g.fillRect(0, 0, scr.width, scr.height);
-		g.color = White;
-		g.popOpacity();
-
-		super.render(g, alpha);
 	}
 }

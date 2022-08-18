@@ -9,7 +9,9 @@ import kha.graphics2.Graphics;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(Menu))
-class MenuOptions {}
+class MenuOptions {
+	@:optional public final initialPage: Null<IMenuPage>;
+}
 
 class Menu {
 	static inline final HEADER_FONT_SIZE = 128;
@@ -25,7 +27,7 @@ class Menu {
 
 	@inject final positionFactor: Float;
 	@inject final widthFactor: Float;
-	@inject final initialPage: IMenuPage;
+	@inject final backgroundOpacity: Float;
 
 	@inject public final prefsSettings: PrefsSettings;
 
@@ -51,7 +53,9 @@ class Menu {
 		game.Macros.initFromOpts();
 
 		pages = new GenericStack();
-		pages.add(opts.initialPage);
+
+		if (opts.initialPage != null)
+			pages.add(opts.initialPage);
 
 		inputDevices = new GenericStack();
 		headerFont = Assets.fonts.DigitalDisco;
@@ -135,15 +139,31 @@ class Menu {
 	}
 
 	public function update() {
-		pages.first().update();
+		final currentPage = pages.first();
+
+		if (currentPage == null)
+			return;
+
+		currentPage.update();
 	}
 
 	public function render(g: Graphics, alpha: Float) {
 		final currentPage = pages.first();
+
+		if (currentPage == null)
+			return;
+
 		final paddedX = renderX + padding;
 		final width = scaleManager.width;
+		final height = scaleManager.height;
 
-		g.scissor(Std.int(renderX), 0, Std.int(width), Std.int(scaleManager.height));
+		g.scissor(Std.int(renderX), 0, Std.int(width), Std.int(height));
+
+		g.pushOpacity(backgroundOpacity);
+		g.color = Black;
+		g.fillRect(renderX, 0, width, height);
+		g.color = White;
+		g.popOpacity();
 
 		g.font = headerFont;
 		g.fontSize = headerFontSize;

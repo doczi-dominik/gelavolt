@@ -17,6 +17,7 @@ class MainMenuScreen implements IScreen {
 			prefsSettings: prefs,
 			positionFactor: 0,
 			widthFactor: 1,
+			backgroundOpacity: 0,
 			initialPage: new MainMenuPage(prefs)
 		});
 		menu.onShow(AnyInputDevice.instance);

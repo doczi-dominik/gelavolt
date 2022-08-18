@@ -1,5 +1,6 @@
 package game.net;
 
+import ui.ErrorPage;
 import peerjs.Peer;
 import game.net.PacketType;
 import game.mediators.FrameCounter;
@@ -61,10 +62,6 @@ class SessionManager {
 			initSyncingState();
 		});
 
-		dc.on(DataConnectionEventType.Error, (err: PeerError) -> {
-			// trace('DC Error: $err');
-		});
-
 		dc.on(DataConnectionEventType.Data, onMessage);
 	}
 
@@ -87,10 +84,6 @@ class SessionManager {
 			case BEGIN_RESP:
 				onBeginResponse(parts);
 		}
-	}
-
-	function onError(msg: String) {
-		// trace('WS Error: $msg');
 	}
 
 	function initSyncingState() {
@@ -231,8 +224,6 @@ class SessionManager {
 
 	function onInputAckPacket(parts: Array<String>) {
 		final frame = Std.parseInt(parts[1]);
-
-		// trace('Received INPUT_ACK for frame $frame');
 
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 	}

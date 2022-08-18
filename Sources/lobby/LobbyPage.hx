@@ -1,5 +1,6 @@
 package lobby;
 
+import ui.ErrorPage;
 import ui.MenuPageBase;
 import peerjs.Peer;
 import main_menu.MainMenuScreen;
@@ -74,14 +75,13 @@ class LobbyPage extends MenuPageBase {
 		final peer = new Peer();
 
 		peer.on(PeerEventType.Error, (err: PeerError) -> {
-			// trace('URL Join PeerError: $err');
+			ScreenManager.pushOverlay(ErrorPage.mainMenuPage('PeerError: $err'));
 		});
 
 		peer.on(PeerEventType.Open, peerID -> {
 			new Client('wss://$SERVER_URL').joinById(roomID, ["peerID" => peerID], WaitingRoomState, (err, room) -> {
 				if (err != null) {
-					// trace('Join error: $err');
-					ScreenManager.switchScreen(new MainMenuScreen());
+					ScreenManager.pushOverlay(ErrorPage.mainMenuPage('Could Not Join Room: ${err.code} - ${err.message}'));
 					return;
 				}
 
@@ -110,19 +110,17 @@ class LobbyPage extends MenuPageBase {
 		final peer = new Peer();
 
 		peer.on(PeerEventType.Error, (err: PeerError) -> {
-			// trace('Create PeerError: $err');
+			ScreenManager.pushOverlay(ErrorPage.mainMenuPage('PeerError: $err'));
 		});
 
 		peer.on(PeerEventType.Open, id -> {
 			new Client('wss://$SERVER_URL').create("waiting", ["peerID" => id], WaitingRoomState, (err, room) -> {
 				if (err != null) {
-					// trace('Create error: $err');
+					ScreenManager.pushOverlay(ErrorPage.mainMenuPage('Could Not Create Room: ${err.code} - ${err.message}'));
 					return;
 				}
 
 				this.room = room;
-
-				// trace(room.id);
 
 				addRoomHandler(peer, room);
 			});
