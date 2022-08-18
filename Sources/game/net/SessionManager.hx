@@ -12,8 +12,6 @@ class SessionManager {
 
 	var dc: DataConnection;
 
-	var localInputHistory: Array<InputHistoryEntry>;
-
 	var syncTimeTaskID: Int;
 	var roundTripCounter: Int;
 	var localAdvantageCounter: Int;
@@ -23,6 +21,9 @@ class SessionManager {
 	var internalSleepCounter: Int;
 
 	var beginFrame: Null<Int>;
+
+	var localInputHistory: Array<InputHistoryEntry>;
+	var lastInputFrame: Int;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
 	public var isInputIdle(null, default): Bool;
@@ -217,9 +218,15 @@ class SessionManager {
 			lastFrame = frame;
 		}
 
+		if (lastFrame < lastInputFrame) {
+			return;
+		}
+
 		dc.send('$INPUT_ACK;$lastFrame');
 
 		onInput(history);
+
+		lastInputFrame = lastFrame;
 	}
 
 	function onInputAckPacket(parts: Array<String>) {
@@ -232,6 +239,8 @@ class SessionManager {
 
 	function initRunningState() {
 		setSyncInterval(500);
+
+		lastInputFrame = -1;
 
 		state = RUNNING;
 	}
