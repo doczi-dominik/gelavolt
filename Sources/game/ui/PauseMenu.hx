@@ -73,22 +73,6 @@ class PauseMenu extends Menu {
 		];
 	}
 
-	override function popPage() {
-		final poppedPage = pages.pop();
-
-		if (pages.isEmpty()) {
-			pages.add(poppedPage);
-			pauseMediator.resume();
-
-			return;
-		}
-
-		final firstPage = pages.first();
-
-		firstPage.onShow(this);
-		firstPage.onResize();
-	}
-
 	override function update() {
 		if (inputDevice.getAction(PAUSE)) {
 			pauseMediator.resume();
