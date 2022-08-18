@@ -25,6 +25,7 @@ class SessionManager {
 
 	var localInputHistory: Array<InputHistoryEntry>;
 	var lastInputFrame: Int;
+	var syncTimeoutTaskID: Int;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
 	public var isInputIdle(null, default): Bool;
@@ -114,6 +115,8 @@ class SessionManager {
 	}
 
 	function onSyncRequest(parts: Array<String>) {
+		resetSyncTimeoutTimer();
+
 		final pong = parts[1];
 		final prediction = Std.parseInt(parts[2]);
 
@@ -269,6 +272,14 @@ class SessionManager {
 		}
 
 		return 0;
+	}
+
+	function resetSyncTimeoutTimer() {
+		Scheduler.removeTimeTask(syncTimeoutTaskID);
+
+		syncTimeoutTaskID = Scheduler.addTimeTask(() -> {
+			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Connection Error: Sync Package Timeout"));
+		}, 2);
 	}
 
 	public function setSyncInterval(interval: Int) {
