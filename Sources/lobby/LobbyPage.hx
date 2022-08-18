@@ -5,7 +5,6 @@ import peerjs.Peer;
 import main_menu.MainMenuScreen;
 import game.gamestatebuilders.VersusGameStateBuilder;
 import game.net.SessionManager;
-import Screen.GlobalScreenSwitcher;
 import game.screens.NetplayGameScreen;
 import game.mediators.FrameCounter;
 import kha.graphics2.Graphics;
@@ -25,7 +24,7 @@ class LobbyPage extends MenuPageBase {
 
 		final f = new FrameCounter();
 
-		GlobalScreenSwitcher.switchScreen(new NetplayGameScreen({
+		ScreenManager.switchScreen(new NetplayGameScreen({
 			session: s,
 			frameCounter: f,
 			gameStateBuilder: new VersusGameStateBuilder({
@@ -68,7 +67,7 @@ class LobbyPage extends MenuPageBase {
 		final roomID = Browser.location.hash.substring(1);
 
 		if (roomID == "") {
-			GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+			ScreenManager.switchScreen(new MainMenuScreen());
 			return;
 		}
 
@@ -82,7 +81,7 @@ class LobbyPage extends MenuPageBase {
 			new Client('wss://$SERVER_URL').joinById(roomID, ["peerID" => peerID], WaitingRoomState, (err, room) -> {
 				if (err != null) {
 					// trace('Join error: $err');
-					GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+					ScreenManager.switchScreen(new MainMenuScreen());
 					return;
 				}
 

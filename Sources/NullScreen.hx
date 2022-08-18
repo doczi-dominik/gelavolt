@@ -1,5 +1,4 @@
 import kha.graphics2.Graphics;
-import Screen.IScreen;
 
 final class NullScreen implements IScreen {
 	public static var instance(get, null): NullScreen;

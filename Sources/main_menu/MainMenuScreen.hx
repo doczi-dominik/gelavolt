@@ -5,7 +5,6 @@ import save_data.Profile;
 import main_menu.ui.MainMenuPage;
 import ui.Menu;
 import kha.graphics2.Graphics;
-import Screen.IScreen;
 import kha.graphics4.Graphics as Graphics4;
 
 class MainMenuScreen implements IScreen {

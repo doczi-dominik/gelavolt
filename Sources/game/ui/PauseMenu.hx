@@ -2,7 +2,6 @@ package game.ui;
 
 import save_data.PrefsSettings;
 import main_menu.MainMenuScreen;
-import Screen.GlobalScreenSwitcher;
 import ui.AreYouSureSubPageWidget;
 import main_menu.ui.OptionsPage;
 import game.mediators.PauseMediator;
@@ -58,7 +57,7 @@ class PauseMenu extends Menu {
 				description: ["Return To The Main Menu"],
 				content: "Return To The Main Menu?",
 				callback: () -> {
-					GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+					ScreenManager.switchScreen(new MainMenuScreen());
 				}
 			}),
 			#if sys

@@ -1,6 +1,5 @@
 package game.screens;
 
-import Screen.IScreen;
 import input.AnyInputDevice;
 import kha.graphics2.Graphics;
 import kha.System;

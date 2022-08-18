@@ -1,17 +1,4 @@
-package;
-
-import kha.graphics2.Graphics;
-import kha.graphics4.Graphics as Graphics4;
-
-interface IScreen {
-	public function update(): Void;
-	public function render(g: Graphics, g4: Graphics4, alpha: Float): Void;
-}
-
-/**
- * Handles switching, updating and rendering the current `Screen` object.
- */
-final class GlobalScreenSwitcher {
+final class ScreenManager {
 	static var currentScreen: IScreen = NullScreen.instance;
 
 	public static function updateCurrent(): Void {

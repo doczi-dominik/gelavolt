@@ -9,7 +9,6 @@ import save_data.PrefsSettings;
 import ui.SubPageWidget;
 import kha.System;
 import game.screens.GameScreen;
-import Screen.GlobalScreenSwitcher;
 import ui.ButtonWidget;
 import ui.ListMenuPage;
 #if sys
@@ -35,7 +34,7 @@ class MainMenuPage extends ListMenuPage {
 					title: "Training Mode",
 					description: ["Practice In GelaVolt's", "Signature Training Mode!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(new BackupStateGameScreen(new TrainingGameStateBuilder({
+						ScreenManager.switchScreen(new BackupStateGameScreen(new TrainingGameStateBuilder({
 							rngSeed: Std.int(System.time * 1000000),
 							marginTime: 96,
 							targetPoints: 70,
@@ -60,7 +59,7 @@ class MainMenuPage extends ListMenuPage {
 					title: "Endless Mode",
 					description: ["Play For As Long As You", "Can In Endless Mode And", "Share Your Replays!"],
 					callback: () -> {
-						GlobalScreenSwitcher.switchScreen(new GameScreen(new EndlessGameStateBuilder({
+						ScreenManager.switchScreen(new GameScreen(new EndlessGameStateBuilder({
 							rngSeed: Std.int(System.time * 1000000),
 							marginTime: 96,
 							targetPoints: 70,

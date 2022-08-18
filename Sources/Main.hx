@@ -8,7 +8,6 @@ import save_data.Profile;
 import main_menu.MainMenuScreen;
 import haxe.Unserializer;
 import save_data.SaveManager;
-import Screen.GlobalScreenSwitcher;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
@@ -137,13 +136,13 @@ class Main {
 
 					while (accumulator >= FIXED_UPDATE_DELTA) {
 						InputDevice.update();
-						GlobalScreenSwitcher.updateCurrent();
+						ScreenManager.updateCurrent();
 						accumulator -= FIXED_UPDATE_DELTA;
 					}
 
 					alpha = accumulator / FIXED_UPDATE_DELTA;
 
-					GlobalScreenSwitcher.renderCurrent(frames[0], alpha);
+					ScreenManager.renderCurrent(frames[0], alpha);
 				});
 			});
 		});
