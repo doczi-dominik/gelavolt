@@ -111,7 +111,7 @@ class SessionManager {
 			prediction = frameCounter.value + Std.int(averageRTT / 2 * 60 / 1000);
 		}
 
-		dc.send('$SYNC_REQ;$ping;$prediction');
+		dc.send('$SYNC_REQ;$ping;$prediction;${state == RUNNING ? "R" : "O"}');
 	}
 
 	function onSyncRequest(parts: Array<String>) {
@@ -127,6 +127,9 @@ class SessionManager {
 
 			averageLocalAdvantage = Math.round(0.5 * adv + 0.5 * averageLocalAdvantage);
 		}
+
+		if (parts[3] == "R")
+			initRunningState();
 
 		dc.send('$SYNC_RESP;$pong;$adv');
 	}
