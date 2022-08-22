@@ -103,7 +103,7 @@ class Main {
 				#if kha_html5
 				LobbyPage.handleURLJoin();
 				#else
-				GlobalScreenSwitcher.switchScreen(new MainMenuScreen());
+				ScreenManager.switchScreen(new MainMenuScreen());
 				#end
 
 				#if kha_html5

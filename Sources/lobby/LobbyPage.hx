@@ -2,7 +2,6 @@ package lobby;
 
 import ui.ErrorPage;
 import ui.MenuPageBase;
-import peerjs.Peer;
 import main_menu.MainMenuScreen;
 import game.gamestatebuilders.VersusGameStateBuilder;
 import game.net.SessionManager;
@@ -14,6 +13,7 @@ import io.colyseus.Room;
 import io.colyseus.Client;
 #if kha_html5
 import js.Browser;
+import peerjs.Peer;
 #end
 
 class LobbyPage extends MenuPageBase {

@@ -1,6 +1,5 @@
 package main_menu.ui;
 
-import lobby.LobbyPage;
 import game.screens.BackupStateGameScreen;
 import game.gamestatebuilders.TrainingGameStateBuilder;
 import input.AnyInputDevice;
@@ -14,8 +13,9 @@ import ui.ListMenuPage;
 #if sys
 import kha.Window;
 #end
-#if js
+#if kha_html5
 import js.Browser;
+import lobby.LobbyPage;
 #end
 
 class MainMenuPage extends ListMenuPage {
@@ -80,11 +80,13 @@ class MainMenuPage extends ListMenuPage {
 						})));
 					}
 				}),
+				#if kha_html5
 				new SubPageWidget({
 					title: "Host Netplay Test (WIP)",
 					description: [],
 					subPage: new LobbyPage()
 				}),
+				#end
 				new SubPageWidget({
 					title: "Options",
 					description: ["Change Various Options and Settings"],
@@ -99,7 +101,7 @@ class MainMenuPage extends ListMenuPage {
 					}
 				}),
 				#end
-				#if js
+				#if kha_html5
 				new ButtonWidget({
 					title: "Download Desktop Version",
 					description: [

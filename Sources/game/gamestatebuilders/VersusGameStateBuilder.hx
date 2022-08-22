@@ -8,9 +8,6 @@ import game.rules.GroupBonusTableType;
 import utils.ValueBox;
 import game.mediators.RollbackMediator;
 import game.actionbuffers.NullActionBuffer;
-import game.actionbuffers.ReceiveActionBuffer;
-import game.net.SessionManager;
-import game.actionbuffers.SenderActionBuffer;
 import game.garbage.trays.NullGarbageTray;
 import game.mediators.ControlHintContainer;
 import game.boardmanagers.SingleBoardManager;
@@ -42,6 +39,11 @@ import game.particles.ParticleManager;
 import game.randomizers.Randomizer;
 import game.copying.CopyableRNG;
 import game.mediators.FrameCounter;
+#if kha_html5
+import game.net.SessionManager;
+import game.actionbuffers.ReceiveActionBuffer;
+import game.actionbuffers.SenderActionBuffer;
+#end
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(VersusGameStateBuilder))
