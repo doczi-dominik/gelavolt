@@ -125,7 +125,6 @@ class NetplayGameScreen extends GameScreenBase {
 		final status = 'L: ${session.averageLocalAdvantage} -- R: ${session.averageRemoteAdvantage} -- RTT: ${session.averageRTT}';
 
 		g.drawString(switch (session.state) {
-			case CONNECTING: "Connecting To Relay...";
 			case WAITING: "Waiting For Peer...";
 			case SYNCING: 'Synchronizing -- C: ${session.successfulSleepChecks}/5 -- $status';
 			case BEGINNING: "Synchronized! Game will begin soon...";

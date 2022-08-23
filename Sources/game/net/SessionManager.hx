@@ -77,14 +77,15 @@ class SessionManager {
 				onSyncRequest(parts);
 			case SYNC_RESP:
 				onSyncResponse(parts);
-			case INPUT:
+			case INPUT if (state == RUNNING):
 				onInputPacket(parts);
-			case INPUT_ACK:
+			case INPUT_ACK if (state == RUNNING):
 				onInputAckPacket(parts);
-			case BEGIN_REQ:
+			case BEGIN_REQ if (state == BEGINNING):
 				onBeginRequest(parts);
-			case BEGIN_RESP:
+			case BEGIN_RESP if (state == BEGINNING):
 				onBeginResponse(parts);
+			default:
 		}
 	}
 
@@ -149,7 +150,7 @@ class SessionManager {
 			if (internalSleepCounter == 0 && ++remoteAdvantageCounter % 5 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
-				if (Math.abs(diff) < 4) {
+				if (state == SYNCING && Math.abs(diff) < 4) {
 					if (++successfulSleepChecks > 5) {
 						initBeginningState();
 
@@ -183,7 +184,7 @@ class SessionManager {
 	function initBeginningState() {
 		sendBeginTaskID = Scheduler.addTimeTask(() -> {
 			dc.send('$BEGIN_REQ');
-		}, 0, 0.01);
+		}, 0, 0.001);
 
 		state = BEGINNING;
 	}
