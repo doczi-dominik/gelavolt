@@ -21,6 +21,7 @@ class SessionManager {
 	var sleepFrames: Int;
 	var internalSleepCounter: Int;
 
+	var sendBeginTaskID: Int;
 	var beginFrame: Null<Int>;
 
 	var localInputHistory: Array<InputHistoryEntry>;
@@ -180,7 +181,9 @@ class SessionManager {
 	}
 
 	function initBeginningState() {
-		dc.send('$BEGIN_REQ');
+		sendBeginTaskID = Scheduler.addTimeTask(() -> {
+			dc.send('$BEGIN_REQ');
+		}, 0, 0.01);
 
 		state = BEGINNING;
 	}
@@ -194,7 +197,10 @@ class SessionManager {
 
 		if (beginFrame == null) {
 			beginFrame = frameCounter.value + Std.int(averageRTT * 10);
+			return;
 		}
+
+		Scheduler.removeTimeTask(sendBeginTaskID);
 	}
 
 	function onInputPacket(parts: Array<String>) {
