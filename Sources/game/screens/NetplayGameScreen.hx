@@ -122,14 +122,14 @@ class NetplayGameScreen extends GameScreenBase {
 		g.font = font;
 		g.fontSize = fontSize;
 
-		final text = switch (session.state) {
+		final status = 'L: ${session.averageLocalAdvantage} -- R: ${session.averageRemoteAdvantage} -- RTT: ${session.averageRTT}';
+
+		g.drawString(switch (session.state) {
 			case CONNECTING: "Connecting To Relay...";
 			case WAITING: "Waiting For Peer...";
-			case SYNCING: 'Synchronizing -- RTT: ${session.averageRTT} -- L: ${session.averageLocalAdvantage} -- R: ${session.averageRemoteAdvantage} -- C: ${session.successfulSleepChecks}/10';
+			case SYNCING: 'Synchronizing -- C: ${session.successfulSleepChecks}/5 -- $status';
 			case BEGINNING: "Synchronized! Game will begin soon...";
-			case RUNNING: 'RTT: ${session.averageRTT}';
-		}
-
-		g.drawString(text, 0, 0);
+			case RUNNING: 'S: $sleepCounter -- $status';
+		}, 0, 0);
 	}
 }
