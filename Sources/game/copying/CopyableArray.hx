@@ -13,7 +13,7 @@ class CopyableArray<T:ICopy> implements ICopyFrom {
 		data.resize(0);
 
 		for (d in o.data) {
-			data.push(d.copy());
+			data.push(d == null ? null : d.copy());
 		}
 
 		return this;
