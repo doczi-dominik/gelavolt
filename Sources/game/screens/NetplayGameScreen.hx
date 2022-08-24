@@ -116,6 +116,10 @@ class NetplayGameScreen extends GameScreenBase {
 		}
 	}
 
+	override function dispose() {
+		session.dispose();
+	}
+
 	override function render(g: Graphics, g4: Graphics4, alpha: Float) {
 		super.render(g, g4, alpha);
 

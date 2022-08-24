@@ -9,6 +9,7 @@ import kha.Scheduler;
 import peerjs.DataConnection;
 
 class SessionManager {
+	final peer: Peer;
 	final frameCounter: FrameCounter;
 
 	var dc: DataConnection;
@@ -38,6 +39,7 @@ class SessionManager {
 	public var state(default, null): SessionState;
 
 	public function new(peer: Peer, isHost: Bool, remoteID: String) {
+		this.peer = peer;
 		frameCounter = new FrameCounter();
 
 		if (isHost) {
@@ -308,6 +310,13 @@ class SessionManager {
 		}
 
 		dc.send(msg);
+	}
+
+	public function dispose() {
+		Scheduler.removeTimeTask(syncTimeTaskID);
+		Scheduler.removeTimeTask(syncTimeoutTaskID);
+
+		peer.destroy();
 	}
 
 	public function update() {

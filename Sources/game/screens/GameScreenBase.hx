@@ -76,6 +76,8 @@ class GameScreenBase implements IScreen {
 		gameState.render(g, g4, alpha);
 	}
 
+	public function dispose() {}
+
 	public function update() {
 		if (isPaused) {
 			updatePaused();

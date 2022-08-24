@@ -50,6 +50,7 @@ final class ScreenManager {
 	}
 
 	public static function switchScreen(newScreen: IScreen) {
+		currentScreen.dispose();
 		currentScreen = newScreen;
 		showOverlay = false;
 	}

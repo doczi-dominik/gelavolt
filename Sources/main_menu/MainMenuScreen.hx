@@ -23,6 +23,8 @@ class MainMenuScreen implements IScreen {
 		menu.onShow(AnyInputDevice.instance);
 	}
 
+	public function dispose() {}
+
 	public function update() {
 		menu.update();
 	}

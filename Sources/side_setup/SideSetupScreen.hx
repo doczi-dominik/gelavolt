@@ -67,6 +67,8 @@ class SideSetupScreen implements IScreen {
 		}
 	}
 
+	public function dispose() {}
+
 	public function update() {
 		for (d in devices) {
 			if (d.getLeftAction()) {

@@ -1,16 +1,11 @@
 import kha.graphics2.Graphics;
 
 final class NullScreen implements IScreen {
-	public static var instance(get, null): NullScreen;
-
-	static function get_instance() {
-		if (instance == null)
-			instance = new NullScreen();
-
-		return instance;
-	}
+	public static final instance = new NullScreen();
 
 	function new() {}
+
+	public function dispose() {}
 
 	public function update() {}
 
