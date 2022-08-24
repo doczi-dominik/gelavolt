@@ -1,5 +1,6 @@
 package game.boardmanagers;
 
+import hxbit.Serializer;
 import game.geometries.BoardGeometries;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
@@ -11,11 +12,14 @@ class SingleBoardManagerOptions {}
 
 class SingleBoardManager implements IBoardManager {
 	@inject final geometries: BoardGeometries;
-
-	@:s @inject var board: IBoard;
+	@inject final board: IBoard;
 
 	public function new(opts: SingleBoardManagerOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		board.addDesyncInfo(ctx);
 	}
 
 	public function update() {

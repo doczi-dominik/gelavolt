@@ -1,5 +1,6 @@
 package game.boards;
 
+import hxbit.Serializer;
 import input.IInputDevice;
 import game.mediators.PauseMediator;
 import game.boardstates.IBoardState;
@@ -12,11 +13,14 @@ class SingleStateBoardOptions {}
 class SingleStateBoard implements IBoard {
 	@inject final pauseMediator: PauseMediator;
 	@inject final inputDevice: IInputDevice;
-
-	@:s @inject var state: IBoardState;
+	@inject final state: IBoardState;
 
 	public function new(opts: SingleStateBoardOptions) {
 		game.Macros.initFromOpts();
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		state.addDesyncInfo(ctx);
 	}
 
 	public function update() {

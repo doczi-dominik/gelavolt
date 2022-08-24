@@ -14,24 +14,28 @@ class SessionManager {
 
 	var dc: DataConnection;
 
-	var syncTimeTaskID: Int;
 	var roundTripCounter: Int;
 	var localAdvantageCounter: Int;
 	var remoteAdvantageCounter: Int;
 	var lastDesyncChecksum: String;
+	var nextChecksumFrame: Null<Int>;
 	var desyncCounter: Int;
 
 	var sleepFrames: Int;
 	var internalSleepCounter: Int;
 
-	var sendBeginTaskID: Int;
 	var beginFrame: Null<Int>;
 
 	var localInputHistory: Array<InputHistoryEntry>;
 	var lastInputFrame: Int;
+
+	var syncTimeTaskID: Int;
 	var syncTimeoutTaskID: Int;
+	var sendBeginTaskID: Int;
+	var sendDesyncTaskID: Int;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
+	public var onChecksumRequest(null, default): Void->Int;
 
 	public var averageRTT(default, null): Null<Int>;
 	public var averageLocalAdvantage(default, null): Null<Int>;
@@ -90,10 +94,12 @@ class SessionManager {
 				onBeginRequest(parts);
 			case BEGIN_RESP if (state == BEGINNING):
 				onBeginResponse(parts);
-			case DESYNC_REQ if (state == RUNNING):
-				onDesyncRequest(parts);
-			case DESYNC_RESP if (state == RUNNING):
-				onDesyncResponse(parts);
+			case CHECKSUM_FRAME_REQ if (state == RUNNING):
+				onChecksumFrameRequest(parts);
+			case CHECKSUM_FRAME_RESP if (state == RUNNING):
+				onChecksumFrameResponse(parts);
+			case CHECKSUM_UPDATE if (state == RUNNING):
+				onChecksumUpdate(parts);
 			default:
 		}
 	}
@@ -250,27 +256,34 @@ class SessionManager {
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 	}
 
-	function onDesyncRequest(parts: Array<String>) {
-		dc.send('$DESYNC_RESP;${parts[1]};$lastDesyncChecksum');
+	function onChecksumFrameRequest(parts: Array<String>) {
+		dc.send('$CHECKSUM_FRAME_RESP;$nextChecksumFrame');
 	}
 
-	function onDesyncResponse(parts: Array<String>) {
-		if (parts[1] == parts[2]) {
-			desyncCounter = 0;
+	function onChecksumFrameResponse(parts: Array<String>) {
+		nextChecksumFrame = Std.parseInt(parts[1]);
+
+		trace('Current: ${frameCounter.value} -- CSF: $nextChecksumFrame');
+
+		if (nextChecksumFrame == null) {
+			nextChecksumFrame = frameCounter.value + 240;
 			return;
 		}
+	}
 
-		if (++desyncCounter > 2) {
-			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Desync Detected. The Game Will End."));
-		}
+	function onChecksumUpdate(parts: Array<String>) {
+		trace('$lastDesyncChecksum -- ${parts[1]} -- ${lastDesyncChecksum == parts[1]}');
 	}
 
 	function initRunningState() {
 		setSyncInterval(500);
 
 		lastInputFrame = -1;
-		lastDesyncChecksum = "";
 		desyncCounter = 0;
+
+		sendDesyncTaskID = Scheduler.addTimeTask(() -> {
+			dc.send('$CHECKSUM_FRAME_REQ');
+		}, 0, 1);
 
 		state = RUNNING;
 	}
@@ -299,15 +312,24 @@ class SessionManager {
 	}
 
 	function updateRunningState() {
-		if (isInputIdle) {
-			final s = Std.int(Math.min(sleepFrames, 9));
+		if (frameCounter.value == nextChecksumFrame) {
+			lastDesyncChecksum = '${onChecksumRequest()}';
 
-			sleepFrames = 0;
-
-			return s;
+			dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
+			nextChecksumFrame = null;
 		}
 
-		return 0;
+		var s = 0;
+
+		if (isInputIdle) {
+			s = Std.int(Math.min(sleepFrames, 9));
+
+			sleepFrames = 0;
+		}
+
+		frameCounter.update();
+
+		return s;
 	}
 
 	function resetSyncTimeoutTimer() {
@@ -334,12 +356,6 @@ class SessionManager {
 		}
 
 		dc.send(msg);
-	}
-
-	public function sendDesyncChecksum(checksum: String) {
-		lastDesyncChecksum = checksum;
-
-		dc.send('$DESYNC_REQ;$checksum');
 	}
 
 	public function dispose() {

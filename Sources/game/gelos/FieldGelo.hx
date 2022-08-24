@@ -1,5 +1,6 @@
 package game.gelos;
 
+import hxbit.Serializer;
 import game.gelos.Gelo.GeloOptions;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
@@ -95,6 +96,10 @@ class FieldGelo extends Gelo {
 
 	public function damage() {
 		return true;
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		ctx.addInt(color);
 	}
 
 	inline public function renderAtOwnPosition(g: Graphics, g4: Graphics4, alpha: Float) {

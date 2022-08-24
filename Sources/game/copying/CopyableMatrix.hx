@@ -1,6 +1,6 @@
 package game.copying;
 
-class CopyableMatrix<T:ICopy & hxbit.Serializable> implements ICopyFrom implements hxbit.Serializable {
+class CopyableMatrix<T:ICopy> implements ICopyFrom {
 	public final data: Array<Array<T>>;
 
 	public function new(height: Int) {
@@ -31,16 +31,4 @@ class CopyableMatrix<T:ICopy & hxbit.Serializable> implements ICopyFrom implemen
 	public function copy() {
 		return new CopyableMatrix<T>(0).copyFrom(this);
 	}
-
-	@:keep
-	public function customSerialize(ctx: hxbit.Serializer) {
-		ctx.addArray(data, e -> {
-			ctx.addArray(e, e -> {
-				ctx.addAnyRef(e);
-			});
-		});
-	}
-
-	@:keep
-	public function customUnserialize(ctx: hxbit.Serializer) {}
 }

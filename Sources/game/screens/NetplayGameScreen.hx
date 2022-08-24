@@ -1,5 +1,6 @@
 package game.screens;
 
+import haxe.io.Bytes;
 import hxbit.Serializer;
 import haxe.crypto.Crc32;
 import game.mediators.FrameCounter;
@@ -36,12 +37,13 @@ class NetplayGameScreen extends GameScreenBase {
 	final serializer: Serializer;
 
 	var sleepCounter: Int;
-	var serializeCounter: Int;
 
 	public function new(opts: NetplayGameScreenOptions) {
 		super();
 
 		Macros.initFromOpts();
+
+		session.onChecksumRequest = onChecksumRequest;
 
 		gameStateBuilder.controlHintContainer = controlHintContainer;
 
@@ -70,7 +72,6 @@ class NetplayGameScreen extends GameScreenBase {
 		serializer = new Serializer();
 
 		sleepCounter = 0;
-		serializeCounter = 0;
 	}
 
 	override function updatePaused() {
@@ -81,6 +82,13 @@ class NetplayGameScreen extends GameScreenBase {
 	override function updateRunning() {
 		background.update();
 		updateGameState();
+	}
+
+	inline function onChecksumRequest() {
+		serializer.begin();
+		gameState.addDesyncInfo(serializer);
+
+		return Crc32.make(serializer.end());
 	}
 
 	function updateGameState() {
@@ -95,14 +103,6 @@ class NetplayGameScreen extends GameScreenBase {
 			gameState.update();
 
 			confirmFrame();
-
-			if (++serializeCounter > 120) {
-				final ser = serializer.serialize(gameState);
-				final checksum = '${Crc32.make(ser)}';
-
-				session.sendDesyncChecksum(checksum);
-				serializeCounter = 0;
-			}
 		}
 	}
 

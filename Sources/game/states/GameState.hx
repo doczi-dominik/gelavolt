@@ -1,5 +1,6 @@
 package game.states;
 
+import hxbit.Serializer;
 import game.copying.ICopyFrom;
 import game.mediators.FrameCounter;
 import game.rules.MarginTimeManager;
@@ -13,12 +14,11 @@ import kha.graphics4.Graphics as Graphics4;
 @:build(game.Macros.buildOptionsClass(GameState))
 class GameStateOptions {}
 
-class GameState implements hxbit.Serializable {
+class GameState {
 	@inject final particleManager: ParticleManager;
 	@inject final frameCounter: FrameCounter;
-
-	@:s @inject var boardManager: IBoardManager;
-	@:s @inject var marginManager: MarginTimeManager;
+	@inject final boardManager: IBoardManager;
+	@inject final marginManager: MarginTimeManager;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
 
@@ -26,6 +26,10 @@ class GameState implements hxbit.Serializable {
 		game.Macros.initFromOpts();
 
 		FADE_TO_WHITELocation = Pipelines.FADE_TO_WHITE.getConstantLocation("comp");
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		boardManager.addDesyncInfo(ctx);
 	}
 
 	public function update() {

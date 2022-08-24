@@ -1,5 +1,6 @@
 package game.fields;
 
+import hxbit.Serializer;
 import game.gelos.FieldGeloPoint;
 import save_data.PrefsSettings;
 import game.copying.CopyableMatrix;
@@ -14,7 +15,6 @@ import utils.IntPoint;
 import game.gelos.FieldGelo;
 import game.gelos.Gelo;
 import utils.Point;
-import haxe.ds.Vector;
 import utils.Utils.negativeMod;
 import haxe.ds.ReadOnlyArray;
 
@@ -22,14 +22,13 @@ import haxe.ds.ReadOnlyArray;
 @:build(game.Macros.buildOptionsClass(Field))
 class FieldOptions {}
 
-class Field implements ICopyFrom implements hxbit.Serializable {
+class Field implements ICopyFrom {
 	static final ORIGINAL_GARBAGE_ACCELERATIONS = [0.5625, 0.59375, 0.5, 0.5625, 0.53125, 0.625];
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
 
 	@inject final prefsSettings: PrefsSettings;
 	@copy final markers: CopyableMatrix<IFieldMarker>;
-
-	@:s @copy var gelos: CopyableMatrix<FieldGelo>;
+	@copy final gelos: CopyableMatrix<FieldGelo>;
 
 	@inject public var columns(default, null): Int;
 	@inject public var playAreaRows(default, null): Int;
@@ -405,6 +404,20 @@ class Field implements ICopyFrom implements hxbit.Serializable {
 		final fieldY = Math.round((screenY + outerRows * Gelo.SIZE + Gelo.HALFSIZE) / Gelo.SIZE) - 1;
 
 		return {x: fieldX, y: fieldY};
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		ctx.addArray(gelos.data, e -> {
+			ctx.addArray(e, g -> {
+				if (g == null) {
+					ctx.addByte(0);
+
+					return;
+				}
+
+				g.addDesyncInfo(ctx);
+			});
+		});
 	}
 
 	public function update() {

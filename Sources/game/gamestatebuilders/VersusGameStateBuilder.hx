@@ -559,6 +559,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
+				isLocalOnLeft: isLocalOnLeft,
 				boardOne: new SingleBoardManager({
 					board: leftBoard,
 					geometries: BoardGeometries.LEFT

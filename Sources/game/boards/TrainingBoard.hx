@@ -1,5 +1,6 @@
 package game.boards;
 
+import hxbit.Serializer;
 import ui.ControlHint;
 import game.mediators.ControlHintContainer;
 import input.IInputDevice;
@@ -101,6 +102,8 @@ class TrainingBoard implements IBoard {
 			editState.clearField();
 		}
 	}
+
+	public function addDesyncInfo(ctx: Serializer) {}
 
 	public function update() {
 		if (inputDevice.getAction(PAUSE)) {

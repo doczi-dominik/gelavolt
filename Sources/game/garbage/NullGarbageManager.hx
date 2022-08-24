@@ -1,5 +1,6 @@
 package game.garbage;
 
+import hxbit.Serializer;
 import game.gelos.ScreenGeloPoint;
 import kha.graphics2.Graphics;
 
@@ -31,6 +32,8 @@ class NullGarbageManager implements IGarbageManager {
 	public function confirmGarbage(amount: Int) {}
 
 	public function clear() {}
+
+	public function addDesyncInfo(ctx: Serializer) {}
 
 	public function update() {}
 

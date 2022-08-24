@@ -1,5 +1,6 @@
 package game.boardstates;
 
+import hxbit.Serializer;
 import input.IInputDevice;
 import utils.Utils;
 import game.fields.IFieldMarker;
@@ -174,6 +175,8 @@ class EditingBoardState implements IBoardState {
 		chainSim.editViewed();
 		loadStep();
 	}
+
+	public function addDesyncInfo(ctx: Serializer) {}
 
 	public function update() {
 		if (inputDevice.getAction(EDIT_LEFT)) {

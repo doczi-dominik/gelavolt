@@ -1,5 +1,6 @@
 package game.boardstates;
 
+import hxbit.Serializer;
 import utils.ValueBox;
 import game.auto_attack.AutoAttackManager;
 import save_data.PrefsSettings;
@@ -375,6 +376,8 @@ class TrainingInfoBoardState implements IBoardState {
 			viewMin--;
 		}
 	}
+
+	public function addDesyncInfo(ctx: Serializer) {}
 
 	public function update() {
 		if (updateSplitT) {

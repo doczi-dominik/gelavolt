@@ -1,5 +1,6 @@
 package game.boardstates;
 
+import hxbit.Serializer;
 import utils.ValueBox;
 import game.rules.AnimationsType;
 import utils.Utils;
@@ -58,10 +59,9 @@ class StandardBoardState implements IBoardState {
 	@inject final scoreManager: ScoreManager;
 	@inject final actionBuffer: IActionBuffer;
 	@inject final chainCounter: ChainCounter;
+	@inject final field: Field;
 	@inject final chainSim: ChainSimulator;
-
-	@:s @inject var field: Field;
-	@:s @inject var garbageManager: IGarbageManager;
+	@inject final garbageManager: IGarbageManager;
 
 	@copy var popPauseMaxT: Int;
 
@@ -463,6 +463,11 @@ class StandardBoardState implements IBoardState {
 		beginBorderColor = borderColor;
 		targetBorderColor = target;
 		borderColorT = 0;
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		field.addDesyncInfo(ctx);
+		garbageManager.addDesyncInfo(ctx);
 	}
 
 	public function update() {

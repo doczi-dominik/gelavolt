@@ -1,5 +1,6 @@
 package game.garbage;
 
+import hxbit.Serializer;
 import utils.ValueBox;
 import game.screens.GameScreenBase;
 import game.screens.GameScreen;
@@ -243,6 +244,10 @@ class GarbageManager implements IGarbageManager {
 	public function clear() {
 		reduceGarbage(currentGarbage);
 		startAnimation();
+	}
+
+	public function addDesyncInfo(ctx: Serializer) {
+		ctx.addInt(currentGarbage);
 	}
 
 	public function update() {
