@@ -139,7 +139,7 @@ class SessionManager {
 			averageLocalAdvantage = Math.round(0.5 * adv + 0.5 * averageLocalAdvantage);
 		}
 
-		if (parts[3] == "R")
+		if (state == SYNCING && parts[3] == "R")
 			initRunningState();
 
 		dc.send('$SYNC_RESP;$pong;$adv');
