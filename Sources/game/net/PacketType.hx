@@ -1,13 +1,13 @@
 package game.net;
 
-enum abstract PacketType(Int) from Int {
-	final INPUT;
-	final SYNC_REQ;
-	final SYNC_RESP;
-	final INPUT_ACK;
-	final BEGIN_REQ;
-	final BEGIN_RESP;
-	final CHECKSUM_FRAME_REQ;
-	final CHECKSUM_FRAME_RESP;
-	final CHECKSUM_UPDATE;
+enum abstract PacketType(String) from String {
+	final INPUT = "0";
+	final SYNC_REQ = "1";
+	final SYNC_RESP = "2";
+	final INPUT_ACK = "3";
+	final BEGIN_REQ = "4";
+	final BEGIN_RESP = "5";
+	final CHECKSUM_FRAME_REQ = "6";
+	final CHECKSUM_FRAME_RESP = "7";
+	final CHECKSUM_UPDATE = "8";
 }

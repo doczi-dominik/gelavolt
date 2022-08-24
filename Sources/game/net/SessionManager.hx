@@ -79,9 +79,7 @@ class SessionManager {
 	function onMessage(msg: String) {
 		final parts = msg.split(";");
 
-		final type: PacketType = Std.parseInt(parts[0]);
-
-		switch (type) {
+		switch ((parts[0] : PacketType)) {
 			case SYNC_REQ:
 				onSyncRequest(parts);
 			case SYNC_RESP:
