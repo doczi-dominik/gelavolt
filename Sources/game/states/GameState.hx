@@ -13,11 +13,12 @@ import kha.graphics4.Graphics as Graphics4;
 @:build(game.Macros.buildOptionsClass(GameState))
 class GameStateOptions {}
 
-class GameState {
+class GameState implements hxbit.Serializable {
 	@inject final particleManager: ParticleManager;
-	@inject final boardManager: IBoardManager;
-	@inject final marginManager: MarginTimeManager;
 	@inject final frameCounter: FrameCounter;
+
+	@:s @inject var boardManager: IBoardManager;
+	@:s @inject var marginManager: MarginTimeManager;
 
 	final FADE_TO_WHITELocation: ConstantLocation;
 

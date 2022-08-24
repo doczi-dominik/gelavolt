@@ -18,6 +18,8 @@ class SessionManager {
 	var roundTripCounter: Int;
 	var localAdvantageCounter: Int;
 	var remoteAdvantageCounter: Int;
+	var lastDesyncChecksum: String;
+	var desyncCounter: Int;
 
 	var sleepFrames: Int;
 	var internalSleepCounter: Int;
@@ -30,13 +32,14 @@ class SessionManager {
 	var syncTimeoutTaskID: Int;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
-	public var isInputIdle(null, default): Bool;
 
 	public var averageRTT(default, null): Null<Int>;
 	public var averageLocalAdvantage(default, null): Null<Int>;
 	public var averageRemoteAdvantage(default, null): Null<Int>;
 	public var successfulSleepChecks(default, null): Null<Int>;
 	public var state(default, null): SessionState;
+
+	public var isInputIdle: Bool;
 
 	public function new(peer: Peer, isHost: Bool, remoteID: String) {
 		this.peer = peer;
@@ -87,6 +90,10 @@ class SessionManager {
 				onBeginRequest(parts);
 			case BEGIN_RESP if (state == BEGINNING):
 				onBeginResponse(parts);
+			case DESYNC_REQ if (state == RUNNING):
+				onDesyncRequest(parts);
+			case DESYNC_RESP if (state == RUNNING):
+				onDesyncResponse(parts);
 			default:
 		}
 	}
@@ -243,10 +250,27 @@ class SessionManager {
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 	}
 
+	function onDesyncRequest(parts: Array<String>) {
+		dc.send('$DESYNC_RESP;${parts[1]};$lastDesyncChecksum');
+	}
+
+	function onDesyncResponse(parts: Array<String>) {
+		if (parts[1] == parts[2]) {
+			desyncCounter = 0;
+			return;
+		}
+
+		if (++desyncCounter > 2) {
+			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Desync Detected. The Game Will End."));
+		}
+	}
+
 	function initRunningState() {
 		setSyncInterval(500);
 
 		lastInputFrame = -1;
+		lastDesyncChecksum = "";
+		desyncCounter = 0;
 
 		state = RUNNING;
 	}
@@ -310,6 +334,12 @@ class SessionManager {
 		}
 
 		dc.send(msg);
+	}
+
+	public function sendDesyncChecksum(checksum: String) {
+		lastDesyncChecksum = checksum;
+
+		dc.send('$DESYNC_REQ;$checksum');
 	}
 
 	public function dispose() {

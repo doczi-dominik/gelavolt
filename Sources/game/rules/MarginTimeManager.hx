@@ -1,12 +1,11 @@
 package game.rules;
 
-import utils.ValueBox;
 import game.copying.ICopyFrom;
 
-class MarginTimeManager implements ICopyFrom {
+class MarginTimeManager implements ICopyFrom implements hxbit.Serializable {
 	@copy var changeCounter: Int;
 
-	@copy public var marginTime(default, null): Int;
+	@:s @copy public var marginTime(default, null): Int;
 
 	@copy public var startMarginTime: Int;
 	@copy public var startTargetPoints: Int;

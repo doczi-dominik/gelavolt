@@ -14,7 +14,7 @@ import game.gelos.GeloBounceTables;
 @:build(game.Macros.buildOptionsClass(Gelo))
 class GeloOptions {}
 
-class Gelo implements ICopy {
+class Gelo implements ICopy implements hxbit.Serializable {
 	public inline static final SIZE = 64;
 	public inline static final HALFSIZE = 32;
 
@@ -57,8 +57,6 @@ class Gelo implements ICopy {
 
 	@inject final prefsSettings: PrefsSettings;
 
-	@inject public final color: GeloColor;
-
 	@copy var spriteVariation: GeloSpriteVariation;
 	@copy var subImageCoords: Point;
 
@@ -73,6 +71,7 @@ class Gelo implements ICopy {
 	@copy var prevScaleX: Float;
 	@copy var prevScaleY: Float;
 
+	@:s @inject public var color(default, null): GeloColor;
 	@copy public var scaleX(default, null): Float;
 	@copy public var scaleY(default, null): Float;
 	@copy public var willTriggerChain: Bool;

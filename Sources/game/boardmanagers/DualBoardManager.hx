@@ -8,8 +8,8 @@ import kha.graphics4.Graphics as Graphics4;
 class DualBoardManagerOptions {}
 
 class DualBoardManager implements IBoardManager {
-	@inject final boardOne: SingleBoardManager;
-	@inject final boardTwo: SingleBoardManager;
+	@:s @inject var boardOne: SingleBoardManager;
+	@:s @inject var boardTwo: SingleBoardManager;
 
 	public function new(opts: DualBoardManagerOptions) {
 		game.Macros.initFromOpts();

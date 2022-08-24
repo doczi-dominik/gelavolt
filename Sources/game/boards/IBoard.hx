@@ -5,7 +5,7 @@ import input.IInputDevice;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 
-interface IBoard extends ICopyFrom {
+interface IBoard extends ICopyFrom extends hxbit.Serializable {
 	private final inputDevice: IInputDevice;
 
 	public function update(): Void;

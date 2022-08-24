@@ -4,7 +4,7 @@ import game.copying.ICopyFrom;
 import game.gelos.ScreenGeloPoint;
 import kha.graphics2.Graphics;
 
-interface IGarbageManager extends ICopyFrom {
+interface IGarbageManager extends ICopyFrom extends hxbit.Serializable {
 	public var canReceiveGarbage: Bool;
 	public var droppableGarbage(get, never): Int;
 

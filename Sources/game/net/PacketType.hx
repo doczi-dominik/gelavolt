@@ -7,4 +7,6 @@ enum abstract PacketType(Int) from Int {
 	final INPUT_ACK;
 	final BEGIN_REQ;
 	final BEGIN_RESP;
+	final DESYNC_REQ;
+	final DESYNC_RESP;
 }

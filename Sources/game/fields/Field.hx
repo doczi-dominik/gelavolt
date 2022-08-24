@@ -22,14 +22,14 @@ import haxe.ds.ReadOnlyArray;
 @:build(game.Macros.buildOptionsClass(Field))
 class FieldOptions {}
 
-class Field implements ICopyFrom {
+class Field implements ICopyFrom implements hxbit.Serializable {
 	static final ORIGINAL_GARBAGE_ACCELERATIONS = [0.5625, 0.59375, 0.5, 0.5625, 0.53125, 0.625];
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
 
 	@inject final prefsSettings: PrefsSettings;
-
-	@copy final gelos: CopyableMatrix<FieldGelo>;
 	@copy final markers: CopyableMatrix<IFieldMarker>;
+
+	@:s @copy var gelos: CopyableMatrix<FieldGelo>;
 
 	@inject public var columns(default, null): Int;
 	@inject public var playAreaRows(default, null): Int;

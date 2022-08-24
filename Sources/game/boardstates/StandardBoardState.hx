@@ -58,9 +58,10 @@ class StandardBoardState implements IBoardState {
 	@inject final scoreManager: ScoreManager;
 	@inject final actionBuffer: IActionBuffer;
 	@inject final chainCounter: ChainCounter;
-	@inject final field: Field;
 	@inject final chainSim: ChainSimulator;
-	@inject final garbageManager: IGarbageManager;
+
+	@:s @inject var field: Field;
+	@:s @inject var garbageManager: IGarbageManager;
 
 	@copy var popPauseMaxT: Int;
 

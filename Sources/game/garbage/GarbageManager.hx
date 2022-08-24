@@ -32,7 +32,7 @@ class GarbageManager implements IGarbageManager {
 	@inject final tray: GarbageTray;
 	@inject final target: GarbageTargetMediator;
 
-	@copy var currentGarbage: Int;
+	@:s @copy var currentGarbage: Int;
 	@copy var confirmedGarbage: Int;
 	@copy var graceT: Int;
 

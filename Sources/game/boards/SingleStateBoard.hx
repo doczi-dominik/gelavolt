@@ -12,7 +12,8 @@ class SingleStateBoardOptions {}
 class SingleStateBoard implements IBoard {
 	@inject final pauseMediator: PauseMediator;
 	@inject final inputDevice: IInputDevice;
-	@inject final state: IBoardState;
+
+	@:s @inject var state: IBoardState;
 
 	public function new(opts: SingleStateBoardOptions) {
 		game.Macros.initFromOpts();
