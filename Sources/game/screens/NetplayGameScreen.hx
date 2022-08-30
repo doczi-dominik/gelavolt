@@ -10,33 +10,19 @@ import kha.graphics4.Graphics as Graphics4;
 import kha.graphics2.Graphics;
 import game.net.SessionManager;
 
-private class ElapsedFrame {
-	public final builder: INetplayGameStateBuilder;
-
-	public var frame: Int;
-
-	public function new(builder: INetplayGameStateBuilder) {
-		this.builder = builder;
-
-		frame = 0;
-	}
-}
-
 @:structInit
 @:build(game.Macros.buildOptionsClass(NetplayGameScreen))
 class NetplayGameScreenOptions {}
 
 class NetplayGameScreen extends GameScreenBase {
-	static inline final ROLLBACK_BUFFER_SIZE = 15;
-
 	@inject final session: SessionManager;
 	@inject final frameCounter: FrameCounter;
 	@inject final gameStateBuilder: INetplayGameStateBuilder;
 
-	final elapsedFrames: Vector<ElapsedFrame>;
 	final serializer: Serializer;
 
 	var sleepCounter: Int;
+	var lastConfirmedFrame: INetplayGameStateBuilder;
 
 	public function new(opts: NetplayGameScreenOptions) {
 		super();
@@ -44,6 +30,7 @@ class NetplayGameScreen extends GameScreenBase {
 		Macros.initFromOpts();
 
 		session.onChecksumRequest = onChecksumRequest;
+		session.onConfirmFrame = confirmFrame;
 
 		gameStateBuilder.controlHintContainer = controlHintContainer;
 
@@ -62,16 +49,11 @@ class NetplayGameScreen extends GameScreenBase {
 		gameState = gameStateBuilder.gameState;
 		pauseMenu = gameStateBuilder.pauseMenu;
 
-		elapsedFrames = new Vector(ROLLBACK_BUFFER_SIZE);
-
-		for (i in 0...elapsedFrames.length) {
-			elapsedFrames[i] = new ElapsedFrame(gameStateBuilder.createBackupBuilder());
-			elapsedFrames[i].builder.build();
-		}
-
 		serializer = new Serializer();
 
 		sleepCounter = 0;
+		lastConfirmedFrame = gameStateBuilder.createBackupBuilder();
+		lastConfirmedFrame.build();
 	}
 
 	override function updatePaused() {
@@ -84,13 +66,6 @@ class NetplayGameScreen extends GameScreenBase {
 		updateGameState();
 	}
 
-	inline function onChecksumRequest() {
-		serializer.begin();
-		gameState.addDesyncInfo(serializer);
-
-		return Crc32.make(serializer.end());
-	}
-
 	function updateGameState() {
 		if (sleepCounter > 0) {
 			sleepCounter--;
@@ -101,33 +76,25 @@ class NetplayGameScreen extends GameScreenBase {
 
 		if (session.state == RUNNING) {
 			gameState.update();
-
-			confirmFrame();
 		}
 	}
 
-	inline function confirmFrame() {
-		final ringBufferIndex = frameCounter.value % ROLLBACK_BUFFER_SIZE;
+	function onChecksumRequest() {
+		serializer.begin();
+		gameState.addDesyncInfo(serializer);
 
-		elapsedFrames[ringBufferIndex].frame = frameCounter.value;
-		elapsedFrames[ringBufferIndex].builder.copyFrom(gameStateBuilder);
+		return Std.string(Crc32.make(serializer.end()));
 	}
 
-	function rollback(from: Int) {
-		var i = ROLLBACK_BUFFER_SIZE;
+	function confirmFrame() {
+		lastConfirmedFrame.copyFrom(gameStateBuilder);
+	}
 
-		final target = frameCounter.value;
+	function rollback(resimulate: Int) {
+		gameStateBuilder.copyFrom(lastConfirmedFrame);
 
-		while (--i > 0) {
-			if (elapsedFrames[i].frame == from) {
-				gameStateBuilder.copyFrom(elapsedFrames[i].builder);
-				break;
-			}
-		}
-
-		while (frameCounter.value <= target) {
+		while (--resimulate >= 0) {
 			gameState.update();
-			confirmFrame();
 		}
 	}
 

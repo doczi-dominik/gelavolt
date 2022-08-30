@@ -37,7 +37,8 @@ class SessionManager {
 	public final remoteID: String;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
-	public var onChecksumRequest(null, default): Void->Int;
+	public var onChecksumRequest(null, default): Void->String;
+	public var onConfirmFrame(null, default): Void->Void;
 
 	public var averageRTT(default, null): Null<Int>;
 	public var averageLocalAdvantage(default, null): Null<Int>;
@@ -253,6 +254,8 @@ class SessionManager {
 		final frame = Std.parseInt(parts[1]);
 
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
+
+		onConfirmFrame();
 	}
 
 	function onChecksumUpdate(parts: Array<String>) {
@@ -261,6 +264,8 @@ class SessionManager {
 
 			return;
 		}
+
+		trace('DESYNC');
 
 		if (++desyncCounter >= 5) {
 			dispose();
@@ -275,7 +280,7 @@ class SessionManager {
 		desyncCounter = 0;
 
 		sendDesyncTaskID = Scheduler.addTimeTask(() -> {
-			lastDesyncChecksum = '${onChecksumRequest()}';
+			lastDesyncChecksum = onChecksumRequest();
 
 			dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
 		}, 0, 2);
