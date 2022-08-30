@@ -7,7 +7,5 @@ enum abstract PacketType(String) from String {
 	final INPUT_ACK = "3";
 	final BEGIN_REQ = "4";
 	final BEGIN_RESP = "5";
-	final CHECKSUM_FRAME_REQ = "6";
-	final CHECKSUM_FRAME_RESP = "7";
-	final CHECKSUM_UPDATE = "8";
+	final CHECKSUM_UPDATE = "6";
 }

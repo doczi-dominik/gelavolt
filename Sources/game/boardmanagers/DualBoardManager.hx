@@ -9,7 +9,7 @@ import kha.graphics4.Graphics as Graphics4;
 class DualBoardManagerOptions {}
 
 class DualBoardManager implements IBoardManager {
-	@inject final isLocalOnLeft: Bool;
+	@inject final doesBoardOneHavePriority: Bool;
 	@inject final boardOne: SingleBoardManager;
 	@inject final boardTwo: SingleBoardManager;
 
@@ -18,7 +18,7 @@ class DualBoardManager implements IBoardManager {
 	}
 
 	public function addDesyncInfo(ctx: Serializer) {
-		if (isLocalOnLeft) {
+		if (doesBoardOneHavePriority) {
 			boardOne.addDesyncInfo(ctx);
 			boardTwo.addDesyncInfo(ctx);
 		} else {

@@ -507,7 +507,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
-				isLocalOnLeft: true,
+				doesBoardOneHavePriority: true,
 				boardOne: new SingleBoardManager({
 					geometries: BoardGeometries.LEFT,
 					board: playerBoard

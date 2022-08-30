@@ -407,17 +407,25 @@ class Field implements ICopyFrom {
 	}
 
 	public function addDesyncInfo(ctx: Serializer) {
-		ctx.addArray(gelos.data, e -> {
-			ctx.addArray(e, g -> {
-				if (g == null) {
+		for (y in 0...totalRows) {
+			for (x in 0...columns) {
+				if (isEmpty(x, y)) {
 					ctx.addByte(0);
 
-					return;
+					continue;
 				}
 
-				g.addDesyncInfo(ctx);
-			});
-		});
+				final gelo = get(x, y);
+
+				if (gelo.state != IDLE) {
+					ctx.addByte(0);
+
+					continue;
+				}
+
+				ctx.addInt(gelo.color);
+			}
+		}
 	}
 
 	public function update() {

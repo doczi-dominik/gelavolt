@@ -555,11 +555,13 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	}
 
 	inline function buildGameState() {
+		final priority = (session != null) ? session.localID < session.remoteID : true;
+
 		gameState = new GameState({
 			particleManager: particleManager,
 			marginManager: marginManager,
 			boardManager: new DualBoardManager({
-				isLocalOnLeft: isLocalOnLeft,
+				doesBoardOneHavePriority: priority,
 				boardOne: new SingleBoardManager({
 					board: leftBoard,
 					geometries: BoardGeometries.LEFT

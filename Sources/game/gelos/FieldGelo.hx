@@ -98,10 +98,6 @@ class FieldGelo extends Gelo {
 		return true;
 	}
 
-	public function addDesyncInfo(ctx: Serializer) {
-		ctx.addInt(color);
-	}
-
 	inline public function renderAtOwnPosition(g: Graphics, g4: Graphics4, alpha: Float) {
 		render(g, g4, x, y, alpha);
 	}

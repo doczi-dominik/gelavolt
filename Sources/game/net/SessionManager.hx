@@ -18,7 +18,6 @@ class SessionManager {
 	var localAdvantageCounter: Int;
 	var remoteAdvantageCounter: Int;
 	var lastDesyncChecksum: String;
-	var nextChecksumFrame: Null<Int>;
 	var desyncCounter: Int;
 
 	var sleepFrames: Int;
@@ -33,6 +32,9 @@ class SessionManager {
 	var syncTimeoutTaskID: Int;
 	var sendBeginTaskID: Int;
 	var sendDesyncTaskID: Int;
+
+	public final localID: String;
+	public final remoteID: String;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
 	public var onChecksumRequest(null, default): Void->Int;
@@ -58,6 +60,9 @@ class SessionManager {
 		}
 
 		localInputHistory = [];
+
+		localID = peer.id;
+		this.remoteID = remoteID;
 
 		state = WAITING;
 	}
@@ -92,10 +97,6 @@ class SessionManager {
 				onBeginRequest(parts);
 			case BEGIN_RESP if (state == BEGINNING):
 				onBeginResponse(parts);
-			case CHECKSUM_FRAME_REQ if (state == RUNNING):
-				onChecksumFrameRequest(parts);
-			case CHECKSUM_FRAME_RESP if (state == RUNNING):
-				onChecksumFrameResponse(parts);
 			case CHECKSUM_UPDATE if (state == RUNNING):
 				onChecksumUpdate(parts);
 			default:
@@ -254,23 +255,17 @@ class SessionManager {
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 	}
 
-	function onChecksumFrameRequest(parts: Array<String>) {
-		dc.send('$CHECKSUM_FRAME_RESP;$nextChecksumFrame');
-	}
+	function onChecksumUpdate(parts: Array<String>) {
+		if (lastDesyncChecksum == parts[1]) {
+			desyncCounter = 0;
 
-	function onChecksumFrameResponse(parts: Array<String>) {
-		nextChecksumFrame = Std.parseInt(parts[1]);
-
-		trace('Current: ${frameCounter.value} -- CSF: $nextChecksumFrame');
-
-		if (nextChecksumFrame == null) {
-			nextChecksumFrame = frameCounter.value + 240;
 			return;
 		}
-	}
 
-	function onChecksumUpdate(parts: Array<String>) {
-		trace('$lastDesyncChecksum -- ${parts[1]} -- ${lastDesyncChecksum == parts[1]}');
+		if (++desyncCounter >= 5) {
+			dispose();
+			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Desync Detected"));
+		}
 	}
 
 	function initRunningState() {
@@ -280,8 +275,10 @@ class SessionManager {
 		desyncCounter = 0;
 
 		sendDesyncTaskID = Scheduler.addTimeTask(() -> {
-			dc.send('$CHECKSUM_FRAME_REQ');
-		}, 0, 1);
+			lastDesyncChecksum = '${onChecksumRequest()}';
+
+			dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
+		}, 0, 2);
 
 		state = RUNNING;
 	}
@@ -310,13 +307,6 @@ class SessionManager {
 	}
 
 	function updateRunningState() {
-		if (frameCounter.value == nextChecksumFrame) {
-			lastDesyncChecksum = '${onChecksumRequest()}';
-
-			dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
-			nextChecksumFrame = null;
-		}
-
 		var s = 0;
 
 		if (isInputIdle) {
@@ -334,6 +324,7 @@ class SessionManager {
 		Scheduler.removeTimeTask(syncTimeoutTaskID);
 
 		syncTimeoutTaskID = Scheduler.addTimeTask(() -> {
+			dispose();
 			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Connection Error: Sync Package Timeout"));
 		}, 2);
 	}
@@ -359,6 +350,7 @@ class SessionManager {
 	public function dispose() {
 		Scheduler.removeTimeTask(syncTimeTaskID);
 		Scheduler.removeTimeTask(syncTimeoutTaskID);
+		Scheduler.removeTimeTask(sendDesyncTaskID);
 
 		peer.destroy();
 	}
