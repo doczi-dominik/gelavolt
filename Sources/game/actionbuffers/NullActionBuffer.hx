@@ -12,6 +12,8 @@ class NullActionBuffer implements IActionBuffer {
 
 	final nullAction: ActionSnapshot;
 
+	public var isActive: Bool;
+
 	function new() {
 		nullAction = ActionSnapshot.fromBitField(0);
 	}
@@ -23,10 +25,6 @@ class NullActionBuffer implements IActionBuffer {
 	public function update() {
 		return nullAction;
 	}
-
-	public function activate() {}
-
-	public function deactivate() {}
 
 	public function exportReplayData() {
 		return new ReplayData();

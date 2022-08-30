@@ -14,7 +14,7 @@ class LocalActionBuffer implements IActionBuffer {
 
 	final actions: Map<Int, ActionSnapshot>;
 
-	var isActive: Bool;
+	public var isActive: Bool;
 
 	public function new(opts: LocalActionBufferOptions) {
 		game.Macros.initFromOpts();
@@ -66,14 +66,6 @@ class LocalActionBuffer implements IActionBuffer {
 		}
 
 		return latestAction;
-	}
-
-	public function activate() {
-		isActive = true;
-	}
-
-	public function deactivate() {
-		isActive = false;
 	}
 
 	public function exportReplayData() {

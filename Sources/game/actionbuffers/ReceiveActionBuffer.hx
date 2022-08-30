@@ -20,6 +20,8 @@ class ReceiveActionBuffer implements IActionBuffer {
 
 	final actions: Map<Int, ActionSnapshot>;
 
+	public var isActive: Bool;
+
 	public function new(opts: ReceiveActionBufferOptions) {
 		Macros.initFromOpts();
 
@@ -81,10 +83,6 @@ class ReceiveActionBuffer implements IActionBuffer {
 	public function update() {
 		return getAction(frameCounter.value);
 	}
-
-	public function activate() {}
-
-	public function deactivate() {}
 
 	public function exportReplayData() {
 		final data: ReplayData = [];

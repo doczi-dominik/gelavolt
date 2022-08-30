@@ -18,19 +18,16 @@ class SenderActionBuffer extends LocalActionBuffer {
 
 	override function update(): Null<ActionSnapshot> {
 		final latestAction = super.update();
+		final bf = latestAction.toBitField();
 
-		session.sendInput(frameCounter.value + frameDelay, latestAction.toBitField());
+		if (isActive) {
+			session.isInputIdle = bf == 0;
+		} else {
+			session.isInputIdle = true;
+		}
+
+		session.sendInput(frameCounter.value + frameDelay, bf);
 
 		return latestAction;
-	}
-
-	override function activate() {
-		super.activate();
-		session.isInputIdle = false;
-	}
-
-	override function deactivate() {
-		super.deactivate();
-		session.isInputIdle = true;
 	}
 }

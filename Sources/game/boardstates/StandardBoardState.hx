@@ -131,7 +131,7 @@ class StandardBoardState implements IBoardState {
 
 	function lockGroup() {
 		canDropGarbage = true;
-		actionBuffer.deactivate();
+		actionBuffer.isActive = false;
 		beginChainSimulation();
 	}
 
@@ -181,7 +181,7 @@ class StandardBoardState implements IBoardState {
 
 		preview.startAnimation(queue.currentIndex);
 
-		actionBuffer.activate();
+		actionBuffer.isActive = true;
 
 		state = SPAWNING;
 	}
