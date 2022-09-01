@@ -1,10 +1,8 @@
 package game.screens;
 
-import haxe.io.Bytes;
 import hxbit.Serializer;
 import haxe.crypto.Crc32;
 import game.mediators.FrameCounter;
-import haxe.ds.Vector;
 import game.gamestatebuilders.INetplayGameStateBuilder;
 import kha.graphics4.Graphics as Graphics4;
 import kha.graphics2.Graphics;
@@ -21,7 +19,6 @@ class NetplayGameScreen extends GameScreenBase {
 
 	final serializer: Serializer;
 
-	var sleepCounter: Int;
 	var lastConfirmedFrame: INetplayGameStateBuilder;
 
 	public function new(opts: NetplayGameScreenOptions) {
@@ -51,7 +48,6 @@ class NetplayGameScreen extends GameScreenBase {
 
 		serializer = new Serializer();
 
-		sleepCounter = 0;
 		lastConfirmedFrame = gameStateBuilder.createBackupBuilder();
 		lastConfirmedFrame.build();
 	}
@@ -67,12 +63,12 @@ class NetplayGameScreen extends GameScreenBase {
 	}
 
 	function updateGameState() {
-		if (sleepCounter > 0) {
-			sleepCounter--;
+		session.update();
+
+		if (session.sleepFrames > 0) {
+			trace('Sleeping for ${session.sleepFrames}');
 			return;
 		}
-
-		sleepCounter = session.update();
 
 		if (session.state == RUNNING) {
 			gameState.update();
@@ -114,7 +110,7 @@ class NetplayGameScreen extends GameScreenBase {
 			case WAITING: "Waiting For Peer...";
 			case SYNCING: 'Synchronizing -- C: ${session.successfulSleepChecks}/5 -- $status';
 			case BEGINNING: "Synchronized! Game will begin soon...";
-			case RUNNING: 'S: $sleepCounter -- $status';
+			case RUNNING: 'S: ${session.sleepFrames} -- $status';
 		}, 0, 0);
 	}
 }

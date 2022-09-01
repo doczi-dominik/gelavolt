@@ -20,9 +20,6 @@ class SessionManager {
 	var lastDesyncChecksum: String;
 	var desyncCounter: Int;
 
-	var sleepFrames: Int;
-	var internalSleepCounter: Int;
-
 	var beginFrame: Null<Int>;
 
 	var localInputHistory: Array<InputHistoryEntry>;
@@ -45,6 +42,7 @@ class SessionManager {
 	public var averageRemoteAdvantage(default, null): Null<Int>;
 	public var successfulSleepChecks(default, null): Null<Int>;
 	public var state(default, null): SessionState;
+	public var sleepFrames(default, null): Int;
 
 	public var isInputIdle: Bool;
 
@@ -110,7 +108,6 @@ class SessionManager {
 		remoteAdvantageCounter = 0;
 
 		sleepFrames = 0;
-		internalSleepCounter = 0;
 
 		setSyncInterval(100);
 
@@ -162,7 +159,7 @@ class SessionManager {
 		if (adv != null) {
 			averageRemoteAdvantage = Math.round(0.5 * adv + 0.5 * averageRemoteAdvantage);
 
-			if (internalSleepCounter == 0 && ++remoteAdvantageCounter % 5 == 0) {
+			if (sleepFrames == 0 && ++remoteAdvantageCounter % 5 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
 				if (state == SYNCING && Math.abs(diff) < 4) {
@@ -175,9 +172,13 @@ class SessionManager {
 					successfulSleepChecks = 0;
 				}
 
+				if (!isInputIdle) {
+					sleepFrames = 0;
+					return;
+				}
+
 				if (averageLocalAdvantage < averageRemoteAdvantage) {
 					sleepFrames = 0;
-					internalSleepCounter = 0;
 					return;
 				}
 
@@ -186,12 +187,10 @@ class SessionManager {
 
 				if (s < 2) {
 					sleepFrames = 0;
-					internalSleepCounter = 0;
 					return;
 				}
 
-				sleepFrames = s;
-				internalSleepCounter = s;
+				sleepFrames = Std.int(Math.min(s, 9));
 			}
 		}
 	}
@@ -259,6 +258,8 @@ class SessionManager {
 	}
 
 	function onChecksumUpdate(parts: Array<String>) {
+		lastDesyncChecksum = onChecksumRequest();
+
 		if (lastDesyncChecksum == parts[1]) {
 			desyncCounter = 0;
 
@@ -271,6 +272,14 @@ class SessionManager {
 			dispose();
 			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Desync Detected"));
 		}
+	}
+
+	function updateSleepCounter() {
+		if (sleepFrames > 0) {
+			sleepFrames--;
+		}
+
+		return sleepFrames;
 	}
 
 	function initRunningState() {
@@ -288,41 +297,22 @@ class SessionManager {
 		state = RUNNING;
 	}
 
-	function updateSyncingState() {
-		if (internalSleepCounter > 0) {
-			internalSleepCounter--;
-			return 0;
-		}
-
-		frameCounter.update();
-
-		return 0;
-	}
-
 	function updateBeginningState() {
 		if (frameCounter.value == beginFrame) {
 			initRunningState();
 
-			return 0;
+			return;
 		}
 
 		frameCounter.update();
-
-		return 0;
 	}
 
 	function updateRunningState() {
-		var s = 0;
-
-		if (isInputIdle) {
-			s = Std.int(Math.min(sleepFrames, 9));
-
-			sleepFrames = 0;
+		if (updateSleepCounter() > 0) {
+			return;
 		}
 
 		frameCounter.update();
-
-		return s;
 	}
 
 	function resetSyncTimeoutTimer() {
@@ -361,11 +351,12 @@ class SessionManager {
 	}
 
 	public function update() {
-		return switch (state) {
-			case SYNCING: updateSyncingState();
-			case BEGINNING: updateBeginningState();
-			case RUNNING: updateRunningState();
-			default: 0;
+		switch (state) {
+			case BEGINNING:
+				updateBeginningState();
+			case SYNCING | RUNNING:
+				updateRunningState();
+			default:
 		}
 	}
 }
