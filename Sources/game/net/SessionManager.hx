@@ -21,6 +21,7 @@ class SessionManager {
 	var desyncCounter: Int;
 
 	var beginFrame: Null<Int>;
+	var nextChecksumFrame: Null<Int>;
 
 	var localInputHistory: Array<InputHistoryEntry>;
 	var lastInputFrame: Int;
@@ -28,14 +29,14 @@ class SessionManager {
 	var syncPackageTimeTaskID: Int;
 	var syncPackageTimeoutTaskID: Int;
 	var sendBeginTaskID: Int;
-	var sendDesyncTaskID: Int;
+	var sendChecksumTaskID: Int;
 	var syncTimeoutTaskID: Int;
 
 	public final localID: String;
 	public final remoteID: String;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
-	public var onChecksumRequest(null, default): Void->String;
+	public var onCalculateChecksum(null, default): Void->String;
 	public var onConfirmFrame(null, default): Void->Void;
 
 	public var averageRTT(default, null): Null<Int>;
@@ -102,8 +103,10 @@ class SessionManager {
 				onBeginRequest(parts);
 			case BEGIN_RESP if (state == BEGINNING):
 				onBeginResponse(parts);
-			case CHECKSUM_UPDATE if (state == RUNNING):
-				onChecksumUpdate(parts);
+			case CHECKSUM_REQ if (state == RUNNING):
+				onChecksumRequest(parts);
+			case CHECKSUM_RESP if (state == RUNNING):
+				onChecksumResponse(parts);
 			default:
 		}
 	}
@@ -269,16 +272,24 @@ class SessionManager {
 		onConfirmFrame();
 	}
 
-	function onChecksumUpdate(parts: Array<String>) {
-		lastDesyncChecksum = onChecksumRequest();
+	function onChecksumRequest(parts: Array<String>) {
+		dc.send('$CHECKSUM_RESP;$nextChecksumFrame');
+	}
 
+	function onChecksumResponse(parts: Array<String>) {
+		nextChecksumFrame = Std.parseInt(parts[1]);
+
+		if (nextChecksumFrame == null) {
+			nextChecksumFrame = frameCounter.value + 120;
+		}
+	}
+
+	function onChecksumUpdate(parts: Array<String>) {
 		if (lastDesyncChecksum == parts[1]) {
 			desyncCounter = 0;
 
 			return;
 		}
-
-		trace('DESYNC');
 
 		if (++desyncCounter >= 5) {
 			error("Desync Detected");
@@ -299,11 +310,9 @@ class SessionManager {
 		lastInputFrame = -1;
 		desyncCounter = 0;
 
-		sendDesyncTaskID = Scheduler.addTimeTask(() -> {
-			lastDesyncChecksum = onChecksumRequest();
-
-			dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
-		}, 0, 2);
+		sendChecksumTaskID = Scheduler.addTimeTask(() -> {
+			dc.send('$CHECKSUM_REQ');
+		}, 0, 0.001);
 
 		state = RUNNING;
 	}
@@ -319,6 +328,16 @@ class SessionManager {
 	}
 
 	function updateRunningState() {
+		if (frameCounter.value >= nextChecksumFrame) {
+			if (frameCounter.value == nextChecksumFrame) {
+				lastDesyncChecksum = onCalculateChecksum();
+
+				dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
+			}
+
+			nextChecksumFrame = null;
+		}
+
 		if (updateSleepCounter() > 0) {
 			return;
 		}
@@ -355,7 +374,7 @@ class SessionManager {
 	public function dispose() {
 		Scheduler.removeTimeTask(syncPackageTimeTaskID);
 		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
-		Scheduler.removeTimeTask(sendDesyncTaskID);
+		Scheduler.removeTimeTask(sendChecksumTaskID);
 		Scheduler.removeTimeTask(syncTimeoutTaskID);
 
 		peer.destroy();
