@@ -223,7 +223,7 @@ class SessionManager {
 		beginFrame = Std.parseInt(parts[1]);
 
 		if (beginFrame == null) {
-			beginFrame = frameCounter.value + Std.int(averageRTT * 10);
+			beginFrame = frameCounter.value + 60;
 			return;
 		}
 
