@@ -107,6 +107,8 @@ class SessionManager {
 				onChecksumRequest(parts);
 			case CHECKSUM_RESP if (state == RUNNING):
 				onChecksumResponse(parts);
+			case CHECKSUM_UPDATE if (state == RUNNING):
+				onChecksumUpdate(parts);
 			default:
 		}
 	}
