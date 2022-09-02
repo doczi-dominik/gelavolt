@@ -25,10 +25,11 @@ class SessionManager {
 	var localInputHistory: Array<InputHistoryEntry>;
 	var lastInputFrame: Int;
 
-	var syncTimeTaskID: Int;
-	var syncTimeoutTaskID: Int;
+	var syncPackageTimeTaskID: Int;
+	var syncPackageTimeoutTaskID: Int;
 	var sendBeginTaskID: Int;
 	var sendDesyncTaskID: Int;
+	var syncTimeoutTaskID: Int;
 
 	public final localID: String;
 	public final remoteID: String;
@@ -68,6 +69,11 @@ class SessionManager {
 
 	inline function advantageSign(x: Int) {
 		return x < 0 ? -1 : 1;
+	}
+
+	function error(message: String) {
+		dispose();
+		ScreenManager.pushOverlay(ErrorPage.mainMenuPage(message));
 	}
 
 	function initDataConnection(dc: DataConnection) {
@@ -110,6 +116,10 @@ class SessionManager {
 		sleepFrames = 0;
 
 		setSyncInterval(100);
+
+		syncTimeoutTaskID = Scheduler.addTimeTask(() -> {
+			error("Synchronization Failed");
+		}, 15);
 
 		isInputIdle = true;
 
@@ -196,6 +206,8 @@ class SessionManager {
 	}
 
 	function initBeginningState() {
+		Scheduler.removeTimeTask(syncTimeoutTaskID);
+
 		sendBeginTaskID = Scheduler.addTimeTask(() -> {
 			dc.send('$BEGIN_REQ');
 		}, 0, 0.001);
@@ -269,8 +281,7 @@ class SessionManager {
 		trace('DESYNC');
 
 		if (++desyncCounter >= 5) {
-			dispose();
-			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Desync Detected"));
+			error("Desync Detected");
 		}
 	}
 
@@ -316,18 +327,17 @@ class SessionManager {
 	}
 
 	function resetSyncTimeoutTimer() {
-		Scheduler.removeTimeTask(syncTimeoutTaskID);
+		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
 
-		syncTimeoutTaskID = Scheduler.addTimeTask(() -> {
-			dispose();
-			ScreenManager.pushOverlay(ErrorPage.mainMenuPage("Connection Error: Sync Package Timeout"));
+		syncPackageTimeoutTaskID = Scheduler.addTimeTask(() -> {
+			error("Connection Error: Sync Package Timeout");
 		}, 2);
 	}
 
 	public function setSyncInterval(interval: Int) {
-		Scheduler.removeTimeTask(syncTimeTaskID);
+		Scheduler.removeTimeTask(syncPackageTimeTaskID);
 
-		syncTimeTaskID = Scheduler.addTimeTask(sendSyncRequest, 0, interval / 1000);
+		syncPackageTimeTaskID = Scheduler.addTimeTask(sendSyncRequest, 0, interval / 1000);
 	}
 
 	public function sendInput(frame: Int, actions: Int) {
@@ -343,9 +353,10 @@ class SessionManager {
 	}
 
 	public function dispose() {
-		Scheduler.removeTimeTask(syncTimeTaskID);
-		Scheduler.removeTimeTask(syncTimeoutTaskID);
+		Scheduler.removeTimeTask(syncPackageTimeTaskID);
+		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
 		Scheduler.removeTimeTask(sendDesyncTaskID);
+		Scheduler.removeTimeTask(syncTimeoutTaskID);
 
 		peer.destroy();
 	}
