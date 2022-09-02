@@ -26,7 +26,7 @@ class NetplayGameScreen extends GameScreenBase {
 
 		Macros.initFromOpts();
 
-		session.onChecksumRequest = onChecksumRequest;
+		session.onCalculateChecksum = onCalculateChecksum;
 		session.onConfirmFrame = confirmFrame;
 
 		gameStateBuilder.controlHintContainer = controlHintContainer;
@@ -66,7 +66,6 @@ class NetplayGameScreen extends GameScreenBase {
 		session.update();
 
 		if (session.sleepFrames > 0) {
-			trace('Sleeping for ${session.sleepFrames}');
 			return;
 		}
 
@@ -75,11 +74,13 @@ class NetplayGameScreen extends GameScreenBase {
 		}
 	}
 
-	function onChecksumRequest() {
+	function onCalculateChecksum() {
 		serializer.begin();
 		gameState.addDesyncInfo(serializer);
 
-		return Std.string(Crc32.make(serializer.end()));
+		final crc = Crc32.make(serializer.end());
+
+		return Std.string(crc).substr(0, 8);
 	}
 
 	function confirmFrame() {
