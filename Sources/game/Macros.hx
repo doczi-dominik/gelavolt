@@ -90,37 +90,6 @@ class Macros {
 		return fields;
 	}
 
-	public static macro function addGameStateBuilderType(type: Expr): Array<Field> {
-		final pos = Context.currentPos();
-
-		var value: String;
-
-		switch (type.expr) {
-			case EConst(CIdent(name)):
-				value = name;
-
-			default:
-				Context.fatalError('The provided expression "${type.expr}" is not an identifier', pos);
-		}
-
-		final fields = Context.getBuildFields();
-
-		final fun: Function = {
-			expr: macro return $i{value},
-			ret: (macro:GameStateBuilderType),
-			args: []
-		};
-
-		fields.push({
-			name: "getType",
-			access: [APublic, AInline],
-			kind: FFun(fun),
-			pos: pos
-		});
-
-		return fields;
-	}
-
 	public static macro function initFromOpts(): Expr {
 		final pos = Context.currentPos();
 

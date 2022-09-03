@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.rules.VersusRule;
 import game.rules.AnimationsType;
 import game.rules.PhysicsType;
 import game.rules.PowerTableType;
@@ -47,35 +48,24 @@ import game.simulation.LinkInfoBuilder;
 import game.simulation.ChainSimulator;
 import game.mediators.SaveGameStateMediator;
 
-@:structInit
-@:build(game.Macros.buildOptionsClass(TrainingGameStateBuilder))
-class TrainingGameStateBuilderOptions {
-	static final type = 0;
-
-	public function getType() {
-		return type;
-	}
-}
-
 @:build(game.Macros.addGameStateBuildMethod())
 class TrainingGameStateBuilder implements IBackupGameStateBuilder {
-	@inject final rngSeed: Int;
-	@inject final marginTime: Int;
-	@inject final targetPoints: Int;
-	@inject final garbageDropLimit: ValueBox<Int>;
-	@inject final garbageConfirmGracePeriod: ValueBox<Int>;
-	@inject final softDropBonus: ValueBox<Float>;
-	@inject final popCount: ValueBox<Int>;
-	@inject final vanishHiddenRows: ValueBox<Bool>;
-	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
-	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
-	@inject final powerTableType: ValueBox<PowerTableType>;
-	@inject final dropBonusGarbage: ValueBox<Bool>;
-	@inject final allClearReward: ValueBox<Int>;
-	@inject final physics: ValueBox<PhysicsType>;
-	@inject final animations: ValueBox<AnimationsType>;
-	@inject final dropSpeed: ValueBox<Float>;
-	@inject final randomizeGarbage: ValueBox<Bool>;
+	final rule: VersusRule;
+
+	var garbageDropLimit: ValueBox<Int>;
+	var garbageConfirmGracePeriod: ValueBox<Int>;
+	var softDropBonus: ValueBox<Float>;
+	var popCount: ValueBox<Int>;
+	var vanishHiddenRows: ValueBox<Bool>;
+	var groupBonusTableType: ValueBox<GroupBonusTableType>;
+	var colorBonusTableType: ValueBox<ColorBonusTableType>;
+	var powerTableType: ValueBox<PowerTableType>;
+	var dropBonusGarbage: ValueBox<Bool>;
+	var allClearReward: ValueBox<Int>;
+	var physics: ValueBox<PhysicsType>;
+	var animations: ValueBox<AnimationsType>;
+	var dropSpeed: ValueBox<Float>;
+	var randomizeGarbage: ValueBox<Bool>;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
@@ -127,30 +117,29 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): TrainingPauseMenu;
 
-	public function new(opts: TrainingGameStateBuilderOptions) {
-		game.Macros.initFromOpts();
+	public function new(rule: VersusRule) {
+		this.rule = rule;
 	}
 
 	public function createBackupBuilder() {
-		return new TrainingGameStateBuilder({
-			rngSeed: rngSeed,
-			marginTime: marginTime,
-			targetPoints: targetPoints,
-			garbageDropLimit: garbageDropLimit,
-			garbageConfirmGracePeriod: garbageConfirmGracePeriod,
-			softDropBonus: softDropBonus,
-			popCount: popCount,
-			vanishHiddenRows: vanishHiddenRows,
-			groupBonusTableType: groupBonusTableType,
-			colorBonusTableType: colorBonusTableType,
-			powerTableType: powerTableType,
-			dropBonusGarbage: dropBonusGarbage,
-			allClearReward: allClearReward,
-			physics: physics,
-			animations: animations,
-			dropSpeed: dropSpeed,
-			randomizeGarbage: randomizeGarbage
-		});
+		return new TrainingGameStateBuilder(rule);
+	}
+
+	inline function initValueBoxes() {
+		garbageDropLimit = rule.garbageDropLimit;
+		garbageConfirmGracePeriod = rule.garbageConfirmGracePeriod;
+		softDropBonus = rule.softDropBonus;
+		popCount = rule.popCount;
+		vanishHiddenRows = rule.vanishHiddenRows;
+		groupBonusTableType = rule.groupBonusTableType;
+		colorBonusTableType = rule.colorBonusTableType;
+		powerTableType = rule.powerTableType;
+		dropBonusGarbage = rule.dropBonusGarbage;
+		allClearReward = rule.allClearReward;
+		physics = rule.physics;
+		animations = rule.animations;
+		dropSpeed = rule.dropSpeed;
+		randomizeGarbage = rule.randomizeGarbage;
 	}
 
 	inline function initPauseMediator() {
@@ -180,7 +169,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	}
 
 	inline function buildRNG() {
-		rng = new CopyableRNG(rngSeed);
+		rng = new CopyableRNG(rule.rngSeed);
 	}
 
 	inline function buildRandomizer() {
@@ -198,7 +187,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(marginTime, targetPoints);
+		marginManager = new MarginTimeManager(rule.marginTime, rule.targetPoints);
 	}
 
 	inline function buildFrameCounter() {

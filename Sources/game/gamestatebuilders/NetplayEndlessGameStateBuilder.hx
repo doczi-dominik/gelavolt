@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.rules.VersusRule;
 import game.boardstates.EndlessBoardState;
 import game.rules.AnimationsType;
 import game.rules.PhysicsType;
@@ -48,32 +49,30 @@ import game.actionbuffers.SenderActionBuffer;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(NetplayEndlessGameStateBuilder))
-@:build(game.Macros.addGameStateBuilderType(VERSUS))
-class NetplayEndlessGameStateBuilderOptions implements IGameStateBuilderOptions {}
+class NetplayEndlessGameStateBuilderOptions {}
 
 @:build(game.Macros.addGameStateBuildMethod())
 class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
-	@inject final rngSeed: Int;
-	@inject final marginTime: Int;
-	@inject final targetPoints: Int;
-	@inject final garbageDropLimit: ValueBox<Int>;
-	@inject final garbageConfirmGracePeriod: ValueBox<Int>;
-	@inject final softDropBonus: ValueBox<Float>;
-	@inject final popCount: ValueBox<Int>;
-	@inject final vanishHiddenRows: ValueBox<Bool>;
-	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
-	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
-	@inject final powerTableType: ValueBox<PowerTableType>;
-	@inject final dropBonusGarbage: ValueBox<Bool>;
-	@inject final allClearReward: ValueBox<Int>;
-	@inject final physics: ValueBox<PhysicsType>;
-	@inject final animations: ValueBox<AnimationsType>;
-	@inject final dropSpeed: ValueBox<Float>;
-	@inject final randomizeGarbage: ValueBox<Bool>;
+	@inject final rule: VersusRule;
 	@inject final isLocalOnLeft: Bool;
 	@inject final session: Null<SessionManager>;
 
 	@inject @copy final frameCounter: FrameCounter;
+
+	var garbageDropLimit: ValueBox<Int>;
+	var garbageConfirmGracePeriod: ValueBox<Int>;
+	var softDropBonus: ValueBox<Float>;
+	var popCount: ValueBox<Int>;
+	var vanishHiddenRows: ValueBox<Bool>;
+	var groupBonusTableType: ValueBox<GroupBonusTableType>;
+	var colorBonusTableType: ValueBox<ColorBonusTableType>;
+	var powerTableType: ValueBox<PowerTableType>;
+	var dropBonusGarbage: ValueBox<Bool>;
+	var allClearReward: ValueBox<Int>;
+	var physics: ValueBox<PhysicsType>;
+	var animations: ValueBox<AnimationsType>;
+	var dropSpeed: ValueBox<Float>;
+	var randomizeGarbage: ValueBox<Bool>;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
@@ -135,27 +134,28 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 
 	public function createBackupBuilder() {
 		return new NetplayEndlessGameStateBuilder({
-			rngSeed: rngSeed,
-			marginTime: marginTime,
-			targetPoints: targetPoints,
-			garbageDropLimit: garbageDropLimit,
-			garbageConfirmGracePeriod: garbageConfirmGracePeriod,
-			softDropBonus: softDropBonus,
-			popCount: popCount,
-			vanishHiddenRows: vanishHiddenRows,
-			groupBonusTableType: groupBonusTableType,
-			colorBonusTableType: colorBonusTableType,
-			powerTableType: powerTableType,
-			dropBonusGarbage: dropBonusGarbage,
-			allClearReward: allClearReward,
-			physics: physics,
-			animations: animations,
-			dropSpeed: dropSpeed,
-			randomizeGarbage: randomizeGarbage,
+			rule: rule,
 			isLocalOnLeft: isLocalOnLeft,
 			session: null,
 			frameCounter: new FrameCounter()
 		});
+	}
+
+	inline function initValueBoxes() {
+		garbageDropLimit = rule.garbageDropLimit;
+		garbageConfirmGracePeriod = rule.garbageConfirmGracePeriod;
+		softDropBonus = rule.softDropBonus;
+		popCount = rule.popCount;
+		vanishHiddenRows = rule.vanishHiddenRows;
+		groupBonusTableType = rule.groupBonusTableType;
+		colorBonusTableType = rule.colorBonusTableType;
+		powerTableType = rule.powerTableType;
+		dropBonusGarbage = rule.dropBonusGarbage;
+		allClearReward = rule.allClearReward;
+		physics = rule.physics;
+		animations = rule.animations;
+		dropSpeed = rule.dropSpeed;
+		randomizeGarbage = rule.randomizeGarbage;
 	}
 
 	inline function initPauseMediator() {
@@ -185,7 +185,7 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	}
 
 	inline function buildRNG() {
-		rng = new CopyableRNG(rngSeed);
+		rng = new CopyableRNG(rule.rngSeed);
 	}
 
 	inline function buildRandomizer() {
@@ -203,7 +203,7 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(marginTime, targetPoints);
+		marginManager = new MarginTimeManager(rule.marginTime, rule.targetPoints);
 	}
 
 	inline function buildLeftBorderColorMediator() {

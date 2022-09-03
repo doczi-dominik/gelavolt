@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.rules.EndlessRule;
 import game.rules.AnimationsType;
 import game.rules.PhysicsType;
 import game.rules.PowerTableType;
@@ -43,28 +44,26 @@ import game.mediators.SaveGameStateMediator;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(EndlessGameStateBuilder))
-@:build(game.Macros.addGameStateBuilderType(ENDLESS))
-class EndlessGameStateBuilderOptions implements IGameStateBuilderOptions {}
+class EndlessGameStateBuilderOptions {}
 
 @:build(game.Macros.addGameStateBuildMethod())
 class EndlessGameStateBuilder implements IGameStateBuilder {
-	@inject final rngSeed: Int;
-	@inject final marginTime: Int;
-	@inject final targetPoints: Int;
-	@inject final softDropBonus: ValueBox<Float>;
-	@inject final popCount: ValueBox<Int>;
-	@inject final vanishHiddenRows: ValueBox<Bool>;
-	@inject final groupBonusTableType: ValueBox<GroupBonusTableType>;
-	@inject final colorBonusTableType: ValueBox<ColorBonusTableType>;
-	@inject final powerTableType: ValueBox<PowerTableType>;
-	@inject final dropBonusGarbage: ValueBox<Bool>;
-	@inject final allClearReward: ValueBox<Int>;
-	@inject final physics: ValueBox<PhysicsType>;
-	@inject final animations: ValueBox<AnimationsType>;
-	@inject final dropSpeed: ValueBox<Float>;
-	@inject final randomizeGarbage: ValueBox<Bool>;
+	@inject final rule: EndlessRule;
 	@inject final inputDevice: IInputDevice;
 	@inject final replayData: Null<ReplayData>;
+
+	var softDropBonus: ValueBox<Float>;
+	var popCount: ValueBox<Int>;
+	var vanishHiddenRows: ValueBox<Bool>;
+	var groupBonusTableType: ValueBox<GroupBonusTableType>;
+	var colorBonusTableType: ValueBox<ColorBonusTableType>;
+	var powerTableType: ValueBox<PowerTableType>;
+	var dropBonusGarbage: ValueBox<Bool>;
+	var allClearReward: ValueBox<Int>;
+	var physics: ValueBox<PhysicsType>;
+	var animations: ValueBox<AnimationsType>;
+	var dropSpeed: ValueBox<Float>;
+	var randomizeGarbage: ValueBox<Bool>;
 
 	@copy var rng: CopyableRNG;
 	@copy var randomizer: Randomizer;
@@ -99,30 +98,23 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 		game.Macros.initFromOpts();
 	}
 
-	public function copy() {
-		return new EndlessGameStateBuilder({
-			rngSeed: rngSeed,
-			marginTime: marginTime,
-			targetPoints: targetPoints,
-			softDropBonus: softDropBonus,
-			popCount: popCount,
-			vanishHiddenRows: vanishHiddenRows,
-			groupBonusTableType: groupBonusTableType,
-			colorBonusTableType: colorBonusTableType,
-			powerTableType: powerTableType,
-			dropBonusGarbage: dropBonusGarbage,
-			allClearReward: allClearReward,
-			physics: physics,
-			animations: animations,
-			dropSpeed: dropSpeed,
-			randomizeGarbage: randomizeGarbage,
-			inputDevice: inputDevice,
-			replayData: replayData
-		});
+	inline function initValueBoxes() {
+		softDropBonus = rule.softDropBonus;
+		popCount = rule.popCount;
+		vanishHiddenRows = rule.vanishHiddenRows;
+		groupBonusTableType = rule.groupBonusTableType;
+		colorBonusTableType = rule.colorBonusTableType;
+		powerTableType = rule.powerTableType;
+		dropBonusGarbage = rule.dropBonusGarbage;
+		allClearReward = rule.allClearReward;
+		physics = rule.physics;
+		animations = rule.animations;
+		dropSpeed = rule.dropSpeed;
+		randomizeGarbage = rule.randomizeGarbage;
 	}
 
 	inline function buildRNG() {
-		rng = new CopyableRNG(rngSeed);
+		rng = new CopyableRNG(rule.rngSeed);
 	}
 
 	inline function buildRandomizer() {
@@ -140,7 +132,7 @@ class EndlessGameStateBuilder implements IGameStateBuilder {
 	}
 
 	inline function buildMarginManager() {
-		marginManager = new MarginTimeManager(marginTime, targetPoints);
+		marginManager = new MarginTimeManager(rule.marginTime, rule.targetPoints);
 	}
 
 	inline function buildFrameCounter() {
