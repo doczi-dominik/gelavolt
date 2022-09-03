@@ -1,9 +1,9 @@
 package lobby;
 
+import game.gamestatebuilders.NetplayEndlessGameStateBuilder;
 import ui.ErrorPage;
 import ui.MenuPageBase;
 import main_menu.MainMenuScreen;
-import game.gamestatebuilders.VersusGameStateBuilder;
 import game.net.SessionManager;
 import game.screens.NetplayGameScreen;
 import game.mediators.FrameCounter;
@@ -28,7 +28,7 @@ class LobbyPage extends MenuPageBase {
 		ScreenManager.switchScreen(new NetplayGameScreen({
 			session: s,
 			frameCounter: f,
-			gameStateBuilder: new VersusGameStateBuilder({
+			gameStateBuilder: new NetplayEndlessGameStateBuilder({
 				rngSeed: 0,
 				marginTime: 96,
 				targetPoints: 70,

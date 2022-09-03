@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.boardstates.EndlessBoardState;
 import game.rules.AnimationsType;
 import game.rules.PhysicsType;
 import game.rules.PowerTableType;
@@ -46,12 +47,12 @@ import game.actionbuffers.SenderActionBuffer;
 #end
 
 @:structInit
-@:build(game.Macros.buildOptionsClass(VersusGameStateBuilder))
+@:build(game.Macros.buildOptionsClass(NetplayEndlessGameStateBuilder))
 @:build(game.Macros.addGameStateBuilderType(VERSUS))
-class VersusGameStateBuilderOptions implements IGameStateBuilderOptions {}
+class NetplayEndlessGameStateBuilderOptions implements IGameStateBuilderOptions {}
 
 @:build(game.Macros.addGameStateBuildMethod())
-class VersusGameStateBuilder implements INetplayGameStateBuilder {
+class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	@inject final rngSeed: Int;
 	@inject final marginTime: Int;
 	@inject final targetPoints: Int;
@@ -128,12 +129,12 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	public var gameState(default, null): GameState;
 	public var pauseMenu(default, null): PauseMenu;
 
-	public function new(opts: VersusGameStateBuilderOptions) {
+	public function new(opts: NetplayEndlessGameStateBuilderOptions) {
 		Macros.initFromOpts();
 	}
 
 	public function createBackupBuilder() {
-		return new VersusGameStateBuilder({
+		return new NetplayEndlessGameStateBuilder({
 			rngSeed: rngSeed,
 			marginTime: marginTime,
 			targetPoints: targetPoints,
@@ -490,7 +491,7 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 	}
 
 	inline function buildLeftBoardState() {
-		leftState = new StandardBoardState({
+		leftState = new EndlessBoardState({
 			animations: animations,
 			randomizeGarbage: randomizeGarbage,
 			prefsSettings: Profile.primary.prefs,
@@ -507,11 +508,14 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 			actionBuffer: leftActionBuffer,
 			chainCounter: leftChainCounter,
 			chainSim: leftChainSim,
+			randomizer: randomizer,
+			marginManager: marginManager,
+			clearOnXModeContainer: Profile.primary.endlessSettings
 		});
 	}
 
 	inline function buildRightBoardState() {
-		rightState = new StandardBoardState({
+		rightState = new EndlessBoardState({
 			animations: animations,
 			randomizeGarbage: randomizeGarbage,
 			prefsSettings: Profile.primary.prefs,
@@ -528,6 +532,9 @@ class VersusGameStateBuilder implements INetplayGameStateBuilder {
 			actionBuffer: rightActionBuffer,
 			chainCounter: rightChainCounter,
 			chainSim: rightChainSim,
+			randomizer: randomizer,
+			marginManager: marginManager,
+			clearOnXModeContainer: Profile.primary.endlessSettings
 		});
 	}
 
