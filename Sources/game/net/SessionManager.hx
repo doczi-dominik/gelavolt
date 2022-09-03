@@ -117,6 +117,7 @@ class SessionManager {
 		roundTripCounter = 0;
 		localAdvantageCounter = 0;
 		remoteAdvantageCounter = 0;
+		successfulSleepChecks = 0;
 
 		sleepFrames = 0;
 
