@@ -19,6 +19,7 @@ class SessionManager {
 	var remoteAdvantageCounter: Int;
 	var lastDesyncChecksum: String;
 	var desyncCounter: Int;
+	var lastConfirmedFrame: Int;
 
 	var beginFrame: Null<Int>;
 	var nextChecksumFrame: Null<Int>;
@@ -270,7 +271,12 @@ class SessionManager {
 	function onInputAckPacket(parts: Array<String>) {
 		final frame = Std.parseInt(parts[1]);
 
+		if (frame <= lastConfirmedFrame) {
+			return;
+		}
+
 		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
+		lastConfirmedFrame = frame;
 
 		onConfirmFrame();
 	}
@@ -311,6 +317,7 @@ class SessionManager {
 		setSyncInterval(500);
 
 		lastInputFrame = -1;
+		lastConfirmedFrame = -1;
 		desyncCounter = 0;
 
 		sendChecksumTaskID = Scheduler.addTimeTask(() -> {
