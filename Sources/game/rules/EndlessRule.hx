@@ -2,19 +2,19 @@ package game.rules;
 
 @:structInit
 class EndlessRule implements IRule {
-	public final rngSeed: Int;
-	public final marginTime: Int;
-	public final targetPoints: Int;
-	public final softDropBonus: Float;
-	public final popCount: Int;
-	public final vanishHiddenRows: Bool;
-	public final groupBonusTableType: GroupBonusTableType;
-	public final colorBonusTableType: ColorBonusTableType;
-	public final powerTableType: PowerTableType;
-	public final dropBonusGarbage: Bool;
-	public final allClearReward: Int;
-	public final physics: PhysicsType;
-	public final animations: AnimationsType;
-	public final dropSpeed: Float;
-	public final randomizeGarbage: Bool;
+	@:s public var rngSeed(default, null): Int;
+	@:s public var marginTime(default, null): Int;
+	@:s public var targetPoints(default, null): Int;
+	@:s public var softDropBonus(default, null): Float;
+	@:s public var popCount(default, null): Int;
+	@:s public var vanishHiddenRows(default, null): Bool;
+	@:s public var groupBonusTableType(default, null): GroupBonusTableType;
+	@:s public var colorBonusTableType(default, null): ColorBonusTableType;
+	@:s public var powerTableType(default, null): PowerTableType;
+	@:s public var dropBonusGarbage(default, null): Bool;
+	@:s public var allClearReward(default, null): Int;
+	@:s public var physics(default, null): PhysicsType;
+	@:s public var animations(default, null): AnimationsType;
+	@:s public var dropSpeed(default, null): Float;
+	@:s public var randomizeGarbage(default, null): Bool;
 }

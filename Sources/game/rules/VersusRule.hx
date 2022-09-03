@@ -2,6 +2,6 @@ package game.rules;
 
 @:structInit
 class VersusRule extends EndlessRule {
-	public final garbageDropLimit: Int;
-	public final garbageConfirmGracePeriod: Int;
+	@:s public var garbageDropLimit(default, null): Int;
+	@:s public var garbageConfirmGracePeriod(default, null): Int;
 }

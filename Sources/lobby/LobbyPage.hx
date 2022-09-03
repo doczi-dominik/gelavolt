@@ -1,5 +1,9 @@
 package lobby;
 
+import kha.System;
+import haxe.io.Bytes;
+import hxbit.Serializer;
+import game.rules.VersusRule;
 import game.gamestatebuilders.NetplayEndlessGameStateBuilder;
 import ui.ErrorPage;
 import ui.MenuPageBase;
@@ -20,8 +24,10 @@ class LobbyPage extends MenuPageBase {
 	static inline final RELAY_PORT_MESSAGE_TYPE = 1;
 	static inline final SERVER_URL = "szi5os.colyseus.de";
 
-	static function startGame(peer: Peer, isHost: Bool, remoteID: String) {
-		final s = new SessionManager(peer, isHost, remoteID);
+	static function startGame(peer: Peer, isHost: Bool, message: String) {
+		final parts = message.split(";");
+		final s = new SessionManager(peer, isHost, parts[0]);
+		final rule = Serializer.load(Bytes.ofHex(parts[1]), VersusRule);
 
 		final f = new FrameCounter();
 
@@ -29,25 +35,7 @@ class LobbyPage extends MenuPageBase {
 			session: s,
 			frameCounter: f,
 			gameStateBuilder: new NetplayEndlessGameStateBuilder({
-				rule: {
-					rngSeed: 0,
-					marginTime: 96,
-					targetPoints: 70,
-					garbageDropLimit: 30,
-					garbageConfirmGracePeriod: 30,
-					softDropBonus: 0.5,
-					popCount: 4,
-					vanishHiddenRows: false,
-					groupBonusTableType: TSU,
-					colorBonusTableType: TSU,
-					powerTableType: TSU,
-					dropBonusGarbage: true,
-					allClearReward: 30,
-					physics: TSU,
-					animations: TSU,
-					dropSpeed: 2.6,
-					randomizeGarbage: true,
-				},
+				rule: rule,
 				isLocalOnLeft: true,
 				session: s,
 				frameCounter: f
@@ -116,7 +104,27 @@ class LobbyPage extends MenuPageBase {
 		});
 
 		peer.on(PeerEventType.Open, id -> {
-			new Client('wss://$SERVER_URL').create("waiting", ["peerID" => id], WaitingRoomState, (err, room) -> {
+			final rule: VersusRule = {
+				rngSeed: Std.int(System.time * 1000000),
+				marginTime: 96,
+				targetPoints: 70,
+				garbageDropLimit: 30,
+				garbageConfirmGracePeriod: 30,
+				softDropBonus: 0.5,
+				popCount: 4,
+				vanishHiddenRows: false,
+				groupBonusTableType: TSU,
+				colorBonusTableType: TSU,
+				powerTableType: TSU,
+				dropBonusGarbage: true,
+				allClearReward: 30,
+				physics: TSU,
+				animations: TSU,
+				dropSpeed: 2.6,
+				randomizeGarbage: true,
+			};
+
+			new Client('wss://$SERVER_URL').create("waiting", ["peerID" => id, "rule" => Serializer.save(rule).toHex()], WaitingRoomState, (err, room) -> {
 				if (err != null) {
 					ScreenManager.pushOverlay(ErrorPage.mainMenuPage('Could Not Create Room: ${err.code} - ${err.message}'));
 					return;
