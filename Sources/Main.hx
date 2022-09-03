@@ -135,9 +135,10 @@ class Main {
 
 					accumulator += frameTime;
 
+					InputDevice.update();
+					ScreenManager.updateCurrent();
+
 					while (accumulator >= FIXED_UPDATE_DELTA) {
-						InputDevice.update();
-						ScreenManager.updateCurrent();
 						accumulator -= FIXED_UPDATE_DELTA;
 					}
 
