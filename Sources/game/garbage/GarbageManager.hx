@@ -196,6 +196,10 @@ class GarbageManager implements IGarbageManager {
 	}
 
 	function setConfirmedGarbage(amount: Int) {
+		if (amount == 0) {
+			return;
+		}
+
 		confirmedGarbage += Std.int(Math.min(amount, currentGarbage));
 		graceT = confirmGracePeriod;
 	}
