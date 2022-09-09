@@ -17,12 +17,14 @@ class SessionManager {
 	var roundTripCounter: Int;
 	var localAdvantageCounter: Int;
 	var remoteAdvantageCounter: Int;
-	var lastDesyncChecksum: String;
+	var lastLocalChecksum: Null<String>;
+	var lastRemoteChecksum: Null<String>;
 	var desyncCounter: Int;
 	var lastConfirmedFrame: Int;
 
 	var beginFrame: Null<Int>;
 	var nextChecksumFrame: Null<Int>;
+	var latestChecksumFrame: Int;
 
 	var localInputHistory: Array<InputHistoryEntry>;
 	var lastInputFrame: Int;
@@ -76,6 +78,21 @@ class SessionManager {
 	function error(message: String) {
 		dispose();
 		ScreenManager.pushOverlay(ErrorPage.mainMenuPage(message));
+	}
+
+	function compareChecksums() {
+		if (lastLocalChecksum == null || lastRemoteChecksum == null) {
+			return;
+		}
+
+		if (lastLocalChecksum != lastRemoteChecksum) {
+			if (++desyncCounter > 5) {
+				error("Desync Detected");
+			}
+		}
+
+		lastLocalChecksum = null;
+		lastRemoteChecksum = null;
 	}
 
 	function initDataConnection(dc: DataConnection) {
@@ -288,21 +305,23 @@ class SessionManager {
 	function onChecksumResponse(parts: Array<String>) {
 		nextChecksumFrame = Std.parseInt(parts[1]);
 
-		if (nextChecksumFrame == null) {
-			nextChecksumFrame = frameCounter.value + 120;
-		}
-	}
-
-	function onChecksumUpdate(parts: Array<String>) {
-		if (lastDesyncChecksum == parts[1]) {
-			desyncCounter = 0;
-
+		if (nextChecksumFrame != null && nextChecksumFrame <= frameCounter.value) {
+			nextChecksumFrame = null;
 			return;
 		}
 
-		if (++desyncCounter >= 5) {
-			error("Desync Detected");
+		if (nextChecksumFrame == null) {
+			nextChecksumFrame = frameCounter.value + 120;
+			return;
 		}
+
+		latestChecksumFrame = nextChecksumFrame;
+	}
+
+	function onChecksumUpdate(parts: Array<String>) {
+		lastRemoteChecksum = parts[1];
+
+		compareChecksums();
 	}
 
 	function updateSleepCounter() {
@@ -319,10 +338,11 @@ class SessionManager {
 		lastInputFrame = -1;
 		lastConfirmedFrame = -1;
 		desyncCounter = 0;
+		latestChecksumFrame = -1;
 
 		sendChecksumTaskID = Scheduler.addTimeTask(() -> {
 			dc.send('$CHECKSUM_REQ');
-		}, 0, 0.001);
+		}, 0, 1);
 
 		state = RUNNING;
 	}
@@ -338,18 +358,18 @@ class SessionManager {
 	}
 
 	function updateRunningState() {
-		if (frameCounter.value >= nextChecksumFrame) {
-			if (frameCounter.value == nextChecksumFrame) {
-				lastDesyncChecksum = onCalculateChecksum();
-
-				dc.send('$CHECKSUM_UPDATE;$lastDesyncChecksum');
-			}
-
-			nextChecksumFrame = null;
-		}
-
 		if (updateSleepCounter() > 0) {
 			return;
+		}
+
+		if (frameCounter.value == latestChecksumFrame) {
+			lastLocalChecksum = onCalculateChecksum();
+
+			dc.send('$CHECKSUM_UPDATE;$lastLocalChecksum');
+
+			nextChecksumFrame = null;
+
+			compareChecksums();
 		}
 
 		frameCounter.update();
