@@ -89,6 +89,8 @@ class SessionManager {
 			if (++desyncCounter > 5) {
 				error("Desync Detected");
 			}
+		} else {
+			desyncCounter = 0;
 		}
 
 		lastLocalChecksum = null;
