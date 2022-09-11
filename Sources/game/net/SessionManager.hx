@@ -88,7 +88,6 @@ class SessionManager {
 		if (lastLocalChecksum != lastRemoteChecksum) {
 			if (++desyncCounter > 5) {
 				error("Desync Detected");
-				dc.send('$DESYNC_NOTIFICATION');
 			}
 		} else {
 			desyncCounter = 0;
