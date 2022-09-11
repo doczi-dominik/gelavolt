@@ -4,7 +4,7 @@ import input.AxisMapping;
 import kha.input.KeyCode;
 
 @:structInit
-class InputMapping {
+class InputMapping implements hxbit.Serializable {
 	public static function fromString(str: String): InputMapping {
 		final parts = str.split(";");
 
@@ -18,9 +18,9 @@ class InputMapping {
 		};
 	}
 
-	public final keyboardInput: Null<KeyCode>;
-	public final gamepadButton: Null<GamepadButton>;
-	public final gamepadAxis: AxisMapping;
+	@:s public var keyboardInput(default, null): Null<KeyCode>;
+	@:s public var gamepadButton(default, null): Null<GamepadButton>;
+	@:s public var gamepadAxis(default, null): AxisMapping;
 
 	public function isNotEqual(other: InputMapping) {
 		return keyboardInput != other.keyboardInput || gamepadButton != other.gamepadButton || gamepadAxis.isNotEqual(other.gamepadAxis);

@@ -1,56 +1,57 @@
 package save_data;
 
-import save_data.GraphicsSettings.GraphicsSettingsKey;
-import haxe.Unserializer;
 import kha.Storage;
-import haxe.Serializer;
+import kha.Blob;
+import hxbit.Serializer;
 
 class SaveManager {
-	static final PROFILES_FILENAME = "profiles";
-	static final GRAPHICS_FIELNAME = "graphics";
+	static inline final PROFILES_FILENAME = "profiles";
+	static inline final GRAPHICS_FIELNAME = "graphics";
 
-	public static final profiles: Array<Profile> = [];
+	public static var profiles(default, null) = new Array<Profile>();
 
 	public static var graphics: GraphicsSettings;
 
 	public static function saveProfiles() {
 		final ser = new Serializer();
 
-		for (p in profiles) {
-			ser.serialize(p.exportOverrides());
-		}
+		ser.beginSave();
 
-		Storage.namedFile(PROFILES_FILENAME).writeString(ser.toString());
+		ser.addArray(profiles, f -> {
+			ser.addKnownRef(f);
+		});
+
+		final data = Blob.fromBytes(ser.endSave());
+
+		Storage.namedFile(PROFILES_FILENAME).write(data);
 	}
 
 	public static function loadProfiles() {
-		final serialized = Storage.namedFile(PROFILES_FILENAME).readString();
-		// final serialized = null; // Hackerman manual save lol
+		final blob = Storage.namedFile(PROFILES_FILENAME).read();
+		// final blob = null; // Hackerman manual save lol
 
-		if (serialized == null) {
-			newProfile();
-
-			return;
-		}
-
-		final unser = new Unserializer(serialized);
+		final ser = new Serializer();
 
 		try {
-			while (true) {
-				final overrides = unser.unserialize();
+			ser.beginLoad(blob.bytes);
 
-				profiles.push(new Profile(overrides));
-			}
-		} catch (_) {}
+			profiles = ser.getArray(() -> {
+				return ser.getKnownRef(Profile);
+			});
 
-		if (profiles.length == 0) {
+			ser.endLoad();
+
+			if (profiles.length == 0)
+				throw null;
+		} catch (_) {
+			profiles = [];
 			newProfile();
-			return;
 		}
 	}
 
 	public static function newProfile() {
-		profiles.push(new Profile([NAME => 'P${profiles.length + 1}']));
+		profiles.push(new Profile('P${profiles.length + 1}'));
+
 		saveProfiles();
 	}
 
@@ -68,30 +69,34 @@ class SaveManager {
 	}
 
 	public static function saveGraphics() {
-		final overrides = graphics.exportOverrides();
+		final ser = new Serializer();
 
-		if (overrides == null)
-			return;
+		ser.beginSave();
 
-		Storage.namedFile(GRAPHICS_FIELNAME).writeString(Serializer.run(overrides));
+		ser.addKnownRef(graphics);
+
+		final data = Blob.fromBytes(ser.endSave());
+
+		Storage.namedFile(GRAPHICS_FIELNAME).write(data);
 	}
 
 	public static function loadGraphics() {
-		final serialized = Storage.namedFile(GRAPHICS_FIELNAME).readString();
+		final blob = Storage.namedFile(GRAPHICS_FIELNAME).read();
 
-		if (serialized == null) {
-			graphics = new GraphicsSettings([]);
+		final ser = new Serializer();
+
+		try {
+			ser.beginLoad(blob.bytes);
+
+			graphics = ser.getKnownRef(GraphicsSettings);
+
+			ser.endLoad();
+		} catch (_) {
+			graphics = {};
+			saveGraphics();
 
 			return;
 		}
-
-		var overrides: Map<GraphicsSettingsKey, Any> = [];
-
-		try {
-			overrides = Unserializer.run(serialized);
-		} catch (_) {}
-
-		graphics = new GraphicsSettings(overrides);
 	}
 
 	public static inline function loadEverything() {

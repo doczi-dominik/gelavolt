@@ -1,7 +1,7 @@
 package input;
 
 @:structInit
-class AxisMapping {
+class AxisMapping implements hxbit.Serializable {
 	public static function fromString(str: String): AxisMapping {
 		final parts = str.split(";");
 
@@ -11,8 +11,8 @@ class AxisMapping {
 		};
 	}
 
-	public final axis: Null<Int>;
-	public final direction: Null<Int>;
+	@:s public var axis(default, null): Null<Int>;
+	@:s public var direction(default, null): Null<Int>;
 
 	public function hashCode() {
 		return (axis << 4) + direction;
