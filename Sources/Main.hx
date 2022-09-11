@@ -135,13 +135,12 @@ class Main {
 
 					accumulator += frameTime;
 
-					InputDevice.update();
-					ScreenManager.updateCurrent();
-
-					while (accumulator >= FIXED_UPDATE_DELTA) {
-						accumulator -= FIXED_UPDATE_DELTA;
+					if (accumulator >= FIXED_UPDATE_DELTA) {
+						InputDevice.update();
+						ScreenManager.updateCurrent();
 					}
 
+					accumulator %= FIXED_UPDATE_DELTA;
 					alpha = accumulator / FIXED_UPDATE_DELTA;
 
 					ScreenManager.renderCurrent(frames[0], alpha);
