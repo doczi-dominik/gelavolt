@@ -1,13 +1,9 @@
 package;
 
-import game.gamestatebuilders.EndlessGameStateBuilder;
-import side_setup.VersusSideSetupScreen;
 import input.AnyInputDevice;
+import save_data.SaveManager;
 import input.InputDevice;
 import save_data.Profile;
-import main_menu.MainMenuScreen;
-import haxe.Unserializer;
-import save_data.SaveManager;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
@@ -135,13 +131,12 @@ class Main {
 
 					accumulator += frameTime;
 
-					while (accumulator >= FIXED_UPDATE_DELTA) {
+					if (accumulator >= FIXED_UPDATE_DELTA) {
 						InputDevice.update();
 						ScreenManager.updateCurrent();
-
-						accumulator -= FIXED_UPDATE_DELTA;
 					}
 
+					accumulator %= FIXED_UPDATE_DELTA;
 					alpha = accumulator / FIXED_UPDATE_DELTA;
 
 					ScreenManager.renderCurrent(frames[0], alpha);

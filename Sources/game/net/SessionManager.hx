@@ -381,7 +381,7 @@ class SessionManager {
 		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
 
 		syncPackageTimeoutTaskID = Scheduler.addTimeTask(() -> {
-			error("Connection Error: Sync Package Timeout");
+			error("Peer Disconnected (Sync Package Timeout)");
 		}, 2);
 	}
 

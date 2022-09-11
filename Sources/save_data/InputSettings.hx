@@ -3,19 +3,10 @@ package save_data;
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
 import input.GamepadBrand;
-import haxe.ds.StringMap;
 import game.actions.Action;
 import input.InputMapping;
 
-enum abstract InputSettingsKey(String) to String {
-	final MAPPINGS;
-	final DEADZONE;
-	final GAMEPAD_BRAND;
-	final LOCAL_DELAY;
-	final NETPLAY_DELAY;
-}
-
-class InputSettings {
+class InputSettings implements hxbit.Serializable {
 	public static final MAPPINGS_DEFAULTS: Map<Action, InputMapping> = [
 		PAUSE => {
 			keyboardInput: Escape,
@@ -237,87 +228,18 @@ class InputSettings {
 
 	static inline final DEADZONE_DEFAULT = 0.5;
 	static inline final GAMEPAD_BRAND_DEFAULT = GamepadBrand.DS4;
-	static inline final LOCAL_DELAY_DEFAULT = 0;
+	static inline final LOCAL_DELAY_DEFAULT = 2;
 	static inline final NETPLAY_DELAY_DEFAULT = 2;
 
-	final updateListeners: Array<Void->Void>;
+	var updateListeners: Array<Void->Void> = new Array<Void->Void>();
 
-	public var mappings(default, null): Map<Action, InputMapping>;
-	public var deadzone: Float;
-	public var gamepadBrand: GamepadBrand;
-	public var localDelay: Int;
-	public var netplayDelay: Int;
+	@:s public var mappings(default, null) = MAPPINGS_DEFAULTS.copy();
+	@:s public var deadzone = DEADZONE_DEFAULT;
+	@:s public var gamepadBrand = GAMEPAD_BRAND_DEFAULT;
+	@:s public var localDelay = LOCAL_DELAY_DEFAULT;
+	@:s public var netplayDelay = NETPLAY_DELAY_DEFAULT;
 
-	public function new(overrides: Map<InputSettingsKey, Any>) {
-		updateListeners = [];
-
-		setDefaults();
-
-		try {
-			for (k => v in cast(overrides, Map<Dynamic, Dynamic>)) {
-				try {
-					switch (cast(k, InputSettingsKey)) {
-						case MAPPINGS:
-							for (kk => vv in cast(v, Map<Dynamic, Dynamic>)) {
-								mappings[cast(kk, Action)] = InputMapping.fromString(cast(vv, String));
-							}
-						case DEADZONE:
-							deadzone = cast(v, Float);
-						case GAMEPAD_BRAND:
-							gamepadBrand = cast(v, GamepadBrand);
-						case LOCAL_DELAY:
-							localDelay = cast(v, Int);
-						case NETPLAY_DELAY:
-							netplayDelay = cast(v, Int);
-					}
-				} catch (_) {
-					continue;
-				}
-			}
-		} catch (_) {}
-	}
-
-	public function exportOverrides() {
-		final overrides = new StringMap<Any>();
-		var wereOverrides = false;
-
-		final mappingOverrides = new Map<Action, String>();
-		var wereMappingOverrides = false;
-
-		for (k => v in mappings) {
-			if (v.isNotEqual(MAPPINGS_DEFAULTS[k])) {
-				mappingOverrides.set(k, v.asString());
-				wereMappingOverrides = true;
-			}
-		}
-
-		if (wereMappingOverrides) {
-			overrides.set(MAPPINGS, mappingOverrides);
-			wereOverrides = true;
-		}
-
-		if (deadzone != DEADZONE_DEFAULT) {
-			overrides.set(DEADZONE, deadzone);
-			wereOverrides = true;
-		}
-
-		if (gamepadBrand != GAMEPAD_BRAND_DEFAULT) {
-			overrides.set(GAMEPAD_BRAND, gamepadBrand);
-			wereOverrides = true;
-		}
-
-		if (localDelay != LOCAL_DELAY_DEFAULT) {
-			overrides.set(LOCAL_DELAY, localDelay);
-			wereOverrides = true;
-		}
-
-		if (netplayDelay != NETPLAY_DELAY_DEFAULT) {
-			overrides.set(NETPLAY_DELAY, netplayDelay);
-			wereOverrides = true;
-		}
-
-		return wereOverrides ? overrides : null;
-	}
+	public function new() {}
 
 	public function addUpdateListener(callback: Void->Void) {
 		updateListeners.push(callback);
