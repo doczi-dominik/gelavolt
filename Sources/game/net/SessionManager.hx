@@ -88,6 +88,7 @@ class SessionManager {
 		if (lastLocalChecksum != lastRemoteChecksum) {
 			if (++desyncCounter > 5) {
 				error("Desync Detected");
+				dc.send('$DESYNC_NOTIFICATION');
 			}
 		} else {
 			desyncCounter = 0;
@@ -381,7 +382,7 @@ class SessionManager {
 		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
 
 		syncPackageTimeoutTaskID = Scheduler.addTimeTask(() -> {
-			error("Connection Error: Sync Package Timeout");
+			error("Peer Disconnected (Sync Package Timeout)");
 		}, 2);
 	}
 
