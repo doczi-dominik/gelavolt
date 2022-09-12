@@ -87,7 +87,7 @@ class SessionManager {
 		}
 
 		if (lastLocalChecksum != lastRemoteChecksum) {
-			if (++desyncCounter > 5) {
+			if (++desyncCounter >= 3) {
 				error("Desync Detected");
 			}
 		} else {
