@@ -82,20 +82,27 @@ class LobbyPage extends MenuPageBase {
 	#end
 
 	var room: Null<Room<WaitingRoomState>>;
+	var roomURL: Null<String>;
+	var showCopied: Bool;
 
 	public function new() {
 		super({
 			designFontSize: 56,
 			header: "Lobby",
-			controlHints: [{actions: [BACK], description: "Leave"}]
+			controlHints: [
+				{actions: [BACK], description: "Leave"},
+				{actions: [CONFIRM], description: "Copy Link To Clipboard"}
+			]
 		});
 	}
 
 	override function onShow(menu: Menu) {
 		super.onShow(menu);
 
-		if (room != null)
+		if (roomURL != null)
 			return;
+
+		showCopied = false;
 
 		final peer = new Peer();
 
@@ -126,26 +133,49 @@ class LobbyPage extends MenuPageBase {
 
 			new Client('wss://$SERVER_URL').create("waiting", ["peerID" => id, "rule" => Serializer.save(rule).toHex()], WaitingRoomState, (err, room) -> {
 				if (err != null) {
-					ScreenManager.pushOverlay(ErrorPage.mainMenuPage('Could Not Create Room: ${err.code} - ${err.message}'));
+					ScreenManager.pushOverlay(ErrorPage.mainMenuPage('Could Not Create Room: ${err.message}'));
 					return;
 				}
 
 				this.room = room;
+				roomURL = 'https://gelavolt.io/#${room.id}';
+
+				Browser.navigator.clipboard.writeText(roomURL);
 
 				addRoomHandler(peer, room);
 			});
 		});
 	}
 
+	override function update() {
+		final inputDevice = menu.inputDevice;
+
+		if (inputDevice.getAction(BACK)) {
+			if (room != null)
+				room.leave(true);
+
+			menu.popPage();
+		}
+
+		if (roomURL != null && inputDevice.getAction(CONFIRM)) {
+			Browser.navigator.clipboard.writeText(roomURL).then((_) -> {
+				showCopied = true;
+			});
+		}
+	}
+
 	override function render(g: Graphics, x: Float, y: Float) {
 		super.render(g, x, y);
 
 		if (room == null) {
-			g.drawString('Connecting...', x, y);
+			g.drawString('Creating room...', x, y);
 			return;
 		}
 
 		g.drawString("Waiting For Opponent...", x, y);
-		g.drawString('Join Link: https://gelavolt.io/#${room.id}', x, y + fontHeight);
+		g.drawString('Join Link: $roomURL', x, y + fontHeight);
+
+		if (showCopied)
+			g.drawString("Copied To Clipboard!", x, y + fontHeight * 2);
 	}
 }
