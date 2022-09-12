@@ -34,6 +34,7 @@ class SessionManager {
 	var sendBeginTaskID: Int;
 	var sendChecksumTaskID: Int;
 	var syncTimeoutTaskID: Int;
+	var checksumPackageTimeoutTaskID: Int;
 
 	public final localID: String;
 	public final remoteID: String;
@@ -165,7 +166,11 @@ class SessionManager {
 	}
 
 	function onSyncRequest(parts: Array<String>) {
-		resetSyncTimeoutTimer();
+		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
+
+		syncPackageTimeoutTaskID = Scheduler.addTimeTask(() -> {
+			error("Peer Disconnected (Sync Package Timeout)");
+		}, 2);
 
 		final pong = parts[1];
 		final prediction = Std.parseInt(parts[2]);
@@ -321,6 +326,8 @@ class SessionManager {
 	}
 
 	function onChecksumUpdate(parts: Array<String>) {
+		resetChecksumTimeoutTimer();
+
 		lastRemoteChecksum = parts[1];
 
 		compareChecksums();
@@ -345,6 +352,9 @@ class SessionManager {
 		sendChecksumTaskID = Scheduler.addTimeTask(() -> {
 			dc.send('$CHECKSUM_REQ');
 		}, 0, 1);
+
+		resetSyncTimeoutTimer();
+		resetChecksumTimeoutTimer();
 
 		state = RUNNING;
 	}
@@ -385,6 +395,14 @@ class SessionManager {
 		}, 2);
 	}
 
+	function resetChecksumTimeoutTimer() {
+		Scheduler.removeTimeTask(checksumPackageTimeoutTaskID);
+
+		checksumPackageTimeoutTaskID = Scheduler.addTimeTask(() -> {
+			error("Peer Disconnected (Checksum Package Timeout)");
+		}, 5);
+	}
+
 	public function setSyncInterval(interval: Int) {
 		Scheduler.removeTimeTask(syncPackageTimeTaskID);
 
@@ -408,6 +426,7 @@ class SessionManager {
 		Scheduler.removeTimeTask(syncPackageTimeoutTaskID);
 		Scheduler.removeTimeTask(sendChecksumTaskID);
 		Scheduler.removeTimeTask(syncTimeoutTaskID);
+		Scheduler.removeTimeTask(checksumPackageTimeoutTaskID);
 
 		peer.destroy();
 	}
