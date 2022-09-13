@@ -200,7 +200,7 @@ class SessionManager {
 		if (adv != null) {
 			averageRemoteAdvantage = Math.round(0.5 * adv + 0.5 * averageRemoteAdvantage);
 
-			if (sleepFrames == 0 && ++remoteAdvantageCounter % 5 == 0) {
+			if (sleepFrames == 0 && ++remoteAdvantageCounter % 3 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
 				if (state == SYNCING && Math.abs(diff) < 4) {
@@ -224,7 +224,7 @@ class SessionManager {
 				}
 
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
-				final s = Math.round(diff / 2);
+				final s = Math.ceil(diff / 2);
 
 				if (s < 2) {
 					sleepFrames = 0;
@@ -351,7 +351,7 @@ class SessionManager {
 
 		sendChecksumTaskID = Scheduler.addTimeTask(() -> {
 			dc.send('$CHECKSUM_REQ');
-		}, 0, 1);
+		}, 0, 0.5);
 
 		resetSyncTimeoutTimer();
 		resetChecksumTimeoutTimer();
@@ -400,7 +400,7 @@ class SessionManager {
 
 		checksumPackageTimeoutTaskID = Scheduler.addTimeTask(() -> {
 			error("Peer Disconnected (Checksum Package Timeout)");
-		}, 5);
+		}, 3);
 	}
 
 	public function setSyncInterval(interval: Int) {
