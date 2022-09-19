@@ -33,6 +33,10 @@ class SaveManager {
 		final ser = new Serializer();
 
 		try {
+			if (blob == null) {
+				throw null;
+			}
+
 			ser.beginLoad(blob.bytes);
 
 			profiles = ser.getArray(() -> {
@@ -86,6 +90,9 @@ class SaveManager {
 		final ser = new Serializer();
 
 		try {
+			if (blob == null)
+				throw null;
+
 			ser.beginLoad(blob.bytes);
 
 			graphics = ser.getKnownRef(GraphicsSettings);
