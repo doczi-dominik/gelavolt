@@ -7,3 +7,6 @@
 [submodule "Libraries/colyseus-haxe"]
 	path = Libraries/colyseus-haxe
 	url = https://github.com/doczi-dominik/colyseus-haxe
+[submodule "Libraries/safety"]
+	path = Libraries/safety
+	url = https://github.com/RealyUniqueName/safety
