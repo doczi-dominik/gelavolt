@@ -111,7 +111,7 @@ class AnyInputDevice implements IInputDevice {
 	}
 
 	public inline function getKeyboard() {
-		return cast(devices[KEYBOARD_ID], KeyboardInputDevice);
+		return cast(devices[KEYBOARD_ID].sure(), KeyboardInputDevice);
 	}
 
 	// AnyInputDevices cannot be rebound and shouldn't be active when

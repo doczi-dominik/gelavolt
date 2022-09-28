@@ -85,8 +85,11 @@ class ProfilePage extends ListMenuPage {
 						callback: () -> {
 							Profile.changePrimary(profile);
 							// Rebuild Page
-							onShow(menu);
-							onResize();
+
+							if (menu != null) {
+								onShow(menu);
+								onResize();
+							}
 						}
 					}));
 
@@ -95,7 +98,7 @@ class ProfilePage extends ListMenuPage {
 						description: ["Permanently Delete This Profile"],
 						callback: () -> {
 							SaveManager.deleteProfile(profile);
-							menu.popPage();
+							menu!.popPage();
 							listPage.rebuild();
 						}
 					}));

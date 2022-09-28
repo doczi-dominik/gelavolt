@@ -8,11 +8,13 @@ import ui.Menu;
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 
+using Safety;
+
 class MainMenuScreen implements IScreen {
 	final menu: Menu;
 
 	public function new() {
-		final prefs = Profile.primary.prefs;
+		final prefs = Profile.primary.sure().prefs;
 
 		menu = new Menu({
 			prefsSettings: prefs,

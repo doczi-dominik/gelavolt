@@ -36,7 +36,9 @@ class ProfileListPage extends ListMenuPage {
 	}
 
 	public inline function rebuild() {
-		onShow(menu);
-		onResize();
+		if (menu != null) {
+			onShow(menu);
+			onResize();
+		}
 	}
 }

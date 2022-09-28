@@ -13,10 +13,13 @@ project.addParameter("--macro Safety.safeNavigation('utils')")
 project.addParameter("--macro Safety.safeNavigation('main')")
 project.addParameter("--macro Safety.safeNavigation('ui')")
 project.addParameter("--macro Safety.safeNavigation('save_data')")
+project.addParameter("--macro Safety.safeNavigation('main_menu')")
 project.addParameter("--macro nullSafety('utils', Strict)")
 project.addParameter("--macro nullSafety('main', Strict)")
 project.addParameter("--macro nullSafety('ui', Strict)")
 project.addParameter("--macro nullSafety('save_data', Strict)")
+project.addParameter("--macro nullSafety('main_menu', Strict)")
+
 
 project.windowOptions.width = 1920;
 project.windowOptions.height = 1080;
