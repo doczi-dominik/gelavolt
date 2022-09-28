@@ -21,17 +21,20 @@ class AreYouSurePage extends MenuPageBase {
 	}
 
 	override function update() {
+		if (menu == null)
+			return;
+
 		final inputDevice = menu.inputDevice;
 
 		if (inputDevice.getAction(BACK)) {
-			menu.popPage();
+			menu!.popPage();
 
 			return;
 		}
 
 		if (inputDevice.getAction(CONFIRM)) {
 			callback();
-			menu.popPage();
+			menu!.popPage();
 		}
 	}
 

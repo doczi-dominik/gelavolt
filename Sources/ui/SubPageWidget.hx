@@ -12,16 +12,16 @@ class SubPageWidget extends ButtonWidget {
 	final subPage: IMenuPage;
 
 	public function new(opts: SubPageWidgetOptions) {
+		subPage = opts.subPage;
+
 		super({
 			title: opts.title,
 			description: opts.description,
 			callback: pushSubPage
 		});
-
-		subPage = opts.subPage;
 	}
 
 	function pushSubPage() {
-		menu.pushPage(subPage);
+		menu!.pushPage(subPage);
 	}
 }

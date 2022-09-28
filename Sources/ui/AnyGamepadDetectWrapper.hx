@@ -26,8 +26,8 @@ class AnyGamepadDetectWrapper extends MenuPageBase {
 	}
 
 	inline function popPage() {
-		menu.popInputDevice();
-		menu.popPage();
+		menu!.popInputDevice();
+		menu!.popPage();
 	}
 
 	override function onShow(menu: Menu) {
@@ -38,15 +38,24 @@ class AnyGamepadDetectWrapper extends MenuPageBase {
 	}
 
 	override function update() {
+		if (menu == null)
+			return;
+
 		final anyDevice = AnyInputDevice.instance;
 		final lastID = AnyInputDevice.lastDeviceID;
 
+		var gamepad: Null<GamepadInputDevice> = null;
+
 		if (lastID != AnyInputDevice.KEYBOARD_ID) {
-			final page = pageBuilder(anyDevice.getGamepad(lastID));
+			gamepad = anyDevice.getGamepad(lastID);
+		}
+
+		if (gamepad != null) {
+			final page = pageBuilder(gamepad);
 
 			// Replace Wrapper with actual widget
 			popPage();
-			menu.pushPage(page);
+			menu!.pushPage(page);
 
 			return;
 		}

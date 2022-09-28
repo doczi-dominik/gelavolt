@@ -1,5 +1,6 @@
 package ui;
 
+import input.NullInputDevice;
 import main.ScaleManager;
 import save_data.PrefsSettings;
 import input.IInputDevice;
@@ -7,6 +8,8 @@ import kha.Assets;
 import kha.Font;
 import haxe.ds.GenericStack;
 import kha.graphics2.Graphics;
+
+using Safety;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(Menu))
@@ -37,18 +40,18 @@ class Menu {
 	final headerFont: Font;
 	final controlsFont: Font;
 
-	var headerFontSize: Int;
-	var headerFontHeight: Float;
-	var controlsFontSize: Int;
-	var warningFontSize: Int;
-	var warningFontHeight: Float;
-	var warningFontWidths: Array<Float>;
-	var renderX: Float;
+	var headerFontSize = 0;
+	var headerFontHeight = 0.0;
+	var controlsFontSize = 0;
+	var warningFontSize = 0;
+	var warningFontHeight = 0.0;
+	var warningFontWidths = new Array<Float>();
+	var renderX = 0.0;
 
 	public final scaleManager: ScaleManager;
 
-	public var padding(default, null): Float;
-	public var inputDevice(default, null): IInputDevice;
+	public var padding(default, null) = 0.0;
+	public var inputDevice(default, null): IInputDevice = NullInputDevice.instance;
 
 	public function new(opts: MenuOptions) {
 		game.Macros.initFromOpts();
@@ -96,7 +99,7 @@ class Menu {
 	}
 
 	function setInputDevice() {
-		inputDevice = inputDevices.first();
+		inputDevice = inputDevices.first().or(NullInputDevice.instance);
 	}
 
 	public function onShow(inputDevice: IInputDevice) {
@@ -104,8 +107,8 @@ class Menu {
 
 		final page = pages.first();
 
-		page.onShow(this);
-		page.onResize();
+		page!.onShow(this);
+		page!.onResize();
 	}
 
 	public function pushPage(page: IMenuPage) {
@@ -119,14 +122,14 @@ class Menu {
 		// of) to check if the stack only has one element, so...
 		final poppedPage = pages.pop();
 
-		if (pages.isEmpty()) {
+		if (poppedPage != null) {
 			pages.add(poppedPage);
 		}
 
 		final firstPage = pages.first();
 
-		firstPage.onShow(this);
-		firstPage.onResize();
+		firstPage!.onShow(this);
+		firstPage!.onResize();
 	}
 
 	public inline function pushInputDevice(inputDevice: IInputDevice) {

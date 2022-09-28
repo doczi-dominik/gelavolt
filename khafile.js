@@ -11,9 +11,10 @@ project.addLibrary('safety')
 project.addParameter('-main main.Main')
 project.addParameter("--macro Safety.safeNavigation('utils')")
 project.addParameter("--macro Safety.safeNavigation('main')")
+project.addParameter("--macro Safety.safeNavigation('ui')")
 project.addParameter("--macro nullSafety('utils', Strict)")
 project.addParameter("--macro nullSafety('main', Strict)")
-
+project.addParameter("--macro nullSafety('ui', Strict)")
 
 project.windowOptions.width = 1920;
 project.windowOptions.height = 1080;

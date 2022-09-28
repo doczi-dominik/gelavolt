@@ -31,15 +31,18 @@ class KeyboardConfirmWrapper extends MenuPageBase {
 	}
 
 	override function update() {
+		if (menu == null)
+			return;
+
 		if (AnyInputDevice.instance.getAction(BACK)) {
-			menu.popPage();
+			menu!.popPage();
 
 			return;
 		}
 
 		if (keyboardDevice.isAnyKeyDown) {
-			menu.popPage();
-			menu.pushPage(pageBuilder());
+			menu!.popPage();
+			menu!.pushPage(pageBuilder());
 		}
 	}
 

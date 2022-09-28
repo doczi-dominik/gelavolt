@@ -24,19 +24,19 @@ class ListMenuPage implements IMenuPage {
 
 	final font: Font;
 
-	var menu: Menu;
+	var menu: Null<Menu>;
 
-	var widgetBottomPadding: Float;
+	var widgetBottomPadding = 0.0;
 
-	var descFontSize: Int;
-	var descFontHeight: Float;
-	var scrollArrowSize: Float;
+	var descFontSize = 0;
+	var descFontHeight = 0.0;
+	var scrollArrowSize = 0.0;
 
 	var widgets: Array<IListWidget>;
 	var widgetIndex: Int;
 	var minIndex: Int;
 
-	public var controlHints(default, null): Array<ControlHint>;
+	public var controlHints(default, null) = new Array<ControlHint>();
 
 	public function new(opts: ListMenuPageOptions) {
 		game.Macros.initFromOpts();
@@ -58,7 +58,7 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	function popPage() {
-		menu.popPage();
+		menu!.popPage();
 	}
 
 	function renderArrow(g: Graphics, x: Float, y: Float, spriteX: Int) {
@@ -66,6 +66,9 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	public function onResize() {
+		if (menu == null)
+			return;
+
 		final smallerScale = menu.scaleManager.smallerScale;
 
 		widgetBottomPadding = WIDGET_BOTTOM_PADDING * smallerScale;
@@ -127,6 +130,9 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	public function update() {
+		if (menu == null)
+			return;
+
 		final inputDevice = menu.inputDevice;
 
 		if (inputDevice.getAction(MENU_UP)) {
@@ -143,6 +149,12 @@ class ListMenuPage implements IMenuPage {
 	}
 
 	public function render(g: Graphics, x: Float, y: Float) {
+		if (menu == null)
+			return;
+
+		final padding = menu.padding * 2;
+		final sm = menu.scaleManager;
+
 		g.font = font;
 		g.fontSize = descFontSize;
 
@@ -177,7 +189,7 @@ class ListMenuPage implements IMenuPage {
 
 			final rowWidth = font.width(descFontSize, row);
 
-			g.drawString(row, x + menu.scaleManager.width - menu.padding * 2 - rowWidth, y + descFontHeight * i);
+			g.drawString(row, x + sm.width - padding - rowWidth, y + descFontHeight * i);
 		}
 	}
 }

@@ -21,9 +21,9 @@ class MenuPageBase implements IMenuPage {
 	public final header: String;
 	public var controlHints(default, null): ReadOnlyArray<ControlHint>;
 
-	var menu: Menu;
-	var fontSize: Int;
-	var fontHeight: Float;
+	var menu: Null<Menu>;
+	var fontSize = 0;
+	var fontHeight = 0.0;
 
 	public function new(opts: MenuPageBaseOptions) {
 		designFontSize = opts.designFontSize;
@@ -38,6 +38,9 @@ class MenuPageBase implements IMenuPage {
 	}
 
 	public function onResize() {
+		if (menu == null)
+			return;
+
 		fontSize = Std.int(designFontSize * menu.scaleManager.smallerScale);
 		fontHeight = font.height(fontSize);
 	}

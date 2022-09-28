@@ -23,13 +23,13 @@ class NumberRangeWidget implements IListWidget {
 
 	final font: Font;
 
-	var fontSize: Int;
+	var fontSize = 0;
 
-	var menu: Menu;
+	var menu: Null<Menu>;
 	var value: Float;
 
 	public var controlHints(default, null): Array<ControlHint> = [{actions: [MENU_LEFT, MENU_RIGHT], description: "Change"}];
-	public var height(default, null): Float;
+	public var height(default, null) = 0.0;
 
 	public function new(opts: NumberRangeWidgetOptions) {
 		game.Macros.initFromOpts();
@@ -49,11 +49,17 @@ class NumberRangeWidget implements IListWidget {
 	}
 
 	public function onResize() {
+		if (menu == null)
+			return;
+
 		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
 		height = font.height(fontSize);
 	}
 
 	public function update() {
+		if (menu == null)
+			return;
+
 		final inputDevice = menu.inputDevice;
 
 		if (inputDevice.getAction(MENU_LEFT)) {

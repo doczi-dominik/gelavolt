@@ -8,6 +8,8 @@ import save_data.InputSettings;
 import kha.input.Gamepad;
 import save_data.Profile;
 
+using Safety;
+
 class AnyInputDevice implements IInputDevice {
 	static inline final FONT_SIZE = 48;
 
@@ -105,7 +107,7 @@ class AnyInputDevice implements IInputDevice {
 	}
 
 	public inline function getGamepad(id: Int) {
-		return cast(devices[id], GamepadInputDevice);
+		return cast(devices[id], Null<GamepadInputDevice>);
 	}
 
 	public inline function getKeyboard() {

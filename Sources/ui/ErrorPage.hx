@@ -36,7 +36,10 @@ class ErrorPage extends MenuPageBase {
 	}
 
 	override function update() {
-		if (menu.inputDevice.getAction(BACK) || menu.inputDevice.getAction(CONFIRM))
+		if (menu == null)
+			return;
+
+		if (menu.inputDevice.getAction(BACK) || menu!.inputDevice!.getAction(CONFIRM))
 			callback();
 	}
 

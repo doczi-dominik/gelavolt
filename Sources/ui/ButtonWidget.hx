@@ -18,11 +18,11 @@ class ButtonWidget implements IListWidget {
 
 	final font: Font;
 
-	var fontSize: Int;
-	var menu: Menu;
+	var fontSize = 0;
+	var menu: Null<Menu>;
 
 	public var controlHints(default, null): Array<ControlHint>;
-	public var height(default, null): Float;
+	public var height(default, null) = 0.0;
 
 	public function new(opts: ButtonWidgetOptions) {
 		game.Macros.initFromOpts();
@@ -37,11 +37,17 @@ class ButtonWidget implements IListWidget {
 	}
 
 	public function onResize() {
+		if (menu == null)
+			return;
+
 		fontSize = Std.int(FONT_SIZE * menu.scaleManager.smallerScale);
 		height = font.height(fontSize);
 	}
 
 	public function update() {
+		if (menu == null)
+			return;
+
 		if (menu.inputDevice.getAction(CONFIRM)) {
 			callback();
 		}
