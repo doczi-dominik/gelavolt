@@ -7,8 +7,12 @@ project.addLibrary('hxbit');
 project.addLibrary('colyseus-websocket')
 project.addLibrary('colyseus-haxe')
 project.addLibrary('peerhx')
+project.addLibrary('safety')
 project.addParameter('-main main.Main')
+project.addParameter("--macro Safety.safeNavigation('utils')")
+project.addParameter("--macro Safety.safeNavigation('main')")
 project.addParameter("--macro nullSafety('utils', Strict)")
+project.addParameter("--macro nullSafety('main', Strict)")
 
 
 project.windowOptions.width = 1920;

@@ -5,10 +5,12 @@ import ui.IMenuPage;
 import save_data.Profile;
 import ui.Menu;
 
+using Safety;
+
 final class ScreenManager {
-	static var overlay: Menu;
-	static var showOverlay: Bool;
-	static var currentScreen: IScreen;
+	static var overlay: Null<Menu>;
+	static var showOverlay = false;
+	static var currentScreen: IScreen = NullScreen.instance;
 
 	public static function init() {
 		overlay = new Menu({
@@ -17,20 +19,19 @@ final class ScreenManager {
 			backgroundOpacity: 0.9,
 			prefsSettings: Profile.primary.prefs,
 		});
-
-		showOverlay = false;
-		currentScreen = NullScreen.instance;
 	}
 
 	public static function pushOverlay(page: IMenuPage) {
-		overlay.pushPage(page);
-		overlay.onShow(AnyInputDevice.instance);
+		final o = overlay.sure();
+
+		o.pushPage(page);
+		o.onShow(AnyInputDevice.instance);
 		showOverlay = true;
 	}
 
 	public static function updateCurrent(): Void {
 		if (showOverlay) {
-			overlay.update();
+			overlay!.update();
 			return;
 		}
 
@@ -45,8 +46,9 @@ final class ScreenManager {
 
 		currentScreen.render(g, g4, alpha);
 
-		if (showOverlay)
-			overlay.render(g, alpha);
+		if (showOverlay) {
+			overlay!.render(g, alpha);
+		}
 
 		g.end();
 	}

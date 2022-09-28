@@ -24,9 +24,9 @@ class ScaleManager {
 	final designHeight: Float;
 	final onResize: Array<Void->Void>;
 
-	public var width(default, null): Float;
-	public var height(default, null): Float;
-	public var smallerScale(default, null): Float;
+	public var width(default, null) = 0.0;
+	public var height(default, null) = 0.0;
+	public var smallerScale(default, null) = 0.0;
 
 	public function new(designWidth: Float, designHeight: Float) {
 		this.designWidth = designWidth;

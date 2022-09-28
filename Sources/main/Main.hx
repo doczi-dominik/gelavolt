@@ -33,8 +33,8 @@ class Main {
 	static final FIXED_UPDATE_DELTA = 1 / 60;
 
 	static var accumulator = 0.0;
-	static var lastT: Float;
-	static var alpha: Float;
+	static var lastT = 0.0;
+	static var alpha = 0.0;
 
 	#if kha_html5
 	/**
