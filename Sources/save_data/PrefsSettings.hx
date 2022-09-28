@@ -4,6 +4,7 @@ import haxe.ds.StringMap;
 import game.gelos.GeloColor;
 import kha.Color;
 
+@:nullSafety(Off) // Null safety fails on @:optional Map values
 @:structInit
 class PrefsSettings implements hxbit.Serializable {
 	@:s @:optional public var boardBackground = Color.fromBytes(64, 32, 32);

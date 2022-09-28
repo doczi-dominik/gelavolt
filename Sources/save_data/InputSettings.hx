@@ -1,11 +1,17 @@
 package save_data;
 
+import utils.Geometry;
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
 import input.GamepadBrand;
 import game.actions.Action;
 import input.InputMapping;
 
+using Safety;
+
+// Serializable mappings causes errors with null safety
+// Null safety features are still used in methods
+@:nullSafety(Off)
 class InputSettings implements hxbit.Serializable {
 	public static final MAPPINGS_DEFAULTS: Map<Action, InputMapping> = [
 		PAUSE => {
@@ -233,13 +239,15 @@ class InputSettings implements hxbit.Serializable {
 
 	var updateListeners: Array<Void->Void> = new Array<Void->Void>();
 
-	@:s public var mappings(default, null) = MAPPINGS_DEFAULTS.copy();
+	@:s public var mappings(default, null): Map<Action, InputMapping>;
 	@:s public var deadzone = DEADZONE_DEFAULT;
 	@:s public var gamepadBrand = GAMEPAD_BRAND_DEFAULT;
 	@:s public var localDelay = LOCAL_DELAY_DEFAULT;
 	@:s public var netplayDelay = NETPLAY_DELAY_DEFAULT;
 
-	public function new() {}
+	public function new() {
+		mappings = MAPPINGS_DEFAULTS.copy();
+	}
 
 	public function addUpdateListener(callback: Void->Void) {
 		updateListeners.push(callback);
@@ -264,11 +272,11 @@ class InputSettings implements hxbit.Serializable {
 		notifyListeners();
 	}
 
-	public function getButtonSprite(action: Action) {
-		return BUTTON_SPRITE_COORDINATES[gamepadBrand][mappings[action].gamepadButton];
+	public function getButtonSprite(action: Action): Null<Geometry> {
+		return BUTTON_SPRITE_COORDINATES!.get(gamepadBrand)!.get(mappings[action].sure().gamepadButton.sure());
 	}
 
-	public function getAxisSprite(action: Action) {
-		return AXIS_SPRITE_COORDINATES[gamepadBrand][mappings[action].gamepadAxis.hashCode()];
+	public function getAxisSprite(action: Action): Null<Geometry> {
+		return AXIS_SPRITE_COORDINATES!.get(gamepadBrand)!.get(mappings[action].sure().gamepadAxis.hashCode());
 	}
 }

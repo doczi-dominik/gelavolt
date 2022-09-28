@@ -10,7 +10,7 @@ class SaveManager {
 
 	public static var profiles(default, null) = new Array<Profile>();
 
-	public static var graphics: GraphicsSettings;
+	public static var graphics: GraphicsSettings = {};
 
 	public static function saveProfiles() {
 		final ser = new Serializer();
@@ -34,19 +34,22 @@ class SaveManager {
 
 		try {
 			if (blob == null) {
-				throw null;
+				throw "Null Blob";
 			}
 
 			ser.beginLoad(blob.bytes);
 
-			profiles = ser.getArray(() -> {
+			final ps: Null<Array<Profile>> = ser.getArray(() -> {
 				return ser.getKnownRef(Profile);
 			});
 
 			ser.endLoad();
 
-			if (profiles.length == 0)
-				throw null;
+			if (ps == null || ps.length == 0) {
+				throw "Empty Profile List";
+			}
+
+			profiles = ps;
 		} catch (_) {
 			profiles = [];
 			newProfile();
@@ -91,7 +94,7 @@ class SaveManager {
 
 		try {
 			if (blob == null)
-				throw null;
+				throw "Null Blob";
 
 			ser.beginLoad(blob.bytes);
 

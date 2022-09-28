@@ -17,7 +17,7 @@ final class ScreenManager {
 			positionFactor: 0,
 			widthFactor: 1,
 			backgroundOpacity: 0.9,
-			prefsSettings: Profile.primary.prefs,
+			prefsSettings: Profile.primary.sure().prefs,
 		});
 	}
 

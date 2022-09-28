@@ -8,7 +8,7 @@ import save_data.InputSettings;
 class Profile implements hxbit.Serializable {
 	static final onChangePrimary: Array<Void->Void> = [];
 
-	public static var primary(default, null): Profile;
+	public static var primary(default, null): Null<Profile>;
 
 	public static function addOnChangePrimaryCallback(callback: Void->Void) {
 		onChangePrimary.push(callback);
