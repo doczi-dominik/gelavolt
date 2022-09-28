@@ -1,3 +1,5 @@
+package main;
+
 import kha.graphics2.Graphics;
 
 final class NullScreen implements IScreen {

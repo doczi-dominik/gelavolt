@@ -1,5 +1,6 @@
 package game.ui;
 
+import main.ScreenManager;
 import save_data.PrefsSettings;
 import main_menu.MainMenuScreen;
 import ui.AreYouSureSubPageWidget;

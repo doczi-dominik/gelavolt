@@ -1,5 +1,6 @@
 package game.states;
 
+import main.Pipelines;
 import hxbit.Serializer;
 import game.copying.ICopyFrom;
 import game.mediators.FrameCounter;

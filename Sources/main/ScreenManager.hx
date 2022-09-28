@@ -1,3 +1,5 @@
+package main;
+
 import input.AnyInputDevice;
 import ui.IMenuPage;
 import save_data.Profile;

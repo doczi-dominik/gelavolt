@@ -1,5 +1,6 @@
 package game.boardstates;
 
+import main.ScaleManager;
 import hxbit.Serializer;
 import utils.ValueBox;
 import game.rules.AnimationsType;

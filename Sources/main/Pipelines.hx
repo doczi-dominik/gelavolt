@@ -1,3 +1,5 @@
+package main;
+
 import kha.graphics4.BlendingFactor;
 import kha.Shaders;
 import kha.graphics4.VertexStructure;

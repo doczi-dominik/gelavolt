@@ -1,3 +1,5 @@
+package main;
+
 import kha.graphics2.Graphics;
 import kha.graphics4.Graphics as Graphics4;
 

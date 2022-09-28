@@ -1,5 +1,6 @@
 package input;
 
+import main.ScaleManager;
 import haxe.ds.ReadOnlyArray;
 import utils.Utils;
 import game.actions.ActionData.ACTION_DATA;

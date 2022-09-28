@@ -1,4 +1,4 @@
-package;
+package main;
 
 import input.AnyInputDevice;
 import save_data.SaveManager;

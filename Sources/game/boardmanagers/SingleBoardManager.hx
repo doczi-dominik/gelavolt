@@ -1,5 +1,6 @@
 package game.boardmanagers;
 
+import main.ScaleManager;
 import hxbit.Serializer;
 import game.geometries.BoardGeometries;
 import kha.math.FastMatrix3;

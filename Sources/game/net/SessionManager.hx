@@ -1,5 +1,6 @@
 package game.net;
 
+import main.ScreenManager;
 import ui.ErrorPage;
 import peerjs.Peer;
 import game.net.PacketType;

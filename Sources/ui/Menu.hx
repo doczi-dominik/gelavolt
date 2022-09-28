@@ -1,5 +1,6 @@
 package ui;
 
+import main.ScaleManager;
 import save_data.PrefsSettings;
 import input.IInputDevice;
 import kha.Assets;

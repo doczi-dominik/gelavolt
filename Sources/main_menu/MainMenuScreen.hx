@@ -1,5 +1,6 @@
 package main_menu;
 
+import main.IScreen;
 import input.AnyInputDevice;
 import save_data.Profile;
 import main_menu.ui.MainMenuPage;

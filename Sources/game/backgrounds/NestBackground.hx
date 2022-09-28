@@ -1,5 +1,6 @@
 package game.backgrounds;
 
+import main.ScaleManager;
 import utils.Utils;
 import game.copying.CopyableRNG;
 import kha.graphics2.Graphics;

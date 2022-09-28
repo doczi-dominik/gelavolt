@@ -7,6 +7,7 @@ project.addLibrary('hxbit');
 project.addLibrary('colyseus-websocket')
 project.addLibrary('colyseus-haxe')
 project.addLibrary('peerhx')
+project.addParameter('-main main.Main')
 
 project.windowOptions.width = 1920;
 project.windowOptions.height = 1080;

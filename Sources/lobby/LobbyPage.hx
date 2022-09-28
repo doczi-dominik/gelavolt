@@ -1,5 +1,6 @@
 package lobby;
 
+import main.ScreenManager;
 import kha.System;
 import haxe.io.Bytes;
 import hxbit.Serializer;
