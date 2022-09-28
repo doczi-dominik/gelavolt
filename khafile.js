@@ -8,6 +8,8 @@ project.addLibrary('colyseus-websocket')
 project.addLibrary('colyseus-haxe')
 project.addLibrary('peerhx')
 project.addParameter('-main main.Main')
+project.addParameter("--macro nullSafety('utils', Strict)")
+
 
 project.windowOptions.width = 1920;
 project.windowOptions.height = 1080;
