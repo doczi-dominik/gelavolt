@@ -122,7 +122,7 @@ class Menu {
 		// of) to check if the stack only has one element, so...
 		final poppedPage = pages.pop();
 
-		if (poppedPage != null) {
+		if (pages.isEmpty() && poppedPage != null) {
 			pages.add(poppedPage);
 		}
 
