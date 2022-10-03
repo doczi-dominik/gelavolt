@@ -3,6 +3,8 @@ package game.actionbuffers;
 import input.IInputDevice;
 import game.mediators.FrameCounter;
 
+using Safety;
+
 @:structInit
 @:build(game.Macros.buildOptionsClass(LocalActionBuffer))
 class LocalActionBufferOptions {}
@@ -41,7 +43,7 @@ class LocalActionBuffer implements IActionBuffer {
 			frame--;
 		}
 
-		return actions[frame];
+		return actions[frame].sure();
 	}
 
 	public function update() {

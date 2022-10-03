@@ -1,18 +1,11 @@
 package game.actionbuffers;
 
 class NullActionBuffer implements IActionBuffer {
-	public static var instance(get, null): NullActionBuffer;
-
-	static function get_instance() {
-		if (instance == null)
-			instance = new NullActionBuffer();
-
-		return instance;
-	}
+	public static final instance = new NullActionBuffer();
 
 	final nullAction: ActionSnapshot;
 
-	public var isActive: Bool;
+	public var isActive = false;
 
 	function new() {
 		nullAction = ActionSnapshot.fromBitField(0);

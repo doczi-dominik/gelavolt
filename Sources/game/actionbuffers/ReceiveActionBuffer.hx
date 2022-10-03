@@ -4,6 +4,8 @@ import game.net.InputHistoryEntry;
 import game.mediators.RollbackMediator;
 import game.mediators.FrameCounter;
 
+using Safety;
+
 @:structInit
 private class LatestActionResults {
 	public final frame: Int;
@@ -20,7 +22,7 @@ class ReceiveActionBuffer implements IActionBuffer {
 
 	final actions: Map<Int, ActionSnapshot>;
 
-	public var isActive: Bool;
+	public var isActive = true;
 
 	public function new(opts: ReceiveActionBufferOptions) {
 		Macros.initFromOpts();
@@ -45,7 +47,7 @@ class ReceiveActionBuffer implements IActionBuffer {
 			frame--;
 		}
 
-		return actions[frame];
+		return actions[frame].sure();
 	}
 
 	public function onInput(history: Array<InputHistoryEntry>) {

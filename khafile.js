@@ -25,6 +25,9 @@ project.addParameter("--macro Safety.safeNavigation('main_menu')")
 project.addParameter("--macro Safety.safeNavigation('input')")
 project.addParameter("--macro Safety.safeNavigation('lobby')")
 
+project.addParameter("--macro nullSafety('game.actionbuffers', Strict)")
+project.addParameter("--macro Safety.safeNavigation('game.actionbuffers')")
+
 
 project.windowOptions.width = 1920;
 project.windowOptions.height = 1080;
