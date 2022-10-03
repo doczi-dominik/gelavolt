@@ -5,6 +5,8 @@ import input.GamepadInputDevice;
 import input.AnyInputDevice;
 import kha.graphics2.Graphics;
 
+using Safety;
+
 @:structInit
 @:build(game.Macros.buildOptionsClass(AnyGamepadDetectWrapper))
 class AnyGamepadDetectWrapperOptions {}
@@ -34,14 +36,14 @@ class AnyGamepadDetectWrapper extends MenuPageBase {
 		super.onShow(menu);
 
 		menu.pushInputDevice(keyboardDevice);
-		AnyInputDevice.instance.resetLastDeviceID();
+		AnyInputDevice.resetLastDeviceID();
 	}
 
 	override function update() {
-		if (menu == null)
+		if (menu == null || AnyInputDevice.instance == null)
 			return;
 
-		final anyDevice = AnyInputDevice.instance;
+		final anyDevice = AnyInputDevice.instance.sure();
 		final lastID = AnyInputDevice.lastDeviceID;
 
 		var gamepad: Null<GamepadInputDevice> = null;

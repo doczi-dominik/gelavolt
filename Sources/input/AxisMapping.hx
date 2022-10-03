@@ -1,5 +1,8 @@
 package input;
 
+// Disabled due to issues with Serializable
+// Null safety features still used in methods
+@:nullSafety(Off)
 @:structInit
 class AxisMapping implements hxbit.Serializable {
 	public static function fromString(str: String): AxisMapping {
@@ -14,7 +17,10 @@ class AxisMapping implements hxbit.Serializable {
 	@:s public var axis(default, null): Null<Int>;
 	@:s public var direction(default, null): Null<Int>;
 
-	public function hashCode() {
+	public function hashCode(): Null<Int> {
+		if (axis == null || direction == null)
+			return null;
+
 		return (axis << 4) + direction;
 	}
 
@@ -24,9 +30,5 @@ class AxisMapping implements hxbit.Serializable {
 
 	public inline function isNull() {
 		return axis == null && direction == null;
-	}
-
-	public function asString() {
-		return '$axis;$direction';
 	}
 }

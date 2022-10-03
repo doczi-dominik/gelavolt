@@ -12,11 +12,15 @@ class NullInputDevice implements IInputDevice {
 
 	public final type: InputDeviceType = NULL;
 
-	public var inputSettings(get, null): InputSettings;
+	public var inputSettings(get, null): Null<InputSettings>;
 
 	function new() {}
 
-	function get_inputSettings() {
+	function get_inputSettings(): Null<InputSettings> {
+		if (Profile.primary == null) {
+			return null;
+		}
+
 		return Profile.primary.input;
 	}
 

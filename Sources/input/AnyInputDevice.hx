@@ -15,7 +15,7 @@ class AnyInputDevice implements IInputDevice {
 
 	public static inline final KEYBOARD_ID = -1;
 
-	public static var instance(default, null): AnyInputDevice;
+	public static var instance(default, null): Null<AnyInputDevice>;
 
 	public static var rebindCounter = 0;
 	public static var lastDeviceID = KEYBOARD_ID;
@@ -24,13 +24,17 @@ class AnyInputDevice implements IInputDevice {
 		instance = new AnyInputDevice();
 	}
 
+	public static function resetLastDeviceID() {
+		lastDeviceID = KEYBOARD_ID;
+	}
+
 	final devices: Map<Int, InputDevice>;
 
 	var isRebinding: Bool;
 
 	public final type: InputDeviceType;
 
-	public var inputSettings(get, null): InputSettings;
+	public var inputSettings(get, null): Null<InputSettings>;
 
 	function new() {
 		devices = [];
@@ -39,7 +43,7 @@ class AnyInputDevice implements IInputDevice {
 
 		type = ANY;
 
-		devices[KEYBOARD_ID] = new KeyboardInputDevice(inputSettings);
+		devices[KEYBOARD_ID] = new KeyboardInputDevice(inputSettings.sure());
 
 		for (i in 0...4) {
 			if (Gamepad.get(i).connected) {
@@ -53,6 +57,9 @@ class AnyInputDevice implements IInputDevice {
 	}
 
 	function connectListener(id: Int) {
+		if (Profile.primary == null)
+			return;
+
 		devices[id] = new GamepadInputDevice(Profile.primary.input, id);
 	}
 
@@ -61,17 +68,21 @@ class AnyInputDevice implements IInputDevice {
 	}
 
 	function onChangePrimary() {
+		if (Profile.primary == null)
+			return;
+
+		final p: Profile = Profile.primary;
+
 		for (d in devices) {
-			d.inputSettings = Profile.primary.input;
+			d.inputSettings = p.input;
 		}
 	}
 
-	function get_inputSettings() {
-		return Profile.primary.input;
-	}
+	function get_inputSettings(): Null<InputSettings> {
+		if (Profile.primary == null)
+			return null;
 
-	public function resetLastDeviceID() {
-		lastDeviceID = KEYBOARD_ID;
+		return Profile.primary.input;
 	}
 
 	public final function unbind(action: Action) {}

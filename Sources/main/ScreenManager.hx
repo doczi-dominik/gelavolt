@@ -22,10 +22,15 @@ final class ScreenManager {
 	}
 
 	public static function pushOverlay(page: IMenuPage) {
+		if (overlay == null || AnyInputDevice.instance == null) {
+			return;
+		}
+
 		final o = overlay.sure();
+		final input = AnyInputDevice.instance.sure();
 
 		o.pushPage(page);
-		o.onShow(AnyInputDevice.instance);
+		o.onShow(input);
 		showOverlay = true;
 	}
 

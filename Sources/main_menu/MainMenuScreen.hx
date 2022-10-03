@@ -23,7 +23,7 @@ class MainMenuScreen implements IScreen {
 			backgroundOpacity: 0,
 			initialPage: new MainMenuPage(prefs)
 		});
-		menu.onShow(AnyInputDevice.instance);
+		menu.onShow(AnyInputDevice.instance.sure());
 	}
 
 	public function dispose() {}

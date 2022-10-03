@@ -19,6 +19,8 @@ import js.Browser;
 import lobby.LobbyPage;
 #end
 
+using Safety;
+
 class MainMenuPage extends ListMenuPage {
 	static inline final DISCORD_INVITE = "https://discord.gg/wsWArpAFJK";
 	static inline final RELEASES_URL = "https://github.com/doczi-dominik/gelavolt/releases";
@@ -78,7 +80,7 @@ class MainMenuPage extends ListMenuPage {
 								dropSpeed: 2.6,
 								randomizeGarbage: true,
 							},
-							inputDevice: AnyInputDevice.instance,
+							inputDevice: AnyInputDevice.instance.sure(),
 							replayData: null
 						})));
 					}

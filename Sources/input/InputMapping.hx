@@ -9,7 +9,7 @@ class InputMapping implements hxbit.Serializable {
 		final parts = str.split(";");
 
 		return {
-			keyboardInput: (parts[0] != "") ? cast(Std.parseInt(parts[0]), KeyCode) : null,
+			keyboardInput: (parts[0] != "") ? cast(Std.parseInt(parts[0]), Null<KeyCode>) : null,
 			gamepadButton: (parts[1] != "") ? Std.parseInt(parts[1]) : null,
 			gamepadAxis: (parts[2] != "") ? AxisMapping.fromString(parts[2]) : {
 				axis: null,
@@ -24,13 +24,5 @@ class InputMapping implements hxbit.Serializable {
 
 	public function isNotEqual(other: InputMapping) {
 		return keyboardInput != other.keyboardInput || gamepadButton != other.gamepadButton || gamepadAxis.isNotEqual(other.gamepadAxis);
-	}
-
-	public function asString() {
-		final kb = keyboardInput == null ? '' : '$keyboardInput';
-		final bt = gamepadButton == null ? '' : '$gamepadButton';
-		final ax = gamepadAxis == null ? '' : '${gamepadAxis.asString()}';
-
-		return '$kb;$bt;$ax';
 	}
 }

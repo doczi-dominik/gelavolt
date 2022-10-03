@@ -8,6 +8,8 @@ import kha.graphics2.Graphics;
 import save_data.InputSettings;
 import game.actions.Action;
 
+using Safety;
+
 class InputDevice implements IInputDevice {
 	static final instances: Array<InputDevice> = [];
 
@@ -17,8 +19,8 @@ class InputDevice implements IInputDevice {
 		}
 	}
 
-	var counters: Map<Action, Int>;
-	var actions: Map<Action, Int->Bool>;
+	var counters: Null<Map<Action, Int>>;
+	var actions: Null<Map<Action, Int->Bool>>;
 	var isRebinding: Bool;
 	var latestRebindAction: Null<Action>;
 	var scrollT: Int;
@@ -54,8 +56,13 @@ class InputDevice implements IInputDevice {
 	}
 
 	final function updateInstance() {
-		for (k in counters.keys()) {
-			++counters[k];
+		if (counters == null)
+			return;
+
+		final c: Map<Action, Int> = counters;
+
+		for (k in c.keys()) {
+			c[k] = c[k].sure() + 1;
 		}
 
 		++scrollT;
@@ -123,11 +130,32 @@ class InputDevice implements IInputDevice {
 	}
 
 	public final function getAction(action: Action) {
-		return actions[action](counters[action]);
+		if (actions == null || counters == null) {
+			return false;
+		}
+
+		final a = actions.sure();
+		final c = counters.sure();
+
+		if (c[action] == null) {
+			return false;
+		}
+
+		return a.sure()[action].sure()(c[action].sure());
 	}
 
 	public final function getRawAction(action: Action) {
-		return holdActionHandler(counters[action]);
+		if (counters == null) {
+			return false;
+		}
+
+		final c = counters.sure();
+
+		if (c[action] == null) {
+			return false;
+		}
+
+		return holdActionHandler(c[action].sure());
 	}
 
 	public function renderBinding(g: Graphics, x: Float, y: Float, scale: Float, action: Action) {}

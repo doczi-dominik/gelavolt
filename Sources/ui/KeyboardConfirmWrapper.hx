@@ -31,7 +31,7 @@ class KeyboardConfirmWrapper extends MenuPageBase {
 	}
 
 	override function update() {
-		if (menu == null)
+		if (menu == null || AnyInputDevice.instance == null)
 			return;
 
 		if (AnyInputDevice.instance.getAction(BACK)) {
