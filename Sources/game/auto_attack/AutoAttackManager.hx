@@ -18,6 +18,8 @@ import game.garbage.IGarbageManager;
 import game.simulation.LinkInfo;
 import game.gelos.GeloColor;
 
+using Safety;
+
 private enum abstract InnerState(Int) {
 	final WAITING;
 	final SENDING;
@@ -42,14 +44,14 @@ class AutoAttackManager implements ICopyFrom {
 
 	final links: ConstantCopyableArray<LinkInfo>;
 
-	@copy var accumGarbage: Int;
-	@copy var linkIndex: Int;
+	@copy var accumGarbage = 0;
+	@copy var linkIndex = 0;
 
 	@copy public final linkData: ConstantCopyableArray<AutoAttackLinkData>;
 
-	@copy public var timer(default, null): Int;
-	@copy public var chain(default, null): Int;
-	@copy public var state(default, null): InnerState;
+	@copy public var timer(default, null) = 0;
+	@copy public var chain(default, null) = 0;
+	@copy public var state(default, null) = WAITING;
 
 	@copy public var isPaused: Bool;
 	@copy public var type: AutoAttackType;
@@ -124,7 +126,7 @@ class AutoAttackManager implements ICopyFrom {
 		chainCounter.startAnimation(link.chain, coords, link.isPowerful);
 
 		final absCoords = geometries.absolutePosition.add(coords);
-		final color = prefsSettings.primaryColors[COLOR2];
+		final color = prefsSettings.primaryColors[COLOR2].sure();
 
 		for (i in 0...48) {
 			particleManager.add(FRONT, GeloPopParticle.create({

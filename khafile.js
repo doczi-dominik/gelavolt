@@ -27,8 +27,10 @@ project.addParameter("--macro Safety.safeNavigation('lobby')")
 
 project.addParameter("--macro nullSafety('game.actionbuffers', Strict)")
 project.addParameter("--macro nullSafety('game.actions', Strict)")
+project.addParameter("--macro nullSafety('game.auto_attack', Strict)")
 project.addParameter("--macro Safety.safeNavigation('game.actionbuffers')")
 project.addParameter("--macro Safety.safeNavigation('game.actions')")
+project.addParameter("--macro Safety.safeNavigation('game.auto_attack')")
 
 
 
