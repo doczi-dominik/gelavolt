@@ -30,11 +30,13 @@ project.addParameter("--macro nullSafety('game.actions', Strict)")
 project.addParameter("--macro nullSafety('game.auto_attack', Strict)")
 project.addParameter("--macro nullSafety('game.backgrounds', Strict)")
 project.addParameter("--macro nullSafety('game.boardmanagers', Strict)")
+project.addParameter("--macro nullSafety('game.boards', Strict)")
 project.addParameter("--macro Safety.safeNavigation('game.actionbuffers')")
 project.addParameter("--macro Safety.safeNavigation('game.actions')")
 project.addParameter("--macro Safety.safeNavigation('game.auto_attack')")
 project.addParameter("--macro Safety.safeNavigation('game.backgrounds')")
 project.addParameter("--macro Safety.safeNavigation('game.boardmanagers')")
+project.addParameter("--macro Safety.safeNavigation('game.boards')")
 
 
 

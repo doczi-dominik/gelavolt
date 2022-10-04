@@ -51,6 +51,9 @@ class TrainingBoard implements IBoard {
 	public function new(opts: TrainingBoardOptions) {
 		game.Macros.initFromOpts();
 
+		// Redundant but null safety
+		activeState = playState;
+
 		changeToGame();
 	}
 
