@@ -10,12 +10,12 @@ using kha.graphics2.GraphicsExtension;
 private class BackgroundParticle {
 	final rng: CopyableRNG;
 
-	var lastY: Float;
+	var lastY = 0.0;
 
-	var x: Float;
-	var y: Float;
-	var dy: Float;
-	var t: Int;
+	var x = 0.0;
+	var y = 0.0;
+	var dy = 0.0;
+	var t = 0;
 
 	public function new(rng: CopyableRNG) {
 		this.rng = rng;
