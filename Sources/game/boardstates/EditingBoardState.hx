@@ -161,6 +161,10 @@ class EditingBoardState implements IBoardState {
 	public function loadStep() {
 		final step = chainSim.getViewedStep();
 
+		if (step == null) {
+			return;
+		}
+
 		field.copyFrom(step.fieldSnapshot);
 	}
 

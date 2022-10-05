@@ -1,7 +1,7 @@
 package game.copying;
 
 class CopyableArray<T:ICopy> implements ICopyFrom {
-	public final data: Array<T>;
+	public final data: Array<Null<T>>;
 
 	public function new(data: Array<T>) {
 		this.data = data;

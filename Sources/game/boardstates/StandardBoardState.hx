@@ -111,8 +111,14 @@ class StandardBoardState implements IBoardState {
 		beginChainSimulation();
 	}
 
-	inline function copyFromSnapshot() {
-		field.copyFrom(chainSim.getViewedStep().fieldSnapshot);
+	function copyFromSnapshot() {
+		final vs = chainSim.getViewedStep();
+
+		if (vs == null) {
+			return;
+		}
+
+		field.copyFrom(vs.fieldSnapshot);
 	}
 
 	function nextStep() {
@@ -179,9 +185,15 @@ class StandardBoardState implements IBoardState {
 	}
 
 	function initSpawningState() {
+		final currentPiece = queue.getCurrent();
+
+		if (currentPiece == null) {
+			return;
+		}
+
 		final screenCoords = field.cellToScreen(field.centerColumnIndex, field.outerRows - 1);
 
-		geloGroup.load(screenCoords.x, screenCoords.y + Gelo.HALFSIZE, queue.getCurrent());
+		geloGroup.load(screenCoords.x, screenCoords.y + Gelo.HALFSIZE, currentPiece);
 		queue.next();
 
 		preview.startAnimation(queue.currentIndex);
@@ -232,6 +244,10 @@ class StandardBoardState implements IBoardState {
 
 	function initSimStepState() {
 		final step = chainSim.getViewedStep();
+
+		if (step == null) {
+			return;
+		}
 
 		switch (step.type) {
 			case BEGIN:

@@ -64,7 +64,11 @@ class TrainingBoardState extends EndlessBoardState {
 		final data = randomizer.createQueueData(Dropsets.CLASSICAL);
 
 		for (i in 0...trainingSettings.keepGroupCount) {
-			data[i] = queue.get(i);
+			final d = queue.get(i);
+
+			if (d != null) {
+				data[i] = d;
+			}
 		}
 
 		queue.load(data);
@@ -82,7 +86,13 @@ class TrainingBoardState extends EndlessBoardState {
 	}
 
 	public function resume() {
-		field.copyFrom(chainSim.getViewedStep().fieldSnapshot);
+		final vs = chainSim.getViewedStep();
+
+		if (vs == null) {
+			return;
+		}
+
+		field.copyFrom(vs.fieldSnapshot);
 
 		geloGroup.isVisible = false;
 		geloGroup.isShadowVisible = false;
