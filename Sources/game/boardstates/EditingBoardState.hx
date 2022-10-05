@@ -46,8 +46,8 @@ class EditingBoardState implements IBoardState {
 	@copy var cursorX: Int;
 	@copy var cursorY: Int;
 
-	@copy var cursorDisplayX: Float;
-	@copy var cursorDisplayY: Float;
+	@copy var cursorDisplayX = 0.0;
+	@copy var cursorDisplayY = 0.0;
 
 	@copy var selectedIndex: Int;
 
@@ -82,12 +82,12 @@ class EditingBoardState implements IBoardState {
 		cursorX = Std.int(field.columns / 2) - 1;
 		cursorY = field.totalRows - 1;
 
-		// Set cursorDisplayX / cursorDisplayY
-		moveCursor(0, 0);
-
 		selectedIndex = 0;
 
 		mode = GELOS;
+
+		// Set cursorDisplayX / cursorDisplayY
+		moveCursor(0, 0);
 	}
 
 	function moveCursor(deltaX: Int, deltaY: Int) {

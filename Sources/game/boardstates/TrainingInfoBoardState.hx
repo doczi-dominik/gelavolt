@@ -120,7 +120,10 @@ class TrainingInfoBoardState implements IBoardState {
 
 		splitT = 0;
 
-		resetCurrentSplitStatistics();
+		currentGreatSplits = 0;
+		currentOkaySplits = 0;
+		currentSlowSplits = 0;
+		currentSplitCounter = 0;
 
 		overallGreatSplits = 0;
 		overallOkaySplits = 0;

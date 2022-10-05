@@ -33,6 +33,10 @@ class TrainingBoardState extends EndlessBoardState {
 	}
 
 	override function afterPop() {
+		if (currentPopStep == null) {
+			return;
+		}
+
 		infoState.updateChain(currentPopStep);
 	}
 
