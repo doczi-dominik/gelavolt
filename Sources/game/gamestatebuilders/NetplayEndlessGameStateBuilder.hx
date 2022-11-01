@@ -47,6 +47,8 @@ import game.actionbuffers.ReceiveActionBuffer;
 import game.actionbuffers.SenderActionBuffer;
 #end
 
+using Safety;
+
 @:structInit
 @:build(game.Macros.buildOptionsClass(NetplayEndlessGameStateBuilder))
 class NetplayEndlessGameStateBuilderOptions {}
@@ -122,7 +124,7 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	var rightBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): Null<PauseMediator>;
-	@copy public var controlHintContainer(null, default): Null<ControlHintContainer>;
+	@nullCopyFrom public var controlHintContainer(null, default): Null<ControlHintContainer>;
 	public var rollbackMediator(null, default): Null<RollbackMediator>;
 
 	public var gameState(default, null): GameState;

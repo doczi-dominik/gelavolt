@@ -48,6 +48,8 @@ import game.simulation.LinkInfoBuilder;
 import game.simulation.ChainSimulator;
 import game.mediators.SaveGameStateMediator;
 
+using Safety;
+
 @:build(game.Macros.addGameStateBuildMethod())
 class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	final rule: VersusRule;
@@ -111,7 +113,7 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	@copy var infoBoard: SingleStateBoard;
 
 	public var pauseMediator(null, default): Null<PauseMediator>;
-	@copy public var controlHintContainer(null, default): Null<ControlHintContainer>;
+	@nullCopyFrom public var controlHintContainer(null, default): Null<ControlHintContainer>;
 	public var saveGameStateMediator(null, default): Null<SaveGameStateMediator>;
 
 	public var gameState(default, null): GameState;

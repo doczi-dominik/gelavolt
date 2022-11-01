@@ -82,10 +82,10 @@ class StandardBoardState implements IBoardState {
 	@copy var targetBorderColor: Color;
 	@copy var borderColorT: Int;
 
-	@copy var currentBeginStep: Null<BeginSimStep>;
-	@copy var currentDropStep: Null<DropSimStep>;
-	@copy var currentPopStep: Null<PopSimStep>;
-	@copy var currentEndStep: Null<EndSimStep>;
+	@nullCopy var currentBeginStep: Null<BeginSimStep>;
+	@nullCopy var currentDropStep: Null<DropSimStep>;
+	@nullCopy var currentPopStep: Null<PopSimStep>;
+	@nullCopy var currentEndStep: Null<EndSimStep>;
 
 	@copy var canDropGarbage: Bool;
 
