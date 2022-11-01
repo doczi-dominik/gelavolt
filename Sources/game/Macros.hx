@@ -4,10 +4,19 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
+using haxe.macro.TypeTools;
+
 private enum abstract CopyInterface(Int) {
 	final NONE;
 	final COPY;
 	final COPY_FROM;
+}
+
+private enum abstract CopyMetaType(Int) {
+	final NONE;
+	final COPY;
+	final NULL_COPY;
+	final NULL_COPY_FROM;
 }
 
 class Macros {
@@ -24,7 +33,7 @@ class Macros {
 		return checkForOverride(sc);
 	}
 
-	static function checkInterfaces(ct: ClassType) {
+	static function checkInterfaces(ct: ClassType): CopyInterface {
 		for (i in ct.interfaces) {
 			final it = i.t.get();
 
@@ -207,45 +216,58 @@ class Macros {
 			if (f.meta == null)
 				continue;
 
-			var hasCopyMeta = false;
+			var metaType: CopyMetaType;
 
 			for (m in f.meta) {
-				if (m.name == "copy") {
-					hasCopyMeta = true;
-					break;
+				metaType = switch (m.name) {
+					case "nullCopy":
+						NULL_COPY;
+					case "nullCopyFrom":
+						NULL_COPY_FROM;
+					case "copy":
+						COPY;
+					default:
+						NONE;
+						continue;
 				}
+
+				break;
 			}
 
-			if (!hasCopyMeta)
-				continue;
+			switch (metaType) {
+				case NULL_COPY:
+					exprs.push(macro $i{fieldName} = (other.$fieldName == null) ? null : other.$fieldName.copy());
+				case NULL_COPY_FROM:
+					exprs.push(macro if (other.$fieldName == null)
+						$i{fieldName} = null
+					else
+						$i{fieldName}.copyFrom(other.$fieldName));
+				case COPY:
+					switch (f.kind) {
+						case FVar(t, _) | FProp(_, _, t, _):
+							switch (t) {
+								case TPath(p):
+									switch (Context.getType(p.name)) {
+										case TInst(t, params):
+											final ct = t.get();
 
-			var fieldComplexType: ComplexType;
-
-			switch (f.kind) {
-				case FVar(t, _) | FProp(_, _, t, _):
-					fieldComplexType = t;
-
-					switch (t) {
-						case TPath(p):
-							switch (Context.getType(p.name)) {
-								case TInst(t, params):
-									final ct = t.get();
-
-									switch (checkInterfaces(ct)) {
-										case NONE:
+											switch (checkInterfaces(ct)) {
+												case NONE:
+													exprs.push(macro $i{fieldName} = other.$fieldName);
+												case COPY:
+													exprs.push(macro $i{fieldName} = other.$fieldName.copy());
+												case COPY_FROM:
+													exprs.push(macro $i{fieldName}.copyFrom(other.$fieldName));
+											}
+										case TAbstract(_, _) | TEnum(_, _):
 											exprs.push(macro $i{fieldName} = other.$fieldName);
-										case COPY:
-											exprs.push(macro $i{fieldName} = other.$fieldName.copy());
-										case COPY_FROM:
-											exprs.push(macro $i{fieldName}.copyFrom(other.$fieldName));
+										default:
 									}
-								case TAbstract(_, _) | TEnum(_, _):
-									exprs.push(macro $i{fieldName} = other.$fieldName);
 								default:
 							}
 						default:
 					}
-				default:
+				case NONE:
 			}
 		}
 
