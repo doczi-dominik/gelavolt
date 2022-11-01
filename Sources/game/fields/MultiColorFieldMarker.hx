@@ -7,6 +7,8 @@ import kha.Assets;
 import kha.graphics2.Graphics;
 import utils.Point;
 
+using Safety;
+
 @:structInit
 @:build(game.Macros.buildOptionsClass(MultiColorFieldMarker))
 class MultiColorFieldMarkerOptions {}
@@ -59,7 +61,13 @@ class MultiColorFieldMarker implements IFieldMarker {
 		final width = 64 / colorCount;
 
 		for (i in 0...colorCount) {
-			g.color = prefsSettings.primaryColors[colors.data[i]];
+			final cd = colors.data[i];
+
+			if (cd == null) {
+				continue;
+			}
+
+			g.color = prefsSettings.primaryColors[cd].sure();
 
 			g.drawSubImage(Assets.images.pixel, x + i * width, y, spriteCoordinates.x + i * width, spriteCoordinates.y, width, 64);
 		}

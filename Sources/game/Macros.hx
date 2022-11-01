@@ -241,7 +241,7 @@ class Macros {
 					exprs.push(macro if (other.$fieldName == null)
 						$i{fieldName} = null
 					else
-						$i{fieldName}.copyFrom(other.$fieldName));
+						$i{fieldName}.sure().copyFrom(other.$fieldName));
 				case COPY:
 					switch (f.kind) {
 						case FVar(t, _) | FProp(_, _, t, _):

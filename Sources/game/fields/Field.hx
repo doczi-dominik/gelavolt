@@ -18,6 +18,8 @@ import utils.Point;
 import utils.Utils.negativeMod;
 import haxe.ds.ReadOnlyArray;
 
+using Safety;
+
 @:structInit
 @:build(game.Macros.buildOptionsClass(Field))
 class FieldOptions {}
@@ -27,8 +29,9 @@ class Field implements ICopyFrom {
 	static final ORIGINAL_GARBAGE_COLUMNS = [0, 3, 2, 5, 1, 4];
 
 	@inject final prefsSettings: PrefsSettings;
-	@copy final markers: CopyableMatrix<IFieldMarker>;
-	@copy final gelos: CopyableMatrix<FieldGelo>;
+
+	@nullCopyFrom var markers: Null<CopyableMatrix<IFieldMarker>>;
+	@nullCopyFrom var gelos: Null<CopyableMatrix<FieldGelo>>;
 
 	@inject public var columns(default, null): Int;
 	@inject public var playAreaRows(default, null): Int;
@@ -55,18 +58,26 @@ class Field implements ICopyFrom {
 	public function new(opts: FieldOptions) {
 		Macros.initFromOpts();
 
-		gelos = new CopyableMatrix(totalRows);
-		markers = new CopyableMatrix(totalRows);
+		outerRows = 0;
+		totalRows = 0;
+		centerColumnIndex = 0;
+
+		garbageAccelerations = [];
+		garbageColumns = [];
 
 		createData();
 	}
 
 	inline function rawSet(x: Int, y: Int, gelo: FieldGelo) {
-		gelos.data[y][x] = gelo;
+		if (gelos != null) {
+			gelos.data[y][x] = gelo;
+		}
 	}
 
 	inline function rawSetMarker(x: Int, y: Int, marker: IFieldMarker) {
-		markers.data[y][x] = marker;
+		if (markers != null) {
+			markers.data[y][x] = marker;
+		}
 	}
 
 	public function createData() {
@@ -75,11 +86,11 @@ class Field implements ICopyFrom {
 
 		centerColumnIndex = Std.int(columns / 2) - 1;
 
-		gelos.data.resize(0);
-		markers.data.resize(0);
+		gelos = new CopyableMatrix(totalRows);
+		markers = new CopyableMatrix(totalRows);
 
 		for (y in 0...totalRows) {
-			gelos.data[y] = [];
+			gelos.sure().data[y] = [];
 			markers.data[y] = [];
 
 			for (x in 0...columns) {
@@ -114,10 +125,18 @@ class Field implements ICopyFrom {
 	}
 
 	public function get(x: Int, y: Int): Null<FieldGelo> {
+		if (gelos == null) {
+			return null;
+		}
+
 		return gelos.data[y][x];
 	}
 
 	public function getMarker(x: Int, y: Int): Null<IFieldMarker> {
+		if (markers == null) {
+			return null;
+		}
+
 		return markers.data[y][x];
 	}
 
@@ -135,7 +154,7 @@ class Field implements ICopyFrom {
 	}
 
 	public function setMarker(x: Int, y: Int, marker: IFieldMarker) {
-		rawSetMarker(x, y, getMarker(x, y).onSet(marker.copy()));
+		rawSetMarker(x, y, getMarker(x, y).sure().onSet(marker.copy()));
 	}
 
 	public function newGelo(x: Int, y: Int, color: GeloColor, lockInGarbage: Bool) {
@@ -179,6 +198,10 @@ class Field implements ICopyFrom {
 	}
 
 	public function clear(x: Int, y: Int) {
+		if (gelos == null) {
+			return;
+		}
+
 		gelos.data[y][x] = null;
 	}
 
@@ -252,7 +275,13 @@ class Field implements ICopyFrom {
 			if (isEmpty(cellX, cellY))
 				continue;
 
-			callback(get(cellX, cellY), cellX, cellY, i);
+			final gelo = get(cellX, cellY);
+
+			if (gelo == null) {
+				continue;
+			}
+
+			callback(gelo, cellX, cellY, i);
 		}
 	}
 
@@ -294,7 +323,11 @@ class Field implements ICopyFrom {
 					}
 				});
 
-				onCurrent(getAtPoint(current));
+				final gelo = getAtPoint(current);
+
+				if (gelo != null) {
+					onCurrent(gelo);
+				}
 
 				checkedCount++;
 			}
@@ -357,7 +390,7 @@ class Field implements ICopyFrom {
 
 				final cellCoords = screenToCell(x, nextY + Gelo.HALFSIZE);
 
-				if (cellCoords.y < totalRows && (isEmptyAtPoint(cellCoords) || getAtPoint(cellCoords).state == FALLING)) {
+				if (cellCoords.y < totalRows && (isEmptyAtPoint(cellCoords) || getAtPoint(cellCoords).sure().state == FALLING)) {
 					gelo.distanceCounter += gelo.velocity;
 					gelo.y = nextY;
 					gelo.changeSpriteVariation(NONE);
@@ -409,21 +442,23 @@ class Field implements ICopyFrom {
 	public function addDesyncInfo(ctx: Serializer) {
 		for (y in 0...totalRows) {
 			for (x in 0...columns) {
-				if (isEmpty(x, y)) {
-					ctx.addByte(0);
-
-					continue;
-				}
-
 				final gelo = get(x, y);
 
-				if (gelo.state != IDLE) {
+				if (gelo == null) {
 					ctx.addByte(0);
 
 					continue;
 				}
 
-				ctx.addInt(gelo.color);
+				final g = gelo.sure();
+
+				if (g.state != IDLE) {
+					ctx.addByte(0);
+
+					continue;
+				}
+
+				ctx.addInt(g.color);
 			}
 		}
 	}
@@ -437,14 +472,17 @@ class Field implements ICopyFrom {
 	public function render(g: Graphics, g4: Graphics4, alpha: Float) {
 		for (y in 0...totalRows) {
 			for (x in 0...columns) {
-				if (isMarkerEmpty(x, y))
+				final marker = getMarker(x, y);
+
+				if (marker == null) {
 					continue;
+				}
 
 				final screenCoords = cellToScreen(x, y);
 				final screenX = screenCoords.x - Gelo.HALFSIZE;
 				final screenY = screenCoords.y - Gelo.HALFSIZE;
 
-				getMarker(x, y).render(g, screenX, screenY);
+				marker.sure().render(g, screenX, screenY);
 			}
 		}
 

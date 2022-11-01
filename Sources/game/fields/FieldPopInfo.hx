@@ -17,6 +17,8 @@ class FieldPopInfo implements ICopy {
 		beginners = new ConstantCopyableArray([]);
 		clears = new ConstantCopyableArray([]);
 		clearsByColor = new ConstantCopyableMap([COLOR1 => 0, COLOR2 => 0, COLOR3 => 0, COLOR4 => 0, COLOR5 => 0]);
+
+		hasPops = false;
 	}
 
 	public function copy() {
@@ -25,7 +27,13 @@ class FieldPopInfo implements ICopy {
 
 	public function addClear(color: GeloColor, x: Int, y: Int) {
 		clears.data.push({color: color, x: x, y: y});
-		if (color.isColored())
-			clearsByColor.data[color]++;
+
+		if (color.isColored()) {
+			final c = clearsByColor.data[color];
+
+			if (c != null) {
+				clearsByColor.data[color] = c + 1;
+			}
+		}
 	}
 }
