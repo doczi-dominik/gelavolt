@@ -11,7 +11,7 @@ class NullFieldMarker implements IFieldMarker {
 		type = Null;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return instance;
 	}
 

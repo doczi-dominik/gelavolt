@@ -27,7 +27,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 		colors = new ConstantCopyableArray([defaultColor]);
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new MultiColorFieldMarker({
 			prefsSettings: prefsSettings,
 			spriteCoordinates: spriteCoordinates,

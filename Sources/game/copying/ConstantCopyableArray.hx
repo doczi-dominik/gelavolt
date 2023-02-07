@@ -19,7 +19,7 @@ class ConstantCopyableArray<T> implements ICopyFrom {
 		return this;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new ConstantCopyableArray(data.copy());
 	}
 }

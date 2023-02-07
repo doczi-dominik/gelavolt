@@ -47,7 +47,7 @@ class GeloPopParticle implements IParticle {
 		game.Macros.initFromOpts();
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new GeloPopParticle({
 			dx: dx,
 			dyIncrement: dyIncrement,

@@ -57,7 +57,7 @@ class GarbageBulletParticle implements IParticle {
 		trailParts = new CopyableArray([]);
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new GarbageBulletParticle({
 			begin: begin,
 			control: control,

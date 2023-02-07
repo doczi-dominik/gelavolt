@@ -7,7 +7,7 @@ import game.gelos.OtherGeloPositions.OTHERGELO_POSITIONS;
 @:structInit
 @:build(game.Macros.buildOptionsClass(OtherGelo))
 class OtherGeloOptions extends GeloOptions implements ICopy {
-	public function copy() {
+	public function copy(): Dynamic {
 		return this;
 	}
 }

@@ -36,7 +36,7 @@ class GarbageBulletTrailParticle implements IParticle {
 		game.Macros.initFromOpts();
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new GarbageBulletTrailParticle({
 			x: x,
 			y: y,

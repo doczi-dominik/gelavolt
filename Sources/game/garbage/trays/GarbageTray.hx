@@ -37,7 +37,7 @@ class GarbageTray implements IGarbageTray {
 		display = new ConstantCopyableArray([]);
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new GarbageTray(prefsSettings).copyFrom(this);
 	}
 

@@ -28,7 +28,7 @@ class CopyableMatrix<T:ICopy> implements ICopyFrom {
 		return this;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new CopyableMatrix<T>(0).copyFrom(this);
 	}
 }

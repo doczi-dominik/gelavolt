@@ -19,7 +19,7 @@ class ConstantCopyableMap<T, U> implements ICopyFrom {
 		return this;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new ConstantCopyableMap(data.copy());
 	}
 }

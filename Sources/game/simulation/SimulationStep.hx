@@ -27,7 +27,7 @@ class SimulationStep implements ICopy {
 		this.type = type;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new SimulationStep(type, {
 			chain: chain,
 			fieldSnapshot: fieldSnapshot

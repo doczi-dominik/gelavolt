@@ -32,7 +32,7 @@ class SmallStarParticle implements IParticle {
 		game.Macros.initFromOpts();
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new SmallStarParticle({
 			x: x,
 			y: y,

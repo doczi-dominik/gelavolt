@@ -505,9 +505,6 @@ class GeloGroup implements ICopyFrom {
 	}
 
 	public function update() {
-		if (main == null)
-			return;
-
 		prevRotationAngle = rotationAngle;
 		updateRotation();
 

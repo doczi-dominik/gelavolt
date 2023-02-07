@@ -82,7 +82,7 @@ class Gelo implements ICopy {
 		game.Macros.initFromOpts();
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new Gelo({
 			prefsSettings: prefsSettings,
 			color: color,

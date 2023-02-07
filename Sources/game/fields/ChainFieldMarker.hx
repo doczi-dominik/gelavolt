@@ -37,7 +37,7 @@ class ChainFieldMarker implements IFieldMarker {
 		type = Chain;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new ChainFieldMarker().copyFrom(this);
 	}
 

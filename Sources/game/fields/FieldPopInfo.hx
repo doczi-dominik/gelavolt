@@ -21,7 +21,7 @@ class FieldPopInfo implements ICopy {
 		hasPops = false;
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new FieldPopInfo().copyFrom(this);
 	}
 

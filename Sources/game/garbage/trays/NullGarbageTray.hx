@@ -7,7 +7,7 @@ class NullGarbageTray implements IGarbageTray {
 
 	function new() {}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return instance;
 	}
 

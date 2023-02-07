@@ -17,7 +17,7 @@ class GeloGroupData implements ICopy {
 		this.others = new CopyableArray(others);
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new GeloGroupData(mainColor, others.data);
 	}
 

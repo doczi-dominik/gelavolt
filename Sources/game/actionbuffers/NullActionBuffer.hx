@@ -11,7 +11,7 @@ class NullActionBuffer implements IActionBuffer {
 		nullAction = ActionSnapshot.fromBitField(0);
 	}
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return instance;
 	}
 

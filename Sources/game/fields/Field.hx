@@ -45,7 +45,7 @@ class Field implements ICopyFrom {
 	@copy public var garbageAccelerations(default, null): ReadOnlyArray<Float>;
 	@copy public var garbageColumns(default, null): ReadOnlyArray<Int>;
 
-	public function copy() {
+	public function copy(): Dynamic {
 		return new Field({
 			prefsSettings: prefsSettings,
 			columns: columns,
