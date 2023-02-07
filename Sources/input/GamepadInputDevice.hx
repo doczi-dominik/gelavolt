@@ -107,7 +107,7 @@ class GamepadInputDevice extends InputDevice {
 				var somethingChanged = false;
 
 				if (Math.abs(value) > inputSettings.deadzone) {
-					if (!axesCache.contains(axis)) {
+					if (!ac.contains(axis)) {
 						AnyInputDevice.lastDeviceID = id;
 
 						downListener(safeV);
@@ -116,7 +116,7 @@ class GamepadInputDevice extends InputDevice {
 						somethingChanged = true;
 					}
 				} else {
-					if (axesCache.contains(axis)) {
+					if (ac.contains(axis)) {
 						upListener(safeV);
 
 						ac.remove(axis);

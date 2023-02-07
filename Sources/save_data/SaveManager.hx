@@ -4,6 +4,8 @@ import kha.Storage;
 import kha.Blob;
 import hxbit.Serializer;
 
+using Safety;
+
 class SaveManager {
 	static inline final PROFILES_FILENAME = "profiles";
 	static inline final GRAPHICS_FIELNAME = "graphics";
@@ -39,13 +41,16 @@ class SaveManager {
 
 			ser.beginLoad(blob.bytes);
 
-			final ps: Null<Array<Profile>> = ser.getArray(() -> {
+			// Inlined library functions
+			// falsly trigger null safety
+			@:nullSafety(Off)
+			final ps: Array<Profile> = ser.getArray(() -> {
 				return ser.getKnownRef(Profile);
-			});
+			}).sure();
 
 			ser.endLoad();
 
-			if (ps == null || ps.length == 0) {
+			if (ps.length == 0) {
 				throw "Empty Profile List";
 			}
 

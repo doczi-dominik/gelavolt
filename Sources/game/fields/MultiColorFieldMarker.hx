@@ -61,7 +61,7 @@ class MultiColorFieldMarker implements IFieldMarker {
 		final width = 64 / colorCount;
 
 		for (i in 0...colorCount) {
-			final cd = colors.data[i];
+			final cd: Null<GeloColor> = colors.data[i];
 
 			if (cd == null) {
 				continue;
