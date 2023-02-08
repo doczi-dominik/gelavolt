@@ -7,7 +7,7 @@ import utils.Point;
 import utils.Utils.lerp;
 import game.copying.CopyableArray;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(GarbageBulletParticle))

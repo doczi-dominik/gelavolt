@@ -10,7 +10,7 @@ import game.gelos.Gelo;
 import kha.Color;
 import save_data.TrainingSettings;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(TrainingGeloGroup))

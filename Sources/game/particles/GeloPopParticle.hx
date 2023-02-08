@@ -2,7 +2,7 @@ package game.particles;
 
 import kha.graphics2.Graphics;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 import kha.Color;
 import utils.Utils.lerp;

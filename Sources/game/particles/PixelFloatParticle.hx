@@ -4,7 +4,7 @@ import kha.Color;
 import utils.Utils.lerp;
 import kha.graphics2.Graphics;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 @:structInit
 @:build(game.Macros.buildOptionsClass(PixelFloatParticle))

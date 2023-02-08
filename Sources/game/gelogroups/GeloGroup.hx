@@ -21,7 +21,7 @@ import game.gelos.Gelo;
 import utils.Utils.lerp;
 import utils.Utils.negativeMod;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 enum GeloGroupState {
 	CONTROLLING;

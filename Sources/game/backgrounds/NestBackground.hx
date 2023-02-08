@@ -5,7 +5,7 @@ import utils.Utils;
 import game.copying.CopyableRNG;
 import kha.graphics2.Graphics;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 private class BackgroundParticle {
 	final rng: CopyableRNG;

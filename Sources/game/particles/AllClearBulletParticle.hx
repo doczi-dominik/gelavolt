@@ -5,7 +5,7 @@ import kha.Font;
 import kha.Assets;
 import kha.graphics2.Graphics;
 
-using kha.graphics2.GraphicsExtension;
+using utils.GraphicsExtension;
 
 class AllClearBulletParticle extends GarbageBulletParticle {
 	inline static final TEXT = "AC!";
