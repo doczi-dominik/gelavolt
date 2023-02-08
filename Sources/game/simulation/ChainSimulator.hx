@@ -149,8 +149,8 @@ class ChainSimulator implements ICopyFrom {
 
 			links.push(linkInfo);
 
-			final gDisplay = garbageDisplay.copy();
-			final accumDisplay = accumulatedDisplay.copy();
+			final gDisplay: IGarbageTray = garbageDisplay.copy();
+			final accumDisplay: IGarbageTray = accumulatedDisplay.copy();
 
 			gDisplay.startAnimation(linkInfo.garbage);
 			accumDisplay.startAnimation(linkInfo.accumulatedGarbage);

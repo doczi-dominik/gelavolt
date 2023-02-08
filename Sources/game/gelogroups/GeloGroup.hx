@@ -181,7 +181,7 @@ class GeloGroup implements ICopyFrom {
 	}
 
 	function updateShadow(cellX: Int, cellY: Int) {
-		final workField = field.copy();
+		final workField: Field = field.copy();
 
 		final mainGelo = workField.newGelo(cellX, cellY, main.color, true);
 		final otherGelos: Array<FieldGelo> = [];

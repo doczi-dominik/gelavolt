@@ -1,7 +1,7 @@
 package game.simulation;
 
+import game.garbage.trays.IGarbageTray;
 import game.simulation.SimulationStep.SimulationStepOptions;
-import game.garbage.trays.GarbageTray;
 import kha.Assets;
 import game.geometries.BoardGeometries;
 import kha.graphics2.Graphics;
@@ -12,8 +12,8 @@ import game.fields.FieldPopInfo;
 class PopSimStepOptions extends SimulationStepOptions {}
 
 class PopSimStep extends SimulationStep {
-	@inject final garbageDisplay: GarbageTray;
-	@inject final accumulatedDisplay: GarbageTray;
+	@inject final garbageDisplay: IGarbageTray;
+	@inject final accumulatedDisplay: IGarbageTray;
 
 	@inject public final popInfo: FieldPopInfo;
 	@inject public final linkInfo: LinkInfo;
