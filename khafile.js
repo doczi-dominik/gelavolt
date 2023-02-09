@@ -44,13 +44,10 @@ project.addParameter("--macro Safety.safeNavigation('game.boardstates')")
 project.addParameter("--macro Safety.safeNavigation('game.copying')")
 project.addParameter("--macro Safety.safeNavigation('game.fields')")
 
-
-
-
 project.windowOptions.width = 1920;
 project.windowOptions.height = 1080;
 
-project.addCDefine("HXCPP_STACK_LINE")
-project.addCDefine("HXCPP_DEBUG_LINK")
+//project.addCDefine("HXCPP_STACK_LINE")
+//project.addCDefine("HXCPP_DEBUG_LINK")
 
 resolve(project);
