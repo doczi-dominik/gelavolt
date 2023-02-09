@@ -50,4 +50,6 @@ project.windowOptions.height = 1080;
 //project.addCDefine("HXCPP_STACK_LINE")
 //project.addCDefine("HXCPP_DEBUG_LINK")
 
+project.addDefine("kha_html5_disable_automatic_size_adjust")
+
 resolve(project);

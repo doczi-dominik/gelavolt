@@ -47,15 +47,34 @@ class Main {
 		document.body.style.padding = "0";
 		document.body.style.margin = "0";
 		document.body.style.overflow = "hidden";
-		var canvas: CanvasElement = cast document.getElementById(Macros.canvasId());
+		final canvas: CanvasElement = cast document.getElementById(Macros.canvasId());
 		canvas.style.display = "block";
 
-		ScaleManager.addOnResizeCallback(() -> {
-			canvas.width = Std.int(window.innerWidth);
-			canvas.height = Std.int(window.innerHeight);
-			canvas.style.width = document.documentElement.clientWidth + "px";
-			canvas.style.height = document.documentElement.clientHeight + "px";
-		});
+		final resize = function() {
+			var w = document.documentElement.clientWidth;
+			var h = document.documentElement.clientHeight;
+
+			if (w == 0 || h == 0) {
+				w = window.innerWidth;
+				h = window.innerHeight;
+			}
+
+			canvas.width = Std.int(w * window.devicePixelRatio);
+			canvas.height = Std.int(h * window.devicePixelRatio);
+
+			if (canvas.style.width == "") {
+				canvas.style.width = "100%";
+				canvas.style.height = "100%";
+			}
+		}
+
+		resize();
+
+		window.onresize = function() {
+			resize();
+
+			ScaleManager.screen.resize(canvas.width, canvas.height);
+		}
 	}
 	#end
 
@@ -64,10 +83,6 @@ class Main {
 	 */
 	public static function main() {
 		#if kha_html5
-		window.onresize = () -> {
-			ScaleManager.screen.resize(window.innerWidth, window.innerHeight);
-		};
-
 		setFullHTML5Canvas();
 		#end
 
