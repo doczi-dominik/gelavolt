@@ -404,7 +404,7 @@ class StandardBoardState implements IBoardState {
 
 		scoreManager.addScoreFromLink(linkInfo);
 
-		garbageManager.sendGarbage(linkInfo.garbage, beginnerScreenCoords);
+		garbageManager.sendGarbage(linkInfo.garbage, beginnerScreenCoords, linkInfo.sendsAllClearBonus);
 
 		scoreManager.resetDropBonus();
 

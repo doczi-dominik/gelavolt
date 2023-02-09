@@ -3,7 +3,6 @@ package game.garbage;
 import hxbit.Serializer;
 import utils.ValueBox;
 import game.screens.GameScreenBase;
-import game.screens.GameScreen;
 import kha.Color;
 import game.copying.CopyableRNG;
 import game.particles.PixelFloatParticle;
@@ -79,7 +78,7 @@ class GarbageManager implements IGarbageManager {
 		}
 	}
 
-	function sendAttackBullet(beginners: Array<ScreenGeloPoint>) {
+	function sendAttackBullet(beginners: Array<ScreenGeloPoint>, sendsAllClearBonus: Bool) {
 		final absPos = geometries.absolutePosition;
 
 		final control: Point = switch (geometries.orientation) {
@@ -105,12 +104,13 @@ class GarbageManager implements IGarbageManager {
 				onFinish: () -> {
 					target.startAnimation();
 					addCollisionParticle(absTrayCenter, primaryColor);
-				}
+				},
+				sendsAllClearBonus: sendsAllClearBonus
 			}));
 		}
 	}
 
-	function sendOffsetBullet(beginners: Array<ScreenGeloPoint>) {
+	function sendOffsetBullet(beginners: Array<ScreenGeloPoint>, sendsAllClearBonus: Bool) {
 		final absPos = geometries.absolutePosition;
 		final scale = geometries.scale;
 
@@ -134,12 +134,13 @@ class GarbageManager implements IGarbageManager {
 				onFinish: () -> {
 					startAnimation();
 					addCollisionParticle(absTrayCenter, primaryColor);
-				}
+				},
+				sendsAllClearBonus: sendsAllClearBonus
 			}));
 		}
 	}
 
-	function sendCounterBullet(beginners: Array<ScreenGeloPoint>) {
+	function sendCounterBullet(beginners: Array<ScreenGeloPoint>, sendsAllClearBonus: Bool) {
 		final absPos = geometries.absolutePosition;
 		final scale = geometries.scale;
 
@@ -184,9 +185,11 @@ class GarbageManager implements IGarbageManager {
 						onFinish: () -> {
 							target.startAnimation();
 							addCollisionParticle(absTargetTrayCenter, primaryColor);
-						}
+						},
+						sendsAllClearBonus: false
 					}));
-				}
+				},
+				sendsAllClearBonus: sendsAllClearBonus
 			}));
 		}
 	}
@@ -208,7 +211,7 @@ class GarbageManager implements IGarbageManager {
 		tray.startAnimation(currentGarbage);
 	}
 
-	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>) {
+	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>, sendsAllClearBonus: Bool) {
 		if (amount == 0)
 			return;
 
@@ -218,7 +221,7 @@ class GarbageManager implements IGarbageManager {
 			// Attacking
 			target.receiveGarbage(amount);
 
-			sendAttackBullet(beginners);
+			sendAttackBullet(beginners, sendsAllClearBonus);
 		} else if (diff >= 0) {
 			// Countering
 			reduceGarbage(currentGarbage);
@@ -226,13 +229,13 @@ class GarbageManager implements IGarbageManager {
 			if (diff > 0) {
 				target.receiveGarbage(diff);
 
-				sendCounterBullet(beginners);
+				sendCounterBullet(beginners, sendsAllClearBonus);
 			}
 		} else if (diff < 0) {
 			// Offsetting
 			reduceGarbage(amount);
 
-			sendOffsetBullet(beginners);
+			sendOffsetBullet(beginners, sendsAllClearBonus);
 		}
 	}
 

@@ -25,7 +25,7 @@ class NullGarbageManager implements IGarbageManager {
 
 	public function init() {}
 
-	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>) {}
+	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>, sendsAllClearBonus: Bool) {}
 
 	public function dropGarbage(amount: Int) {}
 

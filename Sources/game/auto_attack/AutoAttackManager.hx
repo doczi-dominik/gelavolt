@@ -119,7 +119,7 @@ class AutoAttackManager implements ICopyFrom {
 
 		linkIndex++;
 
-		garbageManager.sendGarbage(link.garbage, [{x: 0, y: EFFECT_Y, color: COLOR2}]);
+		garbageManager.sendGarbage(link.garbage, [{x: 0, y: EFFECT_Y, color: COLOR2}], link.sendsAllClearBonus);
 
 		final coords: Point = {x: 112, y: EFFECT_Y};
 

@@ -9,7 +9,7 @@ interface IGarbageManager extends ICopyFrom extends hxbit.Serializable {
 	public var canReceiveGarbage: Bool;
 	public var droppableGarbage(get, never): Int;
 
-	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>): Void;
+	public function sendGarbage(amount: Int, beginners: Array<ScreenGeloPoint>, sendsAllClearBonus: Bool): Void;
 	public function dropGarbage(amount: Int): Void;
 	public function confirmGarbage(amount: Int): Void;
 	public function clear(): Void;
