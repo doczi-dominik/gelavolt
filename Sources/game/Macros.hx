@@ -15,6 +15,7 @@ private enum abstract CopyInterface(Int) {
 private enum abstract CopyMetaType(Int) {
 	final NONE;
 	final COPY;
+	final COPY_FROM;
 	final NULL_COPY;
 	final NULL_COPY_FROM;
 }
@@ -224,6 +225,8 @@ class Macros {
 						NULL_COPY;
 					case "nullCopyFrom":
 						NULL_COPY_FROM;
+					case "copyFrom":
+						COPY_FROM;
 					case "copy":
 						COPY;
 					default:
@@ -242,6 +245,8 @@ class Macros {
 						$i{fieldName} = null
 					else
 						$i{fieldName}.sure().copyFrom(other.$fieldName));
+				case COPY_FROM:
+					exprs.push(macro $i{fieldName}.copyFrom(other.$fieldName));
 				case COPY:
 					switch (f.kind) {
 						case FVar(t, _) | FProp(_, _, t, _):
