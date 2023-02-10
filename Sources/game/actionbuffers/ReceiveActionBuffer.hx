@@ -1,5 +1,6 @@
 package game.actionbuffers;
 
+import game.net.logger.ISessionLogger;
 import game.net.InputHistoryEntry;
 import game.mediators.RollbackMediator;
 import game.mediators.FrameCounter;
@@ -51,9 +52,7 @@ class ReceiveActionBuffer implements IActionBuffer {
 	}
 
 	public function onInput(history: Array<InputHistoryEntry>) {
-		// trace('Received ${history.length} inputs on ${frameCounter.value}');
-
-		var rollbackTo: Null<Int> = null;
+		var shouldRollback = false;
 
 		for (e in history) {
 			final frame = e.frame;
@@ -62,23 +61,22 @@ class ReceiveActionBuffer implements IActionBuffer {
 
 			this.actions[frame] = snapshot;
 
+			if (shouldRollback) {
+				continue;
+			}
+
 			if (frameDiff < 1) {
 				continue;
 			}
 
-			if (rollbackTo != null) {
-				continue;
-			}
-
 			if (getAction(frame).isNotEqual(snapshot)) {
-				// trace('Inputs diverge, scheduling $frameDiff frame rollback to $frame!');
-				rollbackTo = frame;
+				rollbackMediator.logger.push('ROLLBACK SCHEDULED -- FROM: $frame -- LEN: $frameDiff');
+				shouldRollback = true;
 			}
 		}
 
-		if (rollbackTo != null) {
-			// trace('Executing rollback');
-			rollbackMediator.rollback(rollbackTo);
+		if (shouldRollback) {
+			rollbackMediator.rollback();
 		}
 	}
 

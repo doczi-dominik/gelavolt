@@ -31,14 +31,12 @@ class SessionManager {
 	var lastLocalChecksum: Null<String>;
 	var lastRemoteChecksum: Null<String>;
 	var desyncCounter: Int;
-	var lastConfirmedFrame: Int;
 
 	var beginFrame: Null<Int>;
 	var nextChecksumFrame: Null<Int>;
 	var latestChecksumFrame: Int;
 
 	var localInputHistory: Array<InputHistoryEntry>;
-	var lastInputFrame: Int;
 
 	var syncPackageTimeTaskID: Int;
 	var syncPackageTimeoutTaskID: Int;
@@ -60,6 +58,7 @@ class SessionManager {
 	public var successfulSleepChecks(default, null): Null<Int>;
 	public var state(default, null): SessionState;
 	public var sleepFrames(default, null): Int;
+	public var lastConfirmedFrame(default, null): Int;
 
 	public var isInputIdle: Bool;
 
@@ -331,25 +330,27 @@ class SessionManager {
 		logger.push('SEND INPUT_ACK -- Last frame: $lastFrame');
 		dc.send('$INPUT_ACK;$lastFrame');
 
-		if (lastFrame < lastInputFrame) {
+		if (lastFrame < lastConfirmedFrame) {
 			return;
 		}
 
 		onInput(history);
 
-		lastInputFrame = lastFrame;
+		lastConfirmedFrame = lastFrame;
+
+		onConfirmFrame();
 	}
 
 	function onInputAckPacket(parts: Array<String>) {
 		final frame = Std.parseInt(parts[1]);
 
 		logger.push('RECV INPUT_ACK -- Frame: $frame');
+		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 
 		if (frame <= lastConfirmedFrame) {
 			return;
 		}
 
-		localInputHistory = localInputHistory.filter(e -> e.frame > frame);
 		lastConfirmedFrame = frame;
 
 		onConfirmFrame();
@@ -402,7 +403,6 @@ class SessionManager {
 
 		setSyncInterval(500);
 
-		lastInputFrame = -1;
 		lastConfirmedFrame = -1;
 		desyncCounter = 0;
 		latestChecksumFrame = -1;

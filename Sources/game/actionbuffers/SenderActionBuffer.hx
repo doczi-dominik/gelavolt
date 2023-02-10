@@ -10,6 +10,8 @@ class SenderActionBufferOptions extends LocalActionBufferOptions {}
 class SenderActionBuffer extends LocalActionBuffer {
 	@inject final session: SessionManager;
 
+	var lastSentAction: Null<ActionSnapshot>;
+
 	public function new(opts: SenderActionBufferOptions) {
 		super(opts);
 
@@ -26,7 +28,10 @@ class SenderActionBuffer extends LocalActionBuffer {
 			session.isInputIdle = true;
 		}
 
-		session.sendInput(frameCounter.value + frameDelay, bf);
+		if (lastSentAction == null || latestAction.isNotEqual(lastSentAction)) {
+			session.sendInput(frameCounter.value + frameDelay, bf);
+			lastSentAction = latestAction;
+		}
 
 		return latestAction;
 	}

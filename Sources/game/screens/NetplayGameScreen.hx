@@ -90,12 +90,18 @@ class NetplayGameScreen extends GameScreenBase {
 		lastConfirmedFrame.copyFrom(gameStateBuilder);
 	}
 
-	function rollback(resimulate: Int) {
+	function rollback() {
+		var frameDiff = frameCounter.value - session.lastConfirmedFrame;
+		logger.push('STARTING ROLLBACK: ${session.lastConfirmedFrame} ---> ${frameCounter.value}');
+
 		gameStateBuilder.copyFrom(lastConfirmedFrame);
 
-		while (--resimulate >= 0) {
+		while (--frameDiff >= 0) {
+			logger.push('IN ROLLBACK: $frameDiff');
 			gameState.update();
 		}
+
+		logger.push('ROLLBACK FINISHED');
 	}
 
 	override function dispose() {

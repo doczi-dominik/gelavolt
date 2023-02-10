@@ -183,7 +183,7 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 			rollbackMediator = {
 				logger: NullSessionLogger.instance,
 				confirmFrame: () -> {},
-				rollback: (_) -> {}
+				rollback: () -> {}
 			};
 		}
 	}

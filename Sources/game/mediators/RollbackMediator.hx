@@ -6,5 +6,5 @@ import game.net.logger.ISessionLogger;
 class RollbackMediator {
 	public final confirmFrame: Void->Void;
 	public final logger: ISessionLogger;
-	public final rollback: Int->Void;
+	public final rollback: Void->Void;
 }
