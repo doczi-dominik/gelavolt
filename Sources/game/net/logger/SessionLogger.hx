@@ -41,7 +41,7 @@ class SessionLogger implements ISessionLogger {
 
 		if (indexLimitEnabled) {
 			log[indexMin + index] = str;
-			index = (index + 1) % 64;
+			index = (index + 1) % 256;
 
 			return;
 		}
