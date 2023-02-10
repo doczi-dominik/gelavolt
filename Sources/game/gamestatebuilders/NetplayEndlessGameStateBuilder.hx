@@ -87,11 +87,11 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	@copy var rightBorderColorMediator: BorderColorMediator;
 	@copy var rightTargetMediator: GarbageTargetMediator;
 
-	@copy var leftGarbageTray: CenterGarbageTray;
+	@copyFrom var leftGarbageTray: CenterGarbageTray;
 	@copy var leftGarbageManager: GarbageManager;
 	@copy var leftScoreManager: ScoreManager;
-	@copy var leftChainSimDisplay: GarbageTray;
-	@copy var leftChainSimAccumDisplay: GarbageTray;
+	@copyFrom var leftChainSimDisplay: GarbageTray;
+	@copyFrom var leftChainSimAccumDisplay: GarbageTray;
 	@copy var leftChainSim: ChainSimulator;
 	@copy var leftChainCounter: ChainCounter;
 	@copy var leftField: Field;
@@ -102,11 +102,11 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	@copy var leftAllClearManager: AllClearManager;
 	@copy var leftPreview: VerticalPreview;
 
-	@copy var rightGarbageTray: CenterGarbageTray;
+	@copyFrom var rightGarbageTray: CenterGarbageTray;
 	@copy var rightGarbageManager: GarbageManager;
 	@copy var rightScoreManager: ScoreManager;
-	@copy var rightChainSimDisplay: GarbageTray;
-	@copy var rightChainSimAccumDisplay: GarbageTray;
+	@copyFrom var rightChainSimDisplay: GarbageTray;
+	@copyFrom var rightChainSimAccumDisplay: GarbageTray;
 	@copy var rightChainSim: ChainSimulator;
 	@copy var rightChainCounter: ChainCounter;
 	@copy var rightField: Field;

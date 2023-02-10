@@ -37,7 +37,7 @@ class ScoreManager implements ICopyFrom {
 	final actionTextHeight: Float;
 	@copy var actionTextColor: Color;
 
-	var scoreScaleY: Float;
+	@copy var scoreScaleY: Float;
 
 	@copy var formulaText: String;
 	@copy var formulaTextWidth: Float;

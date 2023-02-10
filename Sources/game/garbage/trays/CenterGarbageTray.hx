@@ -30,7 +30,7 @@ class CenterGarbageTray extends GarbageTray {
 	@copy var scaleX: Float;
 	@copy var garbage: Int;
 
-	override function copy(): GarbageTray {
+	override function copy(): Dynamic {
 		return new CenterGarbageTray(prefsSettings).copyFrom(this);
 	}
 

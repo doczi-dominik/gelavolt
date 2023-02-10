@@ -80,11 +80,11 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	var playerTargetMediator: GarbageTargetMediator;
 	var infoTargetMediator: GarbageTargetMediator;
 
-	@copy var playerGarbageTray: CenterGarbageTray;
+	@copyFrom var playerGarbageTray: CenterGarbageTray;
 	@copy var playerGarbageManager: GarbageManager;
 	@copy var playerScoreManager: ScoreManager;
-	@copy var playerChainSimDisplay: GarbageTray;
-	@copy var playerChainSimAccumDisplay: GarbageTray;
+	@copyFrom var playerChainSimDisplay: GarbageTray;
+	@copyFrom var playerChainSimAccumDisplay: GarbageTray;
 	@copy var playerChainSim: ChainSimulator;
 	@copy var playerChainCounter: ChainCounter;
 	@copy var playerField: Field;
@@ -96,12 +96,12 @@ class TrainingGameStateBuilder implements IBackupGameStateBuilder {
 	@copy var playerGeloGroup: GeloGroup;
 	@copy var playerAllClearManager: AllClearManager;
 
-	@copy var infoGarbageTray: CenterGarbageTray;
+	@copyFrom var infoGarbageTray: CenterGarbageTray;
 	@copy var infoGarbageManager: GarbageManager;
 	@copy var autoAttackChainCounter: ChainCounter;
 	@copy var autoAttackManager: AutoAttackManager;
-	@copy var infoChainAdvantageDisplay: GarbageTray;
-	@copy var infoAfterCounterDisplay: GarbageTray;
+	@copyFrom var infoChainAdvantageDisplay: GarbageTray;
+	@copyFrom var infoAfterCounterDisplay: GarbageTray;
 
 	@copy var editField: Field;
 
