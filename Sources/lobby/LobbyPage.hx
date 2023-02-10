@@ -1,6 +1,7 @@
 package lobby;
 
 import main.ScreenManager;
+import game.net.logger.SessionLogger;
 import kha.System;
 import haxe.io.Bytes;
 import hxbit.Serializer;
@@ -29,12 +30,22 @@ class LobbyPage extends MenuPageBase {
 
 	static function startGame(peer: Peer, isHost: Bool, message: String) {
 		final parts = message.split(";");
-		final s = new SessionManager(peer, isHost, parts[0]);
+
+		final sF = new FrameCounter();
+		final l = new SessionLogger(sF);
+		final s = new SessionManager({
+			peer: peer,
+			isHost: isHost,
+			remoteID: parts[0],
+			frameCounter: sF,
+			logger: l
+		});
 		final rule = Serializer.load(Bytes.ofHex(parts[1]), VersusRule);
 
 		final f = new FrameCounter();
 
 		ScreenManager.switchScreen(new NetplayGameScreen({
+			logger: l,
 			session: s,
 			frameCounter: f,
 			gameStateBuilder: new NetplayEndlessGameStateBuilder({

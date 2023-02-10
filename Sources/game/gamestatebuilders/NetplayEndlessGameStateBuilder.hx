@@ -1,5 +1,6 @@
 package game.gamestatebuilders;
 
+import game.net.logger.NullSessionLogger;
 import game.rules.VersusRule;
 import game.boardstates.EndlessBoardState;
 import game.rules.AnimationsType;
@@ -180,6 +181,7 @@ class NetplayEndlessGameStateBuilder implements INetplayGameStateBuilder {
 	inline function initRollbackMediator() {
 		if (rollbackMediator == null) {
 			rollbackMediator = {
+				logger: NullSessionLogger.instance,
 				confirmFrame: () -> {},
 				rollback: (_) -> {}
 			};

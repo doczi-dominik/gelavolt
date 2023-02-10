@@ -1,5 +1,6 @@
 package game.screens;
 
+import game.net.logger.ISessionLogger;
 import hxbit.Serializer;
 import haxe.crypto.Crc32;
 import game.mediators.FrameCounter;
@@ -13,6 +14,7 @@ import game.net.SessionManager;
 class NetplayGameScreenOptions {}
 
 class NetplayGameScreen extends GameScreenBase {
+	@inject final logger: ISessionLogger;
 	@inject final session: SessionManager;
 	@inject final frameCounter: FrameCounter;
 	@inject final gameStateBuilder: INetplayGameStateBuilder;
@@ -37,6 +39,7 @@ class NetplayGameScreen extends GameScreenBase {
 		};
 
 		gameStateBuilder.rollbackMediator = {
+			logger: logger,
 			confirmFrame: confirmFrame,
 			rollback: rollback
 		};

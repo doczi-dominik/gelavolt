@@ -1,6 +1,7 @@
 package game.net;
 
 import main.ScreenManager;
+import game.net.logger.ISessionLogger;
 import ui.ErrorPage;
 import peerjs.Peer;
 import game.net.PacketType;
@@ -8,10 +9,19 @@ import game.mediators.FrameCounter;
 import haxe.Timer;
 import kha.Scheduler;
 import peerjs.DataConnection;
+import game.Macros;
+
+@:structInit
+@:build(game.Macros.buildOptionsClass(SessionManager))
+class SessionManagerOptions {
+	public final peer: Peer;
+	public final isHost: Bool;
+}
 
 class SessionManager {
+	@inject final frameCounter: FrameCounter;
+	@inject final logger: ISessionLogger;
 	final peer: Peer;
-	final frameCounter: FrameCounter;
 
 	var dc: DataConnection;
 
@@ -38,7 +48,7 @@ class SessionManager {
 	var checksumPackageTimeoutTaskID: Int;
 
 	public final localID: String;
-	public final remoteID: String;
+	@inject public final remoteID: String;
 
 	public var onInput(null, default): Array<InputHistoryEntry>->Void;
 	public var onCalculateChecksum(null, default): Void->String;
@@ -53,11 +63,10 @@ class SessionManager {
 
 	public var isInputIdle: Bool;
 
-	public function new(peer: Peer, isHost: Bool, remoteID: String) {
-		this.peer = peer;
-		frameCounter = new FrameCounter();
+	public function new(opts: SessionManagerOptions) {
+		Macros.initFromOpts();
 
-		if (isHost) {
+		if (opts.isHost) {
 			peer.on(PeerEventType.Connection, initDataConnection);
 		} else {
 			initDataConnection(peer.connect(remoteID, {
@@ -68,7 +77,6 @@ class SessionManager {
 		localInputHistory = [];
 
 		localID = peer.id;
-		this.remoteID = remoteID;
 
 		state = WAITING;
 	}
@@ -78,6 +86,11 @@ class SessionManager {
 	}
 
 	function error(message: String) {
+		logger.disableRingBuffer();
+		logger.push('=== ERROR ===');
+		logger.push(message);
+		logger.download();
+
 		dispose();
 		ScreenManager.pushOverlay(ErrorPage.mainMenuPage(message));
 	}
@@ -88,6 +101,7 @@ class SessionManager {
 		}
 
 		if (lastLocalChecksum != lastRemoteChecksum) {
+			logger.push('CHECKSUM MISMATCH -- Counter: $desyncCounter');
 			if (++desyncCounter >= 3) {
 				error("Desync Detected");
 			}
@@ -136,6 +150,8 @@ class SessionManager {
 	}
 
 	function initSyncingState() {
+		logger.push('=== SYNCING STATE ===');
+
 		roundTripCounter = 0;
 		localAdvantageCounter = 0;
 		remoteAdvantageCounter = 0;
@@ -163,7 +179,11 @@ class SessionManager {
 			prediction = frameCounter.value + Std.int(averageRTT / 2 * 60 / 1000);
 		}
 
-		dc.send('$SYNC_REQ;$ping;$prediction;${state == RUNNING ? "R" : "O"}');
+		final state = state == RUNNING ? "R" : "O";
+
+		logger.push('SEND SYNC_REQ -- Ping: $ping, Prediction: $prediction, State: $state');
+
+		dc.send('$SYNC_REQ;$ping;$prediction;$state');
 	}
 
 	function onSyncRequest(parts: Array<String>) {
@@ -175,6 +195,7 @@ class SessionManager {
 
 		final pong = parts[1];
 		final prediction = Std.parseInt(parts[2]);
+		final st = parts[3];
 
 		var adv: Null<Int> = null;
 
@@ -184,8 +205,14 @@ class SessionManager {
 			averageLocalAdvantage = Math.round(0.5 * adv + 0.5 * averageLocalAdvantage);
 		}
 
-		if (state == SYNCING && parts[3] == "R")
+		logger.push('RECV SYNC_REQ -- Pong: $pong, Prediction: $prediction, State: $st -- Average local adv: $averageLocalAdvantage');
+
+		if (state == SYNCING && st == "R") {
+			logger.push('SKIPPING SYNCING STATE');
 			initRunningState();
+		}
+
+		logger.push('SEND SYNC_RESP -- Pong: $pong, Advantage: $adv');
 
 		dc.send('$SYNC_RESP;$pong;$adv');
 	}
@@ -198,28 +225,38 @@ class SessionManager {
 
 		final adv = Std.parseInt(parts[2]);
 
+		logger.push('RECV SYNC_RESP -- Pong: $pong, Advantage: $adv -- RTT: $rtt, Average RTT: $averageRTT');
+
 		if (adv != null) {
 			averageRemoteAdvantage = Math.round(0.5 * adv + 0.5 * averageRemoteAdvantage);
+
+			logger.push('Average remote adv: $averageRemoteAdvantage');
 
 			if (sleepFrames == 0 && ++remoteAdvantageCounter % 3 == 0) {
 				final diff = averageLocalAdvantage - averageRemoteAdvantage;
 
-				if (state == SYNCING && Math.abs(diff) < 4) {
-					if (++successfulSleepChecks > 5) {
-						initBeginningState();
+				if (state == SYNCING) {
+					if (Math.abs(diff) < 4) {
+						logger.push('Succesful sleep check -- Counter: $successfulSleepChecks');
+						if (++successfulSleepChecks > 5) {
+							initBeginningState();
 
-						return;
+							return;
+						}
+					} else {
+						logger.push('Advantage diff too large (L: $averageLocalAdvantage, R: $averageRemoteAdvantage, D: $diff), resetting sleep counter');
+						successfulSleepChecks = 0;
 					}
-				} else {
-					successfulSleepChecks = 0;
 				}
 
 				if (!isInputIdle) {
+					logger.push('Input not idle, skipping sleep');
 					sleepFrames = 0;
 					return;
 				}
 
 				if (averageLocalAdvantage < averageRemoteAdvantage) {
+					logger.push('Local adv. ($averageLocalAdvantage) < Remote adv. ($averageRemoteAdvantage), skipping sleep');
 					sleepFrames = 0;
 					return;
 				}
@@ -233,26 +270,34 @@ class SessionManager {
 				}
 
 				sleepFrames = Std.int(Math.min(s, 9));
+				logger.push('Sleeping for $sleepFrames frames');
 			}
 		}
 	}
 
 	function initBeginningState() {
+		logger.push('=== BEGINNING STATE ===');
+
 		Scheduler.removeTimeTask(syncTimeoutTaskID);
 
 		sendBeginTaskID = Scheduler.addTimeTask(() -> {
+			logger.push('SEND BEGIN_REQ');
 			dc.send('$BEGIN_REQ');
-		}, 0, 0.001);
+		}, 0, 0.016);
 
 		state = BEGINNING;
 	}
 
 	function onBeginRequest(parts: Array<String>) {
+		logger.push('RECV BEGIN_REQ');
+		logger.push('SEND BEGIN_RESP -- Begin frame: $beginFrame');
 		dc.send('$BEGIN_RESP;$beginFrame');
 	}
 
 	function onBeginResponse(parts: Array<String>) {
 		beginFrame = Std.parseInt(parts[1]);
+
+		logger.push('RECV BEGIN_RESP -- Begin frame: $beginFrame');
 
 		if (beginFrame == null) {
 			beginFrame = frameCounter.value + 60;
@@ -282,11 +327,13 @@ class SessionManager {
 			lastFrame = frame;
 		}
 
+		logger.push('RECV INPUT -- History size: ${history.length}');
+		logger.push('SEND INPUT_ACK -- Last frame: $lastFrame');
+		dc.send('$INPUT_ACK;$lastFrame');
+
 		if (lastFrame < lastInputFrame) {
 			return;
 		}
-
-		dc.send('$INPUT_ACK;$lastFrame');
 
 		onInput(history);
 
@@ -295,6 +342,8 @@ class SessionManager {
 
 	function onInputAckPacket(parts: Array<String>) {
 		final frame = Std.parseInt(parts[1]);
+
+		logger.push('RECV INPUT_ACK -- Frame: $frame');
 
 		if (frame <= lastConfirmedFrame) {
 			return;
@@ -307,11 +356,15 @@ class SessionManager {
 	}
 
 	function onChecksumRequest(parts: Array<String>) {
+		logger.push('RECV CHECKSUM_REQ');
+		logger.push('SEND CHECKSUM_RESP -- Next frame: $nextChecksumFrame');
 		dc.send('$CHECKSUM_RESP;$nextChecksumFrame');
 	}
 
 	function onChecksumResponse(parts: Array<String>) {
 		nextChecksumFrame = Std.parseInt(parts[1]);
+
+		logger.push('RECV CHECKSUM_RESP -- Next frame: $nextChecksumFrame');
 
 		if (nextChecksumFrame != null && nextChecksumFrame <= frameCounter.value) {
 			nextChecksumFrame = null;
@@ -330,6 +383,7 @@ class SessionManager {
 		resetChecksumTimeoutTimer();
 
 		lastRemoteChecksum = parts[1];
+		logger.push('RECV CHECKSUM_UPDATE -- Last remote: $lastRemoteChecksum');
 
 		compareChecksums();
 	}
@@ -343,6 +397,9 @@ class SessionManager {
 	}
 
 	function initRunningState() {
+		logger.push('=== RUNNING STATE ===');
+		logger.enableRingBuffer();
+
 		setSyncInterval(500);
 
 		lastInputFrame = -1;
@@ -351,6 +408,7 @@ class SessionManager {
 		latestChecksumFrame = -1;
 
 		sendChecksumTaskID = Scheduler.addTimeTask(() -> {
+			logger.push('SEND CHECKSUM_REQ');
 			dc.send('$CHECKSUM_REQ');
 		}, 0, 0.5);
 
@@ -378,6 +436,7 @@ class SessionManager {
 		if (frameCounter.value == latestChecksumFrame) {
 			lastLocalChecksum = onCalculateChecksum();
 
+			logger.push('SEND CHECKSUM_UPDATE -- Last local: $lastLocalChecksum');
 			dc.send('$CHECKSUM_UPDATE;$lastLocalChecksum');
 
 			nextChecksumFrame = null;
@@ -419,6 +478,7 @@ class SessionManager {
 			msg += ';${e.frame};${e.actions}';
 		}
 
+		logger.push('SEND INPUT -- Frame: $frame, History size: ${localInputHistory.length}');
 		dc.send(msg);
 	}
 
