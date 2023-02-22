@@ -31,6 +31,7 @@ class SessionManager {
 	var lastLocalChecksum: Null<String>;
 	var lastRemoteChecksum: Null<String>;
 	var desyncCounter: Int;
+	var nextScheduledSleep: Int;
 
 	var beginFrame: Null<Int>;
 	var nextChecksumFrame: Null<Int>;
@@ -155,7 +156,8 @@ class SessionManager {
 		localAdvantageCounter = 0;
 		remoteAdvantageCounter = 0;
 		successfulSleepChecks = 0;
-
+		nextScheduledSleep = 0;
+		
 		sleepFrames = 0;
 
 		setSyncInterval(100);
@@ -248,15 +250,9 @@ class SessionManager {
 					}
 				}
 
-				if (!isInputIdle) {
-					logger.push('Input not idle, skipping sleep');
-					sleepFrames = 0;
-					return;
-				}
-
 				if (averageLocalAdvantage < averageRemoteAdvantage) {
 					logger.push('Local adv. ($averageLocalAdvantage) < Remote adv. ($averageRemoteAdvantage), skipping sleep');
-					sleepFrames = 0;
+					nextScheduledSleep = 0;
 					return;
 				}
 
@@ -264,12 +260,12 @@ class SessionManager {
 				final s = Math.ceil(diff / 2);
 
 				if (s < 2) {
-					sleepFrames = 0;
+					nextScheduledSleep = 0;
 					return;
 				}
 
-				sleepFrames = Std.int(Math.min(s, 9));
-				logger.push('Sleeping for $sleepFrames frames');
+				nextScheduledSleep = Std.int(Math.min(s, 9));
+				logger.push('Scheduled sleep for $nextScheduledSleep frames');
 			}
 		}
 	}
@@ -390,7 +386,13 @@ class SessionManager {
 	}
 
 	function updateSleepCounter() {
+		if (isInputIdle && nextScheduledSleep > 0) {
+			sleepFrames = nextScheduledSleep;
+			nextScheduledSleep = 0;
+		}
+
 		if (sleepFrames > 0) {
+			logger.push('SLEEPING -- Frame $sleepFrames');
 			sleepFrames--;
 		}
 
