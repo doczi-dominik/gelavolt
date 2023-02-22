@@ -327,6 +327,7 @@ class SessionManager {
 		dc.send('$INPUT_ACK;$lastFrame');
 
 		if (lastFrame < lastConfirmedFrame) {
+			logger.push('Received INPUT is old: $lastFrame < $lastConfirmedFrame');
 			return;
 		}
 

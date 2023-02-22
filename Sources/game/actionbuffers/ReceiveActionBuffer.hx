@@ -52,6 +52,8 @@ class ReceiveActionBuffer implements IActionBuffer {
 	}
 
 	public function onInput(history: Array<InputHistoryEntry>) {
+		rollbackMediator.logger.push('Received ${history.length} inputs, last frame: ${history[history.length - 1].frame}');
+		
 		var shouldRollback = false;
 
 		for (e in history) {
@@ -74,6 +76,7 @@ class ReceiveActionBuffer implements IActionBuffer {
 				shouldRollback = true;
 			}
 		}
+
 
 		if (shouldRollback) {
 			rollbackMediator.rollback();
