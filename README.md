@@ -3,7 +3,7 @@
 # Project GelaVolt
 
 ### Join the Development Discord: https://discord.gg/wsWArpAFJK
-### Try GelaVolt's web build at: https://gelavolt.io
+### Try GelaVolt's web build at: https://doczi-dominik.github.io/gelavolt-web/
 
 Welcome to GelaVolt, a fanmade version of Japan's favourite competitive puzzle fighter!
 
