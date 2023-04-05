@@ -11,49 +11,45 @@ using DateTools;
 
 class SessionLogger implements ISessionLogger {
 	final frameCounter: FrameCounter;
-	final log: Array<String>;
+	final setupLog: Array<String>;
+	final gameLog: Array<String>;
 
-	var index: Int;
-	var indexMin: Int;
-	var indexLimitEnabled: Bool;
+	public var useGameLog: Bool;
 
 	public function new(frameCounter: FrameCounter) {
 		this.frameCounter = frameCounter;
-		log = [];
+		setupLog = [];
+		gameLog = [];
 
-		index = 0;
-		indexMin = 0;
-		indexLimitEnabled = false;
+		useGameLog = false;
 	}
 
-	public function enableRingBuffer() {
-		indexLimitEnabled = true;
-		indexMin = index;
-		index = 0;
+	inline function pushSetup(message: String) {
+		setupLog.push(message);
 	}
 
-	public function disableRingBuffer() {
-		indexLimitEnabled = false;
+	inline function pushGame(message: String) {
+		gameLog.push(message);
+
+		if (gameLog.length > 256) {
+			gameLog.shift();
+		}
 	}
 
 	public function push(message: String) {
-		final str = '${frameCounter.value}: $message\n';
-
-		if (indexLimitEnabled) {
-			log[indexMin + index] = str;
-			index = (index + 1) % 256;
+		if (useGameLog) {
+			pushGame(message);
 
 			return;
 		}
 
-		log.push(str);
-		index++;
+		pushSetup(message);
 	}
 
 	public function download() {
 		#if js
 		final filename = 'netplay-${Date.now().format("%Y-%m-%d_%H-%M")}.gvl';
-		final file = new File(log, filename);
+		final file = new File(setupLog.concat(gameLog), filename);
 		final uri = URL.createObjectURL(file);
 
 		final el = Browser.document.createAnchorElement();

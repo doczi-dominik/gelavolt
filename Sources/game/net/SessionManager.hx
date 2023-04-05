@@ -86,7 +86,6 @@ class SessionManager {
 	}
 
 	function error(message: String) {
-		logger.disableRingBuffer();
 		logger.push('=== ERROR ===');
 		logger.push(message);
 		logger.download();
@@ -402,7 +401,7 @@ class SessionManager {
 
 	function initRunningState() {
 		logger.push('=== RUNNING STATE ===');
-		logger.enableRingBuffer();
+		logger.useGameLog = true;
 
 		setSyncInterval(500);
 
