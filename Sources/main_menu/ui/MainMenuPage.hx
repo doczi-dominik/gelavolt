@@ -85,13 +85,6 @@ class MainMenuPage extends ListMenuPage {
 						})));
 					}
 				}),
-				#if kha_html5
-				new SubPageWidget({
-					title: "Host Netplay Test (WIP)",
-					description: [],
-					subPage: new LobbyPage()
-				}),
-				#end
 				new SubPageWidget({
 					title: "Options",
 					description: ["Change Various Options and Settings"],
