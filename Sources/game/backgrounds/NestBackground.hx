@@ -1,5 +1,6 @@
 package game.backgrounds;
 
+import kha.Assets;
 import main.ScaleManager;
 import utils.Utils;
 import game.copying.CopyableRNG;
@@ -49,14 +50,10 @@ private class BackgroundParticle {
 	public function render(g: Graphics, alpha: Float) {
 		final lerpY = Utils.lerp(lastY, y, alpha);
 		final c = Math.sin(t / (dy * 50));
-		final r = c * 12;
+		final size = c * 24;
 
 		g.pushOpacity(Math.max(c, 0));
-		g.color = Red;
-		g.fillCircle(x, lerpY, r, 8);
-		g.color = Black;
-		g.fillCircle(x, lerpY, r - 4, 8);
-		g.color = White;
+		g.drawScaledImage(Assets.images.NestBackgroundParticle, x, lerpY, size, size);
 		g.popOpacity();
 	}
 }
