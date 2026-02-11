@@ -1,12 +1,12 @@
 package input;
 
-import haxe.ds.ReadOnlyArray;
-import ui.ControlHint;
-import kha.graphics2.Graphics;
 import game.actions.Action;
-import save_data.InputSettings;
+import haxe.ds.ReadOnlyArray;
+import kha.graphics2.Graphics;
 import kha.input.Gamepad;
+import save_data.InputSettings;
 import save_data.Profile;
+import ui.ControlHint;
 
 using Safety;
 
@@ -46,7 +46,9 @@ class AnyInputDevice implements IInputDevice {
 		devices[KEYBOARD_ID] = new KeyboardInputDevice(inputSettings.sure());
 
 		for (i in 0...4) {
-			if (Gamepad.get(i).connected) {
+			final gamepad = Gamepad.get(i);
+
+			if (gamepad != null && gamepad.connected) {
 				connectListener(i);
 			}
 		}

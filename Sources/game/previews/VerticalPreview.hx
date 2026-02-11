@@ -1,9 +1,9 @@
 package game.previews;
 
-import utils.Utils;
 import game.Queue;
 import game.gelos.Gelo;
 import kha.graphics2.Graphics;
+import utils.Utils;
 
 class VerticalPreview implements IPreview {
 	final queue: Queue;

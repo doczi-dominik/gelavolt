@@ -1,10 +1,10 @@
 package save_data;
 
-import haxe.ds.StringMap;
-import save_data.TrainingSettings;
-import save_data.PrefsSettings;
 import save_data.InputSettings;
+import save_data.PrefsSettings;
+import save_data.TrainingSettings;
 
+@:nullSafety(Off)
 class Profile implements hxbit.Serializable {
 	static final onChangePrimary: Array<Void->Void> = [];
 

@@ -1,7 +1,7 @@
 package game;
 
-import game.copying.ICopyFrom;
 import game.copying.CopyableArray;
+import game.copying.ICopyFrom;
 import game.gelogroups.GeloGroupData;
 import utils.Utils;
 
@@ -17,6 +17,8 @@ class Queue implements ICopyFrom {
 	}
 
 	public inline function load(groups: Array<GeloGroupData>) {
+		this.groups.data.resize(0);
+
 		for (g in groups) {
 			this.groups.data.push(g);
 		}

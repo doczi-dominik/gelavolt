@@ -1,19 +1,19 @@
 package input;
 
-import main.ScaleManager;
-import haxe.ds.ReadOnlyArray;
-import utils.Utils;
+import game.actions.Action;
 import game.actions.ActionData.ACTION_DATA;
+import haxe.ds.HashMap;
+import haxe.ds.ReadOnlyArray;
 import input.AxisSpriteCoordinates.AXIS_SPRITE_COORDINATES;
 import input.ButtonSpriteCoordinates.BUTTON_SPRITE_COORDINATES;
-import haxe.ds.HashMap;
 import kha.Assets;
-import utils.Geometry;
 import kha.graphics2.Graphics;
-import ui.ControlHint;
-import game.actions.Action;
-import save_data.InputSettings;
 import kha.input.Gamepad;
+import main.ScaleManager;
+import save_data.InputSettings;
+import ui.ControlHint;
+import utils.Geometry;
+import utils.Utils;
 
 using Safety;
 
@@ -40,7 +40,7 @@ class GamepadInputDevice extends InputDevice {
 
 	public function new(inputSettings: InputSettings, gamepadID: Int) {
 		id = gamepadID;
-		gamepad = Gamepad.get(gamepadID);
+		gamepad = Safety.sure(Gamepad.get(gamepadID));
 
 		super(GAMEPAD, inputSettings);
 	}
